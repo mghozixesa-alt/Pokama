@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Permintaan (HP) — Pokama</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F3F5F8}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; display: flex; flex-direction: column; background: #F3F5F8; color: #1F2933; font-family: 'Nunito', system-ui, sans-serif; font-size: 14px; line-height: 1.4; overflow: hidden; position: relative">
+<sc-if value="{{isList}}" hint-placeholder-val="{{true}}">
+<header style="flex-shrink: 0; background: #1D3149; color: #FFFFFF; padding: 16px 16px 12px; display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; justify-content: space-between; align-items: center"><span style="display: flex; flex-direction: column"><h1 style="margin: 0; font-size: 20px; font-weight: 900">Permintaan</h1><span style="font-size: 12px; color: #B9C4D2">Antarunit · dipilah Kepala Staf ≤ 24 jam</span></span><span aria-label="Wiranata" style="width: 38px; height: 38px; border-radius: 19px; background: #09BEAF; color: #1D3149; font-weight: 900; font-size: 13px; display: flex; align-items: center; justify-content: center">WR</span></div>
+<div role="tablist" aria-label="Daftar" style="display: flex; gap: 6px">
+<sc-for list="{{tabs}}" as="t" hint-placeholder-count="2"><button type="button" role="tab" aria-selected="{{t.on}}" onClick="{{t.pick}}" style="flex: 1 1 0; height: 38px; border-radius: 10px; border: 0; background: {{t.bg}}; color: {{t.fg}}; font: inherit; font-size: 13px; font-weight: 800; cursor: pointer">{{t.label}}</button></sc-for>
+</div>
+</header>
+<div style="flex: 1 1 auto; min-height: 0; overflow-y: auto"><div style="padding: 14px 14px 90px; display: flex; flex-direction: column; gap: 10px">
+<sc-if value="{{hasMsg}}" hint-placeholder-val="{{false}}"><div role="status" style="display: flex; align-items: center; gap: 8px; background: #DDF5F2; color: #067A70; border-radius: 12px; padding: 10px 12px; font-size: 13px; font-weight: 700"><span style="flex: 1 1 auto">{{msg}}</span><button type="button" onClick="{{clearMsg}}" aria-label="Tutup pesan" style="width: 32px; height: 32px; border: 0; background: transparent; color: #067A70; font: inherit; font-size: 18px; font-weight: 900; cursor: pointer">×</button></div></sc-if>
+<p style="margin: 0; font-size: 12px; color: #5B6573">{{tabNote}}</p>
+<sc-for list="{{items}}" as="it" hint-placeholder-count="3">
+<button type="button" onClick="{{it.open}}" style="text-align: left; font: inherit; color: #1F2933; cursor: pointer; background: #FFFFFF; border: 1px solid #E3E6EB; box-shadow: inset 4px 0 0 {{it.bar}}; border-radius: 14px; padding: 14px; display: flex; flex-direction: column; gap: 6px">
+<span style="display: flex; justify-content: space-between; gap: 8px; align-items: flex-start"><span style="font-weight: 900; font-size: 15px">{{it.title}}</span><span style="font-size: 11px; font-weight: 900; padding: 3px 8px; border-radius: 999px; background: {{it.stBg}}; color: {{it.stFg}}; white-space: nowrap">{{it.st}}</span></span>
+<span style="font-size: 12px; color: #5B6573">{{it.line}}</span>
+<span style="font-size: 12px; font-weight: 800; color: {{it.dueFg}}">{{it.due}}</span>
+</button>
+</sc-for>
+</div></div>
+<button type="button" onClick="{{openNew}}" style="position: absolute; right: 16px; bottom: 84px; height: 52px; padding: 0 20px; border-radius: 26px; border: 0; background: #09BEAF; color: #1D3149; font: inherit; font-size: 15px; font-weight: 900; box-shadow: 0 6px 18px rgba(29,49,73,0.25); cursor: pointer; z-index: 5">+ Ajukan permintaan</button>
+<nav aria-label="Menu bawah" style="flex-shrink: 0; height: 68px; background: #FFFFFF; border-top: 1px solid #E3E6EB; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr))">
+<a href="KKHHp.dc.html" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; text-decoration: none; font-size: 11px; font-weight: 800; color: #8A94A3"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="15" rx="2"></rect><path d="M8 3v4M16 3v4M4 10h16"></path></svg>KKH</a>
+<a href="ReviewHp.dc.html" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; text-decoration: none; font-size: 11px; font-weight: 800; color: #8A94A3; position: relative"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h11a2 2 0 012 2v4"></path><path d="M4 5v14h7"></path><path d="M14 17l2 2 4-4"></path></svg>Review<span style="position: absolute; top: 8px; left: calc(50% + 6px); min-width: 18px; height: 18px; border-radius: 9px; background: #C2410C; color: #FFFFFF; font-size: 10px; font-weight: 900; display: flex; align-items: center; justify-content: center; padding: 0 4px; box-sizing: border-box">2</span></a>
+<a href="PermintaanHp.dc.html" aria-current="page" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; text-decoration: none; font-size: 11px; font-weight: 800; color: #067A70; position: relative"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 13l3-8h10l3 8v6H4z"></path><path d="M4 13h5l1 2h4l1-2h5"></path></svg>Permintaan<sc-if value="{{hasNewBadge}}" hint-placeholder-val="{{true}}"><span style="position: absolute; top: 8px; left: calc(50% + 6px); min-width: 18px; height: 18px; border-radius: 9px; background: #C2410C; color: #FFFFFF; font-size: 10px; font-weight: 900; display: flex; align-items: center; justify-content: center; padding: 0 4px; box-sizing: border-box">{{newBadge}}</span></sc-if></a>
+<a href="LainnyaHp.dc.html" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; text-decoration: none; font-size: 11px; font-weight: 800; color: #8A94A3"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"></path></svg>Lainnya</a>
+</nav>
+</sc-if>
+
+<sc-if value="{{isDetail}}" hint-placeholder-val="{{false}}">
+<header style="flex-shrink: 0; background: #FFFFFF; border-bottom: 1px solid #E3E6EB; padding: 10px 12px; display: flex; align-items: center; gap: 8px">
+<button type="button" onClick="{{back}}" aria-label="Kembali" style="width: 44px; height: 44px; border-radius: 12px; border: 0; background: #F3F5F8; font: inherit; font-size: 20px; font-weight: 900; cursor: pointer">‹</button>
+<span style="display: flex; flex-direction: column; min-width: 0"><span style="font-size: 11px; font-weight: 900; color: #067A70">{{d.kind}}</span><span style="font-weight: 900; font-size: 15px">{{d.title}}</span></span>
+</header>
+<div style="flex: 1 1 auto; min-height: 0; overflow-y: auto"><div style="padding: 14px; display: flex; flex-direction: column; gap: 12px">
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px">
+<sc-for list="{{d.facts}}" as="f" hint-placeholder-count="4"><div style="background: #FFFFFF; border-radius: 12px; padding: 8px 10px; display: flex; flex-direction: column"><span style="font-size: 10px; font-weight: 900; color: #5B6573; letter-spacing: 0.04em">{{f.k}}</span><span style="font-weight: 800; font-size: 13px">{{f.v}}</span></div></sc-for>
+</div>
+<p style="margin: 0; background: #FFFFFF; border-radius: 12px; padding: 12px; font-size: 13px; color: #3B4250">{{d.desc}}</p>
+<sc-if value="{{d.hasNote}}" hint-placeholder-val="{{false}}"><p style="margin: 0; padding: 10px 12px; border-radius: 12px; background: {{d.noteBg}}; color: {{d.noteFg}}; font-size: 13px; font-weight: 700">{{d.note}}</p></sc-if>
+<span style="font-size: 11px; font-weight: 900; letter-spacing: 0.06em; color: #5B6573">PERJALANAN PERMINTAAN</span>
+<ol style="margin: 0; padding: 0; list-style: none; background: #FFFFFF; border-radius: 14px; padding: 6px 12px">
+<sc-for list="{{d.steps}}" as="s" hint-placeholder-count="5"><li style="display: flex; gap: 10px; align-items: flex-start; padding: 8px 0"><span aria-hidden="true" style="width: 22px; height: 22px; border-radius: 11px; flex-shrink: 0; background: {{s.dot}}; color: #FFFFFF; font-size: 12px; font-weight: 900; display: flex; align-items: center; justify-content: center">{{s.mark}}</span><span style="display: flex; flex-direction: column"><span style="font-weight: 800; font-size: 13px; color: {{s.fg}}">{{s.label}}</span><span style="font-size: 12px; color: #5B6573">{{s.when}}</span></span></li></sc-for>
+</ol>
+<sc-if value="{{d.canPlan}}" hint-placeholder-val="{{false}}">
+<span style="font-size: 11px; font-weight: 900; letter-spacing: 0.06em; color: #5B6573">PILIH SLOT KKH · SARAN AI DARI JAM KOSONG ANDA</span>
+<div style="display: flex; flex-wrap: wrap; gap: 6px"><sc-for list="{{d.slots}}" as="sl" hint-placeholder-count="3"><button type="button" aria-pressed="{{sl.on}}" onClick="{{sl.pick}}" style="height: 44px; padding: 0 12px; border-radius: 10px; border: 1px solid {{sl.bd}}; background: {{sl.bg}}; color: {{sl.fg}}; font: inherit; font-size: 13px; font-weight: 800; cursor: pointer">{{sl.label}}</button></sc-for></div>
+</sc-if>
+</div></div>
+<sc-if value="{{d.hasActions}}" hint-placeholder-val="{{false}}">
+<footer style="flex-shrink: 0; background: #FFFFFF; border-top: 1px solid #E3E6EB; padding: 10px 14px 14px; display: flex; gap: 8px">
+<button type="button" onClick="{{d.ask}}" style="flex: 1 1 0; height: 50px; border-radius: 12px; border: 1px solid #E3E6EB; background: #FFFFFF; color: #3B4250; font: inherit; font-size: 14px; font-weight: 800; cursor: pointer">Minta diperjelas</button>
+<button type="button" onClick="{{d.plan}}" style="flex: 1.4 1 0; height: 50px; border-radius: 12px; border: 0; background: #1D3149; color: #FFFFFF; font: inherit; font-size: 14px; font-weight: 900; cursor: pointer">Masukkan ke KKH</button>
+</footer>
+</sc-if>
+</sc-if>
+
+<sc-if value="{{sheetOpen}}" hint-placeholder-val="{{false}}">
+<div onClick="{{closeSheet}}" style="position: absolute; inset: 0; background: rgba(15,29,46,0.45); z-index: 9"></div>
+<section aria-label="Ajukan permintaan" style="position: absolute; left: 0; right: 0; bottom: 0; z-index: 10; background: #FFFFFF; border-radius: 20px 20px 0 0; padding: 16px 16px 20px; display: flex; flex-direction: column; gap: 12px; max-height: 760px; overflow-y: auto; box-sizing: border-box">
+<div style="display: flex; justify-content: space-between; align-items: center"><h2 style="margin: 0; font-size: 18px; font-weight: 900">Ajukan permintaan</h2><button type="button" onClick="{{closeSheet}}" aria-label="Tutup" style="width: 40px; height: 40px; border-radius: 10px; border: 0; background: #F3F5F8; font: inherit; font-size: 18px; font-weight: 900; cursor: pointer">×</button></div>
+<label style="display: flex; flex-direction: column; gap: 4px; font-size: 12px; font-weight: 800; color: #3B4250">Apa yang diminta<input type="text" value="{{nTitle}}" onInput="{{onTitle}}" placeholder="Misalnya: Mobil Hiace untuk rombongan" style="height: 46px; box-sizing: border-box; border: 1px solid #D3D7DE; border-radius: 10px; padding: 0 12px; font: inherit; font-size: 15px; font-weight: 500"></label>
+<div style="display: flex; flex-direction: column; gap: 6px"><span style="font-size: 12px; font-weight: 800; color: #3B4250">Ditujukan ke <span style="color: #067A70">{{aiTo}}</span></span><div style="display: flex; flex-wrap: wrap; gap: 6px"><sc-for list="{{toBtns}}" as="b" hint-placeholder-count="5"><button type="button" aria-pressed="{{b.on}}" onClick="{{b.pick}}" style="height: 40px; padding: 0 12px; border-radius: 10px; border: 1px solid #E3E6EB; background: {{b.bg}}; color: {{b.fg}}; font: inherit; font-size: 13px; font-weight: 800; cursor: pointer">{{b.label}}</button></sc-for></div></div>
+<div style="display: flex; flex-direction: column; gap: 6px"><span style="font-size: 12px; font-weight: 800; color: #3B4250">Dibutuhkan</span><div style="display: flex; flex-wrap: wrap; gap: 6px"><sc-for list="{{dueBtns}}" as="b" hint-placeholder-count="3"><button type="button" aria-pressed="{{b.on}}" onClick="{{b.pick}}" style="height: 40px; padding: 0 12px; border-radius: 10px; border: 1px solid #E3E6EB; background: {{b.bg}}; color: {{b.fg}}; font: inherit; font-size: 13px; font-weight: 800; cursor: pointer">{{b.label}}</button></sc-for></div></div>
+<label style="display: flex; flex-direction: column; gap: 4px; font-size: 12px; font-weight: 800; color: #3B4250">Kenapa perlu (opsional)<textarea rows="3" value="{{nDesc}}" onInput="{{onDesc}}" placeholder="Konteks singkat dan tautan file" style="box-sizing: border-box; border: 1px solid #D3D7DE; border-radius: 10px; padding: 10px 12px; font: inherit; font-size: 14px; font-weight: 500; resize: none"></textarea></label>
+<span style="font-size: 12px; color: #5B6573">Kepala Staf memilah paling lambat 24 jam. Yang diterima langsung jadi slot KKH PIC, dan Anda diberi tahu di setiap langkah.</span>
+<button type="button" onClick="{{send}}" style="height: 50px; border-radius: 12px; border: 0; background: {{sendBg}}; color: {{sendFg}}; font: inherit; font-size: 15px; font-weight: 900; cursor: pointer">Kirim permintaan</button>
+</section>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { tab: 'in', sel: null, sheet: false, nTitle: '', nDesc: '', nTo: '', nDue: 'w', extra: [], planned: {}, slotPick: {}, msg: '' };
+  }
+  renderVals() {
+    const I = [
+      { id: 'u1', mine: 'in', title: 'Paket wisata untuk tamu Ruma Metua', who: 'Adrian · Experience', to: 'TripinAja (Anda)', pic: 'Wiranata', due: 'Rab 28 Okt', dueLate: false, st: 'new', prio: 'Sedang', desc: 'Tamu Ruma Metua 31 Okt–2 Nov minta paket keliling Garut satu hari untuk 4 orang. Butuh 2 pilihan rute dan harga sebelum Rabu siang.', sent: 'Senin 09.12', tri: 'Senin 10.30 · Intifa' },
+      { id: 'u2', mine: 'in', title: 'Data tamu trip Oktober untuk Liga', who: 'Fajar · Data omzet', to: 'TripinAja (Anda)', pic: 'Wiranata', due: 'Sel 27 Okt', dueLate: false, st: 'kkh', slot: 'Sel 27 Okt · 14.00', prio: 'Tinggi', desc: 'Jumlah tamu, kursi terisi, dan kapasitas per trip Oktober untuk metrik utilisasi aset di Liga.', sent: 'Jumat 15.40', tri: 'Jumat 16.05 · Intifa' },
+      { id: 'm1', mine: 'out', title: 'Konten promo paket Halaman Belakang Kebon', who: 'Kevin · Marketing', to: 'Marketing', pic: 'Kevin', due: 'Jum 6 Nov', dueLate: false, st: 'kkh', slot: 'Kevin · Sel 27 Okt 13.00', prio: 'Sedang', desc: '3 konten feed dan story untuk paket villa + sarapan di Banjarwangi. Foto dari pemilik villa sudah dikirim.', sent: 'Senin 05.20', tri: 'Senin 08.40 · Intifa' },
+      { id: 'm2', mine: 'out', title: 'Hiace untuk rombongan 14 orang, 7 Nov', who: 'Rentalaja Garut Kota', to: 'Rentalaja Garut Kota', pic: 'belum ditentukan', due: 'Sel 3 Nov', dueLate: false, st: 'wait', prio: 'Tinggi', desc: 'Rombongan kantor dari Bandung, 7–8 Nov. Butuh Hiace dan sopir, harga antarunit.', sent: 'Senin 22.05', tri: '' },
+      { id: 'm3', mine: 'out', title: 'Dana talangan DP villa Desember', who: 'Keuangan', to: 'Keuangan', pic: 'Reza', due: 'Jum 30 Okt', dueLate: false, st: 'rej', prio: 'Sedang', reason: 'Ditolak Reza: DP villa dibayar dari rekening dana titipan tamu, bukan talangan holding. Ajukan lagi bila dana titipan belum cukup.', desc: 'DP 30% untuk villa malam tahun baru, sebelum tamu melunasi.', sent: 'Jumat 11.00', tri: 'Jumat 13.10 · Intifa' }
+    ];
+    const ST = { new: ['Baru untuk Anda', '#FCEBDD', '#9A3F0A', '#C2410C'], wait: ['Menunggu dipilah', '#FDF3D7', '#7A5200', '#D99A00'], kkh: ['Masuk KKH', '#DDF5F2', '#067A70', '#09BEAF'], rej: ['Ditolak', '#EEF0F3', '#4A5160', '#8A94A3'], ask: ['Minta diperjelas', '#E5EEF9', '#1E5AA8', '#1E5AA8'] };
+    const { tab, sel, planned, slotPick, extra } = this.state;
+    const all = [...extra, ...I].map(it => ({ ...it, st: planned[it.id] ? planned[it.id].st : it.st, slot: planned[it.id] ? planned[it.id].slot : it.slot }));
+    const items = all.filter(it => it.mine === tab).map(it => {
+      const s = ST[it.st];
+      return { title: it.title, st: s[0], stBg: s[1], stFg: s[2], bar: s[3], line: (it.mine === 'in' ? 'Dari ' + it.who : 'Ke ' + it.to + ' · PIC ' + it.pic) + ' · ' + it.prio, due: it.st === 'kkh' ? 'Dijadwalkan ' + it.slot : 'Tenggat ' + it.due, dueFg: it.st === 'new' ? '#9A3F0A' : '#3B4250', open: () => this.setState({ sel: it.id }) };
+    });
+    const c = all.find(it => it.id === sel);
+    let d = { kind: '', title: '', facts: [], desc: '', steps: [], hasNote: false, note: '', noteBg: '', noteFg: '', canPlan: false, slots: [], hasActions: false, ask: () => {}, plan: () => {} };
+    if (c) {
+      const SL = ['Besok 10.00', 'Besok 13.00', 'Rab 28 Okt 09.00'];
+      const pick = slotPick[c.id] || SL[0];
+      const order = ['sent', 'tri', 'acc', 'kkh', 'done'];
+      const lvl = c.st === 'wait' ? 0 : c.st === 'rej' ? 1 : c.st === 'new' || c.st === 'ask' ? 2 : 3;
+      const lab = [['Diajukan', c.sent], ['Dipilah Kepala Staf', c.tri || 'paling lambat 24 jam'], [c.st === 'rej' ? 'Ditolak' : c.st === 'new' ? 'Diberikan ke Anda · tinggal dijadwalkan' : 'Diterima PIC ' + c.pic, c.st === 'rej' ? 'Alasan dikirim ke pengaju' : ''], ['Masuk KKH', c.slot || ''], ['Selesai · dicek pengaju', 'Tenggat ' + c.due]];
+      d = {
+        kind: c.mine === 'in' ? 'UNTUK ANDA · DARI ' + c.who.toUpperCase() : 'DIAJUKAN ANDA', title: c.title,
+        facts: [{ k: c.mine === 'in' ? 'DARI' : 'KE', v: c.mine === 'in' ? c.who : c.to }, { k: 'PIC', v: c.pic }, { k: 'TENGGAT', v: c.due }, { k: 'PRIORITAS', v: c.prio }],
+        desc: c.desc,
+        hasNote: c.st === 'rej' || c.st === 'kkh' || c.st === 'ask',
+        note: c.st === 'rej' ? c.reason : c.st === 'ask' ? 'Pertanyaan terkirim ke ' + c.who + '. Tenggat ikut mundur sampai dijawab.' : 'Sudah jadi slot KKH ' + c.slot + '. Selesai hanya bila pengaju menyetujui hasilnya.',
+        noteBg: c.st === 'rej' ? '#FCEBDD' : c.st === 'ask' ? '#E5EEF9' : '#DDF5F2', noteFg: c.st === 'rej' ? '#9A3F0A' : c.st === 'ask' ? '#1E5AA8' : '#067A70',
+        steps: lab.map(([label, when], i) => { const on = c.st === 'rej' ? i <= 2 : i <= lvl; const cur = !on ? false : (c.st === 'rej' ? i === 2 : i === lvl); return { label, when: on ? when : '', mark: on ? (c.st === 'rej' && i === 2 ? '×' : '✓') : i + 1, dot: !on ? '#C9CED6' : c.st === 'rej' && i === 2 ? '#8A94A3' : cur && c.st === 'new' ? '#C2410C' : '#09BEAF', fg: on ? '#1F2933' : '#8A94A3' }; }).filter((s, i) => c.st !== 'rej' || i <= 2),
+        canPlan: c.mine === 'in' && c.st === 'new',
+        slots: SL.map(l => ({ label: l, on: pick === l ? 'true' : 'false', bg: pick === l ? '#1D3149' : '#FFFFFF', fg: pick === l ? '#FFFFFF' : '#3B4250', bd: pick === l ? '#1D3149' : '#E3E6EB', pick: () => this.setState({ slotPick: { ...slotPick, [c.id]: l } }) })),
+        hasActions: c.mine === 'in' && c.st === 'new',
+        ask: () => this.setState({ planned: { ...planned, [c.id]: { st: 'ask', slot: '' } } }),
+        plan: () => this.setState({ planned: { ...planned, [c.id]: { st: 'kkh', slot: pick } }, sel: null, msg: '"' + c.title + '" masuk KKH ' + pick + '. Adrian diberi tahu.' })
+      };
+    }
+    const nIn = all.filter(it => it.mine === 'in' && it.st === 'new').length, nOut = all.filter(it => it.mine === 'out' && it.st !== 'rej').length;
+    const t = this.state.nTitle.toLowerCase();
+    const guess = /mobil|hiace|motor|sewa|iphone|kamera/.test(t) ? 'Rentalaja' : /konten|foto|desain|promo|video/.test(t) ? 'Marketing' : /dana|bayar|dp|biaya|invoice/.test(t) ? 'Keuangan' : /kontrak|sop|izin/.test(t) ? 'Kepala Staf' : '';
+    const to = this.state.nTo || guess;
+    const TO = ['Rentalaja', 'Marketing', 'Keuangan', 'Kepala Staf', 'Niagaaja'];
+    const DUE = [['d1', 'Besok'], ['d3', '3 hari'], ['w', '1 minggu']];
+    const ok = !!this.state.nTitle.trim() && !!to;
+    return {
+      isList: !c, isDetail: !!c, items, d, back: () => this.setState({ sel: null }),
+      tabs: [['in', 'Untuk saya (' + nIn + ')'], ['out', 'Saya ajukan (' + nOut + ')']].map(([k, label]) => ({ label, on: tab === k ? 'true' : 'false', bg: tab === k ? '#09BEAF' : '#2C4664', fg: tab === k ? '#1D3149' : '#FFFFFF', pick: () => this.setState({ tab: k }) })),
+      tabNote: tab === 'in' ? 'Permintaan yang sudah dipilah Kepala Staf dan diberikan ke Anda. Masukkan ke KKH supaya tercatat.' : 'Permintaan Anda ke unit lain. Anda diberi tahu setiap kali statusnya berubah.',
+      hasNewBadge: nIn > 0, newBadge: nIn,
+      hasMsg: !!this.state.msg, msg: this.state.msg, clearMsg: () => this.setState({ msg: '' }),
+      openNew: () => this.setState({ sheet: true, nTitle: '', nDesc: '', nTo: '', nDue: 'w' }), sheetOpen: this.state.sheet, closeSheet: () => this.setState({ sheet: false }),
+      nTitle: this.state.nTitle, nDesc: this.state.nDesc, onTitle: (e) => this.setState({ nTitle: e.target.value }), onDesc: (e) => this.setState({ nDesc: e.target.value }),
+      aiTo: !this.state.nTo && guess ? '· saran AI: ' + guess : '',
+      toBtns: TO.map(l => ({ label: l, on: to === l ? 'true' : 'false', bg: to === l ? '#1D3149' : '#FFFFFF', fg: to === l ? '#FFFFFF' : '#3B4250', pick: () => this.setState({ nTo: l }) })),
+      dueBtns: DUE.map(([k, l]) => ({ label: l, on: this.state.nDue === k ? 'true' : 'false', bg: this.state.nDue === k ? '#1D3149' : '#FFFFFF', fg: this.state.nDue === k ? '#FFFFFF' : '#3B4250', pick: () => this.setState({ nDue: k }) })),
+      sendBg: ok ? '#09BEAF' : '#E3E6EB', sendFg: ok ? '#1D3149' : '#8A94A3',
+      send: () => {
+        if (!ok) { this.setState({ msg: '' }); return; }
+        const title = this.state.nTitle.trim();
+        const row = { id: 'x' + extra.length, mine: 'out', title, who: to, to, pic: 'belum ditentukan', due: { d1: 'Sel 27 Okt', d3: 'Kam 29 Okt', w: 'Sen 2 Nov' }[this.state.nDue], st: 'wait', prio: this.state.nDue === 'd1' ? 'Tinggi' : 'Sedang', desc: this.state.nDesc.trim() || 'Tanpa catatan tambahan.', sent: 'Baru saja', tri: '' };
+        this.setState({ extra: [row, ...extra], sheet: false, tab: 'out', msg: '"' + title + '" terkirim ke ' + to + '. Kepala Staf memilah paling lambat 24 jam.' });
+      }
+    };
+  }
+}
+</script>
+</body>
+</html>

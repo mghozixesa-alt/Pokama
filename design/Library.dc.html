@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<title>Library Dokumen — Pokama</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F3F5F8}
+a{color:#1D3149}a:hover{color:#0F1D2E}
+</style>
+</helmet>
+<div style="min-height: 100vh; display: flex; flex-wrap: wrap; background: #F3F5F8; color: #1F2933; font-family: 'Nunito', system-ui, sans-serif; font-size: 14px; line-height: 1.45">
+
+<nav aria-label="Menu utama" style="flex: 1 1 232px; box-sizing: border-box; background: #FFFFFF; border-right: 1px solid #E3E6EB; padding: 24px 16px; display: flex; flex-direction: column; gap: 20px">
+<div style="display: flex; flex-direction: column; gap: 8px; padding: 0 8px">
+<img src="/_blob/16ede3a1e0e10a1302aceed526ba5356" alt="RentalAja" style="width: 150px; height: auto">
+<span style="font-size: 12px; color: #5B6573; font-weight: 600">Pokama · Sistem Kerja Harian</span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 11px; font-weight: 800; letter-spacing: 0.08em; color: #5B6573; padding: 0 12px 4px">KERJA HARIAN</span>
+<a href="Main.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path></svg><span style="flex-grow: 1">KKH Saya</span></a>
+<a href="KKH.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"></rect><path d="M3 9h18M9 4v16M15 4v16"></path></svg><span style="flex-grow: 1">KKH Tim</span></a>
+<a href="Penugasan.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l9 5-9 5-9-5 9-5z"></path><path d="M3 13l9 5 9-5"></path></svg><span style="flex-grow: 1">Penugasan &amp; Proyek</span></a>
+<a href="Review.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h11a2 2 0 012 2v4"></path><path d="M4 5v14h7"></path><path d="M7 9h6M7 13h3"></path><path d="M14 17l2 2 4-4"></path></svg><span style="flex-grow: 1">Review &amp; Revisi</span></a>
+<a href="Permintaan.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13h5l1.5 3h5l1.5-3h5"></path><path d="M5.5 5h13l2.5 8v6H3v-6l2.5-8z"></path></svg><span style="flex-grow: 1">Permintaan</span><span style="min-width: 22px; height: 22px; border-radius: 11px; background: #C2410C; color: #FFFFFF; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; padding: 0 6px; box-sizing: border-box">4</span></a>
+<a href="Kehadiran.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"></circle><path d="M12 8v4l3 2"></path></svg><span style="flex-grow: 1">Kehadiran &amp; Cuti</span></a>
+</div>
+<div style="display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 11px; font-weight: 800; letter-spacing: 0.08em; color: #5B6573; padding: 0 12px 4px">UNIT BISNIS</span>
+<a href="Target.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"></circle><circle cx="12" cy="12" r="4"></circle><circle cx="12" cy="12" r="0.8"></circle></svg><span style="flex-grow: 1">Target Unit</span></a>
+<a href="Omzet.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 20V11M11 20V5M17 20v-7M3 20h18"></path></svg><span style="flex-grow: 1">Omzet Unit</span></a>
+<a href="Evaluasi.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6v3H9z"></path><path d="M7 4.5H5V21h14V4.5h-2"></path><path d="M9 14l2 2 4-4"></path></svg><span style="flex-grow: 1">Evaluasi &amp; Keputusan</span></a>
+<a href="Liga.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4h8v5a4 4 0 01-8 0V4z"></path><path d="M8 6H5a3 3 0 003 4M16 6h3a3 3 0 01-3 4M12 13v4M8 20h8"></path></svg><span style="flex-grow: 1">Liga Unit Bisnis</span></a>
+<a href="Laporan.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6v18h12V7l-4-4z"></path><path d="M14 3v4h4M9 13h6M9 17h6"></path></svg><span style="flex-grow: 1">Laporan &amp; Ritual</span></a>
+</div>
+<div style="display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 11px; font-weight: 800; letter-spacing: 0.08em; color: #5B6573; padding: 0 12px 4px">ORANG</span>
+<a href="Tim.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"></circle><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"></path><path d="M16 4.5a3.5 3.5 0 010 7M18 14c2 .7 3.5 2.8 3.5 6"></path></svg><span style="flex-grow: 1">Tim &amp; Peran</span></a>
+<a href="Bonus.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"></circle><path d="M12 7v10M14.5 9.5h-3.5a1.5 1.5 0 000 3h2a1.5 1.5 0 010 3H9.5"></path></svg><span style="flex-grow: 1">Performa &amp; Insentif</span></a>
+</div>
+<div style="display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 11px; font-weight: 800; letter-spacing: 0.08em; color: #5B6573; padding: 0 12px 4px">SISTEM</span>
+<a href="Library.dc.html" aria-current="page" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 700; color: #1D3149; background: #DDF5F2"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h4v16H5zM10 4h4v16h-4z"></path><path d="M15.5 5.2l3.8-1 3.2 14.6-3.8 1z"></path></svg><span style="flex-grow: 1">Library Dokumen</span></a>
+<a href="Peta.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4L3 6v14l6-2 6 2 6-2V4l-6 2-6-2z"></path><path d="M9 4v14M15 6v14"></path></svg><span style="flex-grow: 1">Peta Sistem</span></a>
+<a href="Pengaturan.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h9M17 6h3M4 12h3M11 12h9M4 18h11M19 18h1"></path><circle cx="15" cy="6" r="2"></circle><circle cx="9" cy="12" r="2"></circle><circle cx="17" cy="18" r="2"></circle></svg><span style="flex-grow: 1">Pengaturan</span></a>
+</div>
+<div style="display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 11px; font-weight: 800; letter-spacing: 0.08em; color: #5B6573; padding: 0 12px 4px">TAUTAN CEPAT</span>
+<a href="https://rentalaja-app.vercel.app/#/MgmtDashboard" target="_blank" rel="noopener" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; color: #067A70; font-weight: 700"><span style="flex-grow: 1">Dasbor omzet</span><span aria-hidden="true">↗</span></a>
+<a href="https://rentalaja-app.vercel.app/#/KeuDasbor" target="_blank" rel="noopener" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; color: #067A70; font-weight: 700"><span style="flex-grow: 1">Dasbor keuangan</span><span aria-hidden="true">↗</span></a>
+<a href="https://claude.ai/artifact/WvNPVXdsUEh1Cd8v8uYvWw" target="_blank" rel="noopener" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; color: #067A70; font-weight: 700"><span style="flex-grow: 1">Playbook unit bisnis</span><span aria-hidden="true">↗</span></a>
+</div>
+<div style="margin-top: auto; display: flex; align-items: center; gap: 10px; padding: 14px 12px 0; border-top: 1px solid #E3E6EB">
+<div aria-hidden="true" style="width: 36px; height: 36px; border-radius: 18px; background: #DDF5F2; color: #1D3149; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px">GZ</div>
+<div style="display: flex; flex-direction: column"><span style="font-weight: 600">Ghozy</span><span style="font-size: 12px; color: #5B6573">CEO · Holding</span></div>
+</div>
+</nav>
+
+<main style="flex: 999 1 560px; min-width: 0; box-sizing: border-box; padding: 28px 36px 48px; display: flex; flex-direction: column; gap: 18px">
+<header style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px">
+<div style="display: flex; flex-direction: column; gap: 4px">
+<span style="font-size: 13px; color: #5B6573; font-weight: 600">Semua deck, proposal, SOP, laporan, desain, dan draf Pokama · dirancang untuk ratusan dokumen</span>
+<h1 style="margin: 0; font-size: 30px; font-weight: 900; letter-spacing: -0.01em">Library Dokumen</h1>
+</div>
+<button type="button" onClick="{{openAdd}}" style="height: 44px; padding: 0 18px; border-radius: 10px; border: 0; background: #09BEAF; color: #1D3149; font: inherit; font-weight: 900; cursor: pointer">+ Tambah dokumen</button>
+</header>
+
+<sc-if value="{{hasMsg}}" hint-placeholder-val="{{false}}"><div role="status" style="display: flex; align-items: center; gap: 12px; background: #DDF5F2; color: #067A70; border: 1px solid #A9E4DC; border-radius: 12px; padding: 10px 12px 10px 16px; font-weight: 700"><span style="flex-grow: 1">{{msg}}</span><button type="button" onClick="{{clearMsg}}" style="height: 36px; padding: 0 12px; border-radius: 8px; border: 0; background: transparent; color: #067A70; font: inherit; font-weight: 800; cursor: pointer">Tutup</button></div></sc-if>
+<sc-if value="{{addOpen}}" hint-placeholder-val="{{false}}"><section aria-label="Tambah dokumen" style="background: #FFFFFF; border: 2px solid #09BEAF; border-radius: 16px; padding: 18px 20px; display: flex; flex-direction: column; gap: 12px"><div style="display: flex; flex-direction: column; gap: 2px"><h2 style="margin: 0; font-size: 18px; font-weight: 800">Tambah dokumen ke Library</h2><span style="font-size: 13px; color: #5B6573">Tempel tautan Google Drive, Google Slides, atau artifact. Bila judulnya sama dengan dokumen lama, versi lama otomatis jadi Arsip.</span></div><div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px"><sc-for list="{{addFields}}" as="ff" hint-placeholder-count="5"><label style="display: flex; flex-direction: column; gap: 4px; font-size: 13px; font-weight: 700; color: #3B4250">{{ff.label}}<input type="text" value="{{ff.v}}" onChange="{{ff.on}}" placeholder="{{ff.ph}}" style="height: 44px; box-sizing: border-box; border: 1px solid #D3D7DE; border-radius: 10px; padding: 0 12px; font: inherit; font-weight: 500"></label></sc-for></div><div style="display: flex; gap: 8px"><button type="button" onClick="{{addSubmit}}" style="height: 44px; padding: 0 18px; border-radius: 10px; border: 0; background: #09BEAF; color: #1D3149; font: inherit; font-weight: 900; cursor: pointer">Simpan ke Library</button><button type="button" onClick="{{addCancel}}" style="height: 44px; padding: 0 16px; border-radius: 10px; border: 1px solid #E3E6EB; background: #FFFFFF; color: #3B4250; font: inherit; font-weight: 700; cursor: pointer">Batal</button></div></section></sc-if>
+
+<section aria-label="Sinkron Google Drive" style="background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 16px; padding: 14px 16px; display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px">
+<span aria-hidden="true" style="width: 36px; height: 36px; border-radius: 10px; background: #DDF5F2; color: #067A70; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 01-14 5.3M4 12a8 8 0 0114-5.3"></path><path d="M18 3v4h-4M6 21v-4h4"></path></svg></span>
+<span style="flex: 1 1 320px; display: flex; flex-direction: column"><span style="font-weight: 800">Tersinkron dengan Google Drive · folder Pokama / Library</span><span style="font-size: 13px; color: #5B6573">{{syncText}}</span></span>
+<button type="button" onClick="{{syncNow}}" style="height: 40px; padding: 0 14px; border-radius: 10px; font: inherit; font-weight: 800; cursor: pointer; border: 1px solid #1D3149; background: #FFFFFF; color: #1D3149">Sinkron sekarang</button>
+<button type="button" aria-pressed="{{accOn}}" onClick="{{toggleAcc}}" style="height: 40px; padding: 0 14px; border-radius: 10px; font: inherit; font-weight: 800; cursor: pointer; border: 0; background: #1D3149; color: #FFFFFF">{{accText}}</button>
+</div>
+<sc-if value="{{hasPend}}" hint-placeholder-val="{{true}}">
+<div style="border-top: 1px solid #EEF0F3; padding-top: 10px; display: flex; flex-direction: column; gap: 8px">
+<span style="font-size: 12px; font-weight: 800; letter-spacing: 0.06em; color: #7A5200">FILE BARU DI DRIVE · SARAN AI UNTUK FOLDER DAN STATUS</span>
+<sc-for list="{{pend}}" as="pd" hint-placeholder-count="3">
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px; background: #FFFBF0; border: 1px solid #EED9A0; border-radius: 12px; padding: 10px 12px">
+<span style="flex: 1 1 300px; display: flex; flex-direction: column; min-width: 0"><span style="font-weight: 800">{{pd.title}}</span><span style="font-size: 12px; color: #5B6573">Diunggah {{pd.who}} · {{pd.when}} · di folder Drive "{{pd.from}}"</span></span>
+<span style="font-size: 12px; font-weight: 800; color: #7A5200; background: #FDF3D7; border-radius: 999px; padding: 4px 10px">AI: {{pd.sug}}</span>
+<button type="button" onClick="{{pd.ok}}" style="height: 40px; padding: 0 14px; border-radius: 10px; font: inherit; font-weight: 800; cursor: pointer; border: 0; background: #09BEAF; color: #1D3149">{{pd.okLabel}}</button>
+<button type="button" onClick="{{pd.skip}}" style="height: 40px; padding: 0 14px; border-radius: 10px; font: inherit; font-weight: 800; cursor: pointer; border: 1px solid #E3E6EB; background: #FFFFFF; color: #3B4250">Bukan dokumen kerja</button>
+</div>
+</sc-for>
+</div>
+</sc-if>
+<sc-if value="{{showAcc}}" hint-placeholder-val="{{false}}">
+<div style="border-top: 1px solid #EEF0F3; padding-top: 12px; display: flex; flex-direction: column; gap: 10px; overflow-x: auto">
+<span style="font-size: 13px; color: #3B4250">Library tidak menyalin file. Izin buka mengikuti Google Drive: sistem membuat grup Google per unit dan memasukkan orang sesuai perannya di Tim &amp; Peran. Karena semua masuk dengan akun Google, akses langsung ikut dan dicabut otomatis saat orang pindah unit atau keluar.</span>
+<table style="width: 100%; min-width: 860px; border-collapse: collapse">
+<thead><tr style="border-bottom: 1px solid #E3E6EB"><sc-for list="{{accHead}}" as="h" hint-placeholder-count="5"><th scope="col" style="text-align: left; padding: 8px 10px; font-size: 12px; color: #5B6573; font-weight: 800; letter-spacing: 0.06em">{{h}}</th></sc-for></tr></thead>
+<tbody><sc-for list="{{accRows}}" as="r" hint-placeholder-count="5"><tr style="border-bottom: 1px solid #EEF0F3"><th scope="row" style="text-align: left; padding: 8px 10px; font-weight: 800; white-space: nowrap">{{r.role}}</th><sc-for list="{{r.cells}}" as="c" hint-placeholder-count="4"><td style="padding: 6px 10px"><span style="font-size: 12px; font-weight: 800; padding: 3px 10px; border-radius: 999px; background: {{c.bg}}; color: {{c.fg}}; white-space: nowrap">{{c.t}}</span></td></sc-for></tr></sc-for></tbody>
+</table>
+<span style="font-size: 12px; color: #5B6573">Diatur Kepala Staf. Setiap buka dokumen Terbatas tercatat di riwayat akses.</span>
+</div>
+</sc-if>
+</section>
+
+<section aria-labelledby="pin-h" style="display: flex; flex-direction: column; gap: 8px">
+<h2 id="pin-h" style="margin: 0; font-size: 12px; font-weight: 800; letter-spacing: 0.08em; color: #5B6573">DOKUMEN INTI · WAJIB DIBACA SEMUA MANAGEMENT</h2>
+<div style="display: flex; flex-wrap: wrap; gap: 8px">
+<sc-for list="{{pins}}" as="p" hint-placeholder-count="6"><a href="{{p.url}}" target="_blank" rel="noopener" style="display: flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px 0 10px; border-radius: 10px; background: #FFFFFF; border: 1px solid #E3E6EB; text-decoration: none; color: #1F2933; font-weight: 800; font-size: 13px"><span aria-hidden="true" style="width: 8px; height: 8px; border-radius: 4px; background: {{p.dot}}"></span>{{p.title}}</a></sc-for>
+</div>
+</section>
+
+<div style="display: flex; flex-wrap: wrap; gap: 18px; align-items: flex-start">
+<aside aria-label="Folder" style="flex: 0 1 270px; min-width: 240px; background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 16px; padding: 12px; display: flex; flex-direction: column; gap: 2px">
+<button type="button" onClick="{{pickAll}}" aria-pressed="{{allOn}}" style="display: flex; justify-content: space-between; align-items: center; min-height: 40px; padding: 0 10px; border-radius: 10px; border: 0; background: {{allBg}}; color: {{allFg}}; font: inherit; font-weight: 900; cursor: pointer; text-align: left"><span>Semua dokumen</span><span>{{allCount}}</span></button>
+<sc-for list="{{tree}}" as="u" hint-placeholder-count="4">
+<div style="display: flex; flex-direction: column; margin-top: 6px">
+<button type="button" onClick="{{u.pick}}" aria-pressed="{{u.on}}" aria-expanded="{{u.open}}" style="display: flex; justify-content: space-between; align-items: center; min-height: 38px; padding: 0 10px; border-radius: 10px; border: 0; background: {{u.bg}}; color: {{u.fg}}; font: inherit; font-weight: 800; cursor: pointer; text-align: left"><span style="display: flex; align-items: center; gap: 8px"><span aria-hidden="true" style="width: 10px; height: 10px; border-radius: 3px; background: {{u.dot}}"></span>{{u.name}}</span><span style="font-weight: 700; color: {{u.cnt}}">{{u.count}}</span></button>
+<sc-if value="{{u.isOpen}}" hint-placeholder-val="{{false}}">
+<sc-for list="{{u.cats}}" as="c" hint-placeholder-count="5"><button type="button" onClick="{{c.pick}}" aria-pressed="{{c.on}}" style="display: flex; justify-content: space-between; align-items: center; min-height: 34px; padding: 0 10px 0 28px; border-radius: 8px; border: 0; background: {{c.bg}}; color: {{c.fg}}; font: inherit; font-size: 13px; font-weight: 700; cursor: pointer; text-align: left"><span>{{c.name}}</span><span>{{c.count}}</span></button></sc-for>
+</sc-if>
+</div>
+</sc-for>
+</aside>
+
+<section aria-label="Daftar dokumen" style="flex: 1 1 640px; min-width: 0; background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 16px; display: flex; flex-direction: column">
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 14px 16px; border-bottom: 1px solid #EEF0F3">
+<span style="font-weight: 900; font-size: 16px; margin-right: auto">{{crumb}}</span>
+<label style="display: flex; align-items: center; gap: 8px; height: 40px; width: 280px; max-width: 100%; box-sizing: border-box; border: 1px solid #D3D7DE; border-radius: 10px; padding: 0 12px">
+<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5B6573" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg>
+<input type="search" value="{{q}}" onInput="{{onQ}}" onChange="{{onQ}}" placeholder="Cari di semua dokumen" aria-label="Cari dokumen" style="flex-grow: 1; border: 0; outline: 0; font: inherit; background: transparent">
+</label>
+<div role="group" aria-label="Status" style="display: flex; gap: 4px">
+<sc-for list="{{stBtns}}" as="b" hint-placeholder-count="4"><button type="button" aria-pressed="{{b.on}}" onClick="{{b.pick}}" style="height: 36px; padding: 0 10px; border-radius: 8px; border: 1px solid #E3E6EB; background: {{b.bg}}; color: {{b.fg}}; font: inherit; font-size: 13px; font-weight: 700; cursor: pointer">{{b.label}}</button></sc-for>
+</div>
+<button type="button" onClick="{{toggleSort}}" style="height: 36px; padding: 0 10px; border-radius: 8px; border: 1px solid #E3E6EB; background: #FFFFFF; color: #3B4250; font: inherit; font-size: 13px; font-weight: 700; cursor: pointer">Urut: {{sortText}}</button>
+</div>
+<table style="width: 100%; border-collapse: collapse">
+<thead><tr style="border-bottom: 1px solid #E3E6EB">
+<th scope="col" style="text-align: left; padding: 10px 16px; font-size: 11px; color: #5B6573; font-weight: 800; letter-spacing: 0.06em">JUDUL</th>
+<th scope="col" style="text-align: left; padding: 10px 8px; font-size: 11px; color: #5B6573; font-weight: 800; letter-spacing: 0.06em; width: 110px">STATUS</th>
+<th scope="col" style="text-align: left; padding: 10px 8px; font-size: 11px; color: #5B6573; font-weight: 800; letter-spacing: 0.06em; width: 110px">DIPERBARUI</th>
+<th scope="col" style="text-align: right; padding: 10px 16px 10px 8px; font-size: 11px; color: #5B6573; font-weight: 800; letter-spacing: 0.06em; width: 120px">BUKA</th>
+</tr></thead>
+<tbody>
+<sc-for list="{{rows}}" as="r" hint-placeholder-count="20">
+<tr style="border-bottom: 1px solid #F3F5F8">
+<td style="padding: 8px 16px"><span style="display: flex; align-items: center; gap: 10px"><span aria-hidden="true" style="width: 30px; height: 30px; flex-shrink: 0; border-radius: 8px; background: {{r.iconBg}}; color: {{r.iconFg}}; font-size: 10px; font-weight: 900; display: flex; align-items: center; justify-content: center">{{r.abbr}}</span><span style="display: flex; flex-direction: column; min-width: 0"><span style="font-weight: 700">{{r.title}}</span><span style="font-size: 12px; color: #5B6573">{{r.where}} · {{r.type}}</span></span></span></td>
+<td style="padding: 8px"><span style="font-size: 11px; font-weight: 800; padding: 3px 9px; border-radius: 999px; background: {{r.stBg}}; color: {{r.stFg}}; white-space: nowrap">{{r.status}}</span></td>
+<td style="padding: 8px; font-size: 13px; color: #3B4250; white-space: nowrap">{{r.date}}</td>
+<td style="padding: 8px 16px 8px 8px; text-align: right"><a href="{{r.url}}" target="_blank" rel="noopener" style="font-size: 13px; font-weight: 800; color: {{r.openFg}}; text-decoration: none; white-space: nowrap">{{r.open}}</a></td>
+</tr>
+</sc-for>
+</tbody>
+</table>
+<sc-if value="{{empty}}" hint-placeholder-val="{{false}}"><p style="margin: 0; padding: 18px 16px; color: #5B6573">Tidak ada dokumen yang cocok. Coba kata lain, pilih folder lain, atau pilih status "Semua".</p></sc-if>
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; padding: 12px 16px">
+<span style="font-size: 13px; color: #5B6573">{{showing}}</span>
+<sc-if value="{{hasMore}}" hint-placeholder-val="{{true}}"><button type="button" onClick="{{more}}" style="height: 40px; padding: 0 16px; border-radius: 10px; border: 1px solid #1D3149; background: #FFFFFF; color: #1D3149; font: inherit; font-weight: 800; cursor: pointer">Tampilkan 20 lagi</button></sc-if>
+</div>
+</section>
+</div>
+
+<p style="margin: 0; font-size: 13px; color: #5B6573"><strong style="color: #1F2933">Aturan:</strong> satu versi Final per dokumen, versi lama jadi Arsip · nama seragam Unit · Judul · Bulan Tahun · bertanda Terbatas hanya dibuka CEO dan Keuangan · Kepala Staf memastikan dokumen baru masuk ke sini.</p>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1996}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { pendDone: {}, synced: '23.05', showAcc: false, q: '', unit: 'ALL', cat: 'ALL', st: 'aktif', sort: 'new', limit: 20, add: false, fv: {}, extra: [], msg: '' };
+  }
+  renderVals() {
+    const D = [["Draft Strategi Rentalaja 2027", "strategi", "RA", "Dokumen", "Draf", "29 Sep 2026", "https://claude.ai/artifact/XnyR47awA5FePqejGVGcnx", 0], ["Strategi Rentalaja 2027 (deck)", "strategi", "RA", "Deck", "Final", "29 Sep 2026", "https://docs.google.com/presentation/d/1Cs5luB4H0mXvCcHQ6L2K6dEM6b4jzw_OnPDcQhcryGo/edit", 0], ["Strategi Rentalaja 2027 · Ringkas", "strategi", "RA", "Deck", "Final", "7 Okt 2026", "https://docs.google.com/presentation/d/1Yff0a1O2pu4dgtsTv8x1kwuum8dn9Rj9ko5dKMfAVsA/edit", 0], ["Rentalaja Way · Framework Induk", "strategi", "RA", "Dokumen", "Final", "29 Sep 2026", "https://claude.ai/artifact/2YT856aoqALSsP7ra2RZZN", 0], ["Langkah Lanjutan Penyehatan Rentalaja", "strategi", "RA", "Dokumen", "Draf", "23 Okt 2026", "https://claude.ai/artifact/2Sa7SpQ1Gzt645NrhKWZSj", 0], ["Strategi Marketing Digital Rentalaja 2026–2027", "strategi", "RA", "Dokumen", "Final", "29 Sep 2026", "https://claude.ai/artifact/1Vf5zXwN3UyPSEo27SHSJP", 0], ["Strategi Marketing Digital Rentalaja (versi awal)", "strategi", "RA", "Dokumen", "Arsip", "29 Sep 2026", "https://claude.ai/artifact/18RnPaSqcG35sagtvdUwdg", 0], ["Playbook Unit Bisnis POKAMA", "strategi", "HQ", "Dokumen", "Final", "25 Okt 2026", "https://claude.ai/artifact/WvNPVXdsUEh1Cd8v8uYvWw", 0], ["Wisata Garut · Proposal Restrukturisasi", "strategi", "WG", "Deck", "Final", "3 Okt 2026", "https://claude.ai/artifact/XqMLvUeftGsriWe9T2HFnd", 0], ["Proses Bisnis TripinAja", "strategi", "WG", "Dokumen", "Draf", "24 Okt 2026", "https://claude.ai/artifact/Ga8c6pn7Pj3K69BXaT5cz5", 0], ["Proposal Investasi Laptopaja", "proposal", "NA", "Deck", "Draf", "23 Okt 2026", "https://claude.ai/artifact/Uh9qRGgrTrp7xZE7NgsBnC", 0], ["Rentalaja Invest · Semua Orang Bisa Punya Aset Rental", "proposal", "RA", "Deck", "Final", "30 Sep 2026", "https://claude.ai/artifact/Adzbw1jCdvKKd2pJ26Ezi2", 0], ["Wisata Garut · Laporan Investor 2026", "proposal", "WG", "Deck", "Final", "30 Sep 2026", "https://claude.ai/artifact/YS1WTSCuV11smQAoYg54Mx", 0], ["Laporan Perkembangan Usaha Wisata Garut", "proposal", "WG", "Dokumen", "Final", "29 Sep 2026", "https://claude.ai/artifact/91TzGWxPRXrXFLrPVvQJ8w", 0], ["Proposal Kemitraan Wisata Bandung × TripinAja", "proposal", "WG", "Deck", "Final", "24 Okt 2026", "https://claude.ai/artifact/VturxKajQYh19MAr9JStXg", 0], ["Proposal Wisata Bandung × TripinAja (versi 15 Okt)", "proposal", "WG", "Deck", "Arsip", "15 Okt 2026", "https://claude.ai/artifact/1qq7L3hughN9WnwoFeai6h", 0], ["Proposal Kemitraan Wisata Bandung × TripinAja (versi 13 Okt)", "proposal", "WG", "Deck", "Arsip", "13 Okt 2026", "https://claude.ai/artifact/EojGX2yZ8NY5p77YSK7xn3", 0], ["Pitch Deck WMP · Final", "proposal", "RA", "PDF", "Arsip", "Nov 2023", "https://drive.google.com/file/d/1QenkybJZVxV8fYn2mYNSdTGFAMe6oi0K/view", 0], ["Pitch Deck GHB", "proposal", "RA", "PDF", "Arsip", "Feb 2024", "https://drive.google.com/file/d/18o6EGl-HNa14AM2FqKabHGmOxpfFVsPH/view", 0], ["Portofolio Rentalaja", "proposal", "RA", "PDF", "Arsip", "Feb 2024", "https://drive.google.com/file/d/1CLv88upal4RxE2Q13n56kcyjGn6e0FXx/view", 0], ["Profil Rentalaja", "proposal", "RA", "PDF", "Arsip", "Feb 2024", "https://drive.google.com/file/d/1vOmWezCG0RDzVMgVzUjOciiQcz3LSi_M/view", 0], ["Investment Teaser", "proposal", "RA", "PDF", "Arsip", "Jun 2024", "https://drive.google.com/file/d/1Qq_LNJ7j7kk58PIFijSfeN2qDawjwXvM/view", 0], ["Format Pitch Deck (template)", "proposal", "HQ", "Deck", "Template", "Jun 2024", "https://docs.google.com/presentation/d/1O-lcXFOLxFHd5BP_TjomD4SM0SwQjC5E1R65Y_SXgIc/edit", 0], ["Aturan Main Sistem Kerja Pokama", "sop", "HQ", "Dokumen", "Draf", "26 Okt 2026", "https://claude.ai/artifact/FFZxUJMpCWSsGrxjQybrf4", 0], ["SOP Operasional Rentalaja", "sop", "RA", "Dokumen", "Final", "24 Okt 2026", "https://claude.ai/artifact/9H4vV5p35fem3onXPGr1mc", 0], ["SOP Housekeeper Villa · Rentalaja", "sop", "RA", "Dokumen", "Final", "30 Sep 2026", "https://claude.ai/artifact/RDuhLDvqBSLAQz9xg4AyA9", 0], ["Syarat dan Ketentuan Rentalaja", "sop", "RA", "Dokumen", "Final", "20 Okt 2026", "https://claude.ai/artifact/JtFY5KfmkbyPCLAJpCNuyr", 0], ["Training Manajemen Operasional · Touch Point & Pelayanan", "sop", "RA", "Deck", "Final", "5 Okt 2026", "https://claude.ai/artifact/7ZtVXbzpwad8KsQfBjw34o", 0], ["Training for Trainer · Supervisor Operasional Rentalaja", "sop", "RA", "Deck", "Final", "5 Okt 2026", "https://claude.ai/artifact/YFhvTxpUiuWDgBrkVhRip4", 0], ["Restrukturisasi Tim Teknis Rentalaja", "sop", "RA", "Dokumen", "Final", "7 Okt 2026", "https://claude.ai/artifact/K4PqEBKnknCrJvBCNZbEjM", 0], ["Sosialisasi Uji Coba TripinAja", "sop", "WG", "Deck", "Draf", "25 Okt 2026", "https://claude.ai/artifact/L6tYrEN5YrTsX47HBcukQN", 0], ["Paket Uji Coba TripinAja", "sop", "WG", "Dokumen", "Draf", "25 Okt 2026", "https://claude.ai/artifact/GXriJ5279yZmACNda6yqQN", 0], ["Briefing Crew · Workshop IKBI PTPN III", "sop", "WG", "Dokumen", "Arsip", "3 Okt 2026", "https://claude.ai/artifact/7UX2uQMdnFkjFxoFKzvQ93", 0], ["Panduan Peserta · Workshop Tour IKBI PTPN III", "sop", "WG", "Dokumen", "Arsip", "3 Okt 2026", "https://claude.ai/artifact/TZmtUPDmu9QDZeheFWgBUU", 0], ["Briefing Operasional Crew · Garut Trip SMAN 6 Jakarta", "sop", "WG", "Dokumen", "Arsip", "3 Okt 2026", "https://claude.ai/artifact/9JE3qGZbLkJ4ykTnxEbotF", 0], ["Guidebook Peserta · Garut Trip SMAN 6 Jakarta", "sop", "WG", "Dokumen", "Arsip", "3 Okt 2026", "https://claude.ai/artifact/L6BjbkHWpaT9afZmtmZ2uB", 0], ["Financial Governance POKAMA", "keu", "HQ", "Dokumen", "Final", "25 Okt 2026", "https://claude.ai/artifact/CKyxHeUAkvP1YB1UGG86mu", 1], ["Pedoman Keuangan POKAMA", "keu", "HQ", "Dokumen", "Final", "29 Sep 2026", "https://claude.ai/artifact/EeDCQ2oVqnygVh18rbsihA", 1], ["Keuangan Kita, Dibuat Sederhana", "keu", "HQ", "Deck", "Final", "29 Sep 2026", "https://claude.ai/artifact/LYr1FDNsc5pvddtmvyqAPz", 0], ["Laba Rugi Internal Pokama Jan–Sep 2026", "keu", "HQ", "Sheet", "Final", "Okt 2026", "https://docs.google.com/spreadsheets/d/1M2H8KpO0q2qTj7R4oNSkX3khw1ApsbNJBy3r3SIqx8E/edit", 1], ["CF PT Pokama", "keu", "HQ", "Sheet", "Final", "Okt 2026", "https://docs.google.com/spreadsheets/d/1eIuqwhd4fiSkdPUlje8-MAOs-VHFOoiocVnsKFFN6yk/edit", 1], ["Analisis Arus Kas Rentalaja", "keu", "RA", "Dokumen", "Final", "30 Sep 2026", "https://claude.ai/artifact/7tdGUWGdbq8pRMHA8cDhLz", 1], ["Simulasi Unit Motor Garut–Bandung", "keu", "RA", "Dokumen", "Final", "30 Sep 2026", "https://claude.ai/artifact/U21y6jDUjLPc8w1Dn1MUSp", 0], ["Manajemen Aset Rentalaja", "keu", "RA", "Dokumen", "Final", "29 Sep 2026", "https://claude.ai/artifact/HKh5C4er2JDS3BXATG6eid", 0], ["Rentalaja Control Room · 13 Sep 2026", "keu", "RA", "PDF", "Arsip", "13 Sep 2026", "https://drive.google.com/file/d/1UizD6VyQ8_B8M2jUlx9-_OhbZxUvaiLV/view", 1], ["Notulensi Rapat Rentalaja · Evaluasi Pasar & Cabang Ciputat", "rapat", "RA", "Dokumen", "Final", "22 Okt 2026", "https://claude.ai/artifact/B7eYL6XBaz6CBYEfwQmV7x", 0], ["Notulensi Rapat Manajemen Wisata Garut", "rapat", "WG", "Dokumen", "Final", "20 Okt 2026", "https://claude.ai/artifact/75NrSzh1oY8v9tCLC2CqJv", 0], ["What To Do Bang Wira", "rapat", "WG", "Dokumen", "Final", "14 Okt 2026", "https://claude.ai/artifact/C5DJDwihN5Rv2khpKnHYHZ", 0], ["Kalender Konten 30 Hari · Wisata Garut November 2026", "rapat", "WG", "Dokumen", "Final", "24 Okt 2026", "https://claude.ai/artifact/Gk9UE2jmiiTBWQ8sKPLgvE", 0], ["Pokama Work System (desain sistem ini)", "desain", "HQ", "Desain", "Draf", "26 Okt 2026", "https://claude.ai/artifact/DLcZe37XpMrYqTjz4brsot", 0], ["Rentalaja Web App · UI/UX", "desain", "RA", "Desain", "Draf", "23 Okt 2026", "https://claude.ai/artifact/KUw3CrNp73a9mrZDScLns7", 0], ["Blueprint Web App Rentalaja", "desain", "RA", "Dokumen", "Final", "17 Okt 2026", "https://claude.ai/artifact/JawBRAqGpg6thy4NKPWjMW", 0], ["Serah-terima Developer · Rentalaja Web App", "desain", "RA", "Dokumen", "Final", "18 Okt 2026", "https://claude.ai/artifact/QVE2wBpYPw2ZCNeAnrPnVj", 0], ["Rentalaja Asset Management · Prototype", "desain", "RA", "Desain", "Draf", "5 Okt 2026", "https://claude.ai/artifact/E5rLxqHx7LG265NFYjEi1F", 0], ["Link Aplikasi Rentalaja", "desain", "RA", "Dokumen", "Final", "24 Okt 2026", "https://claude.ai/artifact/HPTcy8SmgH953FpNMJmhxv", 0], ["Maskot RentalAja · Jaja si Kancil", "desain", "RA", "Desain", "Final", "16 Okt 2026", "https://claude.ai/artifact/PSFSkBzMEQe3Sqqi53kQ37", 0], ["Kaos Rentalaja", "desain", "RA", "Desain", "Final", "4 Okt 2026", "https://claude.ai/artifact/EscLfJ3Xrs7UsiweTeicvq", 0], ["TripinAja App UI", "desain", "WG", "Desain", "Draf", "26 Okt 2026", "https://claude.ai/artifact/8b28pY6em1mva35ckUqL8c", 0], ["Peta Ilustrasi Garut", "desain", "WG", "Desain", "Final", "16 Okt 2026", "https://claude.ai/artifact/Cun1R4v5Y9Ap7LqBGYPEwC", 0], ["Niagaaja UI/UX", "desain", "NA", "Desain", "Draf", "23 Okt 2026", "https://claude.ai/artifact/EDw7j18SB5PQZk6oSPutdH", 0], ["NiagaAja Design System", "desain", "NA", "Desain", "Final", "21 Okt 2026", "https://claude.ai/artifact/PnfjKRkTu1jtuRgCFbVx3A", 0], ["Bank Ilustrasi", "desain", "HQ", "Desain", "Final", "15 Okt 2026", "https://claude.ai/artifact/DdFZYccmYQWaFSCCv4UEj2", 0], ["Studi Kelayakan Glamping Guntur", "strategi", "RA", "Dokumen", "Draf", "24 Okt 2026", "https://claude.ai/artifact/Rkmt1QvzP2vFCsB8ZvvECP", 0], ["Benchmark Glamping · Lahan Citiis Gunung Guntur", "strategi", "RA", "Dokumen", "Final", "23 Okt 2026", "https://claude.ai/artifact/3fVxCoLv6vjNUYgB1wCC4p", 0], ["Akta Rentalaja", "legal", "RA", "PDF", "Final", "Feb 2024", "https://drive.google.com/file/d/128Pr2cWSRPYg6ebCC7H2DIDp5dj3nln8/view", 1], ["NIB Rentalaja", "legal", "RA", "PDF", "Final", "Nov 2023", "https://drive.google.com/file/d/1u-5iGMlRK8PIPUi6ErEKLHXt1cB3T9J3/view", 1], ["Laba Rugi Rentalaja (PDF)", "legal", "RA", "PDF", "Arsip", "Feb 2024", "https://drive.google.com/file/d/1uWtHctfIcuYLeiH3K05A38f06dFD6j1b/view", 1], ["Neraca Rentalaja (PDF)", "legal", "RA", "PDF", "Arsip", "Feb 2024", "https://drive.google.com/file/d/1KeMCCHdFtDdBYUQqGFYjtQXevoVafxu0/view", 1]];
+    const UN = { HQ: ['Holding', '#1D3149'], RA: ['Rentalaja', '#09BEAF'], WG: ['TripinAja', '#0E7C66'], NA: ['Niagaaja', '#B45309'] };
+    const CAT = { strategi: 'Strategi & rencana', proposal: 'Proposal & deck investor', sop: 'SOP, panduan & training', keu: 'Keuangan', rapat: 'Notulensi & rencana kerja', desain: 'Desain, aplikasi & brand', legal: 'Legal & perusahaan' };
+    const ST = { Final: ['#DDF5F2', '#067A70'], Draf: ['#FDF3D7', '#7A5200'], Arsip: ['#EEF0F3', '#5B6573'], Template: ['#E5EEF9', '#1E5AA8'] };
+    const TY = { Deck: ['SLD', '#FDF3D7', '#7A5200'], Dokumen: ['DOC', '#E5EEF9', '#1E5AA8'], Sheet: ['XLS', '#DDF5F2', '#067A70'], PDF: ['PDF', '#FCEBDD', '#9A3F0A'], Desain: ['UI', '#EEF0F3', '#3B4250'] };
+    const MO = { Jan: 1, Feb: 2, Mar: 3, Apr: 4, Mei: 5, Jun: 6, Jul: 7, Agu: 8, Sep: 9, Okt: 10, Nov: 11, Des: 12 };
+    const key = (d) => { const p = String(d).split(' '); if (p.length === 3) return +p[2] * 10000 + (MO[p[1]] || 0) * 100 + +p[0]; if (p.length === 2) return +p[1] * 10000 + (MO[p[0]] || 0) * 100; return 99999999; };
+    const { q, unit, cat, st, sort, limit } = this.state;
+    const all = D.concat(this.state.extra);
+    const stOk = (d) => st === 'all' ? true : st === 'aktif' ? d[4] !== 'Arsip' : d[4] === st;
+    const qq = q.trim().toLowerCase();
+    const inFolder = (d) => (unit === 'ALL' || d[2] === unit) && (cat === 'ALL' || d[1] === cat);
+    const list = all.filter(d => inFolder(d) && stOk(d) && (!qq || d[0].toLowerCase().includes(qq)));
+    list.sort((a, b) => sort === 'new' ? key(b[5]) - key(a[5]) : a[0].localeCompare(b[0], 'id'));
+    const rows = list.slice(0, limit).map(d => ({
+      title: d[0], where: UN[d[2]][0] + ' · ' + CAT[d[1]], type: d[3], abbr: TY[d[3]] ? TY[d[3]][0] : 'DOC', iconBg: TY[d[3]] ? TY[d[3]][1] : '#EEF0F3', iconFg: TY[d[3]] ? TY[d[3]][2] : '#3B4250',
+      status: d[7] ? d[4] + ' · Terbatas' : d[4], stBg: (ST[d[4]] || ST.Draf)[0], stFg: (ST[d[4]] || ST.Draf)[1], date: d[5],
+      url: d[6] || 'Library.dc.html', open: d[7] ? 'CEO & Keuangan' : 'Buka ↗', openFg: d[7] ? '#9A3F0A' : '#067A70'
+    }));
+    const vis = (d) => stOk(d);
+    const tree = Object.keys(UN).map(u => {
+      const inU = all.filter(d => d[2] === u && vis(d));
+      const isOpen = unit === u;
+      return {
+        name: UN[u][0], dot: UN[u][1], count: inU.length, isOpen, open: isOpen ? 'true' : 'false', on: isOpen && cat === 'ALL' ? 'true' : 'false',
+        bg: isOpen && cat === 'ALL' ? '#1D3149' : 'transparent', fg: isOpen && cat === 'ALL' ? '#FFFFFF' : '#1F2933', cnt: isOpen && cat === 'ALL' ? '#C5D3E3' : '#8A94A3',
+        pick: () => this.setState({ unit: u, cat: 'ALL', limit: 20 }),
+        cats: Object.keys(CAT).map(c => ({ c, n: inU.filter(d => d[1] === c).length })).filter(x => x.n).map(({ c, n }) => ({
+          name: CAT[c], count: n, on: cat === c ? 'true' : 'false', bg: cat === c ? '#DDF5F2' : 'transparent', fg: cat === c ? '#067A70' : '#3B4250',
+          pick: () => this.setState({ cat: c, limit: 20 })
+        }))
+      };
+    });
+    const PIN = ['Strategi Rentalaja 2027 · Ringkas', 'Playbook Unit Bisnis POKAMA', 'Aturan Main Sistem Kerja Pokama', 'SOP Operasional Rentalaja', 'Financial Governance POKAMA', 'Proses Bisnis TripinAja', 'Proposal Investasi Laptopaja'];
+    const pins = PIN.map(t => all.find(d => d[0] === t)).filter(Boolean).map(d => ({ title: d[0], url: d[6], dot: UN[d[2]][1] }));
+    const stBtns = [['aktif', 'Aktif'], ['Draf', 'Draf'], ['Arsip', 'Arsip'], ['all', 'Semua']].map(([k, label]) => ({
+      label, on: st === k ? 'true' : 'false', bg: st === k ? '#1D3149' : '#FFFFFF', fg: st === k ? '#FFFFFF' : '#3B4250', pick: () => this.setState({ st: k, limit: 20 })
+    }));
+    const FL = [['Judul', 'Unit · Judul · Bulan Tahun'], ['Unit', 'Holding / Rentalaja / TripinAja / Niagaaja'], ['Kategori', 'Strategi / Proposal / SOP / Keuangan / Notulensi / Desain / Legal'], ['Jenis', 'Deck / Dokumen / Sheet / PDF / Desain'], ['Tautan', 'https://…']];
+    const fv = this.state.fv;
+    const UK = { holding: 'HQ', rentalaja: 'RA', tripinaja: 'WG', niagaaja: 'NA' };
+    const CK = { strategi: 'strategi', proposal: 'proposal', sop: 'sop', keuangan: 'keu', notulensi: 'rapat', desain: 'desain', legal: 'legal' };
+    const PEND = [
+      ['p1', 'Rentalaja · Harga sewa akhir tahun · Des 2026', 'Eja', '22.40', 'Upload Eja', ['strategi', 'RA', 'Presentasi', 'Draf'], 'Rentalaja / Strategi · Draf'],
+      ['p2', 'TripinAja · Kontrak villa Halaman Belakang Kebon', 'Wiranata', '21.15', 'TripinAja', ['legal', 'WG', 'Dokumen', 'Draf'], 'TripinAja / Legal · Draf'],
+      ['p3', 'foto KTP pelanggan 26-10.jpg', 'Ajri', '19.02', 'Upload Ajri', null, 'Bukan dokumen kerja · jangan dimasukkan']
+    ];
+    const pd0 = this.state.pendDone;
+    const pend = PEND.filter(p => !pd0[p[0]]).map(([id, title, who, when, from, row, sug]) => ({
+      title, who, when, from, sug, okLabel: row ? 'Masukkan' : 'Ikuti saran AI',
+      ok: () => this.setState({ pendDone: { ...pd0, [id]: 1 }, extra: row ? this.state.extra.concat([[title, row[0], row[1], row[2], row[3], '26 Okt 2026', '', 0]]) : this.state.extra, msg: row ? '"' + title + '" masuk Library di ' + sug + '.' : 'File tidak dimasukkan. Data pribadi pelanggan disimpan di Rentalaja App, bukan Library.' }),
+      skip: () => this.setState({ pendDone: { ...pd0, [id]: 1 }, msg: '"' + title + '" dilewati dan tidak tampil di Library.' })
+    }));
+    const AC = { full: ['Buka & ubah', '#DDF5F2', '#067A70'], read: ['Hanya baca', '#E5EEF9', '#1E5AA8'], no: ['Tidak bisa', '#F3F5F8', '#8A94A3'], own: ['Unitnya saja', '#FDF3D7', '#7A5200'] };
+    const ACC = [['CEO', 'full', 'full', 'full', 'full'], ['Keuangan', 'full', 'read', 'full', 'full'], ['Kepala Staf', 'full', 'full', 'read', 'no'], ['Leader unit', 'read', 'own', 'own', 'no'], ['Staf management', 'read', 'own', 'no', 'no']];
+    const isAll = unit === 'ALL';
+    return {
+      syncText: 'Terakhir ' + this.state.synced + ' · otomatis tiap 15 menit · file baru di folder Drive langsung masuk antrean di bawah', syncNow: () => this.setState({ synced: '23.20', msg: 'Sinkron selesai. Tidak ada perubahan baru sejak 23.05.' }),
+      hasPend: pend.length > 0, pend,
+      showAcc: this.state.showAcc, accOn: this.state.showAcc ? 'true' : 'false', accText: this.state.showAcc ? 'Tutup izin akses' : 'Izin akses', toggleAcc: () => this.setState({ showAcc: !this.state.showAcc }),
+      accHead: ['PERAN', 'DOKUMEN INTI & HOLDING', 'DOKUMEN UNIT', 'KEUANGAN', 'BERTANDA TERBATAS'],
+      accRows: ACC.map(([role, ...c]) => ({ role, cells: c.map(k => ({ t: AC[k][0], bg: AC[k][1], fg: AC[k][2] })) })),
+      pins, tree, rows, empty: rows.length === 0, stBtns,
+      crumb: (isAll ? 'Semua dokumen' : UN[unit][0] + (cat !== 'ALL' ? ' / ' + CAT[cat] : '')),
+      allCount: all.filter(vis).length, allOn: isAll ? 'true' : 'false', allBg: isAll ? '#1D3149' : 'transparent', allFg: isAll ? '#FFFFFF' : '#1F2933',
+      pickAll: () => this.setState({ unit: 'ALL', cat: 'ALL', limit: 20 }),
+      q, onQ: (e) => this.setState({ q: e.target.value, limit: 20 }),
+      sortText: sort === 'new' ? 'terbaru' : 'A–Z', toggleSort: () => this.setState({ sort: sort === 'new' ? 'az' : 'new' }),
+      showing: 'Menampilkan ' + rows.length + ' dari ' + list.length + ' dokumen', hasMore: list.length > rows.length, more: () => this.setState({ limit: limit + 20 }),
+      hasMsg: !!this.state.msg, msg: this.state.msg, clearMsg: () => this.setState({ msg: '' }),
+      addOpen: this.state.add, openAdd: () => this.setState({ add: true, fv: {} }), addCancel: () => this.setState({ add: false }),
+      addFields: FL.map(([label, ph], i) => ({ label, ph, v: fv[i] || '', on: (e) => this.setState({ fv: { ...this.state.fv, [i]: e.target.value } }) })),
+      addSubmit: () => {
+        const t = (fv[0] || '').trim() || 'Dokumen baru';
+        const u = UK[(fv[1] || '').trim().toLowerCase()] || 'HQ';
+        const c = CK[(fv[2] || '').trim().toLowerCase().split(' ')[0]] || 'strategi';
+        const row = [t, c, u, (fv[3] || 'Dokumen').trim(), 'Draf', '26 Okt 2026', (fv[4] || '').trim(), 0];
+        this.setState({ extra: this.state.extra.concat([row]), add: false, msg: '"' + t + '" masuk Library sebagai Draf.' });
+      }
+    };
+  }
+}
+</script>
+</body>
+</html>

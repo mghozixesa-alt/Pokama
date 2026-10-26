@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<title>Masuk — Pokama</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F3F5F8}
+a{color:#1D3149}a:hover{color:#0F1D2E}
+</style>
+</helmet>
+<div style="min-height: 100vh; display: flex; flex-wrap: wrap; background: #F3F5F8; color: #1F2933; font-family: 'Nunito', system-ui, sans-serif; font-size: 14px; line-height: 1.45">
+
+<section aria-label="Masuk" style="flex: 1 1 420px; box-sizing: border-box; background: #FFFFFF; border-right: 1px solid #E3E6EB; padding: 56px 48px; display: flex; flex-direction: column; gap: 28px">
+<div style="display: flex; flex-direction: column; gap: 10px">
+<img src="/_blob/16ede3a1e0e10a1302aceed526ba5356" alt="RentalAja" style="width: 170px; height: auto">
+<span style="font-size: 13px; color: #5B6573; font-weight: 700">Pokama · Sistem Kerja Harian</span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<h1 style="margin: 0; font-size: 28px; font-weight: 900">Masuk</h1>
+<span style="color: #5B6573">Satu akun untuk semua: Sistem Kerja Pokama dan Rentalaja App.</span>
+</div>
+
+<sc-if value="{{step1}}" hint-placeholder-val="{{true}}">
+<div style="display: flex; flex-direction: column; gap: 14px">
+<button type="button" onClick="{{viaGoogle}}" style="height: 50px; border-radius: 12px; border: 1px solid #1D3149; background: #FFFFFF; color: #1D3149; font: inherit; font-size: 15px; font-weight: 900; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="M3 7l9 6 9-6"></path></svg>Masuk dengan akun Google</button>
+<div style="display: flex; align-items: center; gap: 10px; color: #8A94A3; font-size: 12px; font-weight: 700"><span style="flex-grow: 1; height: 1px; background: #E3E6EB"></span>atau dengan username<span style="flex-grow: 1; height: 1px; background: #E3E6EB"></span></div>
+<label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 800; color: #3B4250">Username
+<input type="text" autocomplete="username" value="{{user}}" onChange="{{onUser}}" placeholder="misalnya wiranata" style="height: 48px; box-sizing: border-box; border: 1px solid #D3D7DE; border-radius: 12px; padding: 0 14px; font: inherit; font-size: 15px">
+</label>
+<label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 800; color: #3B4250">Password
+<input type="password" autocomplete="current-password" placeholder="••••••••" style="height: 48px; box-sizing: border-box; border: 1px solid #D3D7DE; border-radius: 12px; padding: 0 14px; font: inherit; font-size: 15px">
+</label>
+<button type="button" onClick="{{viaPass}}" style="height: 48px; border-radius: 12px; border: 0; background: #09BEAF; color: #1D3149; font: inherit; font-size: 15px; font-weight: 900; cursor: pointer">Masuk</button>
+<div style="display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap">
+<button type="button" onClick="{{viaWa}}" style="height: 40px; padding: 0; border: 0; background: transparent; color: #067A70; font: inherit; font-weight: 800; cursor: pointer">Masuk dengan kode WhatsApp</button>
+<button type="button" onClick="{{forgot}}" style="height: 40px; padding: 0; border: 0; background: transparent; color: #5B6573; font: inherit; font-weight: 700; cursor: pointer">Lupa password?</button>
+</div>
+<sc-if value="{{forgotOn}}" hint-placeholder-val="{{false}}"><p style="margin: 0; font-size: 13px; color: #067A70; background: #DDF5F2; border-radius: 10px; padding: 10px 12px">Tautan reset dikirim ke email Google dan WhatsApp yang terdaftar.</p></sc-if>
+</div>
+</sc-if>
+<sc-if value="{{stepWa}}" hint-placeholder-val="{{false}}">
+<div style="display: flex; flex-direction: column; gap: 14px">
+<label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 800; color: #3B4250">Nomor WhatsApp
+<span style="display: flex; align-items: center; height: 48px; border: 1px solid #D3D7DE; border-radius: 12px; overflow: hidden"><span style="padding: 0 12px; height: 100%; display: flex; align-items: center; background: #F3F5F8; font-weight: 800; color: #3B4250">+62</span><input type="tel" value="{{phone}}" onChange="{{onPhone}}" placeholder="812 3456 7890" style="flex-grow: 1; height: 100%; border: 0; outline: 0; padding: 0 12px; font: inherit; font-size: 16px; color: #1F2933"></span>
+</label>
+<button type="button" onClick="{{next}}" style="height: 48px; border-radius: 12px; border: 0; background: #09BEAF; color: #1D3149; font: inherit; font-size: 15px; font-weight: 900; cursor: pointer">Kirim kode</button>
+<button type="button" onClick="{{back}}" style="height: 44px; border-radius: 12px; border: 1px solid #E3E6EB; background: #FFFFFF; color: #1D3149; font: inherit; font-weight: 700; cursor: pointer">Pilih cara masuk lain</button>
+</div>
+</sc-if>
+
+<sc-if value="{{step2}}" hint-placeholder-val="{{false}}">
+<div style="display: flex; flex-direction: column; gap: 14px">
+<label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 800; color: #3B4250">Kode 6 angka
+<input type="text" inputmode="numeric" maxlength="6" placeholder="••••••" style="height: 48px; box-sizing: border-box; border: 1px solid #D3D7DE; border-radius: 12px; padding: 0 14px; font: inherit; font-size: 22px; letter-spacing: 0.4em; color: #1F2933">
+</label>
+<span style="font-size: 13px; color: #5B6573">Kode dikirim ke WhatsApp +62 {{phone}}.</span>
+<button type="button" onClick="{{enter}}" style="height: 48px; border-radius: 12px; border: 0; background: #09BEAF; color: #1D3149; font: inherit; font-size: 15px; font-weight: 900; cursor: pointer">Masuk</button>
+<button type="button" onClick="{{back}}" style="height: 44px; border-radius: 12px; border: 1px solid #E3E6EB; background: #FFFFFF; color: #1D3149; font: inherit; font-weight: 700; cursor: pointer">Ganti nomor</button>
+</div>
+</sc-if>
+
+<sc-if value="{{step3}}" hint-placeholder-val="{{false}}">
+<div style="display: flex; flex-direction: column; gap: 12px; background: #DDF5F2; border-radius: 14px; padding: 16px">
+<span style="font-weight: 900; color: #067A70">Berhasil masuk sebagai {{p.name}} · lewat {{via}}</span>
+<span style="font-size: 13px; color: #1F2933">Langsung dibuka: <strong>{{p.landing}}</strong></span>
+<a href="{{p.href}}" style="height: 44px; border-radius: 12px; background: #1D3149; color: #FFFFFF; font-weight: 800; display: flex; align-items: center; justify-content: center; text-decoration: none">Buka layar →</a>
+<button type="button" onClick="{{back}}" style="height: 40px; border: 0; background: transparent; color: #067A70; font: inherit; font-weight: 700; cursor: pointer">Coba masuk sebagai orang lain</button>
+</div>
+</sc-if>
+
+<p style="margin: 0; font-size: 12px; color: #7A5200; background: #FDF3D7; border-radius: 10px; padding: 10px 12px">Tiga cara masuk ke akun yang sama: Google (paling cepat), username &amp; password, atau kode WhatsApp. Setiap login tercatat: siapa, kapan, dan lewat apa.</p>
+</section>
+
+<section aria-labelledby="role-h" style="flex: 2 1 640px; min-width: 0; box-sizing: border-box; padding: 56px 48px; display: flex; flex-direction: column; gap: 20px">
+<div style="display: flex; flex-direction: column; gap: 4px">
+<span style="font-size: 12px; font-weight: 800; letter-spacing: 0.1em; color: #067A70">SATU LOGIN, TAMPILAN SESUAI PERAN</span>
+<h2 id="role-h" style="margin: 0; font-size: 24px; font-weight: 900">Setelah masuk, siapa melihat apa</h2>
+<span style="color: #5B6573">Peran diatur di Tim &amp; Peran. Pilih orang di bawah untuk melihat pintu masuknya.</span>
+</div>
+<div role="group" aria-label="Contoh orang" style="display: flex; flex-wrap: wrap; gap: 8px">
+<sc-for list="{{personas}}" as="x" hint-placeholder-count="5">
+<button type="button" aria-pressed="{{x.on}}" onClick="{{x.pick}}" style="display: flex; align-items: center; gap: 10px; height: 52px; padding: 0 14px 0 8px; border-radius: 14px; border: 1px solid #E3E6EB; background: {{x.bg}}; color: {{x.fg}}; font: inherit; cursor: pointer; text-align: left">
+<span aria-hidden="true" style="width: 36px; height: 36px; border-radius: 18px; background: {{x.avBg}}; color: {{x.avFg}}; font-size: 12px; font-weight: 900; display: flex; align-items: center; justify-content: center">{{x.ini}}</span>
+<span style="display: flex; flex-direction: column"><span style="font-weight: 800">{{x.name}}</span><span style="font-size: 12px; opacity: 0.8">{{x.role}}</span></span>
+</button>
+</sc-for>
+</div>
+
+<div style="background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 20px; padding: 22px; display: flex; flex-direction: column; gap: 4px">
+<div style="display: flex; justify-content: space-between; gap: 12px; padding: 12px 0"><span style="color: #5B6573">Langsung dibuka</span><span style="font-weight: 800; text-align: right">{{p.landing}}</span></div>
+<div style="display: flex; justify-content: space-between; gap: 12px; padding: 12px 0; border-top: 1px solid #EEF0F3"><span style="color: #5B6573">Tingkat</span><span style="font-weight: 800; text-align: right">{{p.scope}}</span></div>
+<div style="display: flex; justify-content: space-between; gap: 12px; padding: 12px 0; border-top: 1px solid #EEF0F3"><span style="color: #5B6573">Bisa pindah ke unit lain</span><span style="font-weight: 800; text-align: right; color: {{p.switchFg}}">{{p.switch}}</span></div>
+<div style="display: flex; flex-direction: column; gap: 8px; padding: 12px 0; border-top: 1px solid #EEF0F3">
+<span style="color: #5B6573">Menu yang tampil</span>
+<div style="display: flex; flex-wrap: wrap; gap: 6px">
+<sc-for list="{{p.menus}}" as="m" hint-placeholder-count="8"><span style="font-size: 12px; font-weight: 800; padding: 4px 10px; border-radius: 999px; background: {{m.bg}}; color: {{m.fg}}; text-decoration: {{m.dec}}">{{m.label}}</span></sc-for>
+</div>
+<span style="font-size: 12px; color: #8A94A3">Menu tercoret disembunyikan untuk peran ini.</span>
+</div>
+<div style="display: flex; justify-content: space-between; gap: 12px; padding: 12px 0; border-top: 1px solid #EEF0F3"><span style="color: #5B6573">Catatan</span><span style="font-weight: 700; text-align: right; max-width: 420px">{{p.note}}</span></div>
+</div>
+</section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { step: 1, who: 'WR', phone: '' };
+  }
+  renderVals() {
+    const ALL = ['KKH Saya', 'KKH Tim', 'Penugasan', 'Review & Revisi', 'Permintaan', 'Kehadiran', 'Target Unit', 'Omzet Unit', 'Evaluasi', 'Liga', 'Laporan', 'Tim & Peran', 'Performa & Insentif', 'Library Dokumen', 'Peta Sistem', 'Pengaturan'];
+    const P = {
+      GZ: { name: 'Ghozy', role: 'CEO', landing: 'KKH Saya · tingkat holding', href: 'Main.dc.html', scope: 'Holding, semua unit', switch: 'Ya, semua unit', hide: [], note: 'Mengesahkan aturan holding, target unit, serta insentif dan bonus bersama Keuangan.' },
+      IF: { name: 'Intifa Ilmi', role: 'Kepala Staf', landing: 'Evaluasi & Keputusan', href: 'Evaluasi.dc.html', scope: 'Holding, semua unit', switch: 'Ya, semua unit', hide: ['Performa & Insentif'], note: 'Menjalankan evaluasi dan rapat; bisa mengubah pengaturan holding kecuali yang perlu persetujuan CEO.' },
+      RZ: { name: 'Ade Reza N.', role: 'Keuangan', landing: 'Omzet Unit · tingkat holding', href: 'Omzet.dc.html', scope: 'Holding, semua unit', switch: 'Ya, semua unit', hide: ['Peta Sistem'], note: 'Memvalidasi angka, menghitung insentif dan bonus, lalu membayarnya setelah CEO setuju.' },
+      WR: { name: 'Wiranata', role: 'Leader · TripinAja', landing: 'KKH Saya · unit TripinAja', href: 'Main.dc.html', scope: 'Unit TripinAja', switch: 'Tidak', hide: ['Peta Sistem', 'Performa & Insentif'], note: 'Klasemen Liga tetap terlihat semua unit supaya bisa bersaing, tapi angka rinci unit lain tidak.' },
+      SC: { name: 'Staf cabang', role: 'Kasir, CS, teknisi, admin', landing: 'Tidak masuk sistem ini — memakai Rentalaja App', href: 'https://rentalaja-app.vercel.app/#/PosHariIni', scope: '—', switch: 'Tidak', hide: ALL, note: 'Absen, tutup shift, dan laporan omzet di Rentalaja App otomatis masuk ke Kehadiran, Omzet Unit, dan Liga.' }
+    };
+    const who = this.state.who;
+    const p0 = P[who];
+    const p = {
+      ...p0, switchFg: p0.switch === 'Tidak' ? '#9A3F0A' : '#067A70',
+      menus: ALL.map(m => {
+        const h = p0.hide.includes(m);
+        return { label: m, bg: h ? '#F3F5F8' : '#DDF5F2', fg: h ? '#A9B4C2' : '#067A70', dec: h ? 'line-through' : 'none' };
+      })
+    };
+    const personas = Object.keys(P).map(k => ({
+      ini: k, name: P[k].name, role: P[k].role, on: who === k ? 'true' : 'false',
+      bg: who === k ? '#1D3149' : '#FFFFFF', fg: who === k ? '#FFFFFF' : '#1F2933',
+      avBg: who === k ? '#09BEAF' : '#DDF5F2', avFg: '#1D3149',
+      pick: () => this.setState({ who: k })
+    }));
+    const st = this.state.step;
+    return {
+      step1: st === 1, stepWa: st === 'wa', step2: st === 2, step3: st === 3, p, personas,
+      phone: this.state.phone, user: this.state.user || '', via: this.state.via || 'Google',
+      onPhone: (e) => this.setState({ phone: e.target.value }), onUser: (e) => this.setState({ user: e.target.value }),
+      viaGoogle: () => this.setState({ step: 3, via: 'Google' }), viaPass: () => this.setState({ step: 3, via: 'username & password' }), viaWa: () => this.setState({ step: 'wa' }),
+      forgotOn: !!this.state.forgot, forgot: () => this.setState({ forgot: true }),
+      next: () => this.setState({ step: 2 }), enter: () => this.setState({ step: 3, via: 'kode WhatsApp' }), back: () => this.setState({ step: 1, forgot: false })
+    };
+  }
+}
+</script>
+</body>
+</html>

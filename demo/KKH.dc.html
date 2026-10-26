@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KKH — Pokama · Demo</title>
+<meta name="robots" content="noindex">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F3F5F8}
+a{color:#1D3149}a:hover{color:#0F1D2E}
+</style>
+<style>.demo-tag{position:fixed;right:16px;bottom:16px;z-index:50;background:#1D3149;color:#fff;font:700 12px/1 Nunito,system-ui,sans-serif;padding:10px 14px;border-radius:999px;text-decoration:none;box-shadow:0 6px 18px rgba(29,49,73,.3)}.demo-tag b{color:#09BEAF}</style>
+
+<script src="runtime.js"></script>
+</head>
+<body>
+<div id="root"></div>
+<a class="demo-tag" href="index.html"><b>DEMO</b> · data contoh · semua layar</a>
+<script type="text/plain" id="dc-tpl">
+
+<div style="min-height: 100vh; display: flex; flex-wrap: wrap; background: #F3F5F8; color: #1F2933; font-family: 'Nunito', system-ui, sans-serif; font-size: 14px; line-height: 1.45">
+
+<nav aria-label="Menu utama" style="flex: 1 1 232px; box-sizing: border-box; background: #FFFFFF; border-right: 1px solid #E3E6EB; padding: 24px 16px; display: flex; flex-direction: column; gap: 20px">
+<div style="display: flex; flex-direction: column; gap: 8px; padding: 0 8px">
+<img src="rentalaja-logo.png" alt="RentalAja" style="width: 150px; height: auto">
+<span style="font-size: 12px; color: #5B6573; font-weight: 600">Pokama · Sistem Kerja Harian</span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 11px; font-weight: 800; letter-spacing: 0.08em; color: #5B6573; padding: 0 12px 4px">KERJA HARIAN</span>
+<a href="Main.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path></svg><span style="flex-grow: 1">KKH Saya</span></a>
+<a href="KKH.dc.html" aria-current="page" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 700; color: #1D3149; background: #DDF5F2"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"></rect><path d="M3 9h18M9 4v16M15 4v16"></path></svg><span style="flex-grow: 1">KKH Tim</span></a>
+<a href="Penugasan.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l9 5-9 5-9-5 9-5z"></path><path d="M3 13l9 5 9-5"></path></svg><span style="flex-grow: 1">Penugasan &amp; Proyek</span></a>
+<a href="Review.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h11a2 2 0 012 2v4"></path><path d="M4 5v14h7"></path><path d="M7 9h6M7 13h3"></path><path d="M14 17l2 2 4-4"></path></svg><span style="flex-grow: 1">Review &amp; Revisi</span></a>
+<a href="Permintaan.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13h5l1.5 3h5l1.5-3h5"></path><path d="M5.5 5h13l2.5 8v6H3v-6l2.5-8z"></path></svg><span style="flex-grow: 1">Permintaan</span><span style="min-width: 22px; height: 22px; border-radius: 11px; background: #C2410C; color: #FFFFFF; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; padding: 0 6px; box-sizing: border-box">4</span></a>
+<a href="Kehadiran.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"></circle><path d="M12 8v4l3 2"></path></svg><span style="flex-grow: 1">Kehadiran &amp; Cuti</span></a>
+</div>
+<div style="display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 11px; font-weight: 800; letter-spacing: 0.08em; color: #5B6573; padding: 0 12px 4px">UNIT BISNIS</span>
+<a href="Target.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"></circle><circle cx="12" cy="12" r="4"></circle><circle cx="12" cy="12" r="0.8"></circle></svg><span style="flex-grow: 1">Target Unit</span></a>
+<a href="Omzet.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 20V11M11 20V5M17 20v-7M3 20h18"></path></svg><span style="flex-grow: 1">Omzet Unit</span></a>
+<a href="Evaluasi.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6v3H9z"></path><path d="M7 4.5H5V21h14V4.5h-2"></path><path d="M9 14l2 2 4-4"></path></svg><span style="flex-grow: 1">Evaluasi &amp; Keputusan</span></a>
+<a href="Liga.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4h8v5a4 4 0 01-8 0V4z"></path><path d="M8 6H5a3 3 0 003 4M16 6h3a3 3 0 01-3 4M12 13v4M8 20h8"></path></svg><span style="flex-grow: 1">Liga Unit Bisnis</span></a>
+<a href="Laporan.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6v18h12V7l-4-4z"></path><path d="M14 3v4h4M9 13h6M9 17h6"></path></svg><span style="flex-grow: 1">Laporan &amp; Ritual</span></a>
+</div>
+<div style="display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 11px; font-weight: 800; letter-spacing: 0.08em; color: #5B6573; padding: 0 12px 4px">ORANG</span>
+<a href="Tim.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"></circle><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"></path><path d="M16 4.5a3.5 3.5 0 010 7M18 14c2 .7 3.5 2.8 3.5 6"></path></svg><span style="flex-grow: 1">Tim &amp; Peran</span></a>
+<a href="Bonus.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"></circle><path d="M12 7v10M14.5 9.5h-3.5a1.5 1.5 0 000 3h2a1.5 1.5 0 010 3H9.5"></path></svg><span style="flex-grow: 1">Performa &amp; Insentif</span></a>
+</div>
+<div style="display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 11px; font-weight: 800; letter-spacing: 0.08em; color: #5B6573; padding: 0 12px 4px">SISTEM</span>
+<a href="Library.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h4v16H5zM10 4h4v16h-4z"></path><path d="M15.5 5.2l3.8-1 3.2 14.6-3.8 1z"></path></svg><span style="flex-grow: 1">Library Dokumen</span></a>
+<a href="Peta.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4L3 6v14l6-2 6 2 6-2V4l-6 2-6-2z"></path><path d="M9 4v14M15 6v14"></path></svg><span style="flex-grow: 1">Peta Sistem</span></a>
+<a href="Pengaturan.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h9M17 6h3M4 12h3M11 12h9M4 18h11M19 18h1"></path><circle cx="15" cy="6" r="2"></circle><circle cx="9" cy="12" r="2"></circle><circle cx="17" cy="18" r="2"></circle></svg><span style="flex-grow: 1">Pengaturan</span></a>
+</div>
+<div style="display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 11px; font-weight: 800; letter-spacing: 0.08em; color: #5B6573; padding: 0 12px 4px">TAUTAN CEPAT</span>
+<a href="https://rentalaja-app.vercel.app/#/MgmtDashboard" target="_blank" rel="noopener" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; color: #067A70; font-weight: 700"><span style="flex-grow: 1">Dasbor omzet</span><span aria-hidden="true">↗</span></a>
+<a href="https://rentalaja-app.vercel.app/#/KeuDasbor" target="_blank" rel="noopener" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; color: #067A70; font-weight: 700"><span style="flex-grow: 1">Dasbor keuangan</span><span aria-hidden="true">↗</span></a>
+<a href="https://claude.ai/artifact/WvNPVXdsUEh1Cd8v8uYvWw" target="_blank" rel="noopener" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; color: #067A70; font-weight: 700"><span style="flex-grow: 1">Playbook unit bisnis</span><span aria-hidden="true">↗</span></a>
+</div>
+<div style="margin-top: auto; display: flex; align-items: center; gap: 10px; padding: 14px 12px 0; border-top: 1px solid #E3E6EB">
+<div aria-hidden="true" style="width: 36px; height: 36px; border-radius: 18px; background: #DDF5F2; color: #1D3149; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px">GZ</div>
+<div style="display: flex; flex-direction: column"><span style="font-weight: 600">Ghozy</span><span style="font-size: 12px; color: #5B6573">CEO · Holding</span></div>
+</div>
+</nav>
+
+<main style="flex: 999 1 560px; min-width: 0; box-sizing: border-box; padding: 28px 36px 48px; display: flex; flex-direction: column; gap: 18px">
+<header style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px">
+<div style="display: flex; flex-direction: column; gap: 4px">
+<span style="font-size: 13px; color: #5B6573; font-weight: 600">Agenda per jam tim management · detail pekerjaan ditulis di catatan · selesai hanya divalidasi valuer</span>
+<h1 style="margin: 0; font-size: 30px; font-weight: 900; letter-spacing: -0.01em">KKH · Kontrol Kerja Harian</h1>
+</div>
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px">
+<div role="group" aria-label="Pilih hari" style="display: flex; background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 10px; padding: 3px; gap: 2px">
+<sc-for list="{{days}}" as="d" hint-placeholder-count="6">
+<button type="button" aria-pressed="{{d.on}}" onClick="{{d.pick}}" style="height: 38px; padding: 0 12px; border: 0; border-radius: 8px; background: {{d.bg}}; color: {{d.fg}}; font: inherit; font-weight: 800; cursor: pointer">{{d.label}}</button>
+</sc-for>
+</div>
+</div>
+</header>
+
+<section aria-label="Pilih tingkat" style="background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 16px; padding: 12px 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 12px">
+<span style="font-size: 12px; font-weight: 800; letter-spacing: 0.08em; color: #5B6573">LIHAT</span>
+<button type="button" aria-pressed="{{isHolding}}" onClick="{{pickHolding}}" style="height: 38px; padding: 0 14px; border-radius: 10px; border: 0; background: {{hBg}}; color: {{hFg}}; font: inherit; font-weight: 800; cursor: pointer">Holding · semua</button>
+<span aria-hidden="true" style="width: 1px; height: 28px; background: #E3E6EB"></span>
+<div role="group" aria-label="Pilih unit" style="display: flex; flex-wrap: wrap; gap: 6px">
+<sc-for list="{{unitBtns}}" as="u" hint-placeholder-count="6">
+<button type="button" aria-pressed="{{u.on}}" onClick="{{u.pick}}" style="height: 34px; padding: 0 12px; border-radius: 999px; border: 1px solid #E3E6EB; background: {{u.bg}}; color: {{u.fg}}; font: inherit; font-size: 13px; font-weight: 700; cursor: pointer">{{u.label}}</button>
+</sc-for>
+</div>
+</section>
+
+<section aria-label="Keterangan" style="display: flex; flex-wrap: wrap; gap: 12px">
+<div style="flex: 1 1 420px; background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 14px; padding: 12px 16px; display: flex; flex-direction: column; gap: 8px">
+<span style="font-size: 11px; font-weight: 800; letter-spacing: 0.08em; color: #5B6573">JENIS KERJA (KODE)</span>
+<div style="display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 12px; color: #3B4250">
+<span><strong>CP/SR</strong> checkpoint / review hasil dengan atasan</span>
+<span><strong>CW</strong> kerja bersama tim</span>
+<span><strong>SW</strong> kerja sendiri</span>
+<span><strong>IN/EX</strong> acara internal / eksternal, termasuk pelanggan</span>
+</div>
+</div>
+<div style="flex: 1 1 420px; background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 14px; padding: 12px 16px; display: flex; flex-direction: column; gap: 8px">
+<span style="font-size: 11px; font-weight: 800; letter-spacing: 0.08em; color: #5B6573">MODE KERJA (WARNA)</span>
+<div style="display: flex; flex-wrap: wrap; gap: 8px 14px; font-size: 12px; color: #3B4250">
+<sc-for list="{{modes}}" as="m" hint-placeholder-count="5"><span style="display: flex; align-items: center; gap: 6px"><span aria-hidden="true" style="width: 14px; height: 14px; border-radius: 4px; background: {{m.bg}}; border: 1px solid {{m.bd}}"></span>{{m.label}}</span></sc-for>
+</div>
+</div>
+</section>
+
+<sc-if value="{{emptyNote}}" hint-placeholder-val="{{false}}"><p style="margin: 0; padding: 14px 16px; border-radius: 12px; background: #FFFFFF; border: 1px dashed #C9CED6; color: #5B6573">Unit ini dijalankan staf cabang yang memakai Rentalaja App. KKH hanya diisi tim management.</p></sc-if>
+
+<div style="display: flex; flex-wrap: wrap; gap: 18px; align-items: flex-start">
+<section aria-label="Grid KKH" style="flex: 3 1 700px; min-width: 0; background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 18px; overflow-x: auto">
+<table style="border-collapse: separate; border-spacing: 0; min-width: 100%">
+<thead>
+<tr>
+<th scope="col" style="position: sticky; left: 0; z-index: 2; background: #FFFFFF; text-align: left; padding: 10px 14px; font-size: 12px; color: #5B6573; font-weight: 800; border-bottom: 1px solid #EEF0F3; min-width: 92px">{{dayLong}}</th>
+<sc-for list="{{cols}}" as="c" hint-placeholder-count="8">
+<th scope="col" style="padding: 10px 6px 8px; border-bottom: 1px solid #EEF0F3; min-width: 136px; text-align: left; vertical-align: bottom">
+<div style="display: flex; flex-direction: column; gap: 2px">
+<span style="font-weight: 900">{{c.name}} <span style="color: #5B6573">({{c.ini}})</span></span>
+<span style="font-size: 11px; color: #5B6573; font-weight: 600">{{c.unit}}</span>
+<span style="font-size: 11px; font-weight: 700; color: #067A70">{{c.valText}}</span>
+<sc-if value="{{c.isSplit}}" hint-placeholder-val="{{false}}"><span style="font-size: 11px; font-weight: 800; color: #7A5200; background: #FDF3D7; border-radius: 6px; padding: 1px 6px; align-self: flex-start">{{c.payText}}</span></sc-if>
+<span style="font-size: 11px; font-weight: 700; color: {{c.offFg}}">Libur: {{c.offText}}</span>
+</div>
+</th>
+</sc-for>
+</tr>
+</thead>
+<tbody>
+<sc-for list="{{grid}}" as="row" hint-placeholder-count="10">
+<tr>
+<th scope="row" style="position: sticky; left: 0; z-index: 1; background: #FFFFFF; text-align: left; padding: 4px 14px; font-weight: 800; font-variant-numeric: tabular-nums; border-bottom: 1px solid #F3F5F8; white-space: nowrap; color: {{row.fg}}">{{row.slot}}</th>
+<sc-for list="{{row.cells}}" as="x" hint-placeholder-count="8">
+<td style="padding: 3px; border-bottom: 1px solid #F3F5F8">
+<button type="button" onClick="{{x.pick}}" aria-label="{{x.aria}}" style="width: 100%; min-height: 50px; border: 1px solid {{x.bd}}; background: {{x.bg}}; color: {{x.fg}}; box-shadow: inset 0 0 0 2px {{x.ring}}; border-radius: 8px; padding: 5px 7px; font: inherit; text-align: left; cursor: pointer; display: flex; flex-direction: column; gap: 1px">
+<span style="font-size: 12px; font-weight: 900">{{x.code}}</span>
+<span style="font-size: 11px; line-height: 1.3; opacity: 0.9; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical">{{x.note}}</span>
+</button>
+</td>
+</sc-for>
+</tr>
+</sc-for>
+<tr>
+<th scope="row" style="position: sticky; left: 0; background: #F7F8FA; text-align: left; padding: 10px 14px; font-size: 12px; font-weight: 800; color: #5B6573">Jam terisi</th>
+<sc-for list="{{cols}}" as="c" hint-placeholder-count="8"><td style="padding: 10px 8px; background: #F7F8FA; font-weight: 800; font-variant-numeric: tabular-nums">{{c.filledText}}</td></sc-for>
+</tr>
+<tr>
+<th scope="row" style="position: sticky; left: 0; background: #F7F8FA; text-align: left; padding: 10px 14px; font-size: 12px; font-weight: 800; color: #5B6573">Tervalidasi</th>
+<sc-for list="{{cols}}" as="c" hint-placeholder-count="8"><td style="padding: 10px 8px; background: #F7F8FA; font-weight: 800; font-variant-numeric: tabular-nums; color: {{c.valFg}}">{{c.valid}}</td></sc-for>
+</tr>
+</tbody>
+</table>
+</section>
+
+<aside aria-label="Isi slot" style="flex: 1 1 300px; min-width: 0; display: flex; flex-direction: column; gap: 16px">
+<section style="background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 18px; padding: 20px; display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; flex-direction: column"><span style="font-size: 12px; font-weight: 800; letter-spacing: 0.06em; color: #067A70">{{s.when}}</span><h2 style="margin: 0; font-size: 19px; font-weight: 900">{{s.name}}</h2><span style="font-size: 12px; color: #5B6573">Valuer 1: {{s.v1}} · Valuer 2: {{s.v2}}</span></div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<span style="font-size: 12px; font-weight: 800; color: #3B4250">Jenis kerja</span>
+<div role="group" aria-label="Jenis kerja" style="display: flex; flex-wrap: wrap; gap: 6px">
+<sc-for list="{{s.codeBtns}}" as="b" hint-placeholder-count="5"><button type="button" aria-pressed="{{b.on}}" onClick="{{b.pick}}" style="height: 36px; padding: 0 12px; border-radius: 8px; border: 1px solid #E3E6EB; background: {{b.bg}}; color: {{b.fg}}; font: inherit; font-weight: 800; cursor: pointer">{{b.label}}</button></sc-for>
+</div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<span style="font-size: 12px; font-weight: 800; color: #3B4250">Mode kerja</span>
+<div role="group" aria-label="Mode kerja" style="display: flex; flex-wrap: wrap; gap: 6px">
+<sc-for list="{{s.modeBtns}}" as="b" hint-placeholder-count="4"><button type="button" aria-pressed="{{b.on}}" onClick="{{b.pick}}" style="height: 36px; padding: 0 10px; border-radius: 8px; border: 1px solid {{b.bd}}; background: {{b.bg}}; color: #1F2933; box-shadow: inset 0 0 0 2px {{b.ring}}; font: inherit; font-size: 13px; font-weight: 700; cursor: pointer">{{b.label}}</button></sc-for>
+</div>
+</div>
+<sc-if value="{{s.isSplit}}" hint-placeholder-val="{{false}}">
+<div style="display: flex; flex-direction: column; gap: 6px; background: #FFFBF0; border: 1px solid #EED9A0; border-radius: 12px; padding: 10px 12px">
+<span style="font-size: 12px; font-weight: 800; color: #3B4250">Jam ini dibebankan ke unit (wajib, orang digaji 2 unit)</span>
+<div role="group" aria-label="Unit pembebanan" style="display: flex; flex-wrap: wrap; gap: 6px">
+<sc-for list="{{s.unitBtns2}}" as="b" hint-placeholder-count="2"><button type="button" aria-pressed="{{b.on}}" onClick="{{b.pick}}" style="height: 36px; padding: 0 12px; border-radius: 8px; border: 1px solid #E3E6EB; background: {{b.bg}}; color: {{b.fg}}; font: inherit; font-weight: 800; cursor: pointer">{{b.label}}</button></sc-for>
+</div>
+<span style="font-size: 12px; color: #7A5200">{{s.splitNote}}</span>
+</div>
+</sc-if>
+<label style="display: flex; flex-direction: column; gap: 6px; font-size: 12px; font-weight: 800; color: #3B4250">Catatan pekerjaan (wajib)
+<textarea rows="3" value="{{s.note}}" onChange="{{s.onNote}}" placeholder="Tulis pekerjaannya, misalnya: Review laba rugi Jan–Sep bersama Reza" style="font: inherit; font-size: 14px; font-weight: 500; border: 1px solid #D3D7DE; border-radius: 10px; padding: 10px 12px; resize: vertical; color: #1F2933"></textarea>
+</label>
+<sc-if value="{{s.isDone}}" hint-placeholder-val="{{false}}"><div style="background: #1D3149; color: #FFFFFF; border-radius: 10px; padding: 10px 12px; font-weight: 800">Selesai · divalidasi {{s.by}}</div></sc-if>
+<sc-if value="{{s.canValidate}}" hint-placeholder-val="{{true}}"><button type="button" onClick="{{s.validate}}" style="height: 44px; border-radius: 10px; border: 0; background: #09BEAF; color: #1D3149; font: inherit; font-weight: 900; cursor: pointer">Validasi selesai (sebagai GZ)</button></sc-if>
+<sc-if value="{{s.cannot}}" hint-placeholder-val="{{false}}"><p style="margin: 0; font-size: 12px; color: #9A3F0A; background: #FFF8F2; border-radius: 10px; padding: 10px 12px">Hanya valuer orang ini ({{s.v1}} atau {{s.v2}}) yang bisa menandai selesai.</p></sc-if>
+<sc-if value="{{s.isDone}}" hint-placeholder-val="{{false}}"><button type="button" onClick="{{s.unvalidate}}" style="height: 40px; border-radius: 10px; border: 1px solid #E3E6EB; background: #FFFFFF; color: #9A3F0A; font: inherit; font-weight: 700; cursor: pointer">Batalkan validasi</button></sc-if>
+</section>
+
+<section aria-labelledby="lib-h" style="background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 18px; padding: 18px 20px; display: flex; flex-direction: column; gap: 6px">
+<h2 id="lib-h" style="margin: 0 0 4px; font-size: 16px; font-weight: 800">Pustaka {{libTitle}}</h2>
+<sc-for list="{{lib}}" as="l" hint-placeholder-count="3"><a href="{{l.url}}" target="_blank" rel="noopener" style="display: flex; justify-content: space-between; gap: 10px; min-height: 40px; align-items: center; border-top: 1px solid #EEF0F3; text-decoration: none; font-weight: 700"><span>{{l.name}}</span><span aria-hidden="true" style="color: #067A70">↗</span></a></sc-for>
+</section>
+</aside>
+</div>
+</main>
+</div>
+</script>
+<script>
+
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { scope: 'H', day: 0, sel: 'YF|11', edits: {} };
+  }
+  renderVals() {
+    const PEOPLE = [
+      ['GZ', 'Ghozy', 'CEO', 'HQ', '', ''], ['IF', 'Intifa', 'Kepala Staf', 'HQ', 'GZ', ''], ['RZ', 'Reza', 'Keuangan', 'HQ', 'GZ', 'IF'],
+      ['EJ', 'Eja', 'BizDev', 'HQ', 'IF', 'GZ'], ['KV', 'Kevin', 'Marketing', 'HQ', 'IF', 'GZ'], ['YF', 'Yusril', 'Niagaaja', 'NA', 'GZ', 'IF'], ['AJ', 'Ajri', 'RA Transport & Store', 'GK', 'AD', 'IF'], ['AD', 'Adrian', 'Experience', 'EX', 'GZ', 'IF'], ['WR', 'Wiranata', 'TripinAja', 'WG', 'GZ', 'IF'],
+      ['AR', 'Ariq', 'TripinAja', 'WG', 'WR', 'IF'], ['NY', 'Nayla', 'TripinAja', 'WG', 'WR', 'IF'], ['FN', 'Fajar', 'Data omzet', 'HQ', 'EJ', 'IF'],
+      ['DZ', 'Dzikri', 'Di bawah Kepala Staf', 'HQ', 'IF', 'GZ'], ['DT', 'Dita', 'Di bawah Kepala Staf', 'HQ', 'IF', 'GZ'], ['MU', 'Mugni', 'Di bawah Kepala Staf', 'HQ', 'IF', 'GZ']
+    ];
+    const SLOTS = [8, 9, 10, 11, 12, 13, 14, 15, 16, 17];
+    const E = {
+      GZ: { 8: ['IN', 'K', 'Briefing pagi seluruh tim', 'IF'], 9: ['CP', 'K', '1:1 Adrian: penempatan ops Bandung', 'GZ'], 10: ['SW', 'K', 'Approve etalase iPhone cabang Ciputat'], 11: ['SW', 'K', 'Review laba rugi internal Jan–Sep bersama Reza'], 13: ['SW', 'K', 'Review draf proposal investor Laptopaja'], 14: ['CP', 'K', 'Rapat restrukturisasi TripinAja'], 15: ['SW', 'K', 'Tetapkan target properti Experience 2027'], 16: ['SW', 'K', 'Kirim arahan strategi WA Story ke Kevin'], 17: ['SW', 'K', 'Tutup hari: validasi KKH tim'] },
+      IF: { 8: ['IN', 'K', 'Briefing pagi seluruh tim', 'GZ'], 9: ['SW', 'K', 'Triage Kotak Masuk Permintaan', 'GZ'], 10: ['SW', 'K', 'Rekap check-in tim'], 14: ['CP', 'K', 'Rapat restrukturisasi TripinAja'], 15: ['SW', 'K', 'Siapkan agenda Rapat Evaluasi Bulanan'] },
+      RZ: { 8: ['IN', 'K', 'Briefing pagi', 'GZ'], 9: ['SW', 'K', 'Laba rugi internal Jan–Sep'], 11: ['SW', 'K', 'Rapikan data Jeep Guntur'], 14: ['CP', 'K', 'Rapat restrukturisasi TripinAja'], 15: ['SW', 'K', 'Cicilan leasing motor'] },
+      EJ: { 8: ['IN', 'K', 'Briefing pagi', 'IF'], 9: ['SW', 'K', 'Jurnal BizDev', 'IF'], 13: ['EX', 'E', 'Survei Didi House'] },
+      KV: { 8: ['IN', 'H', 'Briefing pagi (online)', 'IF'], 10: ['SW', 'H', 'Konten Halaman Belakang Kebon'], 13: ['CW', 'H', 'Strategi WA Story bersama CS'] },
+      YF: { 8: ['IN', 'K', 'Briefing pagi', 'GZ', 'HQ'], 9: ['EX', 'E', 'Cek laptop bekas di supplier', '', 'NA'], 11: ['SW', 'K', 'Rekap aset elektronik holding', '', 'HQ'], 13: ['SW', 'K', 'Draf proposal investor Laptopaja', '', 'NA'], 15: ['CP', 'K', 'Review proposal dengan CEO', '', 'NA'] },
+      IG: { 8: ['SW', 'K', 'Buka cabang Garut Kota', 'GZ'], 9: ['CW', 'K', 'Verifikasi penyewa', 'GZ'], 15: ['SW', 'K', 'Stok opname'] },
+      AJ: { 8: ['SW', 'K', 'Buka cabang, cek unit', 'IG'], 10: ['CW', 'K', 'Siapkan etalase Ciputat'], 13: ['EX', 'K', 'Serah terima motor ke pelanggan'] },
+      UJ: { 8: ['SW', 'K', 'Buka Rentalaja Hub'], 10: ['CW', 'K', 'Cek Poin Jakal'], 14: ['CP', 'K', 'Jadwal teknisi runner bersama Adrian'] },
+      AF: { 8: ['CW', 'K', 'Antar-jemput motor', 'UJ'], 14: ['CP', 'K', 'Jadwal teknisi runner'] },
+      AD: { 8: ['IN', 'K', 'Briefing pagi', 'GZ'], 9: ['CP', 'K', '1:1 dengan CEO', 'GZ'], 11: ['EX', 'E', 'Kunjungan properti Green Hill'], 14: ['CP', 'K', 'Jadwal teknisi runner Bandung'] },
+      WR: { 8: ['IN', 'K', 'Briefing pagi', 'GZ'], 10: ['CW', 'K', 'Siapkan trip akhir pekan'], 14: ['CP', 'K', 'Rapat restrukturisasi TripinAja'] },
+      AR: { 9: ['SW', 'K', 'Admin booking trip', 'WR'], 16: ['SW', 'K', 'Rekap omzet harian'] },
+      NY: { 9: ['SW', 'H', 'Konten Instagram TripinAja'] },
+      FN: { 16: ['SW', 'K', 'Rekap omzet harian semua cabang'] }
+    };
+    const SPLIT2 = { YF: [['NA', 'Niagaaja', 70], ['HQ', 'Holding', 30]] };
+    const MODES = { K: ['Di kantor / cabang', '#DDF5F2', '#A9E4DC', '#1F2933'], H: ['WFH', '#E5EEF9', '#BFD3EE', '#1F2933'], E: ['WFE (dekat rumah)', '#FDF3D7', '#EED9A0', '#1F2933'], I: ['Izin / cuti', '#FCEBDD', '#F0C2A3', '#9A3F0A'] };
+    const SC = [['GK', 'RA Garut Kota'], ['BD', 'RA Bandung'], ['EX', 'Experience'], ['WG', 'TripinAja'], ['NA', 'Niagaaja']];
+    const scope = this.state.scope;
+    const isH = scope === 'H';
+    const people = PEOPLE.filter(p => isH || p[3] === scope);
+    const day = this.state.day;
+    const ed = this.state.edits;
+    const get = (ini, h) => {
+      const k = ini + '|' + h;
+      const base = day === 0 && E[ini] && E[ini][h] ? { code: E[ini][h][0], mode: E[ini][h][1], note: E[ini][h][2], by: E[ini][h][3] || '', unit: E[ini][h][4] || '' } : { code: '', mode: 'K', note: '', by: '', unit: '' };
+      if (SPLIT2[ini] && !base.unit) base.unit = SPLIT2[ini][0][0];
+      return { ...base, ...(ed[day + '|' + k] || {}) };
+    };
+    const DS = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'];
+    const OFF = { IF: [1, 2], RZ: [3, 4], EJ: [1, 6], KV: [2, 5], YF: [3, 6], AJ: [1, 2], AD: [3, 6], WR: [1, 4], AR: [2, 3], NY: [4, 5], FN: [3, 6], DZ: [4, 5], DT: [1, 2], MU: [3, 4] };
+    const isOffD = (ini, d) => (OFF[ini] || []).includes(d);
+    const isOff = (ini) => isOffD(ini, day);
+    const sel = this.state.sel;
+    const cols = people.map(p => {
+      const cells = SLOTS.map(h => get(p[0], h));
+      const filled = cells.filter(c => c.code).length;
+      const valid = cells.filter(c => c.code && c.by).length;
+      const off = isOff(p[0]);
+      const sp2 = SPLIT2[p[0]];
+      const payText = sp2 ? 'Digaji 2 unit: ' + sp2.map(u => u[1] + ' ' + u[2] + '%').join(' · ') : '';
+      return { payText, isSplit: !!sp2, ini: p[0], name: p[1], unit: p[2], v1: p[4], v2: p[5], valText: !p[4] ? 'Valuer: tidak perlu (CEO)' : 'Valuer: ' + p[4] + (p[5] ? ' · ' + p[5] : ''), filled, filledText: off ? 'Libur' : filled + ' / 10', offText: p[0] === 'GZ' ? 'bebas (CEO)' : (OFF[p[0]] || []).map(i => DS[i]).join(', ') || 'belum dipilih', offFg: off ? '#9A3F0A' : '#5B6573', valid: filled ? valid + ' / ' + filled : '—', valFg: filled && valid < filled ? '#7A5200' : '#067A70' };
+    });
+    const grid = SLOTS.map(h => ({
+      slot: String(h).padStart(2, '0') + '.00–' + String(h + 1).padStart(2, '0') + '.00',
+      fg: day === 0 && h === 10 ? '#067A70' : '#3B4250',
+      cells: people.map(p => {
+        if (isOff(p[0])) return { code: 'LIBUR', note: h === SLOTS[0] ? 'Libur pilihan minggu ini' : '', bg: 'repeating-linear-gradient(135deg, #F3F5F8 0 6px, #E9ECF0 6px 12px)', fg: '#8A94A3', bd: '#E3E6EB', ring: 'transparent', aria: p[1] + ' libur', pick: () => {} };
+        const c = get(p[0], h);
+        const md = MODES[c.mode] || MODES.K;
+        const done = !!(c.code && c.by);
+        const isSel = sel === p[0] + '|' + h;
+        return {
+          code: c.code ? c.code + (SPLIT2[p[0]] ? ' · ' + c.unit : '') + (done ? ' ✓ ' + c.by : '') : '',
+          note: c.code ? c.note : '',
+          bg: !c.code ? '#FFFFFF' : done ? '#1D3149' : md[1],
+          fg: !c.code ? '#A9B4C2' : done ? '#FFFFFF' : md[3],
+          bd: !c.code ? '#EEF0F3' : done ? '#1D3149' : md[2],
+          ring: isSel ? '#09BEAF' : 'transparent',
+          aria: p[1] + ' jam ' + h + '.00: ' + (c.code ? c.code + ' ' + c.note : 'kosong'),
+          pick: () => this.setState({ sel: p[0] + '|' + h })
+        };
+      })
+    }));
+    const [sIni, sH] = sel.split('|');
+    const sp = PEOPLE.find(p => p[0] === sIni) || PEOPLE[0];
+    const sc = get(sp[0], +sH);
+    const key = day + '|' + sp[0] + '|' + sH;
+    const put = (patch) => this.setState({ edits: { ...ed, [key]: { ...(ed[key] || {}), ...patch } } });
+    const isValuer = sp[4] === 'GZ' || sp[5] === 'GZ';
+    const DL = ['Senin, 26 Okt', 'Selasa, 27 Okt', 'Rabu, 28 Okt', 'Kamis, 29 Okt', 'Jumat, 30 Okt', 'Sabtu, 31 Okt', 'Minggu, 1 Nov'];
+    const s = {
+      name: sp[1] + ' (' + sp[0] + ')', when: DL[day].toUpperCase() + ' · ' + (isOff(sp[0]) ? 'LIBUR PILIHAN' : sH + '.00–' + (+sH + 1) + '.00'), v1: sp[4], v2: sp[5],
+      note: sc.note, onNote: (e) => put({ note: e.target.value }),
+      codeBtns: ['CP', 'CW', 'SW', 'IN', 'EX', 'Kosong'].map(c => {
+        const v = c === 'Kosong' ? '' : c;
+        const on = sc.code === v;
+        return { label: c === 'CP' ? 'CP/SR' : c, on: on ? 'true' : 'false', bg: on ? '#1D3149' : '#FFFFFF', fg: on ? '#FFFFFF' : '#3B4250', pick: () => put({ code: v, by: '' }) };
+      }),
+      modeBtns: Object.keys(MODES).map(k => ({ label: MODES[k][0], on: sc.mode === k ? 'true' : 'false', bg: MODES[k][1], bd: MODES[k][2], ring: sc.mode === k ? '#1D3149' : 'transparent', pick: () => put({ mode: k, code: k === 'I' ? 'IZIN' : sc.code }) })),
+      isSplit: !!SPLIT2[sp[0]] && !!sc.code,
+      unitBtns2: (SPLIT2[sp[0]] || []).map(([k, l, pc]) => ({ label: l + ' (' + pc + '%)', on: sc.unit === k ? 'true' : 'false', bg: sc.unit === k ? '#1D3149' : '#FFFFFF', fg: sc.unit === k ? '#FFFFFF' : '#3B4250', pick: () => put({ unit: k }) })),
+      splitNote: (() => { const sp2 = SPLIT2[sp[0]]; if (!sp2) return ''; const all = SLOTS.map(h => get(sp[0], h)).filter(c => c.code && c.code !== 'IZIN'); const n = all.length || 1; return 'Hari ini: ' + sp2.map(([k, l]) => l + ' ' + all.filter(c => c.unit === k).length + ' jam (' + Math.round(all.filter(c => c.unit === k).length / n * 100) + '%)').join(' · ') + '. Porsi gaji ' + sp2.map(u => u[2]).join('/') + '. AI mengingatkan bila selisih mingguan lebih dari 15 poin.'; })(),
+      isDone: !!(sc.code && sc.by), by: sc.by,
+      canValidate: !!sc.code && !sc.by && isValuer, cannot: !!sc.code && !sc.by && !isValuer,
+      validate: () => put({ by: 'GZ' }), unvalidate: () => put({ by: '' })
+    };
+    const days = DS.map((l, i) => ({ label: l + ' ' + (i === 6 ? 1 : 26 + i) + ' · ' + people.filter(p => !isOffD(p[0], i)).length + ' jaga', on: day === i ? 'true' : 'false', bg: day === i ? '#1D3149' : 'transparent', fg: day === i ? '#FFFFFF' : '#3B4250', pick: () => this.setState({ day: i }) }));
+    const RA = 'https://rentalaja-app.vercel.app/#/';
+    const LIB = {
+      H: ['holding', [['Dasbor omzet Rentalaja', RA + 'MgmtDashboard'], ['Dasbor keuangan', RA + 'KeuDasbor'], ['SOP Operasional Rentalaja', 'https://claude.ai/artifact/9H4vV5p35fem3onXPGr1mc'], ['Playbook unit bisnis', 'https://claude.ai/artifact/WvNPVXdsUEh1Cd8v8uYvWw']]],
+      GK: ['RA Garut Kota', [['Dasbor per lini', RA + 'MgmtLini'], ['Panel cabang · Hari ini', RA + 'PosHariIni'], ['Tutup shift', RA + 'PosShift']]],
+      BD: ['RA Bandung', [['Dasbor per lini', RA + 'MgmtLini'], ['Panel cabang · Hari ini', RA + 'PosHariIni'], ['Tutup shift', RA + 'PosShift']]],
+      EX: ['Experience', [['Panel Experience · Hari ini', RA + 'ExpHariIni'], ['Kalender & harga per malam', RA + 'ExpKalender']]],
+      WG: ['TripinAja', [['TripinAja App UI', 'https://claude.ai/artifact/8b28pY6em1mva35ckUqL8c'], ['Kalender konten November', 'https://claude.ai/artifact/Gk9UE2jmiiTBWQ8sKPLgvE']]],
+      NA: ['Niagaaja', [['Proposal Investasi Laptopaja', 'https://claude.ai/artifact/Uh9qRGgrTrp7xZE7NgsBnC'], ['Niagaaja UI/UX', 'https://claude.ai/artifact/EDw7j18SB5PQZk6oSPutdH']]]
+    };
+    const lb = LIB[scope] || LIB.H;
+    return {
+      days, cols, grid, s, dayLong: DL[day],
+      modes: [...Object.keys(MODES).map(k => ({ label: MODES[k][0], bg: MODES[k][1], bd: MODES[k][2] })), { label: 'Selesai · divalidasi valuer', bg: '#1D3149', bd: '#1D3149' }],
+      emptyNote: people.length === 0,
+      isHolding: isH ? 'true' : 'false', hBg: isH ? '#1D3149' : '#F3F5F8', hFg: isH ? '#FFFFFF' : '#3B4250',
+      pickHolding: () => this.setState({ scope: 'H' }),
+      unitBtns: SC.map(([k, label]) => ({ label, on: scope === k ? 'true' : 'false', bg: scope === k ? '#1D3149' : '#FFFFFF', fg: scope === k ? '#FFFFFF' : '#3B4250', pick: () => this.setState({ scope: k }) })),
+      libTitle: lb[0], lib: lb[1].map(([name, url]) => ({ name, url }))
+    };
+  }
+}
+
+dcBoot(Component);
+</script>
+</body>
+</html>

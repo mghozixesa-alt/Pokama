@@ -1,0 +1,313 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Evaluasi Unit — Pokama · Demo</title>
+<meta name="robots" content="noindex">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F3F5F8}
+a{color:#1D3149}a:hover{color:#0F1D2E}
+</style>
+<style>.demo-tag{position:fixed;right:16px;bottom:16px;z-index:50;background:#1D3149;color:#fff;font:700 12px/1 Nunito,system-ui,sans-serif;padding:10px 14px;border-radius:999px;text-decoration:none;box-shadow:0 6px 18px rgba(29,49,73,.3)}.demo-tag b{color:#09BEAF}</style>
+
+<script src="runtime.js"></script>
+</head>
+<body>
+<div id="root"></div>
+<a class="demo-tag" href="index.html"><b>DEMO</b> · data contoh · semua layar</a>
+<script type="text/plain" id="dc-tpl">
+
+<div style="min-height: 100vh; display: flex; flex-wrap: wrap; background: #F3F5F8; color: #1F2933; font-family: 'Nunito', system-ui, sans-serif; font-size: 14px; line-height: 1.45">
+
+<nav aria-label="Menu utama" style="flex: 1 1 232px; box-sizing: border-box; background: #FFFFFF; border-right: 1px solid #E3E6EB; padding: 24px 16px; display: flex; flex-direction: column; gap: 20px">
+<div style="display: flex; flex-direction: column; gap: 8px; padding: 0 8px">
+<img src="rentalaja-logo.png" alt="RentalAja" style="width: 150px; height: auto">
+<span style="font-size: 12px; color: #5B6573; font-weight: 600">Pokama · Sistem Kerja Harian</span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 11px; font-weight: 800; letter-spacing: 0.08em; color: #5B6573; padding: 0 12px 4px">KERJA HARIAN</span>
+<a href="Main.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path></svg><span style="flex-grow: 1">KKH Saya</span></a>
+<a href="KKH.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"></rect><path d="M3 9h18M9 4v16M15 4v16"></path></svg><span style="flex-grow: 1">KKH Tim</span></a>
+<a href="Penugasan.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l9 5-9 5-9-5 9-5z"></path><path d="M3 13l9 5 9-5"></path></svg><span style="flex-grow: 1">Penugasan &amp; Proyek</span></a>
+<a href="Review.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h11a2 2 0 012 2v4"></path><path d="M4 5v14h7"></path><path d="M7 9h6M7 13h3"></path><path d="M14 17l2 2 4-4"></path></svg><span style="flex-grow: 1">Review &amp; Revisi</span></a>
+<a href="Permintaan.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13h5l1.5 3h5l1.5-3h5"></path><path d="M5.5 5h13l2.5 8v6H3v-6l2.5-8z"></path></svg><span style="flex-grow: 1">Permintaan</span><span style="min-width: 22px; height: 22px; border-radius: 11px; background: #C2410C; color: #FFFFFF; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; padding: 0 6px; box-sizing: border-box">4</span></a>
+<a href="Kehadiran.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"></circle><path d="M12 8v4l3 2"></path></svg><span style="flex-grow: 1">Kehadiran &amp; Cuti</span></a>
+</div>
+<div style="display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 11px; font-weight: 800; letter-spacing: 0.08em; color: #5B6573; padding: 0 12px 4px">UNIT BISNIS</span>
+<a href="Target.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"></circle><circle cx="12" cy="12" r="4"></circle><circle cx="12" cy="12" r="0.8"></circle></svg><span style="flex-grow: 1">Target Unit</span></a>
+<a href="Omzet.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 20V11M11 20V5M17 20v-7M3 20h18"></path></svg><span style="flex-grow: 1">Omzet Unit</span></a>
+<a href="Evaluasi.dc.html" aria-current="page" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 700; color: #1D3149; background: #DDF5F2"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6v3H9z"></path><path d="M7 4.5H5V21h14V4.5h-2"></path><path d="M9 14l2 2 4-4"></path></svg><span style="flex-grow: 1">Evaluasi &amp; Keputusan</span></a>
+<a href="Liga.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4h8v5a4 4 0 01-8 0V4z"></path><path d="M8 6H5a3 3 0 003 4M16 6h3a3 3 0 01-3 4M12 13v4M8 20h8"></path></svg><span style="flex-grow: 1">Liga Unit Bisnis</span></a>
+<a href="Laporan.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6v18h12V7l-4-4z"></path><path d="M14 3v4h4M9 13h6M9 17h6"></path></svg><span style="flex-grow: 1">Laporan &amp; Ritual</span></a>
+</div>
+<div style="display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 11px; font-weight: 800; letter-spacing: 0.08em; color: #5B6573; padding: 0 12px 4px">ORANG</span>
+<a href="Tim.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"></circle><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"></path><path d="M16 4.5a3.5 3.5 0 010 7M18 14c2 .7 3.5 2.8 3.5 6"></path></svg><span style="flex-grow: 1">Tim &amp; Peran</span></a>
+<a href="Bonus.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"></circle><path d="M12 7v10M14.5 9.5h-3.5a1.5 1.5 0 000 3h2a1.5 1.5 0 010 3H9.5"></path></svg><span style="flex-grow: 1">Performa &amp; Insentif</span></a>
+</div>
+<div style="display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 11px; font-weight: 800; letter-spacing: 0.08em; color: #5B6573; padding: 0 12px 4px">SISTEM</span>
+<a href="Library.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h4v16H5zM10 4h4v16h-4z"></path><path d="M15.5 5.2l3.8-1 3.2 14.6-3.8 1z"></path></svg><span style="flex-grow: 1">Library Dokumen</span></a>
+<a href="Peta.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4L3 6v14l6-2 6 2 6-2V4l-6 2-6-2z"></path><path d="M9 4v14M15 6v14"></path></svg><span style="flex-grow: 1">Peta Sistem</span></a>
+<a href="Pengaturan.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h9M17 6h3M4 12h3M11 12h9M4 18h11M19 18h1"></path><circle cx="15" cy="6" r="2"></circle><circle cx="9" cy="12" r="2"></circle><circle cx="17" cy="18" r="2"></circle></svg><span style="flex-grow: 1">Pengaturan</span></a>
+</div>
+<div style="display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 11px; font-weight: 800; letter-spacing: 0.08em; color: #5B6573; padding: 0 12px 4px">TAUTAN CEPAT</span>
+<a href="https://rentalaja-app.vercel.app/#/MgmtDashboard" target="_blank" rel="noopener" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; color: #067A70; font-weight: 700"><span style="flex-grow: 1">Dasbor omzet</span><span aria-hidden="true">↗</span></a>
+<a href="https://rentalaja-app.vercel.app/#/KeuDasbor" target="_blank" rel="noopener" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; color: #067A70; font-weight: 700"><span style="flex-grow: 1">Dasbor keuangan</span><span aria-hidden="true">↗</span></a>
+<a href="https://claude.ai/artifact/WvNPVXdsUEh1Cd8v8uYvWw" target="_blank" rel="noopener" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; color: #067A70; font-weight: 700"><span style="flex-grow: 1">Playbook unit bisnis</span><span aria-hidden="true">↗</span></a>
+</div>
+<div style="margin-top: auto; display: flex; align-items: center; gap: 10px; padding: 14px 12px 0; border-top: 1px solid #E3E6EB">
+<div aria-hidden="true" style="width: 36px; height: 36px; border-radius: 18px; background: #DDF5F2; color: #1D3149; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px">GZ</div>
+<div style="display: flex; flex-direction: column"><span style="font-weight: 600">Ghozy</span><span style="font-size: 12px; color: #5B6573">CEO · Holding</span></div>
+</div>
+</nav>
+
+<main style="flex: 999 1 560px; min-width: 0; box-sizing: border-box; padding: 28px 36px 48px; display: flex; flex-direction: column; gap: 20px">
+<header style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px">
+<div style="display: flex; flex-direction: column; gap: 4px">
+<span style="font-size: 13px; color: #5B6573; font-weight: 600">Evaluasi 2 mingguan per unit, Rapat Evaluasi Bulanan, dan catatan semua keputusan</span>
+<h1 style="margin: 0; font-size: 30px; font-weight: 900; letter-spacing: -0.01em">Evaluasi &amp; Keputusan</h1>
+</div>
+<button type="button" onClick="{{act_jadwalkan_evaluasi}}" style="height: 44px; padding: 0 18px; border-radius: 10px; border: 0; background: #09BEAF; color: #1D3149; font: inherit; font-weight: 800; cursor: pointer">Jadwalkan evaluasi</button>
+</header>
+<sc-if value="{{hasMsg}}" hint-placeholder-val="{{false}}"><div role="status" style="display: flex; align-items: center; gap: 12px; background: #DDF5F2; color: #067A70; border: 1px solid #A9E4DC; border-radius: 12px; padding: 10px 12px 10px 16px; font-weight: 700"><span style="flex-grow: 1">{{msg}}</span><button type="button" onClick="{{clearMsg}}" style="height: 36px; padding: 0 12px; border-radius: 8px; border: 0; background: transparent; color: #067A70; font: inherit; font-weight: 800; cursor: pointer">Tutup</button></div></sc-if>
+<sc-if value="{{formOpen}}" hint-placeholder-val="{{false}}"><section aria-label="{{formTitle}}" style="background: #FFFFFF; border: 2px solid #09BEAF; border-radius: 16px; padding: 18px 20px; display: flex; flex-direction: column; gap: 12px"><div style="display: flex; flex-direction: column; gap: 2px"><h2 style="margin: 0; font-size: 18px; font-weight: 800">{{formTitle}}</h2><span style="font-size: 13px; color: #5B6573">{{formNote}}</span></div><div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px"><sc-for list="{{formFields}}" as="ff" hint-placeholder-count="3"><label style="display: flex; flex-direction: column; gap: 4px; font-size: 13px; font-weight: 700; color: #3B4250">{{ff.label}}<input type="text" value="{{ff.v}}" onChange="{{ff.on}}" placeholder="{{ff.ph}}" style="height: 44px; box-sizing: border-box; border: 1px solid #D3D7DE; border-radius: 10px; padding: 0 12px; font: inherit; font-weight: 500; color: #1F2933"></label></sc-for></div><div style="display: flex; gap: 8px"><button type="button" onClick="{{formSubmit}}" style="height: 44px; padding: 0 18px; border-radius: 10px; border: 0; background: #09BEAF; color: #1D3149; font: inherit; font-weight: 900; cursor: pointer">{{formCta}}</button><button type="button" onClick="{{formCancel}}" style="height: 44px; padding: 0 16px; border-radius: 10px; border: 1px solid #E3E6EB; background: #FFFFFF; color: #3B4250; font: inherit; font-weight: 700; cursor: pointer">Batal</button></div></section></sc-if>
+
+
+<section aria-label="Pilih tingkat" style="background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 16px; padding: 14px 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 12px">
+<span style="font-size: 12px; font-weight: 800; letter-spacing: 0.08em; color: #5B6573">LIHAT</span>
+<button type="button" aria-pressed="{{isHolding}}" onClick="{{pickHolding}}" style="height: 40px; padding: 0 16px; border-radius: 10px; border: 0; background: {{hBg}}; color: {{hFg}}; font: inherit; font-weight: 800; cursor: pointer">Holding · semua unit</button>
+<span aria-hidden="true" style="width: 1px; height: 28px; background: #E3E6EB"></span>
+<div role="group" aria-label="Pilih unit" style="display: flex; flex-wrap: wrap; gap: 6px">
+<sc-for list="{{unitBtns}}" as="u" hint-placeholder-count="9">
+<button type="button" aria-pressed="{{u.on}}" onClick="{{u.pick}}" style="height: 36px; padding: 0 12px; border-radius: 999px; border: 1px solid #E3E6EB; background: {{u.bg}}; color: {{u.fg}}; font: inherit; font-size: 13px; font-weight: 700; cursor: pointer">{{u.label}}</button>
+</sc-for>
+</div>
+<span style="font-size: 12px; color: #8A94A3; margin-left: auto">Leader unit langsung masuk ke unitnya sendiri</span>
+</section>
+<sc-if value="{{emptyNote}}" hint-placeholder-val="{{false}}"><p style="margin: 0; padding: 14px 16px; border-radius: 12px; background: #FFFFFF; border: 1px dashed #C9CED6; color: #5B6573">{{emptyText}}</p></sc-if>
+
+<div role="tablist" aria-label="Bagian" style="display: flex; flex-wrap: wrap; gap: 4px; border-bottom: 1px solid #E3E6EB">
+<sc-for list="{{tabs}}" as="t" hint-placeholder-count="3">
+<button type="button" role="tab" aria-selected="{{t.on}}" onClick="{{t.pick}}" style="height: 44px; padding: 0 16px; border: 0; background: transparent; font: inherit; font-weight: 800; color: {{t.fg}}; box-shadow: inset 0 -3px 0 {{t.line}}; cursor: pointer">{{t.label}}</button>
+</sc-for>
+</div>
+
+<sc-if value="{{tEval}}" hint-placeholder-val="{{true}}">
+<div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start">
+<section aria-label="Jadwal evaluasi" style="flex: 1 1 300px; min-width: 0; display: flex; flex-direction: column; gap: 8px">
+<sc-for list="{{units}}" as="u" hint-placeholder-count="8">
+<button type="button" onClick="{{u.pick}}" style="width: 100%; text-align: left; font: inherit; color: #1F2933; cursor: pointer; background: #FFFFFF; border: 1px solid #E3E6EB; box-shadow: inset 0 0 0 2px {{u.ring}}; border-radius: 14px; padding: 12px 14px; display: flex; align-items: center; justify-content: space-between; gap: 10px">
+<span style="display: flex; flex-direction: column"><span style="font-weight: 800">{{u.name}}</span><span style="font-size: 12px; color: #5B6573">{{u.when}} · {{u.lead}}</span></span>
+<span style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 800; padding: 4px 10px; border-radius: 999px; background: {{u.stBg}}; color: {{u.stFg}}; white-space: nowrap">{{u.stText}}</span>
+</button>
+</sc-for>
+</section>
+
+<section aria-label="Laporan evaluasi satu halaman" style="flex: 2 1 560px; min-width: 0; background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 20px; padding: 22px; display: flex; flex-direction: column; gap: 16px">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px">
+<div style="display: flex; flex-direction: column"><span style="font-size: 12px; font-weight: 800; letter-spacing: 0.08em; color: #067A70">LAPORAN SATU HALAMAN · {{e.when}}</span><h2 style="margin: 0; font-size: 21px; font-weight: 900">{{e.name}}</h2><span style="font-size: 13px; color: #5B6573">{{e.lead}} · bersama Kepala Staf dan Keuangan · 30 menit</span></div>
+<div role="group" aria-label="Status unit" style="display: flex; gap: 6px">
+<sc-for list="{{e.statusBtns}}" as="b" hint-placeholder-count="3">
+<button type="button" aria-pressed="{{b.on}}" onClick="{{b.pick}}" style="height: 40px; padding: 0 14px; border-radius: 999px; border: 1.5px solid {{b.bd}}; background: {{b.bg}}; color: {{b.fg}}; font: inherit; font-weight: 800; cursor: pointer">{{b.label}}</button>
+</sc-for>
+</div>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 8px">
+<span style="font-size: 12px; font-weight: 800; letter-spacing: 0.06em; color: #5B6573">1 · ANGKA (OTOMATIS DARI DASBOR)</span>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px">
+<sc-for list="{{numbers}}" as="n" hint-placeholder-count="4">
+<div style="background: #F3F5F8; border-radius: 12px; padding: 12px; display: flex; flex-direction: column; gap: 4px"><span style="font-size: 12px; font-weight: 700; color: #5B6573">{{n.k}}</span><span style="font-size: 13px; font-weight: 800; color: #067A70">{{n.src}}</span></div>
+</sc-for>
+</div>
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<span style="font-size: 12px; font-weight: 800; letter-spacing: 0.06em; color: #5B6573">2 · TIGA YANG BERHASIL</span>
+<sc-for list="{{e.wins}}" as="w" hint-placeholder-count="3"><input type="text" aria-label="Yang berhasil {{w.n}}" value="{{w.v}}" onChange="{{w.on}}" placeholder="Tulis yang berhasil" style="height: 40px; box-sizing: border-box; border: 1px solid #D3D7DE; border-radius: 10px; padding: 0 12px; font: inherit; color: #1F2933"></sc-for>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<span style="font-size: 12px; font-weight: 800; letter-spacing: 0.06em; color: #5B6573">3 · TIGA MASALAH</span>
+<sc-for list="{{e.probs}}" as="p" hint-placeholder-count="3"><input type="text" aria-label="Masalah {{p.n}}" value="{{p.v}}" onChange="{{p.on}}" placeholder="Tulis masalah" style="height: 40px; box-sizing: border-box; border: 1px solid #D3D7DE; border-radius: 10px; padding: 0 12px; font: inherit; color: #1F2933"></sc-for>
+</div>
+</div>
+<label style="display: flex; flex-direction: column; gap: 6px; font-size: 12px; font-weight: 800; letter-spacing: 0.06em; color: #5B6573">4 · SATU PERMINTAAN BANTUAN (KE CEO ATAU UNIT LAIN)
+<input type="text" value="{{e.help}}" onChange="{{onHelp}}" placeholder="Bantuan apa yang dibutuhkan" style="height: 44px; box-sizing: border-box; border: 1px solid #D3D7DE; border-radius: 10px; padding: 0 12px; font: inherit; font-size: 14px; letter-spacing: 0; color: #1F2933">
+</label>
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; background: #F3F5F8; border-radius: 12px; padding: 12px 14px">
+<span style="font-size: 13px"><strong>5 · Target 2 minggu ke depan</strong> diambil dari OKR di layar Target Unit.</span>
+<a href="Target.dc.html" style="font-weight: 800; text-decoration: none; min-height: 40px; display: flex; align-items: center">Buka Target Unit →</a>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 10px">
+<button type="button" onClick="{{act_simpan_evaluasi}}" style="height: 44px; padding: 0 18px; border-radius: 10px; border: 0; background: #1D3149; color: #FFFFFF; font: inherit; font-weight: 800; cursor: pointer">Simpan evaluasi</button>
+<button type="button" onClick="{{act_bawa_ke_rapat_evaluasi_bulanan}}" style="height: 44px; padding: 0 16px; border-radius: 10px; border: 1px solid #E3E6EB; background: #FFFFFF; color: #1D3149; font: inherit; font-weight: 700; cursor: pointer">Bawa ke Rapat Evaluasi Bulanan</button>
+</div>
+</section>
+</div>
+</sc-if>
+
+<sc-if value="{{tRapat}}" hint-placeholder-val="{{false}}">
+<div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start">
+<section aria-labelledby="agenda-h" style="flex: 2 1 560px; min-width: 0; background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 20px; padding: 22px; display: flex; flex-direction: column; gap: 14px">
+<div style="display: flex; flex-direction: column"><span style="font-size: 12px; font-weight: 800; letter-spacing: 0.08em; color: #067A70">SENIN, 2 NOVEMBER 2026 · 09.00</span><h2 id="agenda-h" style="margin: 0; font-size: 21px; font-weight: 900">Agenda Rapat Evaluasi Bulanan</h2><span style="font-size: 13px; color: #5B6573">Disusun otomatis dari hasil evaluasi 2 mingguan. Peserta: CEO, Kepala Staf, Keuangan, BizDev.</span></div>
+<sc-for list="{{agenda}}" as="a" hint-placeholder-count="4">
+<div style="display: flex; gap: 14px; padding-top: 12px; border-top: 1px solid #EEF0F3">
+<span style="width: 34px; height: 34px; border-radius: 10px; background: {{a.bg}}; color: {{a.fg}}; font-weight: 900; display: flex; align-items: center; justify-content: center; flex-shrink: 0">{{a.n}}</span>
+<div style="display: flex; flex-direction: column; gap: 6px; flex-grow: 1">
+<span style="font-weight: 800; font-size: 15px">{{a.title}}</span>
+<sc-for list="{{a.items}}" as="i" hint-placeholder-count="2"><span style="font-size: 13px; color: #3B4250">· {{i}}</span></sc-for>
+</div>
+</div>
+</sc-for>
+</section>
+<section aria-labelledby="dk-h" style="flex: 1 1 320px; min-width: 0; background: #1D3149; color: #FFFFFF; border-radius: 20px; padding: 22px; display: flex; flex-direction: column; gap: 10px">
+<h2 id="dk-h" style="margin: 0; font-size: 18px; font-weight: 800">Pilihan keputusan per unit</h2>
+<div style="display: flex; flex-direction: column; gap: 8px; font-size: 13px">
+<div style="background: #2C4664; border-radius: 10px; padding: 10px 12px"><strong style="color: #86DCD3">Naik tahap</strong> · boleh tambah aset atau cari investor</div>
+<div style="background: #2C4664; border-radius: 10px; padding: 10px 12px"><strong style="color: #86DCD3">Lanjut</strong> · tahap sama, target lebih tinggi</div>
+<div style="background: #2C4664; border-radius: 10px; padding: 10px 12px"><strong style="color: #86DCD3">Tahan + dukungan</strong> · satu kuartal pendampingan, tanpa tambahan modal</div>
+<div style="background: #2C4664; border-radius: 10px; padding: 10px 12px"><strong style="color: #86DCD3">Gabung atau tutup</strong> · bila dua kuartal berturut di bawah standar</div>
+</div>
+<span style="font-size: 12px; color: #C5D3E3">Semua keputusan langsung tercatat di Log keputusan dengan PIC dan tenggat.</span>
+</section>
+</div>
+</sc-if>
+
+<sc-if value="{{tLog}}" hint-placeholder-val="{{false}}">
+<section aria-label="Log keputusan" style="background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 20px; overflow-x: auto">
+<table style="width: 100%; min-width: 900px; border-collapse: collapse">
+<thead><tr style="border-bottom: 1px solid #E3E6EB">
+<th scope="col" style="text-align: left; padding: 14px 20px; font-size: 12px; color: #5B6573; font-weight: 800; letter-spacing: 0.06em; width: 100px">KAPAN</th>
+<th scope="col" style="text-align: left; padding: 14px 8px; font-size: 12px; color: #5B6573; font-weight: 800; letter-spacing: 0.06em; width: 170px">UNIT</th>
+<th scope="col" style="text-align: left; padding: 14px 8px; font-size: 12px; color: #5B6573; font-weight: 800; letter-spacing: 0.06em">KEPUTUSAN</th>
+<th scope="col" style="text-align: left; padding: 14px 20px 14px 8px; font-size: 12px; color: #5B6573; font-weight: 800; letter-spacing: 0.06em; width: 120px">STATUS</th>
+</tr></thead>
+<tbody>
+<sc-for list="{{log}}" as="l" hint-placeholder-count="8">
+<tr style="border-bottom: 1px solid #EEF0F3">
+<td style="padding: 12px 20px; color: #3B4250; white-space: nowrap">{{l.when}}</td>
+<td style="padding: 12px 8px; font-weight: 700">{{l.unit}}</td>
+<td style="padding: 12px 8px">{{l.what}}</td>
+<td style="padding: 12px 20px 12px 8px"><span style="font-size: 12px; font-weight: 800; padding: 4px 10px; border-radius: 999px; background: {{l.bg}}; color: {{l.fg}}; white-space: nowrap">{{l.st}}</span></td>
+</tr>
+</sc-for>
+</tbody>
+</table>
+</section>
+</sc-if>
+</main>
+</div>
+</script>
+<script>
+
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { tab: 'eval', sel: 'BD', st: {}, form: {} };
+  }
+
+  componentDidUpdate(pp, ps) { if ((this.state.form_ && this.state.form_ !== ps.form_) || (this.state.msg && this.state.msg !== ps.msg)) { try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (e) {} } }
+  openForm(k, ctx) { this.setState({ form_: k, fv: {}, fctx: ctx || '' }); }
+  say(m) { this.setState({ msg: m, form_: null }); }
+  uxVals(F) {
+    const k = this.state.form_, f = k ? F[k] : null, fv = this.state.fv || {}, ctx = this.state.fctx || '';
+    return {
+      hasMsg: !!this.state.msg, msg: this.state.msg || '', clearMsg: () => this.setState({ msg: '' }),
+      formOpen: !!f, formTitle: f ? f.title.replace('{ctx}', ctx) : '', formNote: f ? (f.note || '') : '', formCta: f ? (f.cta || 'Kirim') : '',
+      formFields: f ? f.fields.map(([label, ph], i) => ({ label, ph: (ph || '').replace('{ctx}', ctx), v: fv[i] || '', on: (e) => this.setState({ fv: { ...(this.state.fv || {}), [i]: e.target.value } }) })) : [],
+      formSubmit: () => this.say(f.done.replace('{ctx}', ctx).replace(/\{(\d)\}/g, (m, i) => (fv[i] || '').trim() || 'baru')), formCancel: () => this.setState({ form_: null })
+    };
+  }
+  renderVals() {
+    const SC = [['GK', 'RA Garut Kota'], ['BD', 'RA Bandung'], ['WN', 'RA Wanaraja'], ['CP', 'RA Ciputat'], ['EX', 'Experience'], ['JP', 'Jeep'], ['WG', 'TripinAja'], ['NA', 'Niagaaja'], ['MP', 'Maripoto']];
+    const scope = this.state.scope || 'H';
+    const isH = scope === 'H';
+    const scopeVals = {
+      isH, notH: !isH, isHolding: isH ? 'true' : 'false', hBg: isH ? '#1D3149' : '#F3F5F8', hFg: isH ? '#FFFFFF' : '#3B4250',
+      pickHolding: () => this.setState({ scope: 'H' }),
+      unitBtns: SC.map(([k, label]) => ({ label, on: scope === k ? 'true' : 'false', bg: scope === k ? '#1D3149' : '#FFFFFF', fg: scope === k ? '#FFFFFF' : '#3B4250', pick: () => this.setState({ scope: k }) }))
+    };
+    const R = 'Lihat Dasbor Rentalaja';
+    const M = 'Dari layar Omzet Unit';
+    const U = [
+      { c: 'GK', name: 'Rentalaja Garut Kota', lead: 'Igam', when: 'Sel, 27 Okt', s: 'g', src: R },
+      { c: 'BD', name: 'Rentalaja Bandung', lead: 'Pak Uji', when: 'Sel, 27 Okt', s: 'r', src: R,
+        probs: ['Biaya tetap ±Rp25 jt/bulan di atas omzet bulan terbaik', 'Closing rate turun setelah syarat sewa diperketat', 'Ongkir antar selama ini 100% milik teknisi runner'],
+        help: 'Tambahan tenaga ops dari Garut (Adrian, sedang ditimbang)' },
+      { c: 'EX', name: 'Rentalaja Experience', lead: 'Adrian Akbar', when: 'Rab, 28 Okt', s: 'y', src: R },
+      { c: 'WG', name: 'TripinAja', lead: 'Wiranata', when: 'Rab, 28 Okt', s: 'g', src: M,
+        probs: ['Belum ada PIC pengadaan vendor', '', ''] },
+      { c: 'NA', name: 'Niagaaja / Laptopaja', lead: 'Yusril Firdaus', when: 'Kam, 29 Okt', s: 'y', src: M,
+        probs: ['Stok laptop turun dari 36 unit (Jan) ke ±10 unit', '', ''], help: 'Modal stok lewat proposal investor' },
+      { c: 'JP', name: 'ATVaja (Jeep)', lead: 'Leader belum ada', when: 'Kam, 29 Okt', s: 'y', src: R },
+      { c: 'WN', name: 'Rentalaja Wanaraja', lead: 'Leader belum ada', when: 'Jum, 30 Okt', s: 'y', src: R },
+      { c: 'MP', name: 'Maripoto Photobooth', lead: 'Leader belum ada', when: 'Jum, 30 Okt', s: 'g', src: M },
+      { c: 'CP', name: 'Rentalaja Ciputat', lead: 'Leader belum ada', when: 'Belum dijadwalkan', s: 'y', src: R }
+    ];
+    const S = { g: ['Hijau', '#DDF5F2', '#067A70', '#09BEAF'], y: ['Kuning', '#FDF3D7', '#7A5200', '#D99A00'], r: ['Merah', '#FCEBDD', '#9A3F0A', '#C2410C'] };
+    const stOf = (u) => this.state.st[u.c] || u.s;
+    const units = U.filter(u => isH || u.c === scope).map(u => {
+      const s = S[stOf(u)];
+      return { name: u.name, lead: u.lead, when: u.when, stText: s[0], stBg: s[1], stFg: s[2],
+        ring: u.c === this.state.sel ? '#09BEAF' : 'transparent', pick: () => this.setState({ sel: u.c }) };
+    });
+    const u0 = isH ? (U.find(u => u.c === this.state.sel) || U[0]) : (U.find(u => u.c === scope) || U[0]);
+    const f = this.state.form[u0.c] || {};
+    const setF = (k) => (ev) => this.setState({ form: { ...this.state.form, [u0.c]: { ...f, [k]: ev.target.value } } });
+    const list = (key, base) => [0, 1, 2].map(i => ({ n: i + 1, v: f[key + i] !== undefined ? f[key + i] : ((base || [])[i] || ''), on: setF(key + i) }));
+    const cur = stOf(u0);
+    const e = {
+      name: u0.name, lead: u0.lead === 'Leader belum ada' ? 'Leader belum ada' : 'Leader: ' + u0.lead, when: u0.when.toUpperCase(), source: u0.src,
+      wins: list('w', u0.wins), probs: list('p', u0.probs),
+      help: f.help !== undefined ? f.help : (u0.help || ''),
+      statusBtns: ['g', 'y', 'r'].map(k => ({
+        label: S[k][0], on: cur === k ? 'true' : 'false',
+        bg: cur === k ? S[k][1] : '#FFFFFF', fg: S[k][2], bd: cur === k ? S[k][3] : '#E3E6EB',
+        pick: () => this.setState({ st: { ...this.state.st, [u0.c]: k } })
+      }))
+    };
+    const red = U.filter(u => stOf(u) === 'r').map(u => u.name);
+    const yel = U.filter(u => stOf(u) === 'y').map(u => u.name);
+    const agenda = [
+      { n: '1', title: 'Unit merah: putuskan dukungan', items: red.length ? red.map(n => n + ' — usulan pendampingan langsung CEO 1 kuartal') : ['Tidak ada unit merah'], bg: '#FCEBDD', fg: '#9A3F0A' },
+      { n: '2', title: 'Unit kuning: cek 3 aksi dari evaluasi', items: yel.length ? [yel.join(', ')] : ['Tidak ada unit kuning'], bg: '#FDF3D7', fg: '#7A5200' },
+      { n: '3', title: 'Keputusan yang masih terbuka', items: ['Kunci alokasi biaya bersama', 'Penetapan Leader Wanaraja, Ciputat, Maripoto, dan Jeep', 'Penempatan Adrian di Bandung'], bg: '#DDF5F2', fg: '#067A70' },
+      { n: '4', title: 'Permintaan anggaran', items: ['Modal stok Laptopaja lewat investor (min. Rp150 jt) — perlu hitungan payback dari Keuangan'], bg: '#EEF0F3', fg: '#4A5160' }
+    ];
+    const LS = { Selesai: ['#DDF5F2', '#067A70'], Berlaku: ['#DDF5F2', '#067A70'], Berjalan: ['#E5EEF9', '#1E5AA8'], Dibahas: ['#FDF3D7', '#7A5200'] };
+    const log = [
+      ['Okt 2026', 'Holding', 'Intifa Ilmi sebagai Kepala Staf; Reza sebagai staf keuangan sekaligus leader aset', 'Berlaku'],
+      ['Okt 2026', 'Holding', 'PPG ditutup dan Tata berhenti, untuk penghematan biaya', 'Selesai'],
+      ['Okt 2026', 'Rentalaja', 'Berhenti berlangganan MyRental.id', 'Selesai'],
+      ['Okt 2026', 'Rentalaja', 'Aturan sewa: DP 20% sebagai deposit, denda telat 15% tarif harian per jam, diskon bundling 5% / 10%', 'Berlaku'],
+      ['Okt 2026', 'Rentalaja', 'Alur rentalaja.co.id: pilih → keranjang → verifikasi → bayar', 'Berjalan'],
+      ['Okt 2026', 'Rentalaja Ciputat', 'Buka versi sederhana, iPhone dipindah dari Garut Kota', 'Berjalan'],
+      ['Okt 2026', 'Rentalaja Bandung', 'Adrian berkantor di Bandung sebagai ops supervisor', 'Dibahas'],
+      ['Sep 2026', 'Rentalaja Bandung', 'Ambil tawaran Adira, tambah 5 unit motor', 'Berjalan']
+    ].filter(([when, unit]) => isH || unit === u0.name || (unit === 'Rentalaja' && ['GK', 'BD', 'WN', 'CP', 'EX', 'JP'].includes(scope))).map(([when, unit, what, st]) => ({ when, unit, what, st, bg: LS[st][0], fg: LS[st][1] }));
+    const tab = this.state.tab;
+    const tabs = [['eval', 'Evaluasi 2 mingguan'], ['rapat', 'Rapat Evaluasi Bulanan'], ['log', 'Log keputusan']].map(([k, label]) => ({
+      label, on: tab === k ? 'true' : 'false', fg: tab === k ? '#1D3149' : '#5B6573', line: tab === k ? '#09BEAF' : 'transparent',
+      pick: () => this.setState({ tab: k })
+    }));
+    const FORMS = {"jadwal": {"title": "Jadwalkan evaluasi 2 mingguan", "note": "Jadwal otomatis masuk KKH Leader, Kepala Staf, dan Keuangan.", "fields": [["Unit", "Misalnya TripinAja"], ["Tanggal", "Misalnya Rab, 4 Nov"], ["Jam", "Misalnya 10.00"], ["Peserta tambahan", "Opsional"]], "cta": "Jadwalkan", "done": "Evaluasi {0} dijadwalkan dan masuk KKH Leader, Kepala Staf, dan Keuangan."}};
+    return { ...this.uxVals(FORMS), act_jadwalkan_evaluasi: () => this.openForm('jadwal'), act_simpan_evaluasi: () => this.say('Evaluasi tersimpan. Status unit diperbarui di Liga Unit Bisnis.'), act_bawa_ke_rapat_evaluasi_bulanan: () => this.setState({ tab: 'rapat', msg: 'Ditambahkan ke agenda Rapat Evaluasi Bulanan, Senin 2 November.' }), 
+
+      ...scopeVals, emptyNote: !isH && log.length === 0 && tab === 'log', emptyText: 'Belum ada keputusan tercatat untuk unit ini.',
+      tabs, tEval: tab === 'eval', tRapat: tab === 'rapat', tLog: tab === 'log',
+      units, e, onHelp: setF('help'), agenda, log,
+      numbers: ['Omzet', 'Laba kontribusi', 'Kas akhir', 'Closing rate'].map(k => ({ k, src: e.source })).concat([{ k: 'KKH tervalidasi', src: 'Dari KKH Tim' }, { k: 'Revisi tuntas tepat waktu', src: 'Dari Review & Revisi' }])
+    };
+  }
+}
+
+dcBoot(Component);
+</script>
+</body>
+</html>

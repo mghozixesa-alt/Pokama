@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KKH Saya (HP) — Pokama</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F3F5F8}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; display: flex; flex-direction: column; background: #F3F5F8; color: #1F2933; font-family: 'Nunito', system-ui, sans-serif; font-size: 14px; line-height: 1.4; overflow: hidden; position: relative">
+<header style="flex-shrink: 0; background: #1D3149; color: #FFFFFF; padding: 16px 16px 14px; display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; justify-content: space-between; align-items: center">
+<div style="display: flex; flex-direction: column"><span style="font-size: 12px; color: #86DCD3; font-weight: 800">{{dayLabel}}</span><h1 style="margin: 0; font-size: 20px; font-weight: 900">KKH Saya</h1></div>
+<span aria-label="Wiranata, Leader TripinAja" style="width: 38px; height: 38px; border-radius: 19px; background: #09BEAF; color: #1D3149; font-weight: 900; font-size: 13px; display: flex; align-items: center; justify-content: center">WR</span>
+</div>
+<div role="group" aria-label="Pilih hari" style="display: flex; gap: 6px">
+<sc-for list="{{days}}" as="d" hint-placeholder-count="2"><button type="button" aria-pressed="{{d.on}}" onClick="{{d.pick}}" style="flex: 1 1 0; height: 36px; border-radius: 10px; border: 0; background: {{d.bg}}; color: {{d.fg}}; font: inherit; font-size: 13px; font-weight: 800; cursor: pointer">{{d.label}}</button></sc-for>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<div style="display: flex; justify-content: space-between; font-size: 13px; font-weight: 800"><span>{{filledText}}</span><span style="color: #86DCD3">{{validText}}</span></div>
+<div style="height: 8px; background: #2C4664; border-radius: 4px; overflow: hidden; display: flex"><span style="display: block; height: 100%; width: {{valPct}}; background: #09BEAF"></span><span style="display: block; height: 100%; width: {{waitPct}}; background: #86DCD3; opacity: 0.5"></span></div>
+</div>
+</header>
+
+<div style="flex: 1 1 auto; min-height: 0; overflow-y: auto"><div style="padding: 14px 14px 18px; display: flex; flex-direction: column; gap: 12px">
+<sc-if value="{{isToday}}" hint-placeholder-val="{{true}}">
+<section aria-label="Sedang berjalan" style="background: #FFFFFF; border: 2px solid #09BEAF; border-radius: 16px; padding: 14px; display: flex; flex-direction: column; gap: 8px">
+<span style="font-size: 11px; font-weight: 900; letter-spacing: 0.08em; color: #067A70">SEKARANG · {{now.time}}</span>
+<span style="display: flex; gap: 8px; align-items: flex-start"><span style="font-size: 12px; font-weight: 900; padding: 3px 8px; border-radius: 6px; background: {{now.codeBg}}; color: {{now.codeFg}}">{{now.code}}</span><span style="font-weight: 800; font-size: 15px">{{now.note}}</span></span>
+<sc-if value="{{now.canDone}}" hint-placeholder-val="{{true}}"><button type="button" onClick="{{now.done}}" style="height: 48px; border-radius: 12px; border: 0; background: #09BEAF; color: #1D3149; font: inherit; font-size: 15px; font-weight: 900; cursor: pointer">Tandai siap divalidasi</button></sc-if>
+<sc-if value="{{now.isWait}}" hint-placeholder-val="{{false}}"><span style="font-size: 13px; font-weight: 800; color: #067A70">Menunggu valuer memberi ✓</span></sc-if>
+</section>
+</sc-if>
+
+<sc-if value="{{isTomorrow}}" hint-placeholder-val="{{false}}">
+<div style="display: flex; gap: 8px">
+<button type="button" onClick="{{copyYesterday}}" style="flex: 1 1 0; height: 44px; border-radius: 12px; border: 1px solid #1D3149; background: #FFFFFF; color: #1D3149; font: inherit; font-weight: 800; cursor: pointer">Salin dari hari ini</button>
+</div>
+<p style="margin: 0; font-size: 12px; color: #5B6573">Isi paling lambat besok 08.00. Ketuk slot untuk mengisi.</p>
+</sc-if>
+
+<section aria-label="Slot per jam" style="background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 16px; overflow: hidden">
+<sc-for list="{{slots}}" as="s" hint-placeholder-count="10">
+<button type="button" onClick="{{s.open}}" aria-label="{{s.aria}}" style="width: 100%; display: flex; align-items: center; gap: 10px; padding: 10px 12px; border: 0; border-bottom: 1px solid #F3F5F8; background: {{s.bg}}; font: inherit; color: #1F2933; text-align: left; cursor: pointer; min-height: 56px">
+<span style="width: 42px; flex-shrink: 0; font-size: 12px; font-weight: 800; color: {{s.timeFg}}">{{s.time}}</span>
+<span style="width: 46px; flex-shrink: 0; text-align: center; font-size: 11px; font-weight: 900; padding: 3px 0; border-radius: 6px; background: {{s.codeBg}}; color: {{s.codeFg}}">{{s.code}}</span>
+<span style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column"><span style="font-weight: 700; font-size: 13px; color: {{s.noteFg}}">{{s.note}}</span><span style="font-size: 11px; color: #5B6573">{{s.sub}}</span></span>
+<span style="flex-shrink: 0; font-size: 11px; font-weight: 900; padding: 3px 8px; border-radius: 999px; background: {{s.stBg}}; color: {{s.stFg}}">{{s.st}}</span>
+</button>
+</sc-for>
+</section>
+
+<sc-if value="{{hasPend}}" hint-placeholder-val="{{true}}">
+<section aria-labelledby="val-h" style="background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 16px; padding: 12px 14px; display: flex; flex-direction: column; gap: 4px">
+<h2 id="val-h" style="margin: 0 0 4px; font-size: 15px; font-weight: 900">Menunggu validasi saya ({{nPend}})</h2>
+<sc-for list="{{pending}}" as="p" hint-placeholder-count="2">
+<div style="display: flex; align-items: center; gap: 10px; padding: 8px 0; border-top: 1px solid #F3F5F8">
+<span style="flex: 1 1 auto; display: flex; flex-direction: column"><span style="font-weight: 800; font-size: 13px">{{p.who}} · {{p.time}}</span><span style="font-size: 12px; color: #3B4250"><strong>{{p.code}}</strong> {{p.note}}</span></span>
+<button type="button" onClick="{{p.ok}}" style="height: 44px; padding: 0 14px; border-radius: 10px; border: 0; background: #09BEAF; color: #1D3149; font: inherit; font-weight: 900; cursor: pointer">✓ Valid</button>
+</div>
+</sc-for>
+</section>
+</sc-if>
+<p style="margin: 0; font-size: 12px; color: #5B6573; text-align: center">Libur minggu ini: Selasa &amp; Jumat · Valuer: Ghozy · Intifa</p>
+</div>
+</div>
+
+
+
+<nav aria-label="Menu bawah" style="flex-shrink: 0; height: 68px; background: #FFFFFF; border-top: 1px solid #E3E6EB; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr))">
+<a href="KKHHp.dc.html" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; text-decoration: none; font-size: 11px; font-weight: 800; color: {{tabKkh}}"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="15" rx="2"></rect><path d="M8 3v4M16 3v4M4 10h16"></path></svg>KKH</a>
+<a href="ReviewHp.dc.html" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; text-decoration: none; font-size: 11px; font-weight: 800; color: {{tabRev}}; position: relative"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h11a2 2 0 012 2v4"></path><path d="M4 5v14h7"></path><path d="M14 17l2 2 4-4"></path></svg>Review<span style="position: absolute; top: 8px; left: calc(50% + 6px); min-width: 18px; height: 18px; border-radius: 9px; background: #C2410C; color: #FFFFFF; font-size: 10px; font-weight: 900; display: flex; align-items: center; justify-content: center; padding: 0 4px; box-sizing: border-box">{{revBadge}}</span></a>
+<a href="PermintaanHp.dc.html" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; text-decoration: none; font-size: 11px; font-weight: 800; color: #8A94A3"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 13l3-8h10l3 8v6H4z"></path><path d="M4 13h5l1 2h4l1-2h5"></path></svg>Permintaan</a>
+<a href="LainnyaHp.dc.html" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; text-decoration: none; font-size: 11px; font-weight: 800; color: #8A94A3"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"></path></svg>Lainnya</a>
+</nav>
+<sc-if value="{{sheetOpen}}" hint-placeholder-val="{{false}}">
+<div style="position: absolute; inset: 0; z-index: 10; background: rgba(15, 29, 46, 0.45); display: flex; flex-direction: column; justify-content: flex-end">
+<section role="dialog" aria-label="Isi slot {{sh.time}}" style="background: #FFFFFF; border-radius: 20px 20px 0 0; padding: 16px 16px 20px; display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; justify-content: space-between; align-items: center"><h2 style="margin: 0; font-size: 17px; font-weight: 900">Slot {{sh.time}}</h2><button type="button" onClick="{{closeSheet}}" aria-label="Tutup" style="width: 40px; height: 40px; border-radius: 20px; border: 0; background: #F3F5F8; font: inherit; font-size: 18px; font-weight: 900; cursor: pointer">×</button></div>
+<span style="font-size: 12px; font-weight: 800; color: #5B6573">JENIS KERJA</span>
+<div style="display: flex; flex-wrap: wrap; gap: 6px"><sc-for list="{{sh.codes}}" as="c" hint-placeholder-count="5"><button type="button" aria-pressed="{{c.on}}" onClick="{{c.pick}}" style="height: 40px; padding: 0 14px; border-radius: 10px; border: 1px solid #E3E6EB; background: {{c.bg}}; color: {{c.fg}}; font: inherit; font-weight: 800; cursor: pointer">{{c.label}}</button></sc-for></div>
+<span style="font-size: 12px; font-weight: 800; color: #5B6573">MODE</span>
+<div style="display: flex; flex-wrap: wrap; gap: 6px"><sc-for list="{{sh.modes}}" as="m" hint-placeholder-count="4"><button type="button" aria-pressed="{{m.on}}" onClick="{{m.pick}}" style="height: 40px; padding: 0 12px; border-radius: 10px; border: 1px solid {{m.bd}}; background: {{m.bg}}; color: #1F2933; font: inherit; font-size: 13px; font-weight: 800; cursor: pointer">{{m.label}}</button></sc-for></div>
+<label style="display: flex; flex-direction: column; gap: 4px; font-size: 12px; font-weight: 800; color: #5B6573">CATATAN PEKERJAAN<textarea rows="2" value="{{sh.note}}" onChange="{{sh.onNote}}" placeholder="Misalnya: Rekap booking trip minggu ini" style="font: inherit; font-size: 14px; font-weight: 500; border: 1px solid #D3D7DE; border-radius: 10px; padding: 10px 12px; resize: none; color: #1F2933"></textarea></label>
+<button type="button" onClick="{{closeSheet}}" style="height: 48px; border-radius: 12px; border: 0; background: #09BEAF; color: #1D3149; font: inherit; font-size: 15px; font-weight: 900; cursor: pointer">Simpan</button>
+</section>
+</div>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { day: 0, ed: {}, wait: {}, okd: {}, sheet: null, copied: false };
+  }
+  renderVals() {
+    const CODEC = { CP: ['#1D3149', '#FFFFFF'], CW: ['#DDF5F2', '#067A70'], SW: ['#EEF0F3', '#3B4250'], IN: ['#E5EEF9', '#1E5AA8'], EX: ['#FDF3D7', '#7A5200'] };
+    const MODE = { K: ['Di kantor / cabang', '#DDF5F2', '#A9E4DC'], H: ['WFH', '#E5EEF9', '#BFD3EE'], E: ['WFE (dekat rumah)', '#FDF3D7', '#EED9A0'], I: ['Izin / cuti', '#FCEBDD', '#F0C2A3'] };
+    const TODAY = {
+      8: ['IN', 'K', 'Briefing pagi seluruh tim', 'IF'],
+      9: ['SW', 'K', 'Rekap booking trip minggu ini', 'GZ'],
+      10: ['CP', 'K', '1:1 Ariq: SOP pembatalan trip', ''],
+      11: ['SW', 'K', 'Revisi: pisahkan rekening dana titipan tamu', '', 'Dari Review & Revisi'],
+      13: ['EX', 'E', 'Survei Halaman Belakang Kebon', ''],
+      14: ['CP', 'K', 'Rapat restrukturisasi TripinAja', ''],
+      15: ['CW', 'K', 'Konten promo paket villa bersama Nayla', ''],
+      16: ['SW', 'K', 'Laporan omzet harian TripinAja', ''],
+      17: ['SW', 'K', 'Validasi KKH Ariq & Nayla', '']
+    };
+    const day = this.state.day, ed = this.state.ed;
+    const base = day === 0 ? TODAY : (this.state.copied ? Object.fromEntries(Object.entries(TODAY).map(([h, e]) => [h, [e[0], e[1], e[2], '']])) : {});
+    const get = (h) => { const e = base[h]; const o = ed[day + '|' + h] || {}; return { code: o.code !== undefined ? o.code : e ? e[0] : '', mode: o.mode || (e ? e[1] : 'K'), note: o.note !== undefined ? o.note : e ? e[2] : '', by: day === 0 && e ? e[3] : '', from: e && e[4] ? e[4] : '' }; };
+    const hh = (h) => String(h).padStart(2, '0') + '.00';
+    const wait = this.state.wait;
+    const slots = [8, 9, 10, 11, 12, 13, 14, 15, 16, 17].map(h => {
+      const c = get(h), now = day === 0 && h === 10, w = day === 0 && !!wait[h];
+      const empty = !c.code;
+      const st = c.by ? ['✓ ' + c.by, '#1D3149', '#FFFFFF'] : w ? ['Siap', '#DDF5F2', '#067A70'] : empty ? (h === 12 ? ['Istirahat', '#F3F5F8', '#8A94A3'] : ['Kosong', '#FCEBDD', '#9A3F0A']) : day === 0 && h < 10 ? ['Belum ✓', '#FDF3D7', '#7A5200'] : ['Rencana', '#F3F5F8', '#5B6573'];
+      return {
+        time: hh(h), code: empty ? '—' : c.code === 'CP' ? 'CP/SR' : c.code, codeBg: empty ? '#F3F5F8' : CODEC[c.code][0], codeFg: empty ? '#A9B4C2' : CODEC[c.code][1],
+        note: empty ? (h === 12 ? 'Istirahat' : 'Ketuk untuk mengisi') : c.note, noteFg: empty ? '#8A94A3' : '#1F2933',
+        sub: empty ? '' : MODE[c.mode][0] + (c.from ? ' · ' + c.from : '') + (now ? ' · sedang berjalan' : ''),
+        st: st[0], stBg: st[1], stFg: st[2], bg: now ? '#F0FBF9' : '#FFFFFF', timeFg: now ? '#067A70' : '#3B4250',
+        aria: hh(h) + ', ' + (empty ? 'kosong' : c.code + ' ' + c.note) + ', ' + st[0],
+        open: () => this.setState({ sheet: h })
+      };
+    });
+    const n = get(10), nw = !!wait[10];
+    const now = { time: '10.00–11.00', code: n.code === 'CP' ? 'CP/SR' : n.code, codeBg: CODEC[n.code] ? CODEC[n.code][0] : '#EEF0F3', codeFg: CODEC[n.code] ? CODEC[n.code][1] : '#3B4250', note: n.note, canDone: !nw, isWait: nw, done: () => this.setState({ wait: { ...wait, 10: true } }) };
+    const vals = [8, 9, 10, 11, 13, 14, 15, 16, 17].map(get);
+    const filled = vals.filter(c => c.code).length, valid = vals.filter(c => c.by).length, waiting = day === 0 ? Object.keys(wait).length : 0;
+    const okd = this.state.okd;
+    const pending = [{ id: 'ar', who: 'Ariq', time: '09.00', code: 'SW', note: 'Proses booking 5 tamu' }, { id: 'ny', who: 'Nayla', time: '09.00', code: 'CW', note: 'Konten TripinAja bersama Ariq' }].filter(p => !okd[p.id]).map(p => ({ ...p, ok: () => this.setState({ okd: { ...okd, [p.id]: true } }) }));
+    const sh = this.state.sheet;
+    const key = (h) => day + '|' + h;
+    const put = (patch) => this.setState({ ed: { ...ed, [key(sh)]: { ...(ed[key(sh)] || {}), ...patch } } });
+    const sc = sh ? get(sh) : null;
+    return {
+      dayLabel: day === 0 ? 'SENIN, 26 OKTOBER' : 'SELASA, 27 OKTOBER · BESOK', isToday: day === 0, isTomorrow: day === 1,
+      days: [['Hari ini', 0], ['Besok', 1]].map(([label, k]) => ({ label, on: day === k ? 'true' : 'false', bg: day === k ? '#09BEAF' : '#2C4664', fg: day === k ? '#1D3149' : '#FFFFFF', pick: () => this.setState({ day: k, sheet: null }) })),
+      filledText: filled + ' dari 10 jam terisi', validText: day === 0 ? valid + ' tervalidasi' + (waiting ? ' · ' + waiting + ' siap' : '') : 'rencana besok',
+      valPct: valid * 10 + '%', waitPct: waiting * 10 + '%',
+      now, slots, pending, nPend: pending.length, hasPend: day === 0 && pending.length > 0,
+      copyYesterday: () => this.setState({ copied: true }),
+      sheetOpen: !!sh, closeSheet: () => this.setState({ sheet: null }),
+      sh: sh ? {
+        time: hh(sh) + '–' + hh(sh + 1), note: sc.note, onNote: (e) => put({ note: e.target.value }),
+        codes: ['CP', 'CW', 'SW', 'IN', 'EX'].map(c => ({ label: c === 'CP' ? 'CP/SR' : c, on: sc.code === c ? 'true' : 'false', bg: sc.code === c ? '#1D3149' : '#FFFFFF', fg: sc.code === c ? '#FFFFFF' : '#3B4250', pick: () => put({ code: c }) })),
+        modes: Object.keys(MODE).map(m => ({ label: MODE[m][0], on: sc.mode === m ? 'true' : 'false', bg: MODE[m][1], bd: sc.mode === m ? '#1D3149' : MODE[m][2], pick: () => put({ mode: m }) }))
+      } : { time: '', note: '', onNote: () => {}, codes: [], modes: [] },
+      tabKkh: '#067A70', tabRev: '#8A94A3', revBadge: 2
+    };
+  }
+}
+</script>
+</body>
+</html>

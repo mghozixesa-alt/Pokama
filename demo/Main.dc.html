@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KKH Saya — Pokama · Demo</title>
+<meta name="robots" content="noindex">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F3F5F8}
+a{color:#1D3149}a:hover{color:#0F1D2E}
+</style>
+<style>.demo-tag{position:fixed;right:16px;bottom:16px;z-index:50;background:#1D3149;color:#fff;font:700 12px/1 Nunito,system-ui,sans-serif;padding:10px 14px;border-radius:999px;text-decoration:none;box-shadow:0 6px 18px rgba(29,49,73,.3)}.demo-tag b{color:#09BEAF}</style>
+
+<script src="runtime.js"></script>
+</head>
+<body>
+<div id="root"></div>
+<a class="demo-tag" href="index.html"><b>DEMO</b> · data contoh · semua layar</a>
+<script type="text/plain" id="dc-tpl">
+
+<div style="min-height: 100vh; display: flex; flex-wrap: wrap; background: #F3F5F8; color: #1F2933; font-family: 'Nunito', system-ui, sans-serif; font-size: 14px; line-height: 1.45">
+
+<nav aria-label="Menu utama" style="flex: 1 1 232px; box-sizing: border-box; background: #FFFFFF; border-right: 1px solid #E3E6EB; padding: 24px 16px; display: flex; flex-direction: column; gap: 20px">
+<div style="display: flex; flex-direction: column; gap: 8px; padding: 0 8px">
+<img src="rentalaja-logo.png" alt="RentalAja" style="width: 150px; height: auto">
+<span style="font-size: 12px; color: #5B6573; font-weight: 600">Pokama · Sistem Kerja Harian</span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 11px; font-weight: 800; letter-spacing: 0.08em; color: #5B6573; padding: 0 12px 4px">KERJA HARIAN</span>
+<a href="Main.dc.html" aria-current="page" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 700; color: #1D3149; background: #DDF5F2"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path></svg><span style="flex-grow: 1">KKH Saya</span></a>
+<a href="KKH.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"></rect><path d="M3 9h18M9 4v16M15 4v16"></path></svg><span style="flex-grow: 1">KKH Tim</span></a>
+<a href="Penugasan.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l9 5-9 5-9-5 9-5z"></path><path d="M3 13l9 5 9-5"></path></svg><span style="flex-grow: 1">Penugasan &amp; Proyek</span></a>
+<a href="Review.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h11a2 2 0 012 2v4"></path><path d="M4 5v14h7"></path><path d="M7 9h6M7 13h3"></path><path d="M14 17l2 2 4-4"></path></svg><span style="flex-grow: 1">Review &amp; Revisi</span></a>
+<a href="Permintaan.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13h5l1.5 3h5l1.5-3h5"></path><path d="M5.5 5h13l2.5 8v6H3v-6l2.5-8z"></path></svg><span style="flex-grow: 1">Permintaan</span><span style="min-width: 22px; height: 22px; border-radius: 11px; background: #C2410C; color: #FFFFFF; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; padding: 0 6px; box-sizing: border-box">4</span></a>
+<a href="Kehadiran.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"></circle><path d="M12 8v4l3 2"></path></svg><span style="flex-grow: 1">Kehadiran &amp; Cuti</span></a>
+</div>
+<div style="display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 11px; font-weight: 800; letter-spacing: 0.08em; color: #5B6573; padding: 0 12px 4px">UNIT BISNIS</span>
+<a href="Target.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"></circle><circle cx="12" cy="12" r="4"></circle><circle cx="12" cy="12" r="0.8"></circle></svg><span style="flex-grow: 1">Target Unit</span></a>
+<a href="Omzet.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 20V11M11 20V5M17 20v-7M3 20h18"></path></svg><span style="flex-grow: 1">Omzet Unit</span></a>
+<a href="Evaluasi.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6v3H9z"></path><path d="M7 4.5H5V21h14V4.5h-2"></path><path d="M9 14l2 2 4-4"></path></svg><span style="flex-grow: 1">Evaluasi &amp; Keputusan</span></a>
+<a href="Liga.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4h8v5a4 4 0 01-8 0V4z"></path><path d="M8 6H5a3 3 0 003 4M16 6h3a3 3 0 01-3 4M12 13v4M8 20h8"></path></svg><span style="flex-grow: 1">Liga Unit Bisnis</span></a>
+<a href="Laporan.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6v18h12V7l-4-4z"></path><path d="M14 3v4h4M9 13h6M9 17h6"></path></svg><span style="flex-grow: 1">Laporan &amp; Ritual</span></a>
+</div>
+<div style="display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 11px; font-weight: 800; letter-spacing: 0.08em; color: #5B6573; padding: 0 12px 4px">ORANG</span>
+<a href="Tim.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"></circle><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"></path><path d="M16 4.5a3.5 3.5 0 010 7M18 14c2 .7 3.5 2.8 3.5 6"></path></svg><span style="flex-grow: 1">Tim &amp; Peran</span></a>
+<a href="Bonus.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"></circle><path d="M12 7v10M14.5 9.5h-3.5a1.5 1.5 0 000 3h2a1.5 1.5 0 010 3H9.5"></path></svg><span style="flex-grow: 1">Performa &amp; Insentif</span></a>
+</div>
+<div style="display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 11px; font-weight: 800; letter-spacing: 0.08em; color: #5B6573; padding: 0 12px 4px">SISTEM</span>
+<a href="Library.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h4v16H5zM10 4h4v16h-4z"></path><path d="M15.5 5.2l3.8-1 3.2 14.6-3.8 1z"></path></svg><span style="flex-grow: 1">Library Dokumen</span></a>
+<a href="Peta.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4L3 6v14l6-2 6 2 6-2V4l-6 2-6-2z"></path><path d="M9 4v14M15 6v14"></path></svg><span style="flex-grow: 1">Peta Sistem</span></a>
+<a href="Pengaturan.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h9M17 6h3M4 12h3M11 12h9M4 18h11M19 18h1"></path><circle cx="15" cy="6" r="2"></circle><circle cx="9" cy="12" r="2"></circle><circle cx="17" cy="18" r="2"></circle></svg><span style="flex-grow: 1">Pengaturan</span></a>
+</div>
+<div style="display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 11px; font-weight: 800; letter-spacing: 0.08em; color: #5B6573; padding: 0 12px 4px">TAUTAN CEPAT</span>
+<a href="https://rentalaja-app.vercel.app/#/MgmtDashboard" target="_blank" rel="noopener" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; color: #067A70; font-weight: 700"><span style="flex-grow: 1">Dasbor omzet</span><span aria-hidden="true">↗</span></a>
+<a href="https://rentalaja-app.vercel.app/#/KeuDasbor" target="_blank" rel="noopener" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; color: #067A70; font-weight: 700"><span style="flex-grow: 1">Dasbor keuangan</span><span aria-hidden="true">↗</span></a>
+<a href="https://claude.ai/artifact/WvNPVXdsUEh1Cd8v8uYvWw" target="_blank" rel="noopener" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; color: #067A70; font-weight: 700"><span style="flex-grow: 1">Playbook unit bisnis</span><span aria-hidden="true">↗</span></a>
+</div>
+<div style="margin-top: auto; display: flex; align-items: center; gap: 10px; padding: 14px 12px 0; border-top: 1px solid #E3E6EB">
+<div aria-hidden="true" style="width: 36px; height: 36px; border-radius: 18px; background: #DDF5F2; color: #1D3149; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px">GZ</div>
+<div style="display: flex; flex-direction: column"><span style="font-weight: 600">Ghozy</span><span style="font-size: 12px; color: #5B6573">CEO · Holding</span></div>
+</div>
+</nav>
+
+<main style="flex: 999 1 560px; min-width: 0; box-sizing: border-box; padding: 28px 36px 48px; display: flex; flex-direction: column; gap: 22px">
+<header style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px">
+<div style="display: flex; flex-direction: column; gap: 4px">
+<span style="font-size: 13px; color: #5B6573; font-weight: 600">Senin, 26 Oktober 2026 · Minggu ke-44</span>
+<h1 style="margin: 0; font-size: 30px; font-weight: 900; letter-spacing: -0.01em">Selamat pagi, Ghozy</h1>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 10px">
+<a href="KKH.dc.html" style="height: 44px; padding: 0 16px; border-radius: 10px; border: 1px solid #E3E6EB; background: #FFFFFF; color: #1D3149; font-weight: 700; text-decoration: none; display: flex; align-items: center">Isi KKH besok</a>
+<a href="KKH.dc.html" style="height: 44px; padding: 0 18px; border-radius: 10px; background: #09BEAF; color: #1D3149; font-weight: 800; display: flex; align-items: center; text-decoration: none">Buka KKH tim →</a>
+</div>
+</header>
+
+<section aria-label="Status KKH hari ini" style="background: #1D3149; color: #FFFFFF; border-radius: 20px; padding: 22px 24px; display: flex; flex-wrap: wrap; align-items: center; gap: 24px">
+<div style="flex: 1 1 280px; display: flex; flex-direction: column; gap: 4px">
+<span style="font-size: 12px; font-weight: 800; letter-spacing: 0.1em; color: #86DCD3">KKH SAYA HARI INI</span>
+<span style="font-size: 22px; font-weight: 900">{{filled}} dari 10 jam terisi · {{validated}} tervalidasi</span>
+<span style="font-size: 13px; color: #C5D3E3">Rencana diisi 07.42, sebelum batas 08.00. Valuer: Ghozy sendiri (CEO).</span>
+</div>
+<div style="flex: 1 1 260px; display: flex; flex-direction: column; gap: 8px">
+<div style="height: 10px; background: #2C4664; border-radius: 5px; overflow: hidden; display: flex"><div style="height: 100%; width: {{valPct}}; background: #09BEAF"></div><div style="height: 100%; width: {{pendPct}}; background: #86DCD3; opacity: 0.5"></div></div>
+<div style="display: flex; flex-wrap: wrap; gap: 12px; font-size: 12px; color: #C5D3E3"><span>CP/SR {{nCP}}</span><span>CW {{nCW}}</span><span>SW {{nSW}}</span><span>IN/EX {{nEX}}</span></div>
+</div>
+</section>
+
+<div style="display: flex; flex-wrap: wrap; gap: 22px; align-items: flex-start">
+<section aria-labelledby="mine-h" style="flex: 2 1 560px; min-width: 0; background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 20px; padding: 20px 20px 8px; display: flex; flex-direction: column">
+<div style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 8px; margin-bottom: 8px">
+<div style="display: flex; flex-direction: column"><h2 id="mine-h" style="margin: 0; font-size: 18px; font-weight: 800">Jam demi jam</h2><span style="font-size: 13px; color: #5B6573">Setiap slot adalah satu pekerjaan. Tandai selesai, lalu valuer memvalidasi.</span></div>
+<a href="KKH.dc.html" style="font-size: 13px; font-weight: 700; text-decoration: none; min-height: 44px; display: flex; align-items: center">Ubah di KKH tim →</a>
+</div>
+<sc-for list="{{slots}}" as="s" hint-placeholder-count="10">
+<div style="display: flex; align-items: center; gap: 12px; min-height: 58px; border-top: 1px solid #EEF0F3; padding: 6px 0; background: {{s.rowBg}}">
+<span style="width: 92px; font-weight: 800; font-variant-numeric: tabular-nums; color: {{s.timeFg}}; flex-shrink: 0">{{s.time}}</span>
+<span style="width: 54px; height: 30px; border-radius: 8px; background: {{s.codeBg}}; color: {{s.codeFg}}; font-size: 12px; font-weight: 900; display: flex; align-items: center; justify-content: center; flex-shrink: 0">{{s.code}}</span>
+<div style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column">
+<span style="font-weight: 700; color: {{s.noteFg}}">{{s.note}}</span>
+<span style="font-size: 12px; color: #5B6573">{{s.mode}}</span>
+</div>
+<sc-if value="{{s.isVal}}" hint-placeholder-val="{{false}}"><span style="font-size: 12px; font-weight: 800; padding: 4px 10px; border-radius: 999px; background: #1D3149; color: #FFFFFF; white-space: nowrap">✓ {{s.by}}</span></sc-if>
+<sc-if value="{{s.isWait}}" hint-placeholder-val="{{false}}"><span style="font-size: 12px; font-weight: 800; padding: 4px 10px; border-radius: 999px; background: #FDF3D7; color: #7A5200; white-space: nowrap">Menunggu valuer</span></sc-if>
+<sc-if value="{{s.canDone}}" hint-placeholder-val="{{true}}"><button type="button" onClick="{{s.done}}" style="height: 40px; padding: 0 12px; border-radius: 10px; border: 1px solid #E3E6EB; background: #FFFFFF; color: #1D3149; font: inherit; font-weight: 800; cursor: pointer; white-space: nowrap">Tandai selesai</button></sc-if>
+<sc-if value="{{s.empty}}" hint-placeholder-val="{{false}}"><a href="KKH.dc.html" style="font-size: 13px; font-weight: 800; text-decoration: none; white-space: nowrap; min-height: 40px; display: flex; align-items: center">Isi slot</a></sc-if>
+</div>
+</sc-for>
+</section>
+
+<div style="flex: 1 1 320px; min-width: 0; display: flex; flex-direction: column; gap: 22px">
+<section aria-labelledby="val-h" style="background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 4px">
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px">
+<h2 id="val-h" style="margin: 0; font-size: 17px; font-weight: 800">Menunggu validasi saya</h2>
+<span style="min-width: 26px; height: 26px; border-radius: 13px; background: #FDF3D7; color: #7A5200; font-size: 12px; font-weight: 900; display: flex; align-items: center; justify-content: center">{{nPend}}</span>
+</div>
+<span style="font-size: 12px; color: #5B6573; margin-bottom: 4px">Slot KKH orang yang valuernya Anda, sudah ditandai selesai.</span>
+<sc-for list="{{pending}}" as="p" hint-placeholder-count="3">
+<div style="display: flex; align-items: center; gap: 10px; padding: 10px 0; border-top: 1px solid #EEF0F3">
+<div style="flex-grow: 1; display: flex; flex-direction: column"><span style="font-weight: 800">{{p.who}} · {{p.time}}</span><span style="font-size: 13px; color: #3B4250"><strong>{{p.code}}</strong> {{p.note}}</span></div>
+<button type="button" onClick="{{p.ok}}" style="height: 40px; padding: 0 14px; border-radius: 10px; border: 0; background: #09BEAF; color: #1D3149; font: inherit; font-weight: 900; cursor: pointer">Validasi</button>
+</div>
+</sc-for>
+<sc-if value="{{noPend}}" hint-placeholder-val="{{false}}"><p style="margin: 0; padding: 10px 0; border-top: 1px solid #EEF0F3; color: #067A70; font-weight: 700">Semua sudah divalidasi.</p></sc-if>
+</section>
+
+<section aria-labelledby="rv-h" style="background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 4px">
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px"><h2 id="rv-h" style="margin: 0; font-size: 17px; font-weight: 800">Review &amp; revisi</h2><a href="Review.dc.html" style="font-size: 13px; font-weight: 800; color: #067A70; text-decoration: none">Buka semua →</a></div>
+<div style="display: flex; align-items: center; gap: 10px; padding: 10px 0; border-top: 1px solid #EEF0F3"><div style="flex-grow: 1; display: flex; flex-direction: column"><span style="font-weight: 700">Menunggu pengesahan saya</span><span style="font-size: 12px; color: #5B6573">LK Pokama, setelah disetujui Kepala Staf. Review harian dipegang atasan langsung dan Kepala Staf.</span></div><span style="font-size: 12px; font-weight: 800; padding: 3px 10px; border-radius: 999px; background: #EEF0F3; color: #4A5160">0</span></div>
+<div style="display: flex; align-items: center; gap: 10px; padding: 10px 0; border-top: 1px solid #EEF0F3"><div style="flex-grow: 1; display: flex; flex-direction: column"><span style="font-weight: 700">Revisi bermasalah (dipantau)</span><span style="font-size: 12px; color: #5B6573">Restrukturisasi TripinAja telat 2 hari, sedang ditangani Kepala Staf · WA Story putaran 3</span></div><span style="font-size: 12px; font-weight: 800; padding: 3px 10px; border-radius: 999px; background: #FCEBDD; color: #9A3F0A">2</span></div>
+</section>
+
+<section aria-labelledby="ask-h" style="background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 4px">
+<h2 id="ask-h" style="margin: 0 0 8px; font-size: 17px; font-weight: 800">Yang saya minta (ada di KKH mereka)</h2>
+<div style="display: flex; align-items: center; gap: 10px; padding: 10px 0; border-top: 1px solid #EEF0F3"><div style="flex-grow: 1; display: flex; flex-direction: column"><span style="font-weight: 700">Rapikan data Jeep Guntur</span><span style="font-size: 12px; color: #5B6573">Reza · KKH Sen 11.00 · SW</span></div><span style="font-size: 12px; font-weight: 800; padding: 4px 10px; border-radius: 999px; background: #DDF5F2; color: #067A70">Terjadwal</span></div>
+<div style="display: flex; align-items: center; gap: 10px; padding: 10px 0; border-top: 1px solid #EEF0F3"><div style="flex-grow: 1; display: flex; flex-direction: column"><span style="font-weight: 700">Draf proposal investor Laptopaja</span><span style="font-size: 12px; color: #5B6573">Yusril · KKH Sen 13.00 · SW</span></div><span style="font-size: 12px; font-weight: 800; padding: 4px 10px; border-radius: 999px; background: #DDF5F2; color: #067A70">Terjadwal</span></div>
+<div style="display: flex; align-items: center; gap: 10px; padding: 10px 0; border-top: 1px solid #EEF0F3"><div style="flex-grow: 1; display: flex; flex-direction: column"><span style="font-weight: 700">Usulan sales antar-jemput ke PT KAI Bandung</span><span style="font-size: 12px; color: #5B6573">Adrian · belum ada di KKH</span></div><span style="font-size: 12px; font-weight: 800; padding: 4px 10px; border-radius: 999px; background: #FCEBDD; color: #9A3F0A">Belum dijadwalkan</span></div>
+</section>
+
+<section aria-labelledby="ap-h" style="background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 4px">
+<h2 id="ap-h" style="margin: 0 0 8px; font-size: 17px; font-weight: 800">Persetujuan lain</h2>
+<div style="display: flex; align-items: center; gap: 10px; padding: 10px 0; border-top: 1px solid #EEF0F3"><div style="flex-grow: 1; display: flex; flex-direction: column"><span style="font-weight: 700">Cuti Nayla, 29–30 Okt</span><span style="font-size: 12px; color: #5B6573">Akan tampil sebagai Izin/Cuti di KKH</span></div><a href="Kehadiran.dc.html" style="font-weight: 800; text-decoration: none; min-height: 40px; display: flex; align-items: center">Tinjau</a></div>
+<div style="display: flex; align-items: center; gap: 10px; padding: 10px 0; border-top: 1px solid #EEF0F3"><div style="flex-grow: 1; display: flex; flex-direction: column"><span style="font-weight: 700">Permintaan antarunit baru</span><span style="font-size: 12px; color: #5B6573">Diterima = langsung dijadwalkan di KKH PIC</span></div><a href="Permintaan.dc.html" style="font-weight: 800; text-decoration: none; min-height: 40px; display: flex; align-items: center">4 baru</a></div>
+</section>
+</div>
+</div>
+</main>
+</div>
+</script>
+<script>
+
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { doneMine: {}, okd: {} };
+  }
+  renderVals() {
+    const MODE = { K: 'Di kantor', H: 'WFH', E: 'WFE (dekat rumah)' };
+    const CODEC = { CP: ['#1D3149', '#FFFFFF'], CW: ['#DDF5F2', '#067A70'], SW: ['#EEF0F3', '#3B4250'], IN: ['#E5EEF9', '#1E5AA8'], EX: ['#FDF3D7', '#7A5200'] };
+    const MINE = {
+      8: ['IN', 'K', 'Briefing pagi seluruh tim', 'IF'],
+      9: ['CP', 'K', '1:1 Adrian: penempatan ops Bandung', 'GZ'],
+      10: ['SW', 'K', 'Approve etalase iPhone cabang Ciputat', ''],
+      11: ['SW', 'K', 'Review laba rugi internal Jan–Sep bersama Reza', ''],
+      13: ['SW', 'K', 'Review draf proposal investor Laptopaja', ''],
+      14: ['CP', 'K', 'Rapat restrukturisasi TripinAja', ''],
+      15: ['SW', 'K', 'Tetapkan target properti Experience 2027', ''],
+      16: ['SW', 'K', 'Kirim arahan strategi WA Story ke Kevin', ''],
+      17: ['SW', 'K', 'Tutup hari: validasi KKH tim', '']
+    };
+    const dm = this.state.doneMine;
+    const slots = [8, 9, 10, 11, 12, 13, 14, 15, 16, 17].map(h => {
+      const e = MINE[h];
+      const time = String(h).padStart(2, '0') + '.00–' + String(h + 1).padStart(2, '0') + '.00';
+      if (!e) return { time, code: '—', note: 'Istirahat', mode: '', codeBg: '#F3F5F8', codeFg: '#A9B4C2', noteFg: '#A9B4C2', timeFg: '#A9B4C2', rowBg: 'transparent', isVal: false, isWait: false, canDone: false, empty: false, by: '' };
+      const by = e[3];
+      const wait = !by && !!dm[h];
+      const now = h === 10;
+      return {
+        time, code: e[0] === 'CP' ? 'CP/SR' : e[0], note: e[2], mode: MODE[e[1]] + (now ? ' · sedang berjalan' : ''),
+        codeBg: CODEC[e[0]][0], codeFg: CODEC[e[0]][1], noteFg: '#1F2933', timeFg: now ? '#067A70' : '#3B4250', rowBg: now ? '#F0FBF9' : 'transparent',
+        isVal: !!by, by, isWait: wait, canDone: !by && !wait, empty: false,
+        done: () => this.setState({ doneMine: { ...dm, [h]: true } })
+      };
+    });
+    const vals = Object.values(MINE);
+    const filled = vals.length;
+    const validated = vals.filter(v => v[3]).length;
+    const okd = this.state.okd;
+    const P = [
+      { id: 'yf', who: 'Yusril', time: '09.00–10.00', code: 'EX', note: 'Cek laptop bekas di supplier' },
+      { id: 'rz', who: 'Reza', time: '09.00–10.00', code: 'SW', note: 'Laba rugi internal Jan–Sep' }
+    ];
+    const pending = P.filter(p => !okd[p.id]).map(p => ({ ...p, ok: () => this.setState({ okd: { ...okd, [p.id]: true } }) }));
+    const cnt = (c) => vals.filter(v => v[0] === c).length;
+    return {
+      slots, filled, validated, pending, nPend: pending.length, noPend: pending.length === 0,
+      valPct: (validated * 10) + '%', pendPct: ((filled - validated) * 10) + '%',
+      nCP: cnt('CP'), nCW: cnt('CW'), nSW: cnt('SW'), nEX: cnt('IN') + cnt('EX')
+    };
+  }
+}
+
+dcBoot(Component);
+</script>
+</body>
+</html>

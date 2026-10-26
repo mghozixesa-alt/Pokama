@@ -1,0 +1,480 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Liga Unit Bisnis — Pokama · Demo</title>
+<meta name="robots" content="noindex">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F3F5F8}
+a{color:#1D3149}a:hover{color:#0F1D2E}
+</style>
+<style>.demo-tag{position:fixed;right:16px;bottom:16px;z-index:50;background:#1D3149;color:#fff;font:700 12px/1 Nunito,system-ui,sans-serif;padding:10px 14px;border-radius:999px;text-decoration:none;box-shadow:0 6px 18px rgba(29,49,73,.3)}.demo-tag b{color:#09BEAF}</style>
+
+<script src="runtime.js"></script>
+</head>
+<body>
+<div id="root"></div>
+<a class="demo-tag" href="index.html"><b>DEMO</b> · data contoh · semua layar</a>
+<script type="text/plain" id="dc-tpl">
+
+<div style="min-height: 100vh; display: flex; flex-wrap: wrap; background: #F3F5F8; color: #1F2933; font-family: 'Nunito', system-ui, sans-serif; font-size: 14px; line-height: 1.45">
+
+<nav aria-label="Menu utama" style="flex: 1 1 232px; box-sizing: border-box; background: #FFFFFF; border-right: 1px solid #E3E6EB; padding: 24px 16px; display: flex; flex-direction: column; gap: 20px">
+<div style="display: flex; flex-direction: column; gap: 8px; padding: 0 8px">
+<img src="rentalaja-logo.png" alt="RentalAja" style="width: 150px; height: auto">
+<span style="font-size: 12px; color: #5B6573; font-weight: 600">Pokama · Sistem Kerja Harian</span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 11px; font-weight: 800; letter-spacing: 0.08em; color: #5B6573; padding: 0 12px 4px">KERJA HARIAN</span>
+<a href="Main.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path></svg><span style="flex-grow: 1">KKH Saya</span></a>
+<a href="KKH.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"></rect><path d="M3 9h18M9 4v16M15 4v16"></path></svg><span style="flex-grow: 1">KKH Tim</span></a>
+<a href="Penugasan.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l9 5-9 5-9-5 9-5z"></path><path d="M3 13l9 5 9-5"></path></svg><span style="flex-grow: 1">Penugasan &amp; Proyek</span></a>
+<a href="Review.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h11a2 2 0 012 2v4"></path><path d="M4 5v14h7"></path><path d="M7 9h6M7 13h3"></path><path d="M14 17l2 2 4-4"></path></svg><span style="flex-grow: 1">Review &amp; Revisi</span></a>
+<a href="Permintaan.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13h5l1.5 3h5l1.5-3h5"></path><path d="M5.5 5h13l2.5 8v6H3v-6l2.5-8z"></path></svg><span style="flex-grow: 1">Permintaan</span><span style="min-width: 22px; height: 22px; border-radius: 11px; background: #C2410C; color: #FFFFFF; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; padding: 0 6px; box-sizing: border-box">4</span></a>
+<a href="Kehadiran.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"></circle><path d="M12 8v4l3 2"></path></svg><span style="flex-grow: 1">Kehadiran &amp; Cuti</span></a>
+</div>
+<div style="display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 11px; font-weight: 800; letter-spacing: 0.08em; color: #5B6573; padding: 0 12px 4px">UNIT BISNIS</span>
+<a href="Target.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"></circle><circle cx="12" cy="12" r="4"></circle><circle cx="12" cy="12" r="0.8"></circle></svg><span style="flex-grow: 1">Target Unit</span></a>
+<a href="Omzet.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 20V11M11 20V5M17 20v-7M3 20h18"></path></svg><span style="flex-grow: 1">Omzet Unit</span></a>
+<a href="Evaluasi.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6v3H9z"></path><path d="M7 4.5H5V21h14V4.5h-2"></path><path d="M9 14l2 2 4-4"></path></svg><span style="flex-grow: 1">Evaluasi &amp; Keputusan</span></a>
+<a href="Liga.dc.html" aria-current="page" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 700; color: #1D3149; background: #DDF5F2"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4h8v5a4 4 0 01-8 0V4z"></path><path d="M8 6H5a3 3 0 003 4M16 6h3a3 3 0 01-3 4M12 13v4M8 20h8"></path></svg><span style="flex-grow: 1">Liga Unit Bisnis</span></a>
+<a href="Laporan.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6v18h12V7l-4-4z"></path><path d="M14 3v4h4M9 13h6M9 17h6"></path></svg><span style="flex-grow: 1">Laporan &amp; Ritual</span></a>
+</div>
+<div style="display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 11px; font-weight: 800; letter-spacing: 0.08em; color: #5B6573; padding: 0 12px 4px">ORANG</span>
+<a href="Tim.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"></circle><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"></path><path d="M16 4.5a3.5 3.5 0 010 7M18 14c2 .7 3.5 2.8 3.5 6"></path></svg><span style="flex-grow: 1">Tim &amp; Peran</span></a>
+<a href="Bonus.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"></circle><path d="M12 7v10M14.5 9.5h-3.5a1.5 1.5 0 000 3h2a1.5 1.5 0 010 3H9.5"></path></svg><span style="flex-grow: 1">Performa &amp; Insentif</span></a>
+</div>
+<div style="display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 11px; font-weight: 800; letter-spacing: 0.08em; color: #5B6573; padding: 0 12px 4px">SISTEM</span>
+<a href="Library.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h4v16H5zM10 4h4v16h-4z"></path><path d="M15.5 5.2l3.8-1 3.2 14.6-3.8 1z"></path></svg><span style="flex-grow: 1">Library Dokumen</span></a>
+<a href="Peta.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4L3 6v14l6-2 6 2 6-2V4l-6 2-6-2z"></path><path d="M9 4v14M15 6v14"></path></svg><span style="flex-grow: 1">Peta Sistem</span></a>
+<a href="Pengaturan.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h9M17 6h3M4 12h3M11 12h9M4 18h11M19 18h1"></path><circle cx="15" cy="6" r="2"></circle><circle cx="9" cy="12" r="2"></circle><circle cx="17" cy="18" r="2"></circle></svg><span style="flex-grow: 1">Pengaturan</span></a>
+</div>
+<div style="display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 11px; font-weight: 800; letter-spacing: 0.08em; color: #5B6573; padding: 0 12px 4px">TAUTAN CEPAT</span>
+<a href="https://rentalaja-app.vercel.app/#/MgmtDashboard" target="_blank" rel="noopener" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; color: #067A70; font-weight: 700"><span style="flex-grow: 1">Dasbor omzet</span><span aria-hidden="true">↗</span></a>
+<a href="https://rentalaja-app.vercel.app/#/KeuDasbor" target="_blank" rel="noopener" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; color: #067A70; font-weight: 700"><span style="flex-grow: 1">Dasbor keuangan</span><span aria-hidden="true">↗</span></a>
+<a href="https://claude.ai/artifact/WvNPVXdsUEh1Cd8v8uYvWw" target="_blank" rel="noopener" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; color: #067A70; font-weight: 700"><span style="flex-grow: 1">Playbook unit bisnis</span><span aria-hidden="true">↗</span></a>
+</div>
+<div style="margin-top: auto; display: flex; align-items: center; gap: 10px; padding: 14px 12px 0; border-top: 1px solid #E3E6EB">
+<div aria-hidden="true" style="width: 36px; height: 36px; border-radius: 18px; background: #DDF5F2; color: #1D3149; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px">GZ</div>
+<div style="display: flex; flex-direction: column"><span style="font-weight: 600">Ghozy</span><span style="font-size: 12px; color: #5B6573">CEO · Holding</span></div>
+</div>
+</nav>
+
+<main style="flex: 999 1 560px; min-width: 0; box-sizing: border-box; padding: 28px 36px 48px; display: flex; flex-direction: column; gap: 22px">
+<header style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px">
+<div style="display: flex; flex-direction: column; gap: 4px">
+<span style="font-size: 13px; color: #5B6573; font-weight: 600">Musim Q4 2026 · minggu ke-6 dari 13 · poin dikunci saat evaluasi dan Rapat Evaluasi Bulanan</span>
+<h1 style="margin: 0; font-size: 30px; font-weight: 900; letter-spacing: -0.01em">Liga Unit Bisnis</h1>
+</div>
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px">
+<div role="group" aria-label="Tampilan klasemen" style="display: flex; background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 10px; padding: 3px; gap: 2px">
+<sc-for list="{{views}}" as="v" hint-placeholder-count="2">
+<button type="button" aria-pressed="{{v.on}}" onClick="{{v.pick}}" style="height: 38px; padding: 0 14px; border: 0; border-radius: 8px; background: {{v.bg}}; color: {{v.fg}}; font: inherit; font-weight: 700; cursor: pointer">{{v.label}}</button>
+</sc-for>
+</div>
+<a href="https://rentalaja-app.vercel.app/#/MgmtLini" target="_blank" rel="noopener" style="height: 44px; padding: 0 16px; border-radius: 10px; border: 1px solid #E3E6EB; background: #FFFFFF; color: #1D3149; font-weight: 700; display: flex; align-items: center; gap: 6px; text-decoration: none">Dasbor omzet per lini ↗</a>
+<button type="button" onClick="{{act_bagikan_klasemen_ke_grup}}" style="height: 44px; padding: 0 18px; border-radius: 10px; border: 0; background: #09BEAF; color: #1D3149; font: inherit; font-weight: 800; cursor: pointer">Bagikan klasemen ke grup</button>
+</div>
+</header>
+<sc-if value="{{hasMsg}}" hint-placeholder-val="{{false}}"><div role="status" style="display: flex; align-items: center; gap: 12px; background: #DDF5F2; color: #067A70; border: 1px solid #A9E4DC; border-radius: 12px; padding: 10px 12px 10px 16px; font-weight: 700"><span style="flex-grow: 1">{{msg}}</span><button type="button" onClick="{{clearMsg}}" style="height: 36px; padding: 0 12px; border-radius: 8px; border: 0; background: transparent; color: #067A70; font: inherit; font-weight: 800; cursor: pointer">Tutup</button></div></sc-if>
+<sc-if value="{{formOpen}}" hint-placeholder-val="{{false}}"><section aria-label="{{formTitle}}" style="background: #FFFFFF; border: 2px solid #09BEAF; border-radius: 16px; padding: 18px 20px; display: flex; flex-direction: column; gap: 12px"><div style="display: flex; flex-direction: column; gap: 2px"><h2 style="margin: 0; font-size: 18px; font-weight: 800">{{formTitle}}</h2><span style="font-size: 13px; color: #5B6573">{{formNote}}</span></div><div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px"><sc-for list="{{formFields}}" as="ff" hint-placeholder-count="3"><label style="display: flex; flex-direction: column; gap: 4px; font-size: 13px; font-weight: 700; color: #3B4250">{{ff.label}}<input type="text" value="{{ff.v}}" onChange="{{ff.on}}" placeholder="{{ff.ph}}" style="height: 44px; box-sizing: border-box; border: 1px solid #D3D7DE; border-radius: 10px; padding: 0 12px; font: inherit; font-weight: 500; color: #1F2933"></label></sc-for></div><div style="display: flex; gap: 8px"><button type="button" onClick="{{formSubmit}}" style="height: 44px; padding: 0 18px; border-radius: 10px; border: 0; background: #09BEAF; color: #1D3149; font: inherit; font-weight: 900; cursor: pointer">{{formCta}}</button><button type="button" onClick="{{formCancel}}" style="height: 44px; padding: 0 16px; border-radius: 10px; border: 1px solid #E3E6EB; background: #FFFFFF; color: #3B4250; font: inherit; font-weight: 700; cursor: pointer">Batal</button></div></section></sc-if>
+
+
+<section aria-labelledby="board-h" style="background: #1D3149; color: #FFFFFF; border-radius: 20px; padding: 24px 28px; display: flex; flex-direction: column; gap: 16px">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 12px">
+<div style="display: flex; flex-direction: column; gap: 4px">
+<span style="font-size: 12px; font-weight: 800; letter-spacing: 0.1em; color: #86DCD3">{{podiumTitle}}</span>
+<h2 id="board-h" style="margin: 0; font-size: 28px; font-weight: 900">Rentalaja vs TripinAja vs Niagaaja</h2>
+<span style="font-size: 14px; color: #C5D3E3">Poin = seberapa dekat unit dengan targetnya sendiri, maksimal 100. Rentalaja yang besar dan Niagaaja yang kecil tetap bersaing adil.</span>
+</div>
+<span style="font-size: 12px; font-weight: 800; padding: 6px 12px; border-radius: 999px; background: #2C4664; color: #86DCD3">Diperbarui setiap Senin 09.00</span>
+</div>
+<ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px">
+<sc-for list="{{board}}" as="b" hint-placeholder-count="8">
+<li>
+<button type="button" onClick="{{b.pick}}" aria-label="{{b.aria}}" style="width: 100%; display: grid; grid-template-columns: 56px minmax(0, 1.4fr) minmax(0, 2fr) 72px minmax(0, 1.5fr); align-items: center; gap: 18px; padding: 22px 22px; border-radius: 16px; border: 0; background: {{b.bg}}; color: {{b.fg}}; text-align: left; font: inherit; cursor: pointer">
+<span style="font-size: 44px; font-weight: 900; line-height: 1; color: {{b.rankFg}}">{{b.rank}}</span>
+<span style="display: flex; flex-direction: column; gap: 2px; min-width: 0"><span style="font-size: 22px; font-weight: 900">{{b.name}}</span><span style="font-size: 12px; font-weight: 600; color: {{b.sub}}">{{b.champ}}</span></span>
+<span aria-hidden="true" style="display: block; height: 20px; background: {{b.track}}; border-radius: 10px; overflow: hidden"><span style="display: block; height: 100%; width: {{b.w}}; background: {{b.bar}}; border-radius: 8px"></span></span>
+<span style="font-size: 40px; font-weight: 900; text-align: right; font-variant-numeric: tabular-nums">{{b.pts}}</span>
+<span style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 13px; font-weight: 900; color: {{b.moveFg}}">{{b.move}}</span><span style="font-size: 13px; font-weight: 700; color: {{b.sub}}">{{b.note}}</span></span>
+</button>
+</li>
+</sc-for>
+</ol>
+<span style="font-size: 13px; color: #C5D3E3">Liga hanya antar <strong style="color: #FFFFFF">3 unit bisnis</strong>. Cabang Garut Kota, Bandung, Wanaraja, Ciputat, Experience, dan ATVaja dihitung bersama sebagai Rentalaja, bukan bersaing sendiri-sendiri.</span>
+</section>
+
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px">
+<section aria-labelledby="how-h" style="background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 10px">
+<h2 id="how-h" style="margin: 0; font-size: 18px; font-weight: 800">Cara naik peringkat</h2>
+<div style="display: flex; gap: 12px; align-items: center"><span style="width: 40px; height: 32px; flex-shrink: 0; border-radius: 8px; background: #1D3149; color: #FFFFFF; font-weight: 900; display: flex; align-items: center; justify-content: center">35</span><span><strong>Kas aman</strong>, kewajiban 30 hari tertutup</span></div>
+<div style="display: flex; gap: 12px; align-items: center"><span style="width: 40px; height: 32px; flex-shrink: 0; border-radius: 8px; background: #1D3149; color: #FFFFFF; font-weight: 900; display: flex; align-items: center; justify-content: center">30</span><span><strong>Laba</strong> kontribusi sesuai target</span></div>
+<div style="display: flex; gap: 12px; align-items: center"><span style="width: 40px; height: 32px; flex-shrink: 0; border-radius: 8px; background: #09BEAF; color: #1D3149; font-weight: 900; display: flex; align-items: center; justify-content: center">20</span><span><strong>Rapi</strong>: laporan dan KKH tepat waktu, aset terpakai</span></div>
+<div style="display: flex; gap: 12px; align-items: center"><span style="width: 40px; height: 32px; flex-shrink: 0; border-radius: 8px; background: #09BEAF; color: #1D3149; font-weight: 900; display: flex; align-items: center; justify-content: center">15</span><span><strong>Tumbuh</strong>: closing rate dan omzet naik</span></div>
+</section>
+<section aria-labelledby="ch-h" style="background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 10px">
+<span style="font-size: 12px; font-weight: 800; letter-spacing: 0.1em; color: #067A70">TANTANGAN BERSAMA · NOVEMBER</span>
+<h2 id="ch-h" style="margin: 0; font-size: 18px; font-weight: 800; line-height: 1.3">Ketiga unit tidak ada yang merah di rapat Desember</h2>
+<div style="display: flex; align-items: center; gap: 10px"><div style="flex-grow: 1; height: 12px; background: #EEF0F3; border-radius: 6px; overflow: hidden"><div style="height: 100%; width: {{greenPct}}; background: #09BEAF; border-radius: 6px"></div></div><span style="font-weight: 900; white-space: nowrap">{{greenText}}</span></div>
+<span style="font-size: 13px; color: #5B6573">Kalau tercapai, semua unit dapat bonus tambahan. Membantu unit lain menambah poin.</span>
+</section>
+<section aria-labelledby="prize-top-h" style="background: #DDF5F2; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 10px">
+<span style="font-size: 12px; font-weight: 800; letter-spacing: 0.1em; color: #067A70">HADIAH AKHIR KUARTAL</span>
+<h2 id="prize-top-h" style="margin: 0; font-size: 18px; font-weight: 800; color: #1D3149">Juara kuartal: faktor bonus otomatis 100%</h2>
+<span style="font-size: 13px; color: #1D3149">Kenaikan terbesar saat ini: <strong>{{mostImproved}}</strong>. Leader juara bicara di Rapat Evaluasi Bulanan.</span>
+</section>
+</div>
+
+<div style="display: flex; justify-content: center">
+<button type="button" onClick="{{toggleDetail}}" aria-expanded="{{detailOn}}" style="height: 44px; padding: 0 20px; border-radius: 10px; border: 1px solid #1D3149; background: #FFFFFF; color: #1D3149; font: inherit; font-weight: 800; cursor: pointer">{{detailText}}</button>
+</div>
+
+<sc-if value="{{showDetail}}" hint-placeholder-val="{{false}}">
+<section aria-label="Klasemen unit" style="background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 20px; overflow-x: auto">
+<table style="width: 100%; min-width: 1100px; border-collapse: collapse">
+<thead>
+<tr style="border-bottom: 1px solid #E3E6EB">
+<th scope="col" style="text-align: left; padding: 14px 8px 14px 20px; font-size: 12px; color: #5B6573; font-weight: 800; letter-spacing: 0.06em; width: 64px">#</th>
+<th scope="col" style="text-align: left; padding: 14px 8px; font-size: 12px; color: #5B6573; font-weight: 800; letter-spacing: 0.06em">UNIT</th>
+<th scope="col" style="text-align: left; padding: 14px 8px; font-size: 12px; color: #5B6573; font-weight: 800; letter-spacing: 0.06em; width: 130px">TAHAP</th>
+<th scope="col" style="text-align: left; padding: 14px 8px; font-size: 12px; color: #5B6573; font-weight: 800; letter-spacing: 0.06em; width: 92px">EVALUASI</th>
+<th scope="col" style="text-align: left; padding: 14px 8px; font-size: 12px; color: #5B6573; font-weight: 800; letter-spacing: 0.06em; width: 104px">KAS · 35</th>
+<th scope="col" style="text-align: left; padding: 14px 8px; font-size: 12px; color: #5B6573; font-weight: 800; letter-spacing: 0.06em; width: 104px">PROFIT · 30</th>
+<th scope="col" style="text-align: left; padding: 14px 8px; font-size: 12px; color: #5B6573; font-weight: 800; letter-spacing: 0.06em; width: 104px">KAPASITAS · 20</th>
+<th scope="col" style="text-align: left; padding: 14px 8px; font-size: 12px; color: #5B6573; font-weight: 800; letter-spacing: 0.06em; width: 104px">GROWTH · 15</th>
+<th scope="col" style="text-align: right; padding: 14px 8px; font-size: 12px; color: #5B6573; font-weight: 800; letter-spacing: 0.06em; width: 90px">{{totalHead}}</th>
+<th scope="col" style="text-align: center; padding: 14px 8px; font-size: 12px; color: #5B6573; font-weight: 800; letter-spacing: 0.06em; width: 76px">LAPORAN</th>
+<th scope="col" style="text-align: left; padding: 14px 20px 14px 8px; font-size: 12px; color: #5B6573; font-weight: 800; letter-spacing: 0.06em; width: 110px">LENCANA</th>
+</tr>
+</thead>
+<tbody>
+<sc-for list="{{rows}}" as="r" hint-placeholder-count="8">
+<tr style="border-bottom: 1px solid #EEF0F3; background: {{r.bg}}">
+<td style="padding: 10px 8px 10px 20px">
+<div style="display: flex; align-items: center; gap: 6px">
+<span style="font-size: 18px; font-weight: 900; width: 20px">{{r.rank}}</span>
+<sc-if value="{{r.up}}" hint-placeholder-val="{{false}}"><span style="font-size: 12px; font-weight: 800; color: #067A70">▲{{r.move}}</span></sc-if>
+<sc-if value="{{r.down}}" hint-placeholder-val="{{false}}"><span style="font-size: 12px; font-weight: 800; color: #9A3F0A">▼{{r.move}}</span></sc-if>
+<sc-if value="{{r.same}}" hint-placeholder-val="{{true}}"><span style="font-size: 12px; font-weight: 800; color: #8A94A3">–</span></sc-if>
+</div>
+</td>
+<td style="padding: 6px 8px">
+<button type="button" onClick="{{r.pick}}" aria-label="Lihat detail {{r.name}}" style="display: flex; align-items: center; gap: 10px; border: 0; background: transparent; padding: 6px 0; min-height: 44px; font: inherit; color: #1F2933; cursor: pointer; text-align: left">
+<span aria-hidden="true" style="width: 40px; height: 40px; border-radius: 12px; background: #DDF5F2; color: #1D3149; font-weight: 900; font-size: 13px; display: flex; align-items: center; justify-content: center; flex-shrink: 0">{{r.code}}</span>
+<span style="display: flex; flex-direction: column; gap: 2px">
+<span style="font-weight: 800">{{r.name}}</span>
+<span style="font-size: 12px; color: {{r.champFg}}">{{r.champText}} · {{r.goal}}</span>
+</span>
+</button>
+</td>
+<td style="padding: 10px 8px">
+<div style="display: flex; flex-direction: column; gap: 4px">
+<div style="display: flex; gap: 3px">
+<sc-for list="{{r.stageDots}}" as="d" hint-placeholder-count="5"><span aria-hidden="true" style="width: 16px; height: 6px; border-radius: 3px; background: {{d.c}}"></span></sc-for>
+</div>
+<span style="font-size: 12px; font-weight: 700; color: #3B4250">{{r.stageText}}</span>
+</div>
+</td>
+<td style="padding: 10px 8px">
+<span style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 800; padding: 4px 10px; border-radius: 999px; background: {{r.stBg}}; color: {{r.stFg}}"><span aria-hidden="true" style="width: 8px; height: 8px; border-radius: 4px; background: {{r.stDot}}"></span>{{r.stText}}</span>
+</td>
+<sc-for list="{{r.pillars}}" as="x" hint-placeholder-count="4">
+<td style="padding: 10px 8px">
+<div style="display: flex; align-items: center; gap: 8px">
+<div style="width: 52px; height: 8px; background: #EEF0F3; border-radius: 4px; overflow: hidden"><div style="height: 100%; width: {{x.w}}; background: {{x.c}}; border-radius: 4px"></div></div>
+<span style="font-weight: 700; font-variant-numeric: tabular-nums">{{x.v}}</span>
+</div>
+</td>
+</sc-for>
+<td style="padding: 10px 8px; text-align: right; font-size: 20px; font-weight: 900; font-variant-numeric: tabular-nums">{{r.total}}</td>
+<td style="padding: 10px 8px; text-align: center">
+<span title="Hari berturut laporan omzet tepat waktu" style="display: inline-flex; align-items: center; gap: 4px; font-weight: 800; color: #9A3F0A"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="#C2410C"><path d="M12 3c1 4 5 5 5 10a5 5 0 01-10 0c0-3 2-4 2-6 1 1 2 2 2 3 0-3 1-5 1-7z"></path></svg>{{r.streak}}</span>
+</td>
+<td style="padding: 10px 20px 10px 8px">
+<div style="display: flex; gap: 4px">
+<sc-for list="{{r.badges}}" as="b" hint-placeholder-count="2">
+<span title="{{b.name}}" style="width: 28px; height: 28px; border-radius: 14px; background: #1D3149; color: #09BEAF; display: flex; align-items: center; justify-content: center"><svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="{{b.d}}"></path></svg></span>
+</sc-for>
+<sc-if value="{{r.noBadge}}" hint-placeholder-val="{{false}}"><span style="font-size: 12px; color: #8A94A3">Belum ada</span></sc-if>
+</div>
+</td>
+</tr>
+</sc-for>
+</tbody>
+</table>
+</section>
+
+<div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start">
+
+<section aria-label="Detail unit" style="flex: 3 1 560px; min-width: 0; background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 20px; padding: 22px; display: flex; flex-direction: column; gap: 16px">
+<div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px">
+<div style="display: flex; align-items: center; gap: 12px">
+<span aria-hidden="true" style="width: 54px; height: 54px; border-radius: 16px; background: #1D3149; color: #FFFFFF; font-weight: 900; font-size: 17px; display: flex; align-items: center; justify-content: center">{{s.code}}</span>
+<div style="display: flex; flex-direction: column">
+<h2 style="margin: 0; font-size: 21px; font-weight: 900">{{s.name}}</h2>
+<span style="font-size: 13px; color: #5B6573">Leader: {{s.champ}} · Tahap {{s.stageText}} · Tujuan: {{s.goal}}</span>
+</div>
+</div>
+<sc-if value="{{s.hasLink}}" hint-placeholder-val="{{true}}"><a href="{{s.link}}" target="_blank" rel="noopener" style="height: 44px; padding: 0 16px; border-radius: 10px; background: #09BEAF; color: #1D3149; font-weight: 800; display: flex; align-items: center; text-decoration: none">Buka di dasbor ↗</a></sc-if>
+<sc-if value="{{s.noLink}}" hint-placeholder-val="{{false}}"><span style="font-size: 12px; font-weight: 700; padding: 8px 12px; border-radius: 10px; background: #FCEBDD; color: #9A3F0A">Dasbor belum ada · data dari sheet</span></sc-if>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 8px">
+<span style="font-size: 12px; font-weight: 800; letter-spacing: 0.06em; color: #5B6573">8 METRIK WAJIB · CAPAIAN TARGET MINGGU INI</span>
+<div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px">
+<sc-for list="{{s.metrics}}" as="m" hint-placeholder-count="8">
+<div style="background: #F3F5F8; border-radius: 12px; padding: 12px; display: flex; flex-direction: column; gap: 6px">
+<span style="font-size: 11px; font-weight: 800; letter-spacing: 0.06em; color: #5B6573">{{m.layer}}</span>
+<span style="font-weight: 800; font-size: 13px; line-height: 1.3">{{m.name}}</span>
+<span style="font-size: 20px; font-weight: 900; color: {{m.fg}}">{{m.pct}}</span>
+<div style="height: 6px; background: #E3E6EB; border-radius: 3px; overflow: hidden"><div style="height: 100%; width: {{m.w}}; background: {{m.bar}}; border-radius: 3px"></div></div>
+</div>
+</sc-for>
+</div>
+</div>
+
+<div style="display: flex; flex-wrap: wrap; gap: 12px">
+<div style="flex: 1 1 240px; border: 1px solid #E3E6EB; border-radius: 14px; padding: 14px 16px; display: flex; flex-direction: column; gap: 6px">
+<span style="font-size: 12px; font-weight: 800; letter-spacing: 0.06em; color: #5B6573">PROYEKSI SKOR KUARTAL</span>
+<div style="display: flex; align-items: baseline; gap: 8px"><span style="font-size: 30px; font-weight: 900">{{s.q}}</span><span style="font-weight: 800; color: {{s.catFg}}">{{s.cat}}</span></div>
+<span style="font-size: 13px; color: #3B4250">{{s.decision}}</span>
+</div>
+<div style="flex: 1 1 240px; border: 1px solid #E3E6EB; border-radius: 14px; padding: 14px 16px; display: flex; flex-direction: column; gap: 6px">
+<span style="font-size: 12px; font-weight: 800; letter-spacing: 0.06em; color: #5B6573">GERBANG BERIKUTNYA</span>
+<span style="font-weight: 800">{{s.gate}}</span>
+<span style="font-size: 13px; color: #5B6573">Naik tahap hanya lewat Rapat Evaluasi Bulanan.</span>
+</div>
+<div style="flex: 1 1 240px; border: 1px solid #E3E6EB; border-radius: 14px; padding: 14px 16px; display: flex; flex-direction: column; gap: 6px">
+<span style="font-size: 12px; font-weight: 800; letter-spacing: 0.06em; color: #5B6573">DUKUNGAN</span>
+<span style="font-weight: 800">{{s.dukungan}}</span>
+<span style="font-size: 13px; color: #5B6573">{{s.treatNote}}</span>
+</div>
+</div>
+</section>
+
+<div style="flex: 2 1 380px; min-width: 0; display: flex; flex-direction: column; gap: 20px">
+<section aria-labelledby="rule-h" style="background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 20px; padding: 22px; display: flex; flex-direction: column; gap: 8px">
+<h2 id="rule-h" style="margin: 0 0 4px; font-size: 18px; font-weight: 800">Cara unit dapat poin</h2>
+<span style="font-size: 13px; color: #5B6573">Diambil dari 8 metrik wajib di Playbook unit bisnis, dengan bobot mengikuti urutan kas → profit → kapasitas → growth.</span>
+<div style="display: flex; gap: 12px; padding: 10px 0; border-top: 1px solid #EEF0F3"><span style="width: 44px; height: 30px; border-radius: 8px; background: #1D3149; color: #FFFFFF; font-weight: 900; display: flex; align-items: center; justify-content: center; flex-shrink: 0">35</span><span style="display: flex; flex-direction: column"><span style="font-weight: 800">Kas</span><span style="font-size: 13px; color: #5B6573">Kas akhir periode, kewajiban 30 hari tertutup</span></span></div>
+<div style="display: flex; gap: 12px; padding: 10px 0; border-top: 1px solid #EEF0F3"><span style="width: 44px; height: 30px; border-radius: 8px; background: #1D3149; color: #FFFFFF; font-weight: 900; display: flex; align-items: center; justify-content: center; flex-shrink: 0">30</span><span style="display: flex; flex-direction: column"><span style="font-weight: 800">Profit</span><span style="font-size: 13px; color: #5B6573">Laba kontribusi dan margin kontribusi vs target</span></span></div>
+<div style="display: flex; gap: 12px; padding: 10px 0; border-top: 1px solid #EEF0F3"><span style="width: 44px; height: 30px; border-radius: 8px; background: #09BEAF; color: #1D3149; font-weight: 900; display: flex; align-items: center; justify-content: center; flex-shrink: 0">20</span><span style="display: flex; flex-direction: column"><span style="font-weight: 800">Kapasitas</span><span style="font-size: 13px; color: #5B6573">Utilisasi aset, laporan harian, dan KKH tervalidasi</span></span></div>
+<div style="display: flex; gap: 12px; padding: 10px 0; border-top: 1px solid #EEF0F3"><span style="width: 44px; height: 30px; border-radius: 8px; background: #09BEAF; color: #1D3149; font-weight: 900; display: flex; align-items: center; justify-content: center; flex-shrink: 0">15</span><span style="display: flex; flex-direction: column"><span style="font-weight: 800">Growth</span><span style="font-size: 13px; color: #5B6573">Closing rate dan omzet bulan-ke-bulan</span></span></div>
+<span style="font-size: 12px; color: #5B6573; background: #F3F5F8; border-radius: 10px; padding: 10px 12px">Target tiap unit disesuaikan dengan tahapnya. Leader tidak bisa mengisi poin sendiri; Keuangan memvalidasi angka sebelum dikunci.</span>
+</section>
+
+<section aria-labelledby="badge-h" style="background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 20px; padding: 22px; display: flex; flex-direction: column; gap: 12px">
+<h2 id="badge-h" style="margin: 0; font-size: 18px; font-weight: 800">Lencana unit</h2>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px">
+<sc-for list="{{badgeList}}" as="b" hint-placeholder-count="6">
+<div style="display: flex; gap: 10px; align-items: flex-start; background: #F3F5F8; border-radius: 12px; padding: 10px 12px">
+<span aria-hidden="true" style="width: 34px; height: 34px; border-radius: 17px; background: #1D3149; color: #09BEAF; display: flex; align-items: center; justify-content: center; flex-shrink: 0"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="{{b.d}}"></path></svg></span>
+<span style="display: flex; flex-direction: column"><span style="font-weight: 800; font-size: 13px">{{b.name}}</span><span style="font-size: 12px; color: #5B6573">{{b.rule}}</span><span style="font-size: 12px; font-weight: 700; color: #067A70">{{b.holders}}</span></span>
+</div>
+</sc-for>
+</div>
+</section>
+
+<section aria-labelledby="prize-h" style="background: #1D3149; color: #FFFFFF; border-radius: 20px; padding: 22px; display: flex; flex-direction: column; gap: 8px">
+<h2 id="prize-h" style="margin: 0; font-size: 18px; font-weight: 800">Pengakuan akhir kuartal</h2>
+<div style="display: flex; justify-content: space-between; gap: 12px; padding: 8px 0; border-top: 1px solid #2C4664"><span>Unit juara klasemen</span><span style="font-weight: 800; color: #86DCD3">[Bonus tim juara]</span></div>
+<div style="display: flex; justify-content: space-between; gap: 12px; padding: 8px 0; border-top: 1px solid #2C4664"><span>Kenaikan skor terbesar · saat ini {{mostImproved}}</span><span style="font-weight: 800; color: #86DCD3">[Bonus khusus]</span></div>
+<div style="display: flex; justify-content: space-between; gap: 12px; padding: 8px 0; border-top: 1px solid #2C4664"><span>Naik tahap di Rapat Evaluasi Bulanan</span><span style="font-weight: 800; color: #86DCD3">[Tambahan modal / aset]</span></div>
+<div style="display: flex; justify-content: space-between; gap: 12px; padding: 8px 0; border-top: 1px solid #2C4664"><span>Leader terbaik bicara di Forum Leader bulanan</span><span style="font-weight: 800; color: #86DCD3">Panggung</span></div>
+</section>
+</div>
+</div>
+<section aria-labelledby="formula-h" style="background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 20px; overflow-x: auto">
+<div style="padding: 20px 22px 10px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 10px">
+<div style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 12px; font-weight: 800; letter-spacing: 0.06em; color: #067A70">USULAN AI · SIAP DIBANGUN</span><h2 id="formula-h" style="margin: 0; font-size: 18px; font-weight: 800">Rumus dan sumber data 8 metrik</h2><span style="font-size: 13px; color: #5B6573">Poin metrik = bobot × capaian (maksimal 100%). Skor unit = jumlah 8 poin, 0–100. Angka dikunci Jumat 17.00 setelah divalidasi; data yang telat masuk dihitung 0 untuk metrik itu.</span></div>
+</div>
+<table style="width: 100%; min-width: 1100px; border-collapse: collapse">
+<thead><tr style="border-bottom: 1px solid #E3E6EB"><th scope="col" style="text-align: left; padding: 10px 12px; font-size: 12px; color: #5B6573; font-weight: 800; letter-spacing: 0.06em; white-space: nowrap">METRIK</th><th scope="col" style="text-align: right; padding: 10px 12px; font-size: 12px; color: #5B6573; font-weight: 800; letter-spacing: 0.06em; white-space: nowrap">BOBOT</th><th scope="col" style="text-align: left; padding: 10px 12px; font-size: 12px; color: #5B6573; font-weight: 800; letter-spacing: 0.06em; white-space: nowrap">RUMUS</th><th scope="col" style="text-align: left; padding: 10px 12px; font-size: 12px; color: #5B6573; font-weight: 800; letter-spacing: 0.06em; white-space: nowrap">100% BILA</th><th scope="col" style="text-align: left; padding: 10px 12px; font-size: 12px; color: #5B6573; font-weight: 800; letter-spacing: 0.06em; white-space: nowrap">SUMBER DATA</th><th scope="col" style="text-align: left; padding: 10px 12px; font-size: 12px; color: #5B6573; font-weight: 800; letter-spacing: 0.06em; white-space: nowrap">DIVALIDASI</th></tr></thead>
+<tbody>
+<sc-for list="{formulas}" as="f" hint-placeholder-count="8">
+<tr style="border-bottom: 1px solid #EEF0F3; vertical-align: top">
+<td style="padding: 10px 12px; min-width: 170px"><span style="display: flex; flex-direction: column"><span style="font-size: 11px; font-weight: 800; letter-spacing: 0.06em; color: #5B6573">{{f.layer}}</span><span style="font-weight: 800">{{f.name}}</span></span></td>
+<td style="padding: 10px 12px; text-align: right; font-weight: 900; font-variant-numeric: tabular-nums">{{f.w}}</td>
+<td style="padding: 10px 12px; font-size: 13px; min-width: 260px">{{f.rumus}}</td>
+<td style="padding: 10px 12px; font-size: 13px; min-width: 180px">{{f.target}}</td>
+<td style="padding: 10px 12px; font-size: 13px; min-width: 220px; color: #3B4250">{{f.src}}</td>
+<td style="padding: 10px 12px; font-size: 13px; font-weight: 700; white-space: nowrap">{{f.by}}</td>
+</tr>
+</sc-for>
+<tr style="background: #F7F8FA"><th scope="row" style="text-align: left; padding: 10px 12px; font-size: 12px; font-weight: 800; color: #5B6573">Total</th><td style="padding: 10px 12px; text-align: right; font-weight: 900">100</td><td colspan="4" style="padding: 10px 12px; font-size: 12px; color: #5B6573">Kas 35 · Profit 30 · Kapasitas 20 · Growth 15. Target margin dan target tumbuh per unit masih usulan; disahkan Kepala Staf di Pengaturan.</td></tr>
+</tbody>
+</table>
+</section>
+</sc-if>
+</main>
+</div>
+</script>
+<script>
+
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { sel: 'BD', view: 'week' };
+  }
+
+  componentDidUpdate(pp, ps) { if ((this.state.form_ && this.state.form_ !== ps.form_) || (this.state.msg && this.state.msg !== ps.msg)) { try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (e) {} } }
+  openForm(k, ctx) { this.setState({ form_: k, fv: {}, fctx: ctx || '' }); }
+  say(m) { this.setState({ msg: m, form_: null }); }
+  uxVals(F) {
+    const k = this.state.form_, f = k ? F[k] : null, fv = this.state.fv || {}, ctx = this.state.fctx || '';
+    return {
+      hasMsg: !!this.state.msg, msg: this.state.msg || '', clearMsg: () => this.setState({ msg: '' }),
+      formOpen: !!f, formTitle: f ? f.title.replace('{ctx}', ctx) : '', formNote: f ? (f.note || '') : '', formCta: f ? (f.cta || 'Kirim') : '',
+      formFields: f ? f.fields.map(([label, ph], i) => ({ label, ph: (ph || '').replace('{ctx}', ctx), v: fv[i] || '', on: (e) => this.setState({ fv: { ...(this.state.fv || {}), [i]: e.target.value } }) })) : [],
+      formSubmit: () => this.say(f.done.replace('{ctx}', ctx).replace(/\{(\d)\}/g, (m, i) => (fv[i] || '').trim() || 'baru')), formCancel: () => this.setState({ form_: null })
+    };
+  }
+  renderVals() {
+    const B = {
+      kas: { name: 'Kas Aman', rule: 'Kewajiban 30 hari tertutup 4 minggu berturut', d: 'M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6l7-3z' },
+      laporan: { name: 'Laporan 30 Hari', rule: 'Laporan omzet harian tepat waktu 30 hari berturut', d: 'M14 3H6v18h12V7l-4-4zM9 14l2 2 4-4' },
+      zero: { name: 'Zero Minus', rule: 'Laba kontribusi tidak minus sebulan penuh', d: 'M12 4a8 8 0 100 16 8 8 0 000-16zM8 12h8' },
+      closing: { name: 'Closing Master', rule: 'Closing rate di atas target 2 minggu', d: 'M12 4a8 8 0 100 16 8 8 0 000-16zM12 8a4 4 0 100 8 4 4 0 000-8z' },
+      kolab: { name: 'Kolaborator', rule: 'Kolaborasi: membantu unit lain 3 kali', d: 'M12 20s-7-4.4-7-10a4 4 0 017-2.6A4 4 0 0119 10c0 5.6-7 10-7 10z' },
+      naik: { name: 'Naik Tahap', rule: 'Lolos gerbang di Rapat Evaluasi Bulanan', d: 'M5 19l7-14 7 14M8.5 12h7' }
+    };
+    const stages = ['', '1 · Ide', '2 · Uji Pelanggan', '3 · Uji Operasi', '4 · Uji Model Bisnis', '5 · Skala'];
+    const R = 'https://rentalaja-app.vercel.app/#/MgmtLini';
+    const A = [
+      { code: 'RA', name: 'Rentalaja', champ: '', sub: 'Gabungan semua cabang, Experience, dan ATVaja', stage: 5, goal: 'Profit', st: 'y', p: [26, 20, 15, 10], q: 72, qPrev: 74, lastW: 1, lastQ: 1, streak: 24, badges: ['kas', 'laporan', 'zero'], link: R, treat: 'Pendampingan Kepala Staf', treatNote: 'Fokus menutup minus di Bandung; Garut Kota tetap jadi penopang kas.' },
+      { code: 'WG', name: 'TripinAja', champ: 'Wiranata', sub: '', stage: 4, goal: 'Profit', st: 'g', p: [30, 23, 18, 12], q: 81, qPrev: 76, lastW: 2, lastQ: 2, streak: 18, badges: ['laporan', 'kolab'], link: '', treat: 'Kolaborasi', treatNote: 'Dihubungkan dengan Rentalaja Experience untuk paket trip + menginap.' },
+      { code: 'NA', name: 'Niagaaja', champ: 'Yusril Firdaus', sub: '', stage: 4, goal: 'Penguat portofolio', st: 'y', p: [24, 18, 15, 9], q: 63, qPrev: 66, lastW: 3, lastQ: 3, streak: 9, badges: ['closing'], link: '', treat: 'Tambahan modal', treatNote: 'Tambahan modal stok lewat proposal investor, payback dihitung Keuangan.' }
+    ];
+    const max = [35, 30, 20, 15];
+    const view = this.state.view;
+    const week = view === 'week';
+    const withT = A.map(a => ({ ...a, total: a.p.reduce((x, y) => x + y, 0) }));
+    const sorted = [...withT].sort((a, b) => week ? b.total - a.total : b.q - a.q);
+    const stMap = {
+      g: { t: 'Hijau', bg: '#DDF5F2', fg: '#067A70', dot: '#09BEAF' },
+      y: { t: 'Kuning', bg: '#FDF3D7', fg: '#7A5200', dot: '#D99A00' },
+      r: { t: 'Merah', bg: '#FCEBDD', fg: '#9A3F0A', dot: '#C2410C' }
+    };
+    const rows = sorted.map((a, i) => {
+      const rank = i + 1;
+      const prev = week ? a.lastW : a.lastQ;
+      const move = prev - rank;
+      const s = stMap[a.st];
+      return {
+        code: a.code, name: a.name, rank, goal: a.goal,
+        champText: a.sub || (a.champ ? 'Leader ' + a.champ : 'Leader belum ada'),
+        champFg: a.champ || a.sub ? '#5B6573' : '#9A3F0A',
+        up: move > 0, down: move < 0, same: move === 0, move: Math.abs(move),
+        stageDots: [1, 2, 3, 4, 5].map(n => ({ c: n <= a.stage ? '#09BEAF' : '#E3E6EB' })),
+        stageText: stages[a.stage],
+        stText: s.t, stBg: s.bg, stFg: s.fg, stDot: s.dot,
+        pillars: a.p.map((v, k) => {
+          const r = v / max[k];
+          return { v, w: Math.round(r * 100) + '%', c: r < 0.5 ? '#C2410C' : (k < 2 ? '#1D3149' : '#09BEAF') };
+        }),
+        total: week ? a.total : a.q,
+        streak: a.streak,
+        badges: a.badges.map(b => B[b]), noBadge: a.badges.length === 0,
+        bg: a.code === this.state.sel ? '#F0FBF9' : 'transparent',
+        pick: () => this.setState({ sel: a.code })
+      };
+    });
+    const top = rows.slice(0, 3);
+    const podium = [top[1], top[0], top[2]].map(r => {
+      const a = A.find(x => x.code === r.code);
+      return {
+        code: r.code, name: r.name, champ: a.champ || 'belum ada', rank: r.rank,
+        pts: r.total + (week ? ' poin' : ' skor'),
+        first: r.rank === 1,
+        size: r.rank === 1 ? '72px' : '60px',
+        ring: r.rank === 1 ? '#09BEAF' : '#2C4664',
+        h: r.rank === 1 ? '150px' : r.rank === 2 ? '112px' : '84px',
+        block: r.rank === 1 ? '#09BEAF' : '#2C4664',
+        numFg: r.rank === 1 ? '#1D3149' : '#FFFFFF'
+      };
+    });
+    const nonRed = A.filter(a => a.st !== 'r').length;
+    const statusChips = A.map(a => ({ label: a.name.replace('Rentalaja ', 'RA ').replace(' / Laptopaja', ''), bg: stMap[a.st].bg, fg: stMap[a.st].fg }));
+    const s0 = withT.find(a => a.code === this.state.sel) || withT[0];
+    const cat = s0.q >= 85 ? ['Sangat baik', '#067A70', 'Naik tahap: boleh tambah aset atau cari investor'] :
+      s0.q >= 70 ? ['Baik', '#1D3149', 'Lanjut di tahap yang sama dengan target lebih tinggi'] :
+      s0.q >= 55 ? ['Perlu perbaikan', '#7A5200', 'Ditahan: satu kuartal dukungan, tanpa tambahan modal'] :
+      ['Pembinaan', '#9A3F0A', 'Bila dua kuartal berturut-turut: digabung ke unit lain atau ditutup'];
+    const names = [['KAS', 'Kas akhir periode', 0], ['KAS', 'Kewajiban 30 hari', 0], ['PROFIT', 'Laba kontribusi', 1], ['PROFIT', 'Margin kontribusi', 1], ['KAPASITAS', 'Utilisasi aset', 2], ['KAPASITAS', 'Laporan & KKH', 2], ['GROWTH', 'Closing rate', 3], ['GROWTH', 'Omzet bulan-ke-bulan', 3]];
+    const off = [4, -6, 2, -3, -5, 6, 3, -4];
+    const metrics = names.map(([layer, name, k], i) => {
+      const pct = Math.max(20, Math.min(118, Math.round(s0.p[k] / max[k] * 100 + off[i])));
+      return {
+        layer, name, pct: pct + '%', w: Math.min(100, pct) + '%',
+        fg: pct < 60 ? '#9A3F0A' : '#1F2933',
+        bar: pct < 60 ? '#C2410C' : pct < 85 ? '#D99A00' : '#09BEAF'
+      };
+    });
+    const formulas = [
+      ['KAS', 'Kas akhir periode', 20, 'Saldo kas unit di akhir minggu ÷ biaya operasional 1 bulan', 'Kas ≥ 1 bulan biaya operasional', 'Dasbor keuangan (rekening per unit) di Rentalaja App', 'Reza · Keuangan'],
+      ['KAS', 'Kewajiban 30 hari', 15, 'Kewajiban jatuh tempo 30 hari yang sudah ada dananya ÷ total kewajiban 30 hari (cicilan leasing, gaji, sewa, supplier)', 'Semua kewajiban 30 hari sudah ada dananya', 'Jadwal cicilan dan hutang di sheet Keuangan', 'Reza · Keuangan'],
+      ['PROFIT', 'Laba kontribusi', 15, '(Omzet − biaya langsung unit) ÷ target laba kontribusi bulan ini, dihitung berjalan per minggu', 'Laba kontribusi = target bulan', 'Laba rugi internal per unit (Keuangan)', 'Reza · Keuangan'],
+      ['PROFIT', 'Margin kontribusi', 15, 'Laba kontribusi ÷ omzet, dibandingkan target margin unit', 'Rentalaja ≥ 35% · TripinAja ≥ 25% · Niagaaja ≥ 15%', 'Laba rugi internal per unit (Keuangan)', 'Reza · Keuangan'],
+      ['KAPASITAS', 'Utilisasi aset', 10, 'Rentalaja: unit-hari tersewa ÷ unit-hari tersedia · TripinAja: kursi trip terisi ÷ kapasitas · Niagaaja: stok terjual ≤ 30 hari ÷ total stok', 'Rentalaja ≥ 70% · TripinAja ≥ 75% · Niagaaja ≥ 60%', 'Booking Rentalaja App, TripinAja App, daftar stok Niagaaja', 'Fajar · Data omzet'],
+      ['KAPASITAS', 'Laporan & KKH', 10, '50% × laporan harian tepat waktu ÷ hari kerja + 50% × slot KKH tervalidasi ÷ slot terisi', 'Semua laporan tepat waktu dan semua slot tervalidasi', 'Laporan & Ritual dan KKH di sistem ini (otomatis)', 'Intifa · Kepala Staf'],
+      ['GROWTH', 'Closing rate', 8, 'Booking atau penjualan jadi ÷ leads masuk (WA, Instagram, web)', 'Sama dengan target unit (usulan awal 30%)', 'Jurnal BizDev dan catatan chat WA', 'Eja · BizDev'],
+      ['GROWTH', 'Omzet bulan-ke-bulan', 7, 'Omzet bulan ini ÷ (omzet bulan lalu × 1,05)', 'Omzet tumbuh ≥ 5% dari bulan lalu', 'Dasbor omzet (Jurnal BizDev)', 'Fajar · Data omzet']
+    ].map(([layer, name, w, rumus, target, src, by]) => ({ layer, name, w, rumus, target, src, by }));
+    const s = {
+      code: s0.code, name: s0.name, champ: s0.champ || 'belum ditetapkan', goal: s0.goal,
+      stageText: stages[s0.stage],
+      metrics, q: s0.q, cat: cat[0], catFg: cat[1], decision: cat[2],
+      gate: s0.stage >= 5 ? 'Sudah di tahap tertinggi; jaga skor ≥ 85' : 'Ke tahap ' + stages[s0.stage + 1] + ': skor ≥ 85 di dua evaluasi berturut',
+      dukungan: s0.treat, treatNote: s0.treatNote,
+      hasLink: !!s0.link, noLink: !s0.link, link: s0.link || '#'
+    };
+    const badgeList = Object.keys(B).map(k => {
+      const h = A.filter(a => a.badges.includes(k)).map(a => a.name.replace('Rentalaja ', 'RA '));
+      return { ...B[k], holders: h.length ? 'Dipegang: ' + h.join(', ') : 'Belum ada pemegang' };
+    });
+    const imp = [...A].sort((a, b) => (b.q - b.qPrev) - (a.q - a.qPrev))[0];
+    const views = [['week', 'Poin minggu ini'], ['quarter', 'Skor kuartal']].map(([k, label]) => ({
+      label, on: view === k ? 'true' : 'false',
+      bg: view === k ? '#1D3149' : 'transparent', fg: view === k ? '#FFFFFF' : '#3B4250',
+      pick: () => this.setState({ view: k })
+    }));
+    const board = rows.map((r, i) => {
+      const prevR = rows[i - 1], nextR = rows[i + 1];
+      const first = r.rank === 1, top3 = r.rank <= 3;
+      const note = first ? (nextR ? 'Unggul ' + (r.total - nextR.total) + ' poin dari #2' : '') : 'Kurang ' + (prevR.total - r.total + 1) + ' poin untuk menyalip #' + (r.rank - 1);
+      return {
+        rank: r.rank, name: r.name, champ: r.champText + ' · ' + r.stText, pts: r.total, w: Math.min(100, r.total) + '%', note,
+        move: r.up ? '▲ naik ' + r.move : r.down ? '▼ turun ' + r.move : '– tetap',
+        moveFg: first ? '#1D3149' : r.up ? '#86DCD3' : r.down ? '#F4A582' : '#C5D3E3',
+        bg: first ? '#09BEAF' : top3 ? '#2C4664' : 'transparent', fg: first ? '#1D3149' : '#FFFFFF',
+        rankFg: first ? '#1D3149' : top3 ? '#86DCD3' : '#8FA3BC', sub: first ? '#1D3149' : '#C5D3E3',
+        track: first ? '#7FE0D6' : '#3A5375', bar: first ? '#1D3149' : r.stText === 'Merah' ? '#F08A5D' : '#09BEAF',
+        aria: 'Peringkat ' + r.rank + ', ' + r.name + ', ' + r.total + ' poin. ' + note,
+        pick: () => this.setState({ sel: r.code, showDetail: true })
+      };
+    });
+    const FORMS = {};
+    return { ...this.uxVals(FORMS), act_bagikan_klasemen_ke_grup: () => this.say('Klasemen minggu ini dikirim ke grup WhatsApp management.'), 
+
+      rows, podium, s, badgeList, views, statusChips, board,
+      formulas, showDetail: !!this.state.showDetail, detailOn: this.state.showDetail ? 'true' : 'false', detailText: this.state.showDetail ? 'Sembunyikan rincian poin' : 'Lihat rincian poin per unit dan per metrik', toggleDetail: () => this.setState({ showDetail: !this.state.showDetail }),
+      greenPct: Math.round(nonRed / A.length * 100) + '%',
+      greenText: nonRed + ' / ' + A.length + ' tidak merah',
+      mostImproved: imp.name + ' (+' + (imp.q - imp.qPrev) + ')',
+      podiumTitle: week ? 'KLASEMEN UNIT · MINGGU 19–24 OKT' : 'SKOR KUARTAL Q4 · PROYEKSI SAMPAI DESEMBER',
+      totalHead: week ? 'POIN' : 'SKOR'
+    };
+  }
+}
+
+dcBoot(Component);
+</script>
+</body>
+</html>

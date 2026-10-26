@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<title>Keputusan CEO — Pokama</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F3F5F8}
+</style>
+</helmet>
+<div style="min-height: 100vh; background: #F3F5F8; color: #1F2933; font-family: 'Nunito', system-ui, sans-serif; font-size: 14px; line-height: 1.45">
+<main style="max-width: 1280px; margin: 0 auto; box-sizing: border-box; padding: 28px 36px 48px; display: flex; flex-direction: column; gap: 20px">
+<header style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<img src="/_blob/16ede3a1e0e10a1302aceed526ba5356" alt="RentalAja" style="width: 130px; height: auto">
+<span style="font-size: 13px; color: #5B6573; font-weight: 600">Sistem Kerja Pokama · semua yang bisa disarankan AI sudah diterapkan ke sistem; Bapak cukup mengecek dan mengganti bila tidak cocok</span>
+<h1 style="margin: 0; font-size: 30px; font-weight: 900; letter-spacing: -0.01em">Keputusan untuk Ghozy</h1>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center">
+<button type="button" onClick="{{reset}}" style="height: 44px; padding: 0 16px; border-radius: 10px; border: 1px solid #E3E6EB; background: #FFFFFF; color: #1D3149; font: inherit; font-weight: 800; cursor: pointer">Kembalikan semua ke saran AI</button>
+</div>
+</header>
+
+<section aria-label="Kemajuan" style="background: #1D3149; color: #FFFFFF; border-radius: 20px; padding: 18px 22px; display: flex; flex-wrap: wrap; align-items: center; gap: 18px">
+<div style="display: flex; flex-direction: column"><span style="font-size: 12px; font-weight: 800; color: #86DCD3; letter-spacing: 0.06em">SUDAH DITERAPKAN</span><span style="font-size: 28px; font-weight: 900">{{done}} / {{total}}</span></div>
+<div style="flex: 1 1 300px; height: 10px; background: #2C4664; border-radius: 5px; overflow: hidden"><div style="height: 100%; width: {{pct}}; background: #09BEAF"></div></div>
+<span style="flex: 1 1 320px; font-size: 13px; color: #C5D3E3"><strong style="color: #FFFFFF">{{left}}</strong> Saran AI dikunci di Rapat Evaluasi Bulanan <strong style="color: #FFFFFF">Senin 2 November</strong> dan masuk Log keputusan. Sebelum itu, pilihan mana pun masih bisa diganti.</span>
+</section>
+
+<sc-for list="{{groups}}" as="g" hint-placeholder-count="4">
+<section aria-label="{{g.name}}" style="display: flex; flex-direction: column; gap: 10px">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 8px"><h2 style="margin: 0; font-size: 19px; font-weight: 900">{{g.name}}</h2><span style="font-size: 13px; font-weight: 800; color: {{g.dueFg}}">{{g.due}} · {{g.doneText}}</span></div>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px">
+<sc-for list="{{g.items}}" as="it" hint-placeholder-count="4">
+<div style="background: #FFFFFF; border: 1px solid {{it.bd}}; border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 10px">
+<div style="display: flex; justify-content: space-between; gap: 10px; align-items: flex-start"><span style="font-weight: 900; font-size: 15px"><span style="color: #5B6573">{{it.no}} · </span>{{it.q}}</span><span style="font-size: 11px; font-weight: 800; padding: 3px 9px; border-radius: 999px; background: {{it.stBg}}; color: {{it.stFg}}; white-space: nowrap">{{it.st}}</span></div>
+<span style="font-size: 13px; color: #3B4250">{{it.why}}</span>
+<sc-if value="{{it.isChoice}}" hint-placeholder-val="{{true}}">
+<div role="group" aria-label="{{it.q}}" style="display: flex; flex-direction: column; gap: 6px">
+<sc-for list="{{it.opts}}" as="o" hint-placeholder-count="3">
+<button type="button" aria-pressed="{{o.on}}" onClick="{{o.pick}}" style="text-align: left; min-height: 44px; padding: 8px 12px; border-radius: 10px; border: 1px solid {{o.bd}}; background: {{o.bg}}; color: {{o.fg}}; font: inherit; font-weight: 700; cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 10px"><span>{{o.label}}</span><sc-if value="{{o.rec}}" hint-placeholder-val="{{false}}"><span style="font-size: 11px; font-weight: 900; padding: 2px 8px; border-radius: 999px; background: #DDF5F2; color: #067A70; white-space: nowrap">Rekomendasi</span></sc-if></button>
+</sc-for>
+</div>
+</sc-if>
+<sc-if value="{{it.isText}}" hint-placeholder-val="{{false}}">
+<textarea value="{{it.text}}" onChange="{{it.onText}}" aria-label="{{it.q}}" placeholder="{{it.ph}}" style="min-height: 76px; box-sizing: border-box; border: 1px solid #D3D7DE; border-radius: 10px; padding: 10px 12px; font: inherit; resize: vertical"></textarea>
+</sc-if>
+<span style="font-size: 12px; color: #5B6573">Diubah di: <strong style="color: #067A70">{{it.where}}</strong></span>
+</div>
+</sc-for>
+</div>
+</section>
+</sc-for>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":3544}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { pick: {}, text: {} };
+    this.REC = { tiga: 'Di bawah Kepala Staf (Intifa) sebagai atasan, valuer KKH, dan reviewer. Peran, unit, dan output ditetapkan Kepala Staf paling lambat Senin 2 Nov.', jam: 'TripinAja 08.00–17.00 (pemandu ikut jadwal trip) · Niagaaja 09.00–17.00 · Maripoto 09.00–17.00 (sesi foto ikut jadwal klien) · Ciputat 09.00–21.00, dua shift' };
+  }
+  renderVals() {
+    const G = [
+      ['Uang · insentif & bonus', 'Sebelum Sab 31 Okt', true, [
+        ['plafon', 'Berapa plafon insentif per bulan?', 'Persentase otomatis naik-turun mengikuti gaji pokok, jadi adil antarperan tanpa menyusun tabel angka.', ['Angka tetap: Leader Rp1.000.000, Staf Rp600.000', '15% dari gaji pokok', 'Angka tetap lebih kecil: Leader Rp750.000, Staf Rp500.000'], 1, 'Performa & Insentif'],
+        ['pool', 'Dari mana pool bonus unit?', 'Pool ikut naik-turun mengikuti hasil unit, jadi bonus tidak membebani saat unit rugi.', ['5% dari laba kontribusi unit', 'Angka tetap per unit per bulan', 'Hanya ada bila unit mencapai target omzet'], 0, 'Performa & Insentif · Pool bonus'],
+        ['bayar', 'Kapan insentif dan bonus dibayar?', 'Musim Liga berjalan per kuartal (13 minggu), sedangkan gaji bulanan.', ['Insentif bulanan, bonus per kuartal mengikuti Liga', 'Keduanya bulanan', 'Keduanya per kuartal'], 0, 'Pengaturan · Liga, insentif & bonus'],
+        ['bobot', 'Bobot skor performa', 'Menentukan seberapa besar output, disiplin KKH, dan nilai atasan.', ['60% output · 25% disiplin KKH · 15% nilai valuer', '70% output · 20% KKH · 10% valuer', '50% output · 30% KKH · 20% valuer'], 0, 'Pengaturan · Liga, insentif & bonus'],
+        ['syarat', 'Syarat minimal dapat insentif', 'Supaya insentif tidak cair bila KKH tidak diisi.', ['Disiplin KKH minimal 80% dan tidak ada selisih kas', 'Disiplin KKH minimal 90%', 'Tanpa syarat'], 0, 'Pengaturan · Liga, insentif & bonus']
+      ]],
+      ['Orang & aturan kerja', 'Rapat 2 Nov', false, [
+        ['tiga', 'Peran, unit, dan atasan Dzikri, Dita, Mugni', 'Arahan Bapak: diserahkan ke Kepala Staf. Sementara ketiganya di bawah Kepala Staf sebagai valuer dan reviewer.', null, 0, 'Tim & Peran', '', false, true],
+        ['susun', 'Siapa menyusun output yang disepakati?', 'Output menentukan insentif, jadi harus jelas siapa yang menulis dan mengesahkan.', ['Leader bersama orangnya, disahkan CEO tiap tanggal 1', 'Kepala Staf menyusun untuk semua orang', 'Orangnya mengajukan, Leader menyetujui'], 0, 'Performa & Insentif'],
+        ['liburh', 'Apakah holding ikut aturan libur 2 hari pilihan?', 'Supaya CEO tetap bisa dihubungi kapan saja, sementara tim lain tetap dapat 2 hari libur.', ['Semua ikut, CEO bebas', 'Semua ikut tanpa kecuali', 'Holding libur tetap Sabtu–Minggu, unit pilih bebas'], 0, 'Kehadiran & Cuti · Pengaturan'],
+        ['cuti', 'Jatah cuti tahunan', 'Masih "belum ditetapkan". UU Ketenagakerjaan mengatur minimal 12 hari setelah 12 bulan kerja.', ['12 hari setelah 12 bulan kerja', '12 hari, boleh dipakai sejak bulan ke-6', '14 hari'], 0, 'Pengaturan · Kehadiran & cuti'],
+        ['jam', 'Jam kerja TripinAja, Niagaaja, Maripoto, dan Ciputat', 'Empat lokasi ini belum punya jam masuk, jadi absen tidak bisa menandai terlambat.', null, 0, 'Pengaturan · Jam operasional', 'Contoh: TripinAja 08.00–17.00, Ciputat ikut jam mall']
+      ]],
+      ['Review & revisi', 'Rapat 2 Nov', false, [
+        ['reviewer', 'Siapa reviewer default?', 'Arahan Bapak: ada posisi Kepala Staf, jadi CEO tidak mereview pekerjaan harian.', ['Atasan langsung; proyek strategis oleh Kepala Staf; CEO hanya mengesahkan hasil akhir', 'Selalu CEO', 'Ditentukan per pekerjaan saat dibuat'], 0, 'Penugasan · Review & Revisi', '', false, true],
+        ['tenggat', 'Tenggat revisi bawaan', 'Waktu dari review sampai PIC wajib mengajukan ulang.', ['2 hari kerja', '1 hari kerja', '3 hari kerja'], 0, 'Pengaturan · Laporan & tenggat'],
+        ['telat', 'Dampak revisi yang telat', 'Supaya revisi tidak dianggap sepele, tapi tidak langsung memotong uang.', ['Menurunkan nilai valuer bulan itu', 'Memotong insentif 10% per kejadian', 'Hanya dicatat dan dibahas di Evaluasi'], 0, 'Performa & Insentif']
+      ]],
+      ['Target, biaya & data', 'Rapat 2 Nov', false, [
+        ['alok', 'Cara bagi biaya bersama ke unit', 'Gaji fungsi bersama, sewa kantor, dan aplikasi. Mempengaruhi laba kontribusi dan poin Liga.', ['Per jam kerja yang tercatat di KKH', 'Per porsi omzet', 'Sama rata'], 0, 'Pengaturan · Alokasi biaya bersama'],
+        ['liga', 'Bobot poin Liga', 'Dipakai untuk peringkat unit dan faktor bonus.', ['Kas 35 · Profit 30 · Kapasitas 20 · Growth 15', 'Kas 30 · Profit 30 · Kapasitas 20 · Growth 20', 'Profit 40 · Kas 30 · Kapasitas 15 · Growth 15'], 0, 'Pengaturan · Liga'],
+        ['target', 'Target omzet grup 2027', 'Dipecah otomatis ke unit, bulan, minggu, dan hari.', ['Rp5,85 M resmi, Rp7 M sebagai stretch', 'Rp7 M resmi', 'Rp5,85 M tanpa stretch'], 0, 'Target Unit'],
+        ['dasbor', 'Dasbor omzet TripinAja dan Niagaaja', 'Dua unit ini belum punya dasbor, omzetnya diinput manual.', ['Input manual di Omzet Unit dulu, dibangun di Rentalaja App Q1 2027', 'Langsung dibangun di Rentalaja App', 'Tetap manual'], 0, 'Library Dokumen · Omzet Unit'],
+        ['pemilik', 'Pengelola utama Library Dokumen', 'Satu orang yang memastikan setiap dokumen baru masuk Library dan versi lamanya diarsipkan.', ['Intifa (Kepala Staf)', 'Fajar (Data omzet)', 'Dibagi per data tanpa pengelola utama'], 0, 'Library Dokumen'],
+        ['login', 'Cara masuk sistem', 'Arahan Bapak: kode WhatsApp saja terlalu ribet.', ['Google, username & password, dan kode WhatsApp: ketiganya tersedia', 'Kode WhatsApp saja', 'Google saja'], 0, 'Masuk · Pengaturan · Login & akun', '', false, true]
+      ]]
+    ];
+    const pick = this.state.pick, text = this.state.text, REC = this.REC;
+    let no = 0, done = 0, total = 0;
+    const groups = G.map(([name, due, urgent, items]) => {
+      const out = items.map(it => {
+        no++; total++;
+        const [id, q, why, opts, rec, where, ph, mine, dir] = it;
+        const val = text[id] !== undefined ? text[id] : (REC[id] || '');
+        const chosen = pick[id] !== undefined ? pick[id] : rec;
+        const d = opts ? true : !!val.trim();
+        const changed = opts ? chosen !== rec : (text[id] !== undefined && text[id] !== (REC[id] || ''));
+        if (d) done++;
+        const st = !d ? 'Perlu Bapak isi' : dir && !changed ? 'Arahan Bapak · diterapkan' : mine ? 'Diisi Bapak' : changed ? 'Diganti Bapak' : 'Saran AI · diterapkan';
+        return {
+          no: String(no).padStart(2, '0'), q, why, where, isChoice: !!opts, isText: !opts, ph: ph || '', text: val,
+          onText: (e) => this.setState({ text: { ...this.state.text, [id]: e.target.value } }),
+          st, stBg: !d ? '#FCEBDD' : changed || mine || dir ? '#E5EEF9' : '#DDF5F2', stFg: !d ? '#9A3F0A' : changed || mine || dir ? '#1E5AA8' : '#067A70', bd: !d ? '#C2410C' : '#E3E6EB',
+          opts: (opts || []).map((label, i) => {
+            const on = chosen === i;
+            return { label, rec: i === rec, on: on ? 'true' : 'false', bg: on ? '#1D3149' : '#FFFFFF', fg: on ? '#FFFFFF' : '#1F2933', bd: on ? '#1D3149' : '#E3E6EB', pick: () => this.setState({ pick: { ...this.state.pick, [id]: i } }) };
+          })
+        };
+      });
+      const dn = out.filter(o => o.st !== 'Perlu Bapak isi').length;
+      return { name, due: 'Dikunci rapat 2 Nov', dueFg: '#5B6573', doneText: dn + ' dari ' + out.length + ' diterapkan', items: out };
+    });
+    const left = total - done;
+    return { groups, done, total, pct: Math.round(done / total * 100) + '%', left: left ? left + ' hal masih perlu Bapak isi.' : 'Tidak ada lagi yang perlu Bapak isi.', reset: () => this.setState({ pick: {}, text: {} }) };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,357 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<title>Pengaturan — Pokama</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F3F5F8}
+a{color:#1D3149}a:hover{color:#0F1D2E}
+</style>
+</helmet>
+<div style="min-height: 100vh; display: flex; flex-wrap: wrap; background: #F3F5F8; color: #1F2933; font-family: 'Nunito', system-ui, sans-serif; font-size: 14px; line-height: 1.45">
+
+<nav aria-label="Menu utama" style="flex: 1 1 232px; box-sizing: border-box; background: #FFFFFF; border-right: 1px solid #E3E6EB; padding: 24px 16px; display: flex; flex-direction: column; gap: 20px">
+<div style="display: flex; flex-direction: column; gap: 8px; padding: 0 8px">
+<img src="/_blob/16ede3a1e0e10a1302aceed526ba5356" alt="RentalAja" style="width: 150px; height: auto">
+<span style="font-size: 12px; color: #5B6573; font-weight: 600">Pokama · Sistem Kerja Harian</span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 11px; font-weight: 800; letter-spacing: 0.08em; color: #5B6573; padding: 0 12px 4px">KERJA HARIAN</span>
+<a href="Main.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path></svg><span style="flex-grow: 1">KKH Saya</span></a>
+<a href="KKH.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"></rect><path d="M3 9h18M9 4v16M15 4v16"></path></svg><span style="flex-grow: 1">KKH Tim</span></a>
+<a href="Penugasan.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l9 5-9 5-9-5 9-5z"></path><path d="M3 13l9 5 9-5"></path></svg><span style="flex-grow: 1">Penugasan &amp; Proyek</span></a>
+<a href="Review.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h11a2 2 0 012 2v4"></path><path d="M4 5v14h7"></path><path d="M7 9h6M7 13h3"></path><path d="M14 17l2 2 4-4"></path></svg><span style="flex-grow: 1">Review &amp; Revisi</span></a>
+<a href="Permintaan.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13h5l1.5 3h5l1.5-3h5"></path><path d="M5.5 5h13l2.5 8v6H3v-6l2.5-8z"></path></svg><span style="flex-grow: 1">Permintaan</span><span style="min-width: 22px; height: 22px; border-radius: 11px; background: #C2410C; color: #FFFFFF; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; padding: 0 6px; box-sizing: border-box">4</span></a>
+<a href="Kehadiran.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"></circle><path d="M12 8v4l3 2"></path></svg><span style="flex-grow: 1">Kehadiran &amp; Cuti</span></a>
+</div>
+<div style="display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 11px; font-weight: 800; letter-spacing: 0.08em; color: #5B6573; padding: 0 12px 4px">UNIT BISNIS</span>
+<a href="Target.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"></circle><circle cx="12" cy="12" r="4"></circle><circle cx="12" cy="12" r="0.8"></circle></svg><span style="flex-grow: 1">Target Unit</span></a>
+<a href="Omzet.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 20V11M11 20V5M17 20v-7M3 20h18"></path></svg><span style="flex-grow: 1">Omzet Unit</span></a>
+<a href="Evaluasi.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6v3H9z"></path><path d="M7 4.5H5V21h14V4.5h-2"></path><path d="M9 14l2 2 4-4"></path></svg><span style="flex-grow: 1">Evaluasi &amp; Keputusan</span></a>
+<a href="Liga.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4h8v5a4 4 0 01-8 0V4z"></path><path d="M8 6H5a3 3 0 003 4M16 6h3a3 3 0 01-3 4M12 13v4M8 20h8"></path></svg><span style="flex-grow: 1">Liga Unit Bisnis</span></a>
+<a href="Laporan.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6v18h12V7l-4-4z"></path><path d="M14 3v4h4M9 13h6M9 17h6"></path></svg><span style="flex-grow: 1">Laporan &amp; Ritual</span></a>
+</div>
+<div style="display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 11px; font-weight: 800; letter-spacing: 0.08em; color: #5B6573; padding: 0 12px 4px">ORANG</span>
+<a href="Tim.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"></circle><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"></path><path d="M16 4.5a3.5 3.5 0 010 7M18 14c2 .7 3.5 2.8 3.5 6"></path></svg><span style="flex-grow: 1">Tim &amp; Peran</span></a>
+<a href="Bonus.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"></circle><path d="M12 7v10M14.5 9.5h-3.5a1.5 1.5 0 000 3h2a1.5 1.5 0 010 3H9.5"></path></svg><span style="flex-grow: 1">Performa &amp; Insentif</span></a>
+</div>
+<div style="display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 11px; font-weight: 800; letter-spacing: 0.08em; color: #5B6573; padding: 0 12px 4px">SISTEM</span>
+<a href="Library.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h4v16H5zM10 4h4v16h-4z"></path><path d="M15.5 5.2l3.8-1 3.2 14.6-3.8 1z"></path></svg><span style="flex-grow: 1">Library Dokumen</span></a>
+<a href="Peta.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4L3 6v14l6-2 6 2 6-2V4l-6 2-6-2z"></path><path d="M9 4v14M15 6v14"></path></svg><span style="flex-grow: 1">Peta Sistem</span></a>
+<a href="Pengaturan.dc.html" aria-current="page" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 700; color: #1D3149; background: #DDF5F2"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h9M17 6h3M4 12h3M11 12h9M4 18h11M19 18h1"></path><circle cx="15" cy="6" r="2"></circle><circle cx="9" cy="12" r="2"></circle><circle cx="17" cy="18" r="2"></circle></svg><span style="flex-grow: 1">Pengaturan</span></a>
+</div>
+<div style="display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 11px; font-weight: 800; letter-spacing: 0.08em; color: #5B6573; padding: 0 12px 4px">TAUTAN CEPAT</span>
+<a href="https://rentalaja-app.vercel.app/#/MgmtDashboard" target="_blank" rel="noopener" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; color: #067A70; font-weight: 700"><span style="flex-grow: 1">Dasbor omzet</span><span aria-hidden="true">↗</span></a>
+<a href="https://rentalaja-app.vercel.app/#/KeuDasbor" target="_blank" rel="noopener" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; color: #067A70; font-weight: 700"><span style="flex-grow: 1">Dasbor keuangan</span><span aria-hidden="true">↗</span></a>
+<a href="https://claude.ai/artifact/WvNPVXdsUEh1Cd8v8uYvWw" target="_blank" rel="noopener" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; color: #067A70; font-weight: 700"><span style="flex-grow: 1">Playbook unit bisnis</span><span aria-hidden="true">↗</span></a>
+</div>
+<div style="margin-top: auto; display: flex; align-items: center; gap: 10px; padding: 14px 12px 0; border-top: 1px solid #E3E6EB">
+<div aria-hidden="true" style="width: 36px; height: 36px; border-radius: 18px; background: #DDF5F2; color: #1D3149; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px">GZ</div>
+<div style="display: flex; flex-direction: column"><span style="font-weight: 600">Ghozy</span><span style="font-size: 12px; color: #5B6573">CEO · Holding</span></div>
+</div>
+</nav>
+
+<main style="flex: 999 1 560px; min-width: 0; box-sizing: border-box; padding: 28px 36px 48px; display: flex; flex-direction: column; gap: 20px">
+<header style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px">
+<div style="display: flex; flex-direction: column; gap: 4px">
+<span style="font-size: 13px; color: #5B6573; font-weight: 600">Dua tingkat: holding menetapkan aturan main, unit mengatur cara jalannya. Unit boleh lebih ketat, tidak boleh lebih longgar.</span>
+<h1 style="margin: 0; font-size: 30px; font-weight: 900; letter-spacing: -0.01em">Pengaturan</h1>
+</div>
+</header>
+<sc-if value="{{hasMsg}}" hint-placeholder-val="{{false}}"><div role="status" style="display: flex; align-items: center; gap: 12px; background: #DDF5F2; color: #067A70; border: 1px solid #A9E4DC; border-radius: 12px; padding: 10px 12px 10px 16px; font-weight: 700"><span style="flex-grow: 1">{{msg}}</span><button type="button" onClick="{{clearMsg}}" style="height: 36px; padding: 0 12px; border-radius: 8px; border: 0; background: transparent; color: #067A70; font: inherit; font-weight: 800; cursor: pointer">Tutup</button></div></sc-if>
+<sc-if value="{{formOpen}}" hint-placeholder-val="{{false}}"><section aria-label="{{formTitle}}" style="background: #FFFFFF; border: 2px solid #09BEAF; border-radius: 16px; padding: 18px 20px; display: flex; flex-direction: column; gap: 12px"><div style="display: flex; flex-direction: column; gap: 2px"><h2 style="margin: 0; font-size: 18px; font-weight: 800">{{formTitle}}</h2><span style="font-size: 13px; color: #5B6573">{{formNote}}</span></div><div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px"><sc-for list="{{formFields}}" as="ff" hint-placeholder-count="3"><label style="display: flex; flex-direction: column; gap: 4px; font-size: 13px; font-weight: 700; color: #3B4250">{{ff.label}}<input type="text" value="{{ff.v}}" onChange="{{ff.on}}" placeholder="{{ff.ph}}" style="height: 44px; box-sizing: border-box; border: 1px solid #D3D7DE; border-radius: 10px; padding: 0 12px; font: inherit; font-weight: 500; color: #1F2933"></label></sc-for></div><div style="display: flex; gap: 8px"><button type="button" onClick="{{formSubmit}}" style="height: 44px; padding: 0 18px; border-radius: 10px; border: 0; background: #09BEAF; color: #1D3149; font: inherit; font-weight: 900; cursor: pointer">{{formCta}}</button><button type="button" onClick="{{formCancel}}" style="height: 44px; padding: 0 16px; border-radius: 10px; border: 1px solid #E3E6EB; background: #FFFFFF; color: #3B4250; font: inherit; font-weight: 700; cursor: pointer">Batal</button></div></section></sc-if>
+
+
+<section aria-label="Pilih tingkat" style="background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 16px; padding: 14px 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 12px">
+<span style="font-size: 12px; font-weight: 800; letter-spacing: 0.08em; color: #5B6573">TINGKAT</span>
+<button type="button" aria-pressed="{{isHolding}}" onClick="{{pickHolding}}" style="height: 40px; padding: 0 16px; border-radius: 10px; border: 0; background: {{hBg}}; color: {{hFg}}; font: inherit; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 8px"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 21V9l8-5 8 5v12"></path><path d="M9 21v-6h6v6"></path></svg>Holding</button>
+<span aria-hidden="true" style="width: 1px; height: 28px; background: #E3E6EB"></span>
+<span style="font-size: 13px; font-weight: 700; color: #3B4250">Unit:</span>
+<div role="group" aria-label="Pilih unit" style="display: flex; flex-wrap: wrap; gap: 6px">
+<sc-for list="{{unitBtns}}" as="u" hint-placeholder-count="9">
+<button type="button" aria-pressed="{{u.on}}" onClick="{{u.pick}}" style="height: 36px; padding: 0 12px; border-radius: 999px; border: 1px solid #E3E6EB; background: {{u.bg}}; color: {{u.fg}}; font: inherit; font-size: 13px; font-weight: 700; cursor: pointer">{{u.label}}</button>
+</sc-for>
+</div>
+</section>
+
+<div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start">
+
+<nav aria-label="Kategori pengaturan" style="flex: 1 1 240px; min-width: 0; background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 16px; padding: 10px; display: flex; flex-direction: column; gap: 2px">
+<sc-for list="{{cats}}" as="c" hint-placeholder-count="10">
+<button type="button" aria-current="{{c.cur}}" onClick="{{c.pick}}" style="display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 12px; border: 0; border-radius: 10px; background: {{c.bg}}; color: {{c.fg}}; font: inherit; font-weight: {{c.fw}}; text-align: left; cursor: pointer">
+<span style="width: 24px; font-size: 12px; font-weight: 900; color: #8A94A3">{{c.no}}</span>
+<span style="flex-grow: 1">{{c.label}}</span>
+<span style="font-size: 11px; font-weight: 800; color: {{c.tagFg}}">{{c.tag}}</span>
+</button>
+</sc-for>
+</nav>
+
+<section aria-labelledby="cat-h" style="flex: 3 1 640px; min-width: 0; display: flex; flex-direction: column; gap: 16px">
+<div style="background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 20px; padding: 22px; display: flex; flex-direction: column; gap: 4px">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 10px; margin-bottom: 8px">
+<div style="display: flex; flex-direction: column"><span style="font-size: 12px; font-weight: 800; letter-spacing: 0.08em; color: #067A70">{{scopeLabel}}</span><h2 id="cat-h" style="margin: 0; font-size: 21px; font-weight: 900">{{cat.label}}</h2><span style="font-size: 13px; color: #5B6573">{{cat.desc}}</span></div>
+<div style="display: flex; gap: 12px; font-size: 12px; color: #3B4250">
+<span style="display: flex; align-items: center; gap: 6px"><span style="font-weight: 800; padding: 2px 8px; border-radius: 6px; background: #1D3149; color: #FFFFFF">Holding</span>dikunci</span>
+<span style="display: flex; align-items: center; gap: 6px"><span style="font-weight: 800; padding: 2px 8px; border-radius: 6px; background: #DDF5F2; color: #067A70">Unit</span>diatur unit</span>
+</div>
+</div>
+<sc-for list="{{rows}}" as="r" hint-placeholder-count="5">
+<div style="display: flex; align-items: center; gap: 14px; padding: 12px 0; border-top: 1px solid #EEF0F3">
+<span style="font-size: 11px; font-weight: 800; padding: 3px 8px; border-radius: 6px; background: {{r.tagBg}}; color: {{r.tagFg}}; flex-shrink: 0; width: 56px; text-align: center">{{r.tag}}</span>
+<div style="flex-grow: 1; display: flex; flex-direction: column; min-width: 0">
+<span style="font-weight: 800">{{r.label}}</span>
+<span style="font-size: 13px; color: {{r.valFg}}">{{r.value}}</span>
+</div>
+<sc-if value="{{r.locked}}" hint-placeholder-val="{{false}}"><span style="display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; color: #8A94A3; white-space: nowrap"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="5" y="11" width="14" height="10" rx="2"></rect><path d="M8 11V8a4 4 0 018 0v3"></path></svg>{{r.lockText}}</span></sc-if>
+<sc-if value="{{r.editable}}" hint-placeholder-val="{{true}}"><button type="button" onClick="{{r.edit}}" style="height: 40px; padding: 0 14px; border-radius: 10px; border: 1px solid #E3E6EB; background: #FFFFFF; color: #1D3149; font: inherit; font-weight: 800; cursor: pointer; white-space: nowrap">Ubah</button></sc-if>
+</div>
+</sc-for>
+<sc-if value="{{noRows}}" hint-placeholder-val="{{false}}"><p style="margin: 0; padding: 14px 0; border-top: 1px solid #EEF0F3; color: #5B6573">{{noRowsText}}</p></sc-if>
+</div>
+
+<sc-if value="{{showAlok}}" hint-placeholder-val="{{false}}">
+<div style="background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 20px; padding: 22px; display: flex; flex-direction: column; gap: 14px">
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px; background: #DDF5F2; color: #067A70; border-radius: 12px; padding: 10px 14px"><strong>Dipakai: per jam kerja di KKH (saran AI).</strong><span>Jam KKH sudah tercatat per pekerjaan dan unit, jadi unit yang paling banyak dibantu menanggung paling besar. Bisa diubah kapan saja oleh CEO.</span></div>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px">
+<sc-for list="{{methods}}" as="m" hint-placeholder-count="3">
+<button type="button" aria-pressed="{{m.on}}" onClick="{{m.pick}}" style="text-align: left; font: inherit; color: #1F2933; cursor: pointer; background: #FFFFFF; border: 1px solid #E3E6EB; box-shadow: inset 0 0 0 2px {{m.ring}}; border-radius: 14px; padding: 14px; display: flex; flex-direction: column; gap: 4px">
+<span style="font-weight: 900">{{m.title}}</span>
+<span style="font-size: 12px; color: #067A70; font-weight: 700">+ {{m.pro}}</span>
+<span style="font-size: 12px; color: #9A3F0A; font-weight: 700">− {{m.con}}</span>
+</button>
+</sc-for>
+</div>
+<sc-for list="{{alloc}}" as="a" hint-placeholder-count="8">
+<div style="display: flex; align-items: center; gap: 12px; padding: 6px 0; background: {{a.bg}}; border-radius: 8px">
+<span style="width: 200px; font-weight: {{a.fw}}; padding-left: 6px">{{a.name}}</span>
+<div style="flex-grow: 1; height: 8px; background: #EEF0F3; border-radius: 4px; overflow: hidden"><div style="height: 100%; width: {{a.w}}; background: #09BEAF; border-radius: 4px"></div></div>
+<span style="width: 56px; text-align: right; font-weight: 900; font-variant-numeric: tabular-nums; padding-right: 6px">{{a.pct}}</span>
+</div>
+</sc-for>
+<span style="font-size: 12px; color: #5B6573">{{allocNote}}</span>
+</div>
+</sc-if>
+
+<sc-if value="{{showNotif}}" hint-placeholder-val="{{false}}">
+<div style="background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 20px; padding: 6px 22px">
+<sc-for list="{{rules}}" as="r" hint-placeholder-count="8">
+<div style="display: flex; align-items: center; gap: 14px; padding: 12px 0; border-top: 1px solid #EEF0F3">
+<span style="font-size: 11px; font-weight: 800; padding: 3px 8px; border-radius: 6px; background: {{r.tagBg}}; color: {{r.tagFg}}; width: 56px; text-align: center; flex-shrink: 0">{{r.tag}}</span>
+<div style="flex-grow: 1; display: flex; flex-direction: column"><span style="font-weight: 800">{{r.when}}</span><span style="font-size: 13px; color: #5B6573">Kirim ke: {{r.to}}</span></div>
+<button type="button" role="switch" aria-checked="{{r.on}}" aria-label="{{r.when}}" aria-disabled="{{r.dis}}" onClick="{{r.toggle}}" style="width: 52px; height: 30px; border-radius: 15px; border: 0; background: {{r.bg}}; opacity: {{r.op}}; position: relative; cursor: pointer; flex-shrink: 0; padding: 0"><span style="position: absolute; top: 3px; left: {{r.knob}}; width: 24px; height: 24px; border-radius: 12px; background: #FFFFFF"></span></button>
+</div>
+</sc-for>
+<p style="margin: 0; padding: 12px 0 14px; border-top: 1px solid #EEF0F3; font-size: 12px; color: #9A3F0A">WhatsApp belum tersambung; sementara notifikasi muncul di aplikasi.</p>
+</div>
+</sc-if>
+</section>
+</div>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1403}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { scope: 'H', cat: 'laporan', method: 'jam', off: {} };
+  }
+
+  componentDidUpdate(pp, ps) { if ((this.state.form_ && this.state.form_ !== ps.form_) || (this.state.msg && this.state.msg !== ps.msg)) { try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (e) {} } }
+  openForm(k, ctx) { this.setState({ form_: k, fv: {}, fctx: ctx || '' }); }
+  say(m) { this.setState({ msg: m, form_: null }); }
+  uxVals(F) {
+    const k = this.state.form_, f = k ? F[k] : null, fv = this.state.fv || {}, ctx = this.state.fctx || '';
+    return {
+      hasMsg: !!this.state.msg, msg: this.state.msg || '', clearMsg: () => this.setState({ msg: '' }),
+      formOpen: !!f, formTitle: f ? f.title.replace('{ctx}', ctx) : '', formNote: f ? (f.note || '') : '', formCta: f ? (f.cta || 'Kirim') : '',
+      formFields: f ? f.fields.map(([label, ph], i) => ({ label, ph: (ph || '').replace('{ctx}', ctx), v: fv[i] || '', on: (e) => this.setState({ fv: { ...(this.state.fv || {}), [i]: e.target.value } }) })) : [],
+      formSubmit: () => this.say(f.done.replace('{ctx}', ctx).replace(/\{(\d)\}/g, (m, i) => (fv[i] || '').trim() || 'baru')), formCancel: () => this.setState({ form_: null })
+    };
+  }
+  renderVals() {
+    const UNITS = [
+      ['GK', 'RA Garut Kota', 'Rentalaja Garut Kota', 'ra', 71452000, 30],
+      ['BD', 'RA Bandung', 'Rentalaja Bandung', 'ra', 16408000, 20],
+      ['WN', 'RA Wanaraja', 'Rentalaja Wanaraja', 'ra', 3240000, 5],
+      ['CP', 'RA Ciputat', 'Rentalaja Ciputat', 'ra', 0, 0],
+      ['EX', 'Experience', 'Rentalaja Experience', 'ex', 6192410, 10],
+      ['JP', 'Jeep', 'ATVaja (Jeep)', 'ex', 18905000, 5],
+      ['WG', 'TripinAja', 'TripinAja', 'wg', 20294000, 15],
+      ['NA', 'Niagaaja', 'Niagaaja', 'na', 24527000, 10],
+      ['MP', 'Maripoto', 'Maripoto Photobooth', 'mp', 14243000, 5]
+    ];
+    const scope = this.state.scope;
+    const isH = scope === 'H';
+    const unit = UNITS.find(u => u[0] === scope);
+    const fam = unit ? unit[3] : '';
+    const hours = { GK: '07.30–21.00', BD: '07.30–21.00', WN: '09.00–17.00', CP: '09.00–21.00, dua shift', EX: 'Sesuai jadwal tamu; trip Jeep sesi sunrise 04.00 dan sunset', JP: 'Sesi sunrise 04.00 dan sunset', WG: '08.00–17.00; pemandu ikut jadwal trip', NA: '09.00–17.00', MP: '09.00–17.00; sesi foto ikut jadwal klien' };
+    const product = {
+      ra: [['Uang muka', 'DP minimal 20%, sekaligus berfungsi sebagai deposit'], ['Denda telat', '15% dari tarif harian per jam'], ['Member', 'Reguler, Langganan, Prioritas boleh tanpa DP'], ['Diskon bundling', '2 barang 5%, 3 barang atau lebih 10%'], ['Dokumen', 'iPhone: KTP + KK. Motor: wajib SIM C. KTP fisik ditahan selama sewa']],
+      ex: [['Dokumen', 'Menginap dan trip Jeep tanpa KTP atau verifikasi'], ['Pembayaran', 'Tamu langsung booking dan bayar']],
+      wg: [], na: [], mp: []
+    };
+    const H = (label, value) => ({ lvl: 'H', label, value });
+    const Uu = (label, value) => ({ lvl: 'U', label, value });
+    const C = {
+      peran: ['Struktur & peran', 'Peran yang tersedia dan siapa mengisi apa.', [
+        H('Peran yang tersedia', 'CEO, Kepala Staf, Keuangan, Data & BizDev, Leader unit, Anggota, Fungsi bersama'),
+        H('Hak akses dasar per peran', 'Diatur di Tim & Peran → Hak akses'),
+        H('Valuer KKH', 'Valuer 1 = atasan langsung, Valuer 2 = Kepala Staf (staf holding: CEO)'),
+        H('Orang digaji 2 unit', 'Satu unit induk menentukan atasan, valuer, kehadiran, dan libur; gaji, insentif, dan bonus dibagi sesuai porsi; porsi dicek tiap bulan dengan jam KKH'),
+        Uu('Anggota tim unit', unit ? 'Ditambah atau dipindah oleh Leader, disetujui Kepala Staf' : 'Diatur tiap unit'),
+        Uu('Wakil Leader', unit ? 'Opsional, menggantikan saat Leader cuti' : 'Diatur tiap unit')]],
+      target: ['Target & KPI', 'Target grup dari holding, target unit diajukan Leader.', [
+        H('Target omzet grup 2027', 'Rp5,85 M (stretch Rp7 M)'),
+        H('Persetujuan target unit', 'CEO bersama Keuangan, setiap awal bulan'),
+        Uu('Target omzet bulanan unit', unit ? 'Diajukan Leader di layar Target Unit' : 'Diatur tiap unit'),
+        Uu('KPI utama & OKR 2 minggu', unit ? 'Disusun Leader bersama tim' : 'Diatur tiap unit')]],
+      laporan: ['Laporan & tenggat', 'Format dan jam yang sama, supaya semua unit bisa dibandingkan.', [
+        H('KKH: isi rencana', 'Paling lambat 08.00 hari itu; boleh diisi malam sebelumnya'),
+        H('KKH: validasi valuer', 'Paling lambat 18.00, atau H+1 pukul 10.00'),
+        H('Selesai = disetujui reviewer', 'PIC hanya bisa mengajukan review; status selesai hanya diberikan reviewer'),
+        H('Review berupa poin', 'Setiap poin wajib dijawab: diperbaiki + bukti, atau tidak setuju + alasan'),
+        H('Tenggat revisi', '2 hari kerja sejak review, otomatis jadi slot SW di KKH PIC'),
+        H('Revisi lebih dari 2 putaran', 'Wajib sesi 1:1 30 menit antara reviewer dan PIC'),
+        H('Reviewer bawaan', 'Atasan langsung (Valuer 1); proyek strategis dan lintas unit oleh Kepala Staf; CEO hanya mengesahkan hasil akhir (LK, insentif & bonus)'),
+        H('Revisi telat', 'Menurunkan nilai valuer bulan itu, tidak memotong uang langsung'),
+        H('Kode & mode KKH', 'CP/SR, CW, SW, IN/EX · kantor, WFH, WFE, izin/cuti'),
+        H('Laporan omzet harian', 'Paling lambat 21.00'),
+        H('Evaluasi 2 mingguan', 'Laporan satu halaman: angka, 3 berhasil, 3 masalah, 1 bantuan, target'),
+        H('Rapat Evaluasi Bulanan', 'Senin pertama setiap bulan, 09.00'),
+        Uu('Pelapor harian', unit ? 'Nama pelapor ditentukan Leader' : 'Diatur tiap unit'),
+        Uu('Tutup laporan lebih awal', unit ? 'Boleh, misalnya 20.00 (lebih ketat dari holding)' : 'Diatur tiap unit')]],
+      liga: ['Liga, insentif & bonus', 'Aturan sama untuk semua unit; hanya CEO dan Keuangan yang melihat angka per orang.', [
+        H('Bobot poin Liga', 'Kas 35, Profit 30, Kapasitas 20, Growth 15'),
+        H('Output yang disepakati', '2–4 output per orang, dengan bobot dan target, disepakati Leader + orangnya di awal bulan'),
+        H('Skor performa', '60% capaian output + 25% disiplin KKH + 15% nilai valuer'),
+        H('Insentif (pribadi)', '15% gaji pokok × faktor capaian: <70% nol, 70–89% sebesar capaian, 90–100% penuh, maks 120%'),
+        H('Syarat insentif', 'Disiplin KKH ≥ 80%, tidak ada selisih kas'),
+        H('Liga', 'Antar 3 unit bisnis: Rentalaja (semua cabang, Experience, ATVaja), TripinAja, Niagaaja'),
+        H('Bonus (tim)', '5% laba kontribusi unit × faktor Liga (juara kuartal 100%; lainnya 100/70/30/0% menurut kategori), dibagi bobot peran × skor'),
+        H('Bobot peran', 'Leader ×1,5, Staf ×1,0'),
+        H('Persetujuan & bayar', 'Keuangan menyusun draf → CEO menyetujui → insentif dibayar bulanan bersama gaji, bonus per kuartal'),
+        Uu('Nilai valuer untuk anggota', unit ? 'Skala 1–5 setiap akhir bulan' : 'Diatur tiap unit')]],
+      alok: ['Alokasi biaya bersama', 'Cara membagi gaji fungsi bersama, sewa kantor, dan aplikasi ke unit.', [
+        H('Cara bagi', 'Pilih di bawah')]],
+      cuti: ['Kehadiran & cuti', 'Aturan cuti sama, jam kerja mengikuti unit.', [
+        H('Hari kerja & libur', 'Senin–Minggu; setiap orang libur 2 hari pilihan per minggu, dipilih paling lambat Jumat 17.00. CEO bebas'),
+        H('Minimal jaga per hari', 'Holding ≥ 3 orang; unit dengan ≥ 2 management minimal 1 orang'),
+        H('Jatah cuti tahunan', '12 hari kerja setelah 12 bulan bekerja, di luar libur mingguan'),
+        H('Persetujuan cuti', 'Atasan langsung, wajib ada pengganti'),
+        Uu('Jam masuk / shift', unit ? hours[unit[0]] : 'Diatur tiap unit'),
+        Uu('Pengganti default', unit ? 'Ditentukan Leader' : 'Diatur tiap unit')]],
+      notif: ['Notifikasi & eskalasi', 'Eskalasi dikunci holding; unit boleh menambah pengingat internal.', []],
+      jam: ['Jam operasional', 'Jam buka dan layanan pelanggan.', unit ? [
+        Uu('Jam buka', hours[unit[0]]), Uu('CS piket', fam === 'ra' ? '07.30–23.00' : 'Belum ditetapkan'), Uu('Booking di luar jam', fam === 'ra' ? 'Boleh' : 'Belum ditetapkan')] : []],
+      produk: ['Aturan produk', 'Aturan jual atau sewa yang khas tiap bisnis.', unit ? (product[fam] || []).map(([l, v]) => Uu(l, v)) : []],
+      login: ['Login & akun', 'Satu orang satu akun di semua sistem.', [
+        H('Siapa yang masuk', 'Hanya tim management (daftarnya di Tim & Peran, kolom Akses). Staf cabang memakai Rentalaja App'),
+        H('Akun', 'Dibuat Kepala Staf di Rentalaja App → Pengguna dan peran: email Google, username, dan nomor WhatsApp untuk satu orang'),
+        H('Cara masuk', 'Akun Google (utama), username & password, atau kode WhatsApp (cadangan)'),
+        H('Password', 'Minimal 8 karakter; lupa password direset lewat email Google atau WhatsApp'),
+        H('Riwayat masuk', 'Setiap login tercatat: siapa, kapan, dan lewat cara apa'),
+        H('Orang keluar', 'Dinonaktifkan sekali, tertutup di semua sistem')]]
+    };
+    const order = ['peran', 'target', 'laporan', 'liga', 'alok', 'cuti', 'notif', 'jam', 'produk', 'login'];
+    const tagOf = (k) => {
+      const lv = C[k][2].map(r => r.lvl);
+      if (k === 'notif') return 'Keduanya';
+      if (k === 'jam' || k === 'produk') return 'Unit';
+      if (lv.length && lv.every(l => l === 'H')) return 'Holding';
+      return 'Keduanya';
+    };
+    const cat = this.state.cat;
+    const cats = order.map((k, i) => {
+      const on = cat === k;
+      const tag = tagOf(k);
+      return {
+        no: String(i + 1).padStart(2, '0'), label: C[k][0], tag,
+        tagFg: tag === 'Holding' ? '#1D3149' : tag === 'Unit' ? '#067A70' : '#8A94A3',
+        cur: on ? 'page' : 'false', bg: on ? '#DDF5F2' : 'transparent', fg: on ? '#1D3149' : '#3B4250', fw: on ? '800' : '600',
+        pick: () => this.setState({ cat: k })
+      };
+    });
+    const rows = C[cat][2].map(r => {
+      const hRow = r.lvl === 'H';
+      const locked = isH ? !hRow : hRow;
+      return {
+        label: r.label, value: r.value, edit: () => this.openForm('ubah', r.label),
+        valFg: r.value === 'Belum ditetapkan' ? '#9A3F0A' : '#5B6573',
+        tag: hRow ? 'Holding' : 'Unit', tagBg: hRow ? '#1D3149' : '#DDF5F2', tagFg: hRow ? '#FFFFFF' : '#067A70',
+        locked, editable: !locked && cat !== 'alok',
+        lockText: hRow ? 'Mengikuti holding' : 'Diatur di unit'
+      };
+    });
+    const noRows = rows.length === 0 && cat !== 'notif';
+    const noRowsText = (cat === 'jam' || cat === 'produk') && isH ? 'Diatur oleh masing-masing unit. Pilih unit di atas untuk melihat aturannya.' : 'Aturan untuk unit ini belum diisi.';
+    const m = this.state.method;
+    const val = (u) => m === 'omzet' ? u[4] : m === 'jam' ? u[5] : (u[0] === 'CP' ? 0 : 1);
+    const tot = UNITS.reduce((a, u) => a + val(u), 0) || 1;
+    const maxP = Math.max(...UNITS.map(u => val(u) / tot)) || 1;
+    const alloc = UNITS.filter(u => u[0] !== 'CP').map(u => {
+      const p = val(u) / tot;
+      const me = unit && u[0] === unit[0];
+      return { name: u[2], pct: (p * 100).toFixed(1).replace('.', ',') + '%', w: Math.round(p / maxP * 100) + '%', bg: me ? '#F0FBF9' : 'transparent', fw: me ? '900' : '700' };
+    });
+    const methods = [
+      ['omzet', 'Per omzet', 'Datanya sudah ada', 'Unit yang banyak dibantu tapi omzetnya kecil terlihat ringan'],
+      ['jam', 'Per jam kerja', 'Paling adil untuk unit yang banyak dibantu', 'Perlu catatan jam layanan'],
+      ['tetap', 'Sama rata', 'Paling sederhana', 'Memberatkan unit kecil dan unit baru']
+    ].map(([k, title, pro, con]) => ({ title, pro, con, on: m === k ? 'true' : 'false', ring: m === k ? '#09BEAF' : 'transparent', pick: () => { if (isH) this.setState({ method: k }); } }));
+    const off = this.state.off;
+    const RU = [
+      ['H', 'Laporan omzet belum masuk 21.00', 'Leader unit, lalu Kepala Staf pukul 22.00'],
+      ['H', 'Permintaan antarunit lewat 24 jam', 'CEO'],
+      ['H', 'Status unit berubah merah', 'CEO dan Kepala Staf'],
+      ['H', 'Tugas lewat tenggat', 'PIC tugas dan atasannya'],
+      ['H', 'Revisi jatuh tempo hari ini', 'PIC'],
+      ['H', 'Revisi lewat 2 hari', 'Kepala Staf, lalu agenda Evaluasi bersama CEO pada hari ke-5'],
+      ['H', 'Pengajuan review belum dicek 2 hari', 'Reviewer'],
+      ['H', 'Ringkasan harian 21.30', 'CEO'],
+      ['U', 'KKH hari ini belum diisi 08.00', 'Orang yang bersangkutan'],
+      ['U', 'KKH belum divalidasi 18.00', 'Valuer 1, lalu Valuer 2'],
+      ['U', 'Target minggu ini belum dikirim Senin 09.00', 'Leader unit'],
+      ['U', 'Pengingat internal tim (misalnya serah terima unit)', 'Anggota unit']
+    ];
+    const rules = RU.map(([lv, when, to], i) => {
+      const can = isH ? lv === 'H' : lv === 'U';
+      const on = !off[scope + i] && !(lv === 'U' && isH && false);
+      return {
+        when, to, tag: lv === 'H' ? 'Holding' : 'Unit', tagBg: lv === 'H' ? '#1D3149' : '#DDF5F2', tagFg: lv === 'H' ? '#FFFFFF' : '#067A70',
+        on: on ? 'true' : 'false', bg: on ? '#09BEAF' : '#C9CED6', knob: on ? '25px' : '3px',
+        dis: can ? 'false' : 'true', op: can ? '1' : '0.45',
+        toggle: () => { if (can) this.setState({ off: { ...off, [scope + i]: on } }); }
+      };
+    });
+    const unitBtns = UNITS.map(u => ({
+      label: u[1], on: scope === u[0] ? 'true' : 'false', bg: scope === u[0] ? '#1D3149' : '#FFFFFF', fg: scope === u[0] ? '#FFFFFF' : '#3B4250',
+      pick: () => this.setState({ scope: u[0] })
+    }));
+    const FORMS = {"ubah": {"title": "Ubah aturan · {ctx}", "note": "Perubahan aturan holding perlu persetujuan CEO dan masuk Log keputusan.", "fields": [["Nilai baru", "{ctx}"], ["Alasan perubahan", "Singkat"]], "cta": "Ajukan perubahan", "done": "Perubahan aturan diajukan ke CEO dan dicatat di Log keputusan."}};
+    return { ...this.uxVals(FORMS), 
+
+      unitBtns, cats, rows, noRows, noRowsText,
+      cat: { label: C[cat][0], desc: C[cat][1] },
+      isHolding: isH ? 'true' : 'false', hBg: isH ? '#1D3149' : '#F3F5F8', hFg: isH ? '#FFFFFF' : '#3B4250',
+      pickHolding: () => this.setState({ scope: 'H' }),
+      scopeLabel: isH ? 'TINGKAT HOLDING · BERLAKU UNTUK SEMUA UNIT' : 'TINGKAT UNIT · ' + unit[2].toUpperCase(),
+      showAlok: cat === 'alok', showNotif: cat === 'notif',
+      methods, alloc,
+      allocNote: isH ? 'Dasar per omzet: omzet September 2026 (bulan berjalan). Ciputat belum ikut menanggung sampai buka penuh.' : 'Cara bagi ditetapkan holding; unit hanya melihat porsinya (baris yang ditandai).',
+      rules
+    };
+  }
+}
+</script>
+</body>
+</html>
