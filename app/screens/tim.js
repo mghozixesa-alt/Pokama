@@ -1,0 +1,142 @@
+import { ctx, db, esc, today, fmonth, monthStart, avatar, nick, modal, field, opts, toast, active, unitName, unitOpts, peopleOpts, isAdmin, isFin, need, chip, logo, ROLE, rp, num, callFn, bizOf } from '../core.js';
+
+// ================= Tim & Peran =================
+async function tim(el, params, reload) {
+  const admin = isAdmin(); const showOff = params.get('off') === '1';
+  const ppl = ctx.people.filter(p => showOff || p.is_active);
+  const groups = ctx.units.filter(u => u.kind !== 'lini').map(u => ({ u, rows: ppl.filter(p => bizOf(p.unit_code) === u.code) })).filter(g => g.rows.length);
+  el.innerHTML = `
+  <header class="ph"><div><span class="muted small">Siapa di unit mana, perannya apa, atasannya siapa, dan sudah punya akun atau belum</span><h1>Tim & Peran</h1></div>
+    ${admin ? '<div class="row gap"><button class="btn" data-a="unit">+ Lini / unit</button><button class="btn pri" data-a="add">+ Tambah orang</button></div>' : ''}</header>
+  <div class="tiles"><div class="tile"><span>Orang aktif</span><b>${active().length}</b></div><div class="tile"><span>Sudah punya akun</span><b>${active().filter(p => p.user_id || p.email).length}</b></div>
+    <div class="tile"><span>Unit & lini</span><b>${ctx.units.filter(u => u.is_active).length}</b></div><div class="tile"><span>Leader</span><b>${active().filter(p => p.role === 'leader').length}</b></div></div>
+  ${groups.map(g => `<section class="grp"><div class="grp-h">${logo(g.u.code, 30)}<b>${esc(g.u.name)}</b><span class="muted">${g.rows.length} orang</span></div>
+    <div class="pgrid">${g.rows.map(p => `<button type="button" class="card person${p.is_active ? '' : ' off'}" data-p="${p.id}">${avatar(p.id, 52)}<span><b>${esc(p.nickname || p.name)}</b><small>${esc(p.title || ROLE[p.role])}</small>
+      <small class="muted">${esc(unitName(p.unit_code))} · atasan ${esc(nick(p.boss_id))}</small>
+      <span class="row gap6">${chip(ROLE[p.role], p.role === 'leader' ? 'green' : ['ceo', 'kepala_staf', 'keuangan'].includes(p.role) ? 'blue' : 'gray')}${p.user_id || p.email ? chip('Akun aktif', 'green') : chip('Belum ada akun', 'red')}</span></span></button>`).join('')}</div></section>`).join('')}
+  ${admin ? `<p><a href="#/tim?off=${showOff ? 0 : 1}" class="small">${showOff ? 'Sembunyikan' : 'Tampilkan'} orang nonaktif</a></p>` : ''}`;
+
+  el.onclick = async (e) => {
+    const a = e.target.closest('[data-a]'); const pb = e.target.closest('[data-p]');
+    try {
+      if (a && a.dataset.a === 'add') { if (await personForm()) reload(); }
+      else if (a && a.dataset.a === 'unit') { if (await unitForm()) reload(); }
+      else if (pb) { const p = ctx.byId[pb.dataset.p]; if (admin) { const r = await personForm(p); if (r) reload(); } else await view(p); }
+    } catch (er) { toast(er.message, 'err'); }
+  };
+
+  async function view(p) {
+    await modal(p.name, `<div class="row gap">${avatar(p.id, 64)}<div><b>${esc(p.title || ROLE[p.role])}</b><p class="muted">${esc(unitName(p.unit_code))}</p></div></div>
+      <div class="kv"><div><span>Atasan langsung</span><b>${esc(nick(p.boss_id))}</b></div><div><span>Valuer KKH</span><b>${esc(nick(p.valuer1_id))}${p.valuer2_id ? ' · ' + esc(nick(p.valuer2_id)) : ''}</b></div>
+      <div><span>Email</span><b>${esc(p.email || '—')}</b></div><div><span>WhatsApp</span><b>${p.phone ? '+' + esc(p.phone) : '—'}</b></div></div>`, { submit: null });
+  }
+}
+
+async function personForm(p = null) {
+  const isNew = !p; p = p || { role: 'staf', is_active: true, unit_code: 'HQ', leave_quota: 12 };
+  const res = await modal(isNew ? 'Tambah orang management' : 'Ubah · ' + (p.nickname || p.name),
+    `<div class="g2">` + field('Nama lengkap', `<input name="name" class="inp" value="${esc(p.name || '')}">`) + field('Nama panggilan', `<input name="nickname" class="inp" value="${esc(p.nickname || '')}">`) +
+    field('Kode / inisial', `<input name="code" class="inp" maxlength="4" value="${esc(p.code || '')}" ${isNew ? '' : 'readonly'}>`) +
+    field('Peran sistem', `<select name="role" class="inp">${opts(Object.entries(ROLE), p.role)}</select>`) +
+    field('Jabatan / fungsi', `<input name="title" class="inp" value="${esc(p.title || '')}">`) + field('Unit', `<select name="unit_code" class="inp">${unitOpts(p.unit_code)}</select>`) +
+    field('Atasan langsung', `<select name="boss_id" class="inp">${peopleOpts(p.boss_id, '— tidak ada —', x => x.id !== p.id)}</select>`) +
+    field('Valuer 2', `<select name="valuer2_id" class="inp">${peopleOpts(p.valuer2_id, '— otomatis Kepala Staf —', x => x.id !== p.id)}</select>`) +
+    field('Email (untuk login)', `<input name="email" type="email" class="inp" value="${esc(p.email || '')}">`) + field('WhatsApp', `<input name="phone" class="inp" value="${esc(p.phone || '')}" placeholder="62812…">`) +
+    field('Mulai bekerja', `<input type="date" name="joined_on" class="inp" value="${esc(p.joined_on || '')}">`) + field('Jatah cuti / tahun', `<input type="number" name="leave_quota" class="inp" value="${p.leave_quota ?? 12}">`) +
+    field('Foto (tautan gambar, opsional)', `<input name="photo" class="inp" value="${esc(p.photo || '')}">`) + `</div>` +
+    (isNew ? '' : `<label class="chk"><input type="checkbox" name="is_active" ${p.is_active ? 'checked' : ''}> Aktif</label>`) +
+    (isNew ? '' : `<div class="note"><b>Akun login:</b> ${p.user_id ? 'sudah tersambung' : p.email ? 'email terdaftar' : 'belum ada'}. <button type="button" class="btn sm" id="mkacc">${p.user_id || p.email ? 'Buat password baru' : 'Buat akun'}</button><span id="accout"></span></div>`),
+    { wide: true, onSubmit: async (f) => {
+      need(f.name, 'Isi nama'); need(f.code, 'Isi kode/inisial');
+      const ks = ctx.people.find(x => x.role === 'kepala_staf');
+      const row = { name: f.name.trim(), nickname: f.nickname.trim() || null, code: f.code.trim().toUpperCase(), role: f.role, title: f.title.trim() || null, unit_code: f.unit_code,
+        boss_id: f.boss_id || null, valuer1_id: f.boss_id || null, valuer2_id: f.valuer2_id || (ks && ks.id !== f.boss_id && ks.id !== p.id ? ks.id : null),
+        email: f.email.trim().toLowerCase() || null, phone: f.phone.replace(/\D/g, '').replace(/^0/, '62') || null, joined_on: f.joined_on || null, leave_quota: +f.leave_quota || 12, photo: f.photo.trim() || null };
+      if (isNew) await db.insert('pk_people', row); else await db.update('pk_people', 'id=eq.' + p.id, { ...row, is_active: !!f.is_active });
+      const { loadContext } = await import('../core.js'); await loadContext();
+    } });
+  return res;
+}
+document.addEventListener('click', async (e) => {
+  if (e.target.id !== 'mkacc') return; const form = e.target.closest('form'); const out = form.querySelector('#accout');
+  const name = form.querySelector('[name=code]').value; const p = ctx.people.find(x => x.code === name); const email = form.querySelector('[name=email]').value.trim();
+  if (!email) { out.textContent = ' Isi email dulu.'; return; }
+  e.target.disabled = true; out.textContent = ' Membuat…';
+  try { const r = await callFn('pk-account', { action: p.user_id || p.email ? 'reset' : 'create', person_id: p.id, email });
+    out.innerHTML = `<br>Kirim ke ${esc(r.name)} lewat WhatsApp:<br><code class="copy">Email: ${esc(r.email)}<br>Password: ${esc(r.password)}<br>Masuk di https://pokama.org</code><br><small>Minta ganti password setelah masuk (menu Pengaturan).</small>`;
+  } catch (er) { out.textContent = ' ' + er.message; }
+  e.target.disabled = false;
+});
+
+async function unitForm() {
+  return modal('Tambah lini / unit', `<div class="g2">` + field('Kode (2–3 huruf)', '<input name="code" class="inp" maxlength="3">') + field('Nama', '<input name="name" class="inp">') +
+    field('Jenis', `<select name="kind" class="inp">${opts([['lini', 'Lini (cabang/produk)'], ['bisnis', 'Unit bisnis']], 'lini')}</select>`) +
+    field('Bagian dari', `<select name="parent" class="inp">${unitOpts('RA', '— tidak ada —', ['bisnis'])}</select>`) + `</div>`,
+    { onSubmit: async (f) => { need(f.code, 'Isi kode'); need(f.name, 'Isi nama');
+      await db.insert('pk_units', { code: f.code.toUpperCase(), name: f.name, kind: f.kind, parent: f.kind === 'lini' ? f.parent || null : null, sort: 50 });
+      const { loadContext } = await import('../core.js'); await loadContext(); } });
+}
+
+// ================= Performa & Insentif =================
+async function performa(el, params, reload) {
+  const me = ctx.me.id; const m = params.get('m') || monthStart(today()); const end = new Date(Date.UTC(+m.slice(0, 4), +m.slice(5, 7), 0)).toISOString().slice(0, 10);
+  const [outputs, perf, salary, kkh] = await Promise.all([
+    db.get('pk_outputs', `select=*&month=eq.${m}&order=created_at`),
+    db.get('pk_perf', `select=*&month=eq.${m}`),
+    isFin() ? db.get('pk_salary', 'select=*') : Promise.resolve([]),
+    db.get('pk_kkh', `select=person_id,status&day=gte.${m}&day=lte.${end}`),
+  ]);
+  const W = ctx.settings.weights || { output: 60, kkh: 25, valuer: 15 }; const pct = +ctx.settings.incentive_pct || 15;
+  const visible = active().filter(p => p.role !== 'ceo' && (isFin() || isAdmin() || p.id === me || p.boss_id === me || p.valuer1_id === me));
+  const rows = visible.map(p => {
+    const os = outputs.filter(o => o.person_id === p.id); const wsum = os.reduce((s, o) => s + o.weight, 0) || 1;
+    const cap = os.length ? os.reduce((s, o) => s + o.weight * Math.min(1.2, (+o.actual) / (+o.target)), 0) / wsum : null;
+    const k = kkh.filter(x => x.person_id === p.id); const disc = k.length ? k.filter(x => x.status === 'valid').length / k.length : null;
+    const pf = perf.find(x => x.person_id === p.id) || {}; const val = pf.valuer_score ? (pf.valuer_score - 1) / 4 : null;
+    const score = cap === null ? null : Math.round((Math.min(1, cap) * W.output + (disc ?? 0) * W.kkh + (val ?? 0) * W.valuer));
+    const fac = cap === null ? 0 : cap < .7 ? 0 : cap < .9 ? cap : cap <= 1 ? 1 : Math.min(1.2, cap);
+    const sal = salary.find(s => s.person_id === p.id); const base = sal ? +sal.base_salary : null;
+    const eligible = disc !== null && disc >= .8;
+    return { p, os, cap, disc, val: pf.valuer_score, score, fac, base, ins: base && eligible ? Math.round(base * pct / 100 * fac) : 0, eligible, pf };
+  });
+  const cat = (s) => s === null ? ['—', 'gray'] : s >= 85 ? ['Sangat baik', 'green'] : s >= 70 ? ['Baik', 'green'] : s >= 55 ? ['Perlu perbaikan', 'yellow'] : ['Pembinaan', 'red'];
+  el.innerHTML = `
+  <header class="ph"><div><span class="muted small">${fmonth(m)} · ${isFin() ? 'angka gaji hanya terlihat CEO dan Keuangan' : 'Anda melihat performa sendiri dan tim langsung'}</span><h1>Performa & Insentif</h1></div>
+    <input type="month" class="inp" id="mpick" value="${m.slice(0, 7)}"></header>
+  <div class="note">Skor = ${W.output}% capaian output + ${W.kkh}% disiplin KKH + ${W.valuer}% nilai valuer. Insentif = ${pct}% gaji pokok × faktor capaian (di bawah 70% nol, 70–89% sebesar capaian, 90–100% penuh, maks 120%). Syarat: disiplin KKH minimal 80%.</div>
+  ${isFin() ? `<div class="tiles"><div class="tile"><span>Total insentif ${fmonth(m)}</span><b>${rp(rows.reduce((s, r) => s + r.ins, 0))}</b></div><div class="tile"><span>Gaji pokok terisi</span><b>${salary.length} / ${rows.length}</b></div>
+    <div class="tile"><span>Output disepakati</span><b>${rows.filter(r => r.os.length).length} orang</b></div><div class="tile"><span>Disetujui CEO</span><b>${perf.filter(x => x.approved_at).length}</b></div></div>` : ''}
+  <section class="card pad0 scroll-x"><table class="tbl"><thead><tr><th>Orang</th><th>Output disepakati</th><th class="r">Capaian</th><th class="r">Disiplin KKH</th><th class="r">Valuer</th><th class="r">Skor</th>${isFin() ? '<th class="r">Gaji pokok</th><th class="r">Insentif</th>' : ''}<th></th></tr></thead><tbody>
+  ${rows.map(r => `<tr><td><span class="row gap6">${avatar(r.p.id, 28)}<span><b>${esc(r.p.nickname || r.p.name)}</b><br><small class="muted">${esc(r.p.title || ROLE[r.p.role])}</small></span></span></td>
+    <td>${r.os.map(o => `<div class="small">${esc(o.name)} <span class="muted">(${o.weight}%) ${(+o.actual).toLocaleString('id-ID')}/${(+o.target).toLocaleString('id-ID')}</span></div>`).join('') || '<span class="muted small">belum disepakati</span>'}</td>
+    <td class="r">${r.cap === null ? '—' : Math.round(r.cap * 100) + '%'}</td><td class="r ${r.disc !== null && r.disc < .8 ? 'red' : ''}">${r.disc === null ? '—' : Math.round(r.disc * 100) + '%'}</td><td class="r">${r.val || '—'}</td>
+    <td class="r">${r.score ?? '—'} ${r.score !== null ? chip(cat(r.score)[0], cat(r.score)[1]) : ''}</td>
+    ${isFin() ? `<td class="r">${r.base ? rp(r.base) : '<span class="red small">belum</span>'}</td><td class="r b">${r.ins ? rp(r.ins) : r.cap !== null && !r.eligible ? '<small class="red">KKH &lt;80%</small>' : '—'}</td>` : ''}
+    <td>${(isFin() || isAdmin() || r.p.boss_id === me || r.p.valuer1_id === me) ? `<button class="btn sm" data-p="${r.p.id}">Atur</button>` : ''}</td></tr>`).join('')}</tbody></table></section>`;
+  el.querySelector('#mpick').onchange = (e) => { location.hash = '#/performa?m=' + e.target.value + '-01'; };
+  el.onclick = async (e) => {
+    const b = e.target.closest('[data-p]'); if (!b) return; const r = rows.find(x => x.p.id === b.dataset.p);
+    const sal = salary.find(s => s.person_id === r.p.id);
+    const lines = r.os.map(o => `${o.name}; ${o.weight}; ${+o.target}; ${+o.actual}; ${o.source || ''}`).join('\n');
+    const res = await modal('Performa · ' + (r.p.nickname || r.p.name) + ' · ' + fmonth(m),
+      field('Output disepakati · satu baris: nama; bobot %; target; realisasi; sumber', `<textarea name="out" class="inp mono" rows="5" placeholder="Trip terjual; 50; 8; 7; Unit Bisnis\nLaporan omzet tepat waktu (hari); 50; 26; 25; KKH">${esc(lines)}</textarea>`, 'Total bobot sebaiknya 100%. Disusun Leader bersama orangnya, disahkan CEO setiap tanggal 1.') +
+      field('Nilai valuer (1–5)', `<select name="val" class="inp">${opts([['', '— belum —'], ['1', '1'], ['2', '2'], ['3', '3'], ['4', '4'], ['5', '5']], r.val || '')}</select>`) +
+      (isFin() ? field('Gaji pokok (pribadi, hanya CEO & Keuangan)', `<span class="pre"><b>Rp</b><input name="sal" class="inp-n" inputmode="numeric" value="${sal ? (+sal.base_salary).toLocaleString('id-ID') : ''}"></span>`) : '') +
+      (ctx.me.role === 'ceo' ? `<label class="chk"><input type="checkbox" name="appr" ${r.pf.approved_at ? 'checked' : ''}> Disetujui CEO</label>` : '') +
+      (isFin() ? `<label class="chk"><input type="checkbox" name="paid" ${r.pf.paid_at ? 'checked' : ''}> Insentif sudah dibayar</label>` : ''),
+      { wide: true, onSubmit: async (f) => {
+        const parsed = f.out.split('\n').map(l => l.split(';').map(s => s.trim())).filter(x => x[0]);
+        for (const x of parsed) if (!(+x[1] > 0) || !(+x[2] > 0)) throw new Error('Baris "' + x[0] + '": bobot dan target harus angka');
+        for (const o of r.os) await db.remove('pk_outputs', 'id=eq.' + o.id);
+        if (parsed.length) await db.insert('pk_outputs', parsed.map(x => ({ person_id: r.p.id, month: m, name: x[0], weight: +x[1], target: +x[2], actual: +(x[3] || 0), source: x[4] || null, created_by: me })));
+        const pf = { person_id: r.p.id, month: m, valuer_score: f.val ? +f.val : null };
+        if (ctx.me.role === 'ceo') { pf.approved_by = f.appr ? me : null; pf.approved_at = f.appr ? (r.pf.approved_at || new Date().toISOString()) : null; }
+        if (isFin()) { pf.paid_at = f.paid ? (r.pf.paid_at || new Date().toISOString()) : null; pf.incentive = r.ins || null; }
+        await db.upsert('pk_perf', pf, 'person_id,month');
+        if (isFin() && f.sal !== undefined) { const v = num(f.sal); if (v) await db.upsert('pk_salary', { person_id: r.p.id, base_salary: v, updated_by: me, updated_at: new Date().toISOString() }, 'person_id'); }
+      } });
+    if (res) { toast('Tersimpan'); reload(); }
+  };
+}
+
+export default { tim, performa };

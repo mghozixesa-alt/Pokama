@@ -1,17 +1,13 @@
 # Sistem Kerja Pokama
 
-Sistem kerja internal management PT Popo Karya Investama: KKH harian, penugasan, review & revisi, permintaan antarunit, kehadiran & cuti, target & omzet, Liga 3 unit bisnis (Rentalaja, TripinAja, Niagaaja), performa & insentif, dan Library Dokumen.
+Aplikasi kerja harian tim management PT Popo Karya Investama, terbit di **https://pokama.org**.
 
-## Isi repo
+- `app/` — aplikasi web (HTML + JavaScript modul, tanpa build). Dideploy Vercel (root directory `app`).
+  - `core.js` sambungan Supabase (auth + REST), sesi, komponen dasar.
+  - `app.js` login, kerangka menu laptop & HP, router.
+  - `screens/` layar: KKH, Proyek & Tugas, Review, Permintaan Bantuan, Pengajuan Belanja, Kehadiran, Unit Bisnis, Tim & Peran, Performa, Library, Pengaturan.
+- `supabase/` — skema database (tabel `pk_*` di proyek Supabase `rentalaja-produksi`), aturan akses per peran, dan fungsi alur (RAB, review, KKH, cuti).
+- `design/` — rancangan layar (canvas desain).
+- `brand/` — logo Pokama.
 
-- `demo/` — prototipe yang bisa diklik (HTML statis, tanpa database). Dideploy ke Vercel proyek **pokama** → pokama.org (demo.pokama.org tetap jalan). Semua data contoh dan tidak tersimpan.
-- `design/` — file sumber rancangan per layar (`*.dc.html`) dan `canvas.json` dari kanvas desain. Dipakai sebagai acuan saat membangun aplikasi asli.
-- `tools/build_demo.py` — membangun ulang `demo/` dari `design/` (`python3 tools/build_demo.py`).
-
-## Acuan membangun
-
-- PRD per flow: https://claude.ai/artifact/L2idjzZzqYG7jt8KMSoJUM
-- Aturan Main Sistem Kerja: https://claude.ai/artifact/FFZxUJMpCWSsGrxjQybrf4
-- Kanvas desain: https://claude.ai/artifact/DLcZe37XpMrYqTjz4brsot
-
-Aplikasi asli (database, login Google, notifikasi) dibangun terpisah di repo ini, misalnya di folder `app/`.
+Login: email + password (akun dibuat dari menu Tim & Peran), Google (aktifkan provider Google di Supabase), atau kode WhatsApp (memakai fungsi auth-otp Rentalaja App).
