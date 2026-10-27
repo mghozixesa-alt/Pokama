@@ -122,11 +122,11 @@ class Component extends DCLogic {
     this.state = { step: 1, who: 'WR', phone: '' };
   }
   renderVals() {
-    const ALL = ['KKH Saya', 'KKH Tim', 'Proyek & Tugas', 'Review & Revisi', 'Permintaan Bantuan', 'Pengajuan Belanja', 'Kehadiran', 'Target Unit', 'Omzet Unit', 'Liga', 'Tim & Peran', 'Performa & Insentif', 'Library Dokumen', 'Pengaturan'];
+    const ALL = ['KKH Saya', 'KKH Tim', 'Proyek & Tugas', 'Review & Revisi', 'Permintaan Bantuan', 'Pengajuan Belanja', 'Kehadiran', 'Unit Bisnis', 'Tim & Peran', 'Performa & Insentif', 'Library Dokumen', 'Pengaturan'];
     const P = {
       GZ: { name: 'Ghozy', role: 'CEO', landing: 'KKH Saya · tingkat holding', href: 'Main.dc.html', scope: 'Holding, semua unit', switch: 'Ya, semua unit', hide: [], note: 'Mengesahkan aturan holding, target unit, serta insentif dan bonus bersama Keuangan.' },
       IF: { name: 'Intifa Ilmi', role: 'Kepala Staf', landing: 'Review & Revisi', href: 'Review.dc.html', scope: 'Holding, semua unit', switch: 'Ya, semua unit', hide: ['Performa & Insentif'], note: 'Menjalankan evaluasi dan rapat; bisa mengubah pengaturan holding kecuali yang perlu persetujuan CEO.' },
-      RZ: { name: 'Ade Reza N.', role: 'Keuangan', landing: 'Omzet Unit · tingkat holding', href: 'Omzet.dc.html', scope: 'Holding, semua unit', switch: 'Ya, semua unit', hide: [], note: 'Mencairkan dana RAB, memvalidasi angka, menghitung insentif dan bonus, lalu membayarnya setelah CEO setuju.' },
+      RZ: { name: 'Ade Reza N.', role: 'Keuangan', landing: 'Unit Bisnis · Omzet, tingkat holding', href: 'Omzet.dc.html', scope: 'Holding, semua unit', switch: 'Ya, semua unit', hide: [], note: 'Mencairkan dana RAB, memvalidasi angka, menghitung insentif dan bonus, lalu membayarnya setelah CEO setuju.' },
       WR: { name: 'Wiranata', role: 'Leader · TripinAja', landing: 'KKH Saya · unit TripinAja', href: 'Main.dc.html', scope: 'Unit TripinAja', switch: 'Tidak', hide: ['Performa & Insentif'], note: 'Klasemen Liga tetap terlihat semua unit supaya bisa bersaing, tapi angka rinci unit lain tidak.' },
       SC: { name: 'Staf cabang', role: 'Kasir, CS, teknisi, admin', landing: 'Tidak masuk sistem ini — memakai Rentalaja App', href: 'https://rentalaja-app.vercel.app/#/PosHariIni', scope: '—', switch: 'Tidak', hide: ALL, note: 'Absen, tutup shift, dan laporan omzet di Rentalaja App otomatis masuk ke Kehadiran, Omzet Unit, dan Liga.' }
     };

@@ -55,7 +55,7 @@ dcBoot(Component);
 '''
     open(O + n, 'w').write(out)
 groups = [('Laptop · masuk & kerja harian', ['Masuk', 'Main', 'KKH', 'Penugasan', 'Review', 'Permintaan', 'Belanja', 'Kehadiran']),
-          ('Laptop · unit bisnis', ['Target', 'Omzet', 'Liga']),
+          ('Laptop · unit bisnis (1 menu, 3 tab)', ['Liga', 'Omzet', 'Target']),
           ('Laptop · orang & sistem', ['Tim', 'Bonus', 'Library', 'Pengaturan']),
           ('HP · tahap 1', ['KKHHp', 'ReviewHp', 'PermintaanHp', 'BelanjaHp', 'LainnyaHp']),
           ('Catatan CEO', ['Keputusan'])]
