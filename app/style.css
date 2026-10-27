@@ -174,3 +174,6 @@ details.rules>summary::after{content:'Lihat ▾';font-size:13px;font-weight:800;
 .fld .inp,.fld select,.fld textarea{font-weight:600}.inp::placeholder{font-weight:500;color:#9AA3AF}
 .pts li{font-size:14px;font-weight:600}
 .pts li>.chip{align-self:flex-start}
+[hidden]{display:none!important}
+.login-card h1{margin:0}.login-card .fg{align-self:center;font-size:13px}.login-card .inp{height:46px;font-size:16px}
+@media (max-width:760px){.login{align-items:flex-start;padding:40px 16px}.login-card{padding:28px 22px;gap:16px}.login-logo{height:34px}}

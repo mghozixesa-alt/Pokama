@@ -1,4 +1,4 @@
-import { ctx, hasSession, takeSessionFromUrl, signInPassword, signInGoogle, waRequest, waVerify, loadContext, signOut, esc, avatar, ROLE, toast } from './core.js';
+import { ctx, hasSession, takeSessionFromUrl, signInPassword, signInGoogle, loadContext, signOut, esc, avatar, ROLE, toast } from './core.js';
 import kerja from './screens/kerja.js';
 import tugas from './screens/tugas.js';
 import permintaan from './screens/permintaan.js';
@@ -43,28 +43,18 @@ const root = document.getElementById('app');
 function loginView(msg) {
   root.innerHTML = `<main class="login"><div class="login-card">
     <img class="login-logo" src="img/pokama-logo.png" alt="Pokama">
-    <h1>Masuk</h1><p class="muted">Sistem Kerja Harian · PT Popo Karya Investama</p>
+    <div><h1>Masuk</h1><p class="muted small">Sistem Kerja Harian · PT Popo Karya Investama</p></div>
     ${msg ? `<p class="form-err">${esc(msg)}</p>` : ''}
-    <div id="lv-main" class="stack">
-      <button class="btn sec big" type="button" id="g">${googleIcon}Masuk dengan akun Google</button>
-      <div class="or">atau</div>
-      <form id="pf" class="stack" autocomplete="on">
-        <label class="fld"><span>Email</span><input id="em" type="email" autocomplete="username" required placeholder="nama@email.com"></label>
-        <label class="fld"><span>Password</span><input id="pw" type="password" autocomplete="current-password" required placeholder="••••••••"></label>
-        <p class="form-err" id="pe" hidden></p>
-        <button class="btn pri big" type="submit">Masuk</button>
-      </form>
-      <div class="row between"><button class="link" type="button" id="wa">Masuk dengan kode WhatsApp</button><button class="link mute" type="button" id="fg">Lupa password?</button></div>
-      <p class="note" id="fgn" hidden>Minta Kepala Staf membuat password baru dari menu Tim & Peran.</p>
-    </div>
-    <div id="lv-wa" class="stack" hidden>
-      <label class="fld"><span>Nomor WhatsApp</span><span class="pre"><b>+62</b><input id="ph" type="tel" inputmode="numeric" placeholder="853 1132 4738"></span></label>
-      <div id="codebox" class="stack" hidden><label class="fld"><span>Kode 6 angka</span><input id="cd" inputmode="numeric" maxlength="6" class="inp otp"></label></div>
-      <p class="form-err" id="we" hidden></p>
-      <button class="btn pri big" type="button" id="wgo">Kirim kode</button>
-      <button class="link mute" type="button" id="wback">Kembali</button>
-    </div>
-    <p class="foot">Staf cabang masuk lewat Rentalaja App.</p>
+    <button class="btn sec big" type="button" id="g">${googleIcon}Masuk dengan Google</button>
+    <div class="or">atau pakai email</div>
+    <form id="pf" class="stack" autocomplete="on">
+      <label class="fld"><span>Email</span><input id="em" class="inp" type="email" autocomplete="username" required placeholder="nama@email.com"></label>
+      <label class="fld"><span>Password</span><input id="pw" class="inp" type="password" autocomplete="current-password" required placeholder="Password"></label>
+      <p class="form-err" id="pe" hidden></p>
+      <button class="btn pri big" type="submit">Masuk</button>
+    </form>
+    <button class="link mute fg" type="button" id="fg">Lupa password?</button>
+    <p class="note" id="fgn" hidden>Minta Kepala Staf membuat password baru dari menu Tim & Peran.</p>
   </div></main>`;
   const $ = (s) => root.querySelector(s);
   $('#g').onclick = () => signInGoogle();
@@ -73,21 +63,6 @@ function loginView(msg) {
     e.preventDefault(); const b = e.submitter; b.disabled = true; $('#pe').hidden = true;
     try { await signInPassword($('#em').value, $('#pw').value); await boot(); }
     catch (er) { $('#pe').textContent = er.message; $('#pe').hidden = false; b.disabled = false; }
-  };
-  let sent = false;
-  $('#wa').onclick = () => { $('#lv-main').hidden = true; $('#lv-wa').hidden = false; $('#ph').focus(); };
-  $('#wback').onclick = () => { $('#lv-main').hidden = false; $('#lv-wa').hidden = true; };
-  $('#wgo').onclick = async () => {
-    const b = $('#wgo'); b.disabled = true; $('#we').hidden = true;
-    try {
-      if (!sent) {
-        const r = await waRequest('0' + $('#ph').value.replace(/\D/g, '').replace(/^0+|^62/, ''));
-        sent = true; $('#codebox').hidden = false; b.textContent = 'Masuk'; $('#cd').focus();
-        if (r.code) { $('#cd').value = r.code; }
-        else if (r.simulation) { $('#we').textContent = 'WhatsApp belum aktif. Minta kode sementara ke admin Rentalaja App.'; $('#we').hidden = false; }
-      } else { await waVerify('0' + $('#ph').value.replace(/\D/g, '').replace(/^0+|^62/, ''), $('#cd').value); await boot(); }
-    } catch (er) { $('#we').textContent = er.message; $('#we').hidden = false; }
-    b.disabled = false;
   };
 }
 const googleIcon = '<svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.5l6.7-6.7C35.6 2.4 30.2 0 24 0 14.6 0 6.6 5.4 2.6 13.2l7.8 6.1C12.3 13.6 17.6 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8c4.4-4 7.1-10 7.1-17.5z"/><path fill="#FBBC05" d="M10.4 28.7c-.5-1.4-.8-3-.8-4.7s.3-3.2.8-4.7l-7.8-6.1C1 16.5 0 20.1 0 24s1 7.5 2.6 10.8l7.8-6.1z"/><path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.5-5.8c-2.1 1.4-4.9 2.3-8.4 2.3-6.4 0-11.7-4.1-13.6-9.8l-7.8 6.1C6.6 42.6 14.6 48 24 48z"/></svg>';
