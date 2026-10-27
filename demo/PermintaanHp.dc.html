@@ -26,7 +26,7 @@ body{margin:0;background:#E9ECF0;display:flex;justify-content:center;align-items
 <div style="width: 390px; height: 844px; box-sizing: border-box; display: flex; flex-direction: column; background: #F3F5F8; color: #1F2933; font-family: 'Nunito', system-ui, sans-serif; font-size: 14px; line-height: 1.4; overflow: hidden; position: relative">
 <sc-if value="{{isList}}" hint-placeholder-val="{{true}}">
 <header style="flex-shrink: 0; background: #1D3149; color: #FFFFFF; padding: 16px 16px 12px; display: flex; flex-direction: column; gap: 12px">
-<div style="display: flex; justify-content: space-between; align-items: center"><span style="display: flex; flex-direction: column"><h1 style="margin: 0; font-size: 20px; font-weight: 900">Permintaan</h1><span style="font-size: 12px; color: #B9C4D2">Antarunit · dipilah Kepala Staf ≤ 24 jam</span></span><span aria-label="Wiranata" style="width: 38px; height: 38px; border-radius: 19px; background: #09BEAF; color: #1D3149; font-weight: 900; font-size: 13px; display: flex; align-items: center; justify-content: center">WR</span></div>
+<div style="display: flex; justify-content: space-between; align-items: center"><span style="display: flex; flex-direction: column"><h1 style="margin: 0; font-size: 20px; font-weight: 900">Permintaan Bantuan</h1><span style="font-size: 12px; color: #B9C4D2">Minta tolong unit lain · dipilah Kepala Staf ≤ 24 jam</span></span><span aria-label="Wiranata" style="width: 38px; height: 38px; border-radius: 19px; background: #09BEAF; color: #1D3149; font-weight: 900; font-size: 13px; display: flex; align-items: center; justify-content: center">WR</span></div>
 <div role="tablist" aria-label="Daftar" style="display: flex; gap: 6px">
 <sc-for list="{{tabs}}" as="t" hint-placeholder-count="2"><button type="button" role="tab" aria-selected="{{t.on}}" onClick="{{t.pick}}" style="flex: 1 1 0; height: 38px; border-radius: 10px; border: 0; background: {{t.bg}}; color: {{t.fg}}; font: inherit; font-size: 13px; font-weight: 800; cursor: pointer">{{t.label}}</button></sc-for>
 </div>
@@ -74,7 +74,7 @@ body{margin:0;background:#E9ECF0;display:flex;justify-content:center;align-items
 <sc-if value="{{d.hasActions}}" hint-placeholder-val="{{false}}">
 <footer style="flex-shrink: 0; background: #FFFFFF; border-top: 1px solid #E3E6EB; padding: 10px 14px 14px; display: flex; gap: 8px">
 <button type="button" onClick="{{d.ask}}" style="flex: 1 1 0; height: 50px; border-radius: 12px; border: 1px solid #E3E6EB; background: #FFFFFF; color: #3B4250; font: inherit; font-size: 14px; font-weight: 800; cursor: pointer">Minta diperjelas</button>
-<button type="button" onClick="{{d.plan}}" style="flex: 1.4 1 0; height: 50px; border-radius: 12px; border: 0; background: #1D3149; color: #FFFFFF; font: inherit; font-size: 14px; font-weight: 900; cursor: pointer">Masukkan ke KKH</button>
+<button type="button" onClick="{{d.plan}}" style="flex: 1.4 1 0; height: 50px; border-radius: 12px; border: 0; background: #1D3149; color: #FFFFFF; font: inherit; font-size: 14px; font-weight: 900; cursor: pointer">Terima · jadikan tugas</button>
 </footer>
 </sc-if>
 </sc-if>
@@ -108,7 +108,7 @@ class Component extends DCLogic {
       { id: 'm2', mine: 'out', title: 'Hiace untuk rombongan 14 orang, 7 Nov', who: 'Rentalaja Garut Kota', to: 'Rentalaja Garut Kota', pic: 'belum ditentukan', due: 'Sel 3 Nov', dueLate: false, st: 'wait', prio: 'Tinggi', desc: 'Rombongan kantor dari Bandung, 7–8 Nov. Butuh Hiace dan sopir, harga antarunit.', sent: 'Senin 22.05', tri: '' },
       { id: 'm3', mine: 'out', title: 'Dana talangan DP villa Desember', who: 'Keuangan', to: 'Keuangan', pic: 'Reza', due: 'Jum 30 Okt', dueLate: false, st: 'rej', prio: 'Sedang', reason: 'Ditolak Reza: DP villa dibayar dari rekening dana titipan tamu, bukan talangan holding. Ajukan lagi bila dana titipan belum cukup.', desc: 'DP 30% untuk villa malam tahun baru, sebelum tamu melunasi.', sent: 'Jumat 11.00', tri: 'Jumat 13.10 · Intifa' }
     ];
-    const ST = { new: ['Baru untuk Anda', '#FCEBDD', '#9A3F0A', '#C2410C'], wait: ['Menunggu dipilah', '#FDF3D7', '#7A5200', '#D99A00'], kkh: ['Masuk KKH', '#DDF5F2', '#067A70', '#09BEAF'], rej: ['Ditolak', '#EEF0F3', '#4A5160', '#8A94A3'], ask: ['Minta diperjelas', '#E5EEF9', '#1E5AA8', '#1E5AA8'] };
+    const ST = { new: ['Baru untuk Anda', '#FCEBDD', '#9A3F0A', '#C2410C'], wait: ['Menunggu dipilah', '#FDF3D7', '#7A5200', '#D99A00'], kkh: ['Jadi tugas', '#DDF5F2', '#067A70', '#09BEAF'], rej: ['Ditolak', '#EEF0F3', '#4A5160', '#8A94A3'], ask: ['Minta diperjelas', '#E5EEF9', '#1E5AA8', '#1E5AA8'] };
     const { tab, sel, planned, slotPick, extra } = this.state;
     const all = [...extra, ...I].map(it => ({ ...it, st: planned[it.id] ? planned[it.id].st : it.st, slot: planned[it.id] ? planned[it.id].slot : it.slot }));
     const items = all.filter(it => it.mine === tab).map(it => {
@@ -122,20 +122,20 @@ class Component extends DCLogic {
       const pick = slotPick[c.id] || SL[0];
       const order = ['sent', 'tri', 'acc', 'kkh', 'done'];
       const lvl = c.st === 'wait' ? 0 : c.st === 'rej' ? 1 : c.st === 'new' || c.st === 'ask' ? 2 : 3;
-      const lab = [['Diajukan', c.sent], ['Dipilah Kepala Staf', c.tri || 'paling lambat 24 jam'], [c.st === 'rej' ? 'Ditolak' : c.st === 'new' ? 'Diberikan ke Anda · tinggal dijadwalkan' : 'Diterima PIC ' + c.pic, c.st === 'rej' ? 'Alasan dikirim ke pengaju' : ''], ['Masuk KKH', c.slot || ''], ['Selesai · dicek pengaju', 'Tenggat ' + c.due]];
+      const lab = [['Diajukan', c.sent], ['Dipilah Kepala Staf', c.tri || 'paling lambat 24 jam'], [c.st === 'rej' ? 'Ditolak' : c.st === 'new' ? 'Diberikan ke Anda · tinggal dijadwalkan' : 'Diterima PIC ' + c.pic, c.st === 'rej' ? 'Alasan dikirim ke pengaju' : ''], ['Jadi tugas & masuk KKH', c.slot || ''], ['Selesai · dicek pengaju', 'Tenggat ' + c.due]];
       d = {
         kind: c.mine === 'in' ? 'UNTUK ANDA · DARI ' + c.who.toUpperCase() : 'DIAJUKAN ANDA', title: c.title,
         facts: [{ k: c.mine === 'in' ? 'DARI' : 'KE', v: c.mine === 'in' ? c.who : c.to }, { k: 'PIC', v: c.pic }, { k: 'TENGGAT', v: c.due }, { k: 'PRIORITAS', v: c.prio }],
         desc: c.desc,
         hasNote: c.st === 'rej' || c.st === 'kkh' || c.st === 'ask',
-        note: c.st === 'rej' ? c.reason : c.st === 'ask' ? 'Pertanyaan terkirim ke ' + c.who + '. Tenggat ikut mundur sampai dijawab.' : 'Sudah jadi slot KKH ' + c.slot + '. Selesai hanya bila pengaju menyetujui hasilnya.',
+        note: c.st === 'rej' ? c.reason : c.st === 'ask' ? 'Pertanyaan terkirim ke ' + c.who + '. Tenggat ikut mundur sampai dijawab.' : 'Sudah jadi tugas, dijadwalkan ' + c.slot + '. Selesai bila pengaju menyetujui hasilnya.',
         noteBg: c.st === 'rej' ? '#FCEBDD' : c.st === 'ask' ? '#E5EEF9' : '#DDF5F2', noteFg: c.st === 'rej' ? '#9A3F0A' : c.st === 'ask' ? '#1E5AA8' : '#067A70',
         steps: lab.map(([label, when], i) => { const on = c.st === 'rej' ? i <= 2 : i <= lvl; const cur = !on ? false : (c.st === 'rej' ? i === 2 : i === lvl); return { label, when: on ? when : '', mark: on ? (c.st === 'rej' && i === 2 ? '×' : '✓') : i + 1, dot: !on ? '#C9CED6' : c.st === 'rej' && i === 2 ? '#8A94A3' : cur && c.st === 'new' ? '#C2410C' : '#09BEAF', fg: on ? '#1F2933' : '#8A94A3' }; }).filter((s, i) => c.st !== 'rej' || i <= 2),
         canPlan: c.mine === 'in' && c.st === 'new',
         slots: SL.map(l => ({ label: l, on: pick === l ? 'true' : 'false', bg: pick === l ? '#1D3149' : '#FFFFFF', fg: pick === l ? '#FFFFFF' : '#3B4250', bd: pick === l ? '#1D3149' : '#E3E6EB', pick: () => this.setState({ slotPick: { ...slotPick, [c.id]: l } }) })),
         hasActions: c.mine === 'in' && c.st === 'new',
         ask: () => this.setState({ planned: { ...planned, [c.id]: { st: 'ask', slot: '' } } }),
-        plan: () => this.setState({ planned: { ...planned, [c.id]: { st: 'kkh', slot: pick } }, sel: null, msg: '"' + c.title + '" masuk KKH ' + pick + '. Adrian diberi tahu.' })
+        plan: () => this.setState({ planned: { ...planned, [c.id]: { st: 'kkh', slot: pick } }, sel: null, msg: '"' + c.title + '" jadi tugas Anda di Proyek & Tugas, dijadwalkan ' + pick + '. Adrian diberi tahu.' })
       };
     }
     const nIn = all.filter(it => it.mine === 'in' && it.st === 'new').length, nOut = all.filter(it => it.mine === 'out' && it.st !== 'rej').length;
@@ -148,7 +148,7 @@ class Component extends DCLogic {
     return {
       isList: !c, isDetail: !!c, items, d, back: () => this.setState({ sel: null }),
       tabs: [['in', 'Untuk saya (' + nIn + ')'], ['out', 'Saya ajukan (' + nOut + ')']].map(([k, label]) => ({ label, on: tab === k ? 'true' : 'false', bg: tab === k ? '#09BEAF' : '#2C4664', fg: tab === k ? '#1D3149' : '#FFFFFF', pick: () => this.setState({ tab: k }) })),
-      tabNote: tab === 'in' ? 'Permintaan yang sudah dipilah Kepala Staf dan diberikan ke Anda. Masukkan ke KKH supaya tercatat.' : 'Permintaan Anda ke unit lain. Anda diberi tahu setiap kali statusnya berubah.',
+      tabNote: tab === 'in' ? 'Permintaan yang sudah dipilah Kepala Staf dan diberikan ke Anda. Terima supaya jadi tugas dan masuk jadwal KKH.' : 'Permintaan Anda ke unit lain. Anda diberi tahu setiap kali statusnya berubah.',
       hasNewBadge: nIn > 0, newBadge: nIn,
       hasMsg: !!this.state.msg, msg: this.state.msg, clearMsg: () => this.setState({ msg: '' }),
       openNew: () => this.setState({ sheet: true, nTitle: '', nDesc: '', nTo: '', nDue: 'w' }), sheetOpen: this.state.sheet, closeSheet: () => this.setState({ sheet: false }),
