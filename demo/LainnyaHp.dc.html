@@ -9,18 +9,15 @@
 <style>
 body{margin:0;background:#F3F5F8}
 </style>
-<style>.demo-tag{position:fixed;right:16px;bottom:16px;z-index:50;background:#1D3149;color:#fff;font:700 12px/1 Nunito,system-ui,sans-serif;padding:10px 14px;border-radius:999px;text-decoration:none;box-shadow:0 6px 18px rgba(29,49,73,.3)}.demo-tag b{color:#09BEAF}</style>
 <style>
 body{margin:0;background:#E9ECF0;display:flex;justify-content:center;align-items:flex-start;min-height:100vh}
 #root>div{width:min(390px,100vw)!important;height:min(844px,100dvh)!important}
 @media(min-width:500px){body{padding:24px 0}#root>div{border-radius:28px;box-shadow:0 20px 60px rgba(29,49,73,.25)}}
-.demo-tag{left:16px;right:auto}@media(max-width:499px){.demo-tag{display:none}}
 </style>
 <script src="runtime.js"></script>
 </head>
 <body>
 <div id="root"></div>
-<a class="demo-tag" href="index.html"><b>☰</b> Semua layar</a>
 <script type="text/plain" id="dc-tpl">
 
 <div style="width: 390px; height: 844px; box-sizing: border-box; display: flex; flex-direction: column; background: #F3F5F8; color: #1F2933; font-family: 'Nunito', system-ui, sans-serif; font-size: 14px; line-height: 1.4; overflow: hidden; position: relative">
@@ -120,7 +117,7 @@ class Component extends DCLogic {
         { label: 'Kehadiran tim TripinAja', sub: 'Ariq hadir · Nayla belum absen', href: 'Kehadiran.dc.html', fg: '#1F2933' },
         { label: 'Notifikasi & akun', sub: 'WA dan email · ganti password', href: 'Pengaturan.dc.html', fg: '#1F2933' },
         { label: 'Buka versi laptop', sub: 'Tampilan lengkap untuk rapat', href: 'Main.dc.html', fg: '#1F2933' },
-        { label: 'Keluar', sub: 'Akun Google wiranata@…', href: 'Masuk.dc.html', fg: '#9A3F0A' }
+        { label: 'Keluar', sub: 'Akun Google wiranata@…', href: 'index.html', fg: '#9A3F0A' }
       ],
       sheetOpen: !!sheet, isOff: sheet === 'off', isLeave: sheet === 'leave', sheetTitle: sheet === 'off' ? 'Pilih 2 hari libur' : 'Ajukan cuti atau izin',
       closeSheet: () => this.setState({ sheet: null }),
