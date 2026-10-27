@@ -1,0 +1,2 @@
+-- 007: nilai & catatan per valuer per bulan (diterapkan sebagai pk_007_perf_notes); 006b: pk_rank staf=0, leader=1
+-- lihat riwayat migrasi Supabase untuk isi lengkap

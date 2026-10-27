@@ -20,6 +20,14 @@ async function saya(el, params, reload) {
     db.get('pk_kkh', `select=id,person_id,day,hour,code,note,mode,status,task_id&status=eq.siap&order=day.desc,hour.asc&limit=200`),
     dayLeave(day, [me]),
   ]);
+  // tag tim: siapa yang saya tag di slot saya, dan dari siapa slot hasil tag
+  const ownIds = rows.filter(r => !r.tag_of).map(r => r.id); const fromIds = [...new Set(rows.filter(r => r.tag_of).map(r => r.tag_of))];
+  const [copies, origins] = await Promise.all([
+    ownIds.length ? db.get('pk_kkh', `select=id,person_id,tag_of&tag_of=in.(${ownIds.join(',')})`) : [],
+    fromIds.length ? db.get('pk_kkh', `select=id,person_id&id=in.(${fromIds.join(',')})`) : [],
+  ]);
+  const tagsOf = (id) => copies.filter(c => c.tag_of === id).map(c => c.person_id);
+  const originOf = Object.fromEntries(origins.map(o => [o.id, o.person_id]));
   const mine = toVal.filter(r => { const p = ctx.byId[r.person_id]; return p && r.person_id !== me && (isAdmin() || [p.valuer1_id, p.valuer2_id].includes(me)); });
   const by = Object.fromEntries(rows.map(r => [r.hour, r]));
   const H = hours(); const filled = rows.filter(r => r.code).length; const valid = rows.filter(r => r.status === 'valid').length;
@@ -42,13 +50,18 @@ async function saya(el, params, reload) {
   <section class="card pad0"><ol class="slots">${H.map(h => { const r = by[h];
     return `<li><button type="button" class="slot" data-h="${h}" style="--m:${r ? MODE_BG[r.mode] : '#fff'}">
       <span class="t">${hh(h)}</span>
-      ${r ? `<span class="code">${esc(r.code)}</span><span class="nt"><b>${esc(r.note || '—')}</b><small>${r.task_id ? '↳ ' + esc(taskName[r.task_id] || 'pekerjaan') + ' · ' : ''}${esc(MODES.find(m => m[0] === r.mode)[1])}</small></span>
+      ${r ? `<span class="code">${esc(r.code)}</span><span class="nt"><b>${esc(r.note || '—')}</b><small>${r.task_id ? '↳ ' + esc(taskName[r.task_id] || 'pekerjaan') + ' · ' : ''}${esc((MODES.find(m => m[0] === r.mode) || MODES[0])[1])}</small>${tagLine(r)}</span>
         ${r.status === 'valid' ? `<span class="chip green">✓ ${esc(nick(r.validated_by))}</span>` : r.status === 'siap' ? '<span class="chip blue">Siap divalidasi</span>' : '<span class="chip gray">Rencana</span>'}`
         : '<span class="nt muted">+ isi slot ini</span>'}</button></li>`; }).join('')}</ol></section>
   ${mine.length ? `<section class="card"><div class="row between"><h2>Perlu saya validasi <span class="chip blue">${mine.length}</span></h2><button class="btn pri" data-a="valall">Validasi semua yang tampil</button></div>
     <div class="list">${mine.map(r => `<label class="li row gap"><input type="checkbox" class="vchk" value="${r.id}" checked>${avatar(r.person_id, 28)}<span style="flex:1"><b>${esc(nick(r.person_id))}</b> · ${fdate(r.day)} ${hh(r.hour)} · <b>${esc(r.code)}</b> ${esc(r.note || '')}</span></label>`).join('')}</div>
     <div class="row gap"><button class="btn pri" data-a="valsel">Validasi yang dicentang</button><button class="btn" data-a="unval">Kembalikan ke pemilik</button></div></section>` : ''}`;
 
+  function tagLine(r) {
+    if (r.tag_of) return `<small class="tagl">dari jadwal ${originOf[r.tag_of] ? avatar(originOf[r.tag_of], 16) + ' <b>' + esc(nick(originOf[r.tag_of])) + '</b>' : 'tim'}</small>`;
+    const t = tagsOf(r.id); if (!t.length) return '';
+    return `<small class="tagl">bersama <span class="avs">${t.slice(0, 5).map(id => avatar(id, 16)).join('')}</span> ${esc(t.map(nick).join(', '))}</small>`;
+  }
   el.querySelector('#dpick').onchange = (e) => { location.hash = '#/kkh?d=' + e.target.value; };
   el.onclick = async (e) => {
     const slot = e.target.closest('.slot');
@@ -82,13 +95,38 @@ async function saya(el, params, reload) {
       field('Mode kerja', `<select name="mode" class="inp">${opts(MODES, r ? r.mode : 'kantor')}</select>`) +
       field('Catatan pekerjaan', `<input name="note" class="inp" value="${esc(r ? r.note : '')}" placeholder="Apa yang dikerjakan di jam ini">`) +
       field('Bagian dari pekerjaan', `<select name="task_id" class="inp">${opts(tasks.map(t => [t.id, t.title]), r ? r.task_id : '', '— tidak terkait —')}</select>`) +
+      tagField(r) +
       `<label class="chk"><input type="checkbox" name="siap" ${r && r.status === 'siap' ? 'checked' : ''}> Sudah dikerjakan, siap divalidasi</label>`,
-      { danger: r ? { label: 'Kosongkan', onClick: async () => { await db.remove('pk_kkh', 'id=eq.' + r.id); return 'del'; } } : null,
-        onSubmit: async (f) => {
-          const row = { person_id: me, day, hour: h, code: f.code, mode: f.code === 'IZIN' ? 'izin' : f.mode, note: f.note.trim() || null, task_id: f.task_id || null, unit_code: ctx.me.unit_code, status: f.siap ? 'siap' : 'rencana' };
-          await db.upsert('pk_kkh', row, 'person_id,day,hour');
+      { danger: r ? { label: r.tag_of ? 'Tidak ikut (lepas dari jadwal ini)' : 'Kosongkan', onClick: async () => {
+          if (!r.tag_of && tagsOf(r.id).length) await db.remove('pk_kkh', 'tag_of=eq.' + r.id);
+          await db.remove('pk_kkh', 'id=eq.' + r.id); return 'del'; } } : null,
+        onSubmit: async (f, form) => {
+          const picked = [...form.querySelectorAll('[name=tag]:checked')].map(c => c.value);
+          let code = f.code; if (picked.length && code === 'SW') code = 'CW';
+          const row = { person_id: me, day, hour: h, code, mode: code === 'IZIN' ? 'izin' : f.mode, note: f.note.trim() || null, task_id: f.task_id || null, unit_code: ctx.me.unit_code, status: f.siap ? 'siap' : 'rencana' };
+          const saved = await db.upsert('pk_kkh', row, 'person_id,day,hour');
+          const id = (saved && saved[0] && saved[0].id) || (r && r.id);
+          if (r && r.tag_of) return true;
+          const before = r ? tagsOf(r.id) : [];
+          const removed = before.filter(x => !picked.includes(x));
+          if (removed.length) await db.remove('pk_kkh', `tag_of=eq.${id}&person_id=in.(${removed.join(',')})`);
+          if (picked.length || before.length) {
+            const out = await db.rpc('pk_kkh_tag', { p_slot: id, p_people: picked }) || {};
+            const locked = out.locked || [];
+            toast(picked.length ? `Masuk ke KKH ${out.tagged || 0} orang` + (locked.length ? ` · ${locked.join(', ')} tidak ditimpa (jam itu sudah divalidasi)` : '') : 'Tag dilepas', locked.length ? 'err' : undefined);
+          }
+          return true;
         } });
     if (res) reload();
+  }
+
+  function tagField(r) {
+    if (r && r.tag_of) return `<p class="note">Slot ini dari jadwal <b>${esc(nick(originOf[r.tag_of]) || 'tim')}</b>. Kalau Anda tidak ikut, pilih <b>Tidak ikut</b> di bawah.</p>`;
+    const cur = r ? tagsOf(r.id) : [];
+    const ppl = active().filter(p => p.id !== me).sort((a, b) => (a.unit_code === ctx.me.unit_code ? 0 : 1) - (b.unit_code === ctx.me.unit_code ? 0 : 1) || (a.nickname || a.name).localeCompare(b.nickname || b.name));
+    return `<div class="fld"><span>Bersama (tag tim)</span><input class="inp" id="tagq" placeholder="Cari nama…" autocomplete="off">
+      <div class="tagpick">${ppl.map(p => `<label class="tagc" data-n="${esc((p.nickname || p.name).toLowerCase())}"><input type="checkbox" name="tag" value="${p.id}" ${cur.includes(p.id) ? 'checked' : ''}>${avatar(p.id, 22)}<span>${esc(p.nickname || p.name)}</span></label>`).join('')}</div>
+      <small>Slot ini otomatis masuk ke KKH orang yang di-tag dan menggantikan isi jam itu (kecuali yang sudah divalidasi).</small></div>`;
   }
 }
 
@@ -130,3 +168,9 @@ async function tim(el, params, reload) {
 }
 
 export default { saya, tim };
+
+// cari nama saat men-tag tim
+document.addEventListener('input', (e) => {
+  if (e.target.id !== 'tagq') return; const q = e.target.value.trim().toLowerCase();
+  document.querySelectorAll('.tagpick .tagc').forEach(l => { l.hidden = !!q && !l.dataset.n.includes(q) && !l.querySelector('input').checked; });
+});
