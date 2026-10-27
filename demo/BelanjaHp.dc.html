@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pengajuan Belanja (HP) — Pokama · Demo</title>
+<meta name="robots" content="noindex">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F3F5F8}
+</style>
+<style>.demo-tag{position:fixed;right:16px;bottom:16px;z-index:50;background:#1D3149;color:#fff;font:700 12px/1 Nunito,system-ui,sans-serif;padding:10px 14px;border-radius:999px;text-decoration:none;box-shadow:0 6px 18px rgba(29,49,73,.3)}.demo-tag b{color:#09BEAF}</style>
+<style>
+body{margin:0;background:#E9ECF0;display:flex;justify-content:center;align-items:flex-start;min-height:100vh}
+#root>div{width:min(390px,100vw)!important;height:min(844px,100dvh)!important}
+@media(min-width:500px){body{padding:24px 0}#root>div{border-radius:28px;box-shadow:0 20px 60px rgba(29,49,73,.25)}}
+.demo-tag{left:16px;right:auto}@media(max-width:499px){.demo-tag{display:none}}
+</style>
+<script src="runtime.js"></script>
+</head>
+<body>
+<div id="root"></div>
+<a class="demo-tag" href="index.html"><b>DEMO</b> · data contoh · semua layar</a>
+<script type="text/plain" id="dc-tpl">
+
+<div style="width: 390px; height: 844px; box-sizing: border-box; display: flex; flex-direction: column; background: #F3F5F8; color: #1F2933; font-family: 'Nunito', system-ui, sans-serif; font-size: 14px; line-height: 1.4; overflow: hidden; position: relative">
+<sc-if value="{{isList}}" hint-placeholder-val="{{true}}">
+<header style="flex-shrink: 0; background: #1D3149; color: #FFFFFF; padding: 16px 16px 12px; display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 10px"><a href="LainnyaHp.dc.html" aria-label="Kembali ke Lainnya" style="width: 40px; height: 40px; flex-shrink: 0; border-radius: 12px; background: #2C4664; color: #FFFFFF; text-decoration: none; font-size: 20px; font-weight: 900; display: flex; align-items: center; justify-content: center">‹</a><span style="flex: 1 1 auto; display: flex; flex-direction: column"><h1 style="margin: 0; font-size: 20px; font-weight: 900">Pengajuan Belanja</h1><span style="font-size: 12px; color: #B9C4D2">RAB TripinAja · cair Selasa & Jumat</span></span><span aria-label="Wiranata" style="width: 38px; height: 38px; border-radius: 19px; background: #09BEAF; color: #1D3149; font-weight: 900; font-size: 13px; display: flex; align-items: center; justify-content: center; overflow: hidden">WR</span></div>
+<div role="tablist" aria-label="Daftar" style="display: flex; gap: 6px">
+<sc-for list="{{tabs}}" as="t" hint-placeholder-count="2"><button type="button" role="tab" aria-selected="{{t.on}}" onClick="{{t.pick}}" style="flex: 1 1 0; height: 38px; border-radius: 10px; border: 0; background: {{t.bg}}; color: {{t.fg}}; font: inherit; font-size: 13px; font-weight: 800; cursor: pointer">{{t.label}}</button></sc-for>
+</div>
+</header>
+<div style="flex: 1 1 auto; min-height: 0; overflow-y: auto"><div style="padding: 14px 14px 90px; display: flex; flex-direction: column; gap: 10px">
+<sc-if value="{{hasMsg}}" hint-placeholder-val="{{false}}"><div role="status" style="display: flex; align-items: center; gap: 8px; background: #DDF5F2; color: #067A70; border-radius: 12px; padding: 10px 12px; font-size: 13px; font-weight: 700"><span style="flex: 1 1 auto">{{msg}}</span><button type="button" onClick="{{clearMsg}}" aria-label="Tutup pesan" style="width: 32px; height: 32px; border: 0; background: transparent; color: #067A70; font: inherit; font-size: 18px; font-weight: 900; cursor: pointer">×</button></div></sc-if>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px"><div style="background: #FFFFFF; border-radius: 12px; padding: 10px 12px; display: flex; flex-direction: column"><span style="font-size: 11px; font-weight: 800; color: #5B6573">Dana darurat TripinAja</span><span style="font-weight: 900; font-size: 16px">Rp1.000.000</span><span style="font-size: 11px; color: #5B6573">utuh · untuk yang mendadak</span></div><div style="background: #FFFFFF; border-radius: 12px; padding: 10px 12px; display: flex; flex-direction: column"><span style="font-size: 11px; font-weight: 800; color: #5B6573">Nota belum masuk</span><span style="font-weight: 900; font-size: 16px; color: {{lpjFg}}">{{lpjN}} RAB</span><span style="font-size: 11px; color: #5B6573">telat = RAB berikutnya ditahan</span></div></div>
+<p style="margin: 0; font-size: 12px; color: #5B6573">{{tabNote}}</p>
+<sc-for list="{{items}}" as="it" hint-placeholder-count="3">
+<button type="button" onClick="{{it.open}}" style="text-align: left; font: inherit; color: #1F2933; cursor: pointer; background: #FFFFFF; border: 1px solid #E3E6EB; box-shadow: inset 4px 0 0 {{it.bar}}; border-radius: 14px; padding: 14px; display: flex; flex-direction: column; gap: 6px">
+<span style="display: flex; justify-content: space-between; gap: 8px; align-items: flex-start"><span style="font-weight: 900; font-size: 15px">{{it.title}}</span><span style="font-size: 11px; font-weight: 900; padding: 3px 8px; border-radius: 999px; background: {{it.stBg}}; color: {{it.stFg}}; white-space: nowrap">{{it.st}}</span></span>
+<span style="display: flex; justify-content: space-between; gap: 8px; font-size: 12px; color: #5B6573"><span>{{it.line}}</span><strong style="color: #1F2933; white-space: nowrap">{{it.total}}</strong></span>
+<sc-if value="{{it.hasVia}}" hint-placeholder-val="{{false}}"><span style="align-self: flex-start; font-size: 11px; font-weight: 800; padding: 2px 8px; border-radius: 6px; background: #E5EEF9; color: #1E5AA8">Dari crew · lewat Rentalaja App</span></sc-if>
+</button>
+</sc-for>
+</div></div>
+<button type="button" onClick="{{openNew}}" style="position: absolute; right: 16px; bottom: 84px; height: 52px; padding: 0 20px; border-radius: 26px; border: 0; background: #09BEAF; color: #1D3149; font: inherit; font-size: 15px; font-weight: 900; box-shadow: 0 6px 18px rgba(29,49,73,0.25); cursor: pointer; z-index: 5">+ Ajukan RAB</button>
+<nav aria-label="Menu bawah" style="flex-shrink: 0; height: 68px; background: #FFFFFF; border-top: 1px solid #E3E6EB; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr))">
+<a href="KKHHp.dc.html" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; text-decoration: none; font-size: 11px; font-weight: 800; color: #8A94A3"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="15" rx="2"></rect><path d="M8 3v4M16 3v4M4 10h16"></path></svg>KKH</a>
+<a href="ReviewHp.dc.html" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; text-decoration: none; font-size: 11px; font-weight: 800; color: #8A94A3; position: relative"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h11a2 2 0 012 2v4"></path><path d="M4 5v14h7"></path><path d="M14 17l2 2 4-4"></path></svg>Review<span style="position: absolute; top: 8px; left: calc(50% + 6px); min-width: 18px; height: 18px; border-radius: 9px; background: #C2410C; color: #FFFFFF; font-size: 10px; font-weight: 900; display: flex; align-items: center; justify-content: center; padding: 0 4px; box-sizing: border-box">2</span></a>
+<a href="PermintaanHp.dc.html" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; text-decoration: none; font-size: 11px; font-weight: 800; color: #8A94A3; position: relative"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 13l3-8h10l3 8v6H4z"></path><path d="M4 13h5l1 2h4l1-2h5"></path></svg>Permintaan</a>
+<a href="LainnyaHp.dc.html" aria-current="page" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; text-decoration: none; font-size: 11px; font-weight: 800; color: #067A70"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"></path></svg>Lainnya</a>
+</nav>
+</sc-if>
+
+<sc-if value="{{isDetail}}" hint-placeholder-val="{{false}}">
+<header style="flex-shrink: 0; background: #FFFFFF; border-bottom: 1px solid #E3E6EB; padding: 10px 12px; display: flex; align-items: center; gap: 8px">
+<button type="button" onClick="{{back}}" aria-label="Kembali" style="width: 44px; height: 44px; border-radius: 12px; border: 0; background: #F3F5F8; font: inherit; font-size: 20px; font-weight: 900; cursor: pointer">‹</button>
+<span style="display: flex; flex-direction: column; min-width: 0"><span style="font-size: 11px; font-weight: 900; color: #067A70">{{d.code}}</span><span style="font-weight: 900; font-size: 15px">{{d.title}}</span></span>
+</header>
+<div style="flex: 1 1 auto; min-height: 0; overflow-y: auto"><div style="padding: 14px; display: flex; flex-direction: column; gap: 12px">
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px">
+<sc-for list="{{d.facts}}" as="f" hint-placeholder-count="4"><div style="background: #FFFFFF; border-radius: 12px; padding: 8px 10px; display: flex; flex-direction: column"><span style="font-size: 10px; font-weight: 900; color: #5B6573; letter-spacing: 0.04em">{{f.k}}</span><span style="font-weight: 800; font-size: 13px">{{f.v}}</span></div></sc-for>
+</div>
+<div style="background: #FFFFFF; border-radius: 14px; padding: 6px 12px; display: flex; flex-direction: column">
+<sc-for list="{{d.rows}}" as="r" hint-placeholder-count="3"><div style="display: flex; justify-content: space-between; gap: 10px; padding: 8px 0; border-bottom: 1px solid #EEF0F3; font-size: 13px"><span style="display: flex; flex-direction: column"><span style="font-weight: 800">{{r.name}}</span><span style="font-size: 12px; color: #5B6573">{{r.qty}} × {{r.price}}</span></span><strong style="white-space: nowrap">{{r.total}}</strong></div></sc-for>
+<div style="display: flex; justify-content: space-between; padding: 10px 0 6px; font-weight: 900"><span>Total</span><span>{{d.total}}</span></div>
+</div>
+<sc-if value="{{d.hasAi}}" hint-placeholder-val="{{true}}"><div style="background: #FFF8E6; border: 1px solid #F2D58A; border-radius: 12px; padding: 10px 12px; display: flex; flex-direction: column; gap: 4px; font-size: 13px"><span style="font-size: 11px; font-weight: 900; letter-spacing: 0.06em; color: #7A5200">CEK OTOMATIS AI</span><sc-for list="{{d.ai}}" as="a" hint-placeholder-count="2"><span>• {{a}}</span></sc-for></div></sc-if>
+<sc-if value="{{d.hasNote}}" hint-placeholder-val="{{false}}"><p style="margin: 0; padding: 10px 12px; border-radius: 12px; background: {{d.noteBg}}; color: {{d.noteFg}}; font-size: 13px; font-weight: 700">{{d.note}}</p></sc-if>
+<span style="font-size: 11px; font-weight: 900; letter-spacing: 0.06em; color: #5B6573">PERJALANAN RAB</span>
+<ol style="margin: 0; padding: 0; list-style: none; background: #FFFFFF; border-radius: 14px; padding: 6px 12px">
+<sc-for list="{{d.steps}}" as="s" hint-placeholder-count="5"><li style="display: flex; gap: 10px; align-items: flex-start; padding: 8px 0"><span aria-hidden="true" style="width: 22px; height: 22px; border-radius: 11px; flex-shrink: 0; background: {{s.dot}}; color: #FFFFFF; font-size: 12px; font-weight: 900; display: flex; align-items: center; justify-content: center">{{s.mark}}</span><span style="display: flex; flex-direction: column"><span style="font-weight: 800; font-size: 13px; color: {{s.fg}}">{{s.label}}</span><span style="font-size: 12px; color: #5B6573">{{s.when}}</span></span></li></sc-for>
+</ol>
+</div></div>
+<sc-if value="{{d.canApprove}}" hint-placeholder-val="{{false}}">
+<footer style="flex-shrink: 0; background: #FFFFFF; border-top: 1px solid #E3E6EB; padding: 10px 14px 14px; display: flex; gap: 8px">
+<button type="button" onClick="{{d.reject}}" style="flex: 0.8 1 0; height: 50px; border-radius: 12px; border: 1px solid #E3E6EB; background: #FFFFFF; color: #9A3F0A; font: inherit; font-size: 14px; font-weight: 800; cursor: pointer">Tolak</button>
+<button type="button" onClick="{{d.revise}}" style="flex: 1 1 0; height: 50px; border-radius: 12px; border: 1px solid #E3E6EB; background: #FFFFFF; color: #3B4250; font: inherit; font-size: 14px; font-weight: 800; cursor: pointer">Minta revisi</button>
+<button type="button" onClick="{{d.approve}}" style="flex: 1.2 1 0; height: 50px; border-radius: 12px; border: 0; background: #09BEAF; color: #1D3149; font: inherit; font-size: 14px; font-weight: 900; cursor: pointer">Setujui</button>
+</footer>
+</sc-if>
+<sc-if value="{{d.canUpload}}" hint-placeholder-val="{{false}}">
+<footer style="flex-shrink: 0; background: #FFFFFF; border-top: 1px solid #E3E6EB; padding: 10px 14px 14px; display: flex; flex-direction: column; gap: 6px">
+<span style="font-size: 12px; color: #5B6573">Foto semua nota. Sisa dana dikembalikan ke rekening unit.</span>
+<button type="button" onClick="{{d.upload}}" style="height: 50px; border-radius: 12px; border: 0; background: #1D3149; color: #FFFFFF; font: inherit; font-size: 15px; font-weight: 900; cursor: pointer">Foto & upload nota (LPJ)</button>
+</footer>
+</sc-if>
+</sc-if>
+
+<sc-if value="{{sheetOpen}}" hint-placeholder-val="{{false}}">
+<div onClick="{{closeSheet}}" style="position: absolute; inset: 0; background: rgba(15,29,46,0.45); z-index: 9"></div>
+<section aria-label="Ajukan RAB" style="position: absolute; left: 0; right: 0; bottom: 0; z-index: 10; background: #FFFFFF; border-radius: 20px 20px 0 0; padding: 16px 16px 20px; display: flex; flex-direction: column; gap: 12px; max-height: 780px; overflow-y: auto; box-sizing: border-box">
+<div style="display: flex; justify-content: space-between; align-items: center"><h2 style="margin: 0; font-size: 18px; font-weight: 900">Ajukan RAB · TripinAja</h2><button type="button" onClick="{{closeSheet}}" aria-label="Tutup" style="width: 40px; height: 40px; border-radius: 10px; border: 0; background: #F3F5F8; font: inherit; font-size: 18px; font-weight: 900; cursor: pointer">×</button></div>
+<label style="display: flex; flex-direction: column; gap: 4px; font-size: 12px; font-weight: 800; color: #3B4250">Untuk apa<input type="text" value="{{nTitle}}" onInput="{{onTitle}}" placeholder="Misalnya: Bensin & parkir trip Papandayan" style="height: 46px; box-sizing: border-box; border: 1px solid #D3D7DE; border-radius: 10px; padding: 0 12px; font: inherit; font-size: 15px; font-weight: 500"></label>
+<div style="display: flex; flex-direction: column; gap: 6px"><span style="font-size: 12px; font-weight: 800; color: #3B4250">Jenis</span><div style="display: flex; flex-wrap: wrap; gap: 6px"><sc-for list="{{kindBtns}}" as="b" hint-placeholder-count="2"><button type="button" aria-pressed="{{b.on}}" onClick="{{b.pick}}" style="height: 40px; padding: 0 12px; border-radius: 10px; border: 1px solid #E3E6EB; background: {{b.bg}}; color: {{b.fg}}; font: inherit; font-size: 13px; font-weight: 800; cursor: pointer">{{b.label}}</button></sc-for></div></div>
+<label style="display: flex; flex-direction: column; gap: 4px; font-size: 12px; font-weight: 800; color: #3B4250">Rincian · satu baris satu barang: nama, jumlah, harga<textarea rows="4" value="{{nRows}}" onInput="{{onRows}}" placeholder="Bensin Hiace, 1, 400000&#10;Parkir & tiket, 14, 25000" style="box-sizing: border-box; border: 1px solid #D3D7DE; border-radius: 10px; padding: 10px 12px; font: inherit; font-size: 14px; font-weight: 500; resize: none"></textarea></label>
+<div style="display: flex; flex-direction: column; gap: 6px"><span style="font-size: 12px; font-weight: 800; color: #3B4250">Dibutuhkan</span><div style="display: flex; flex-wrap: wrap; gap: 6px"><sc-for list="{{needBtns}}" as="b" hint-placeholder-count="3"><button type="button" aria-pressed="{{b.on}}" onClick="{{b.pick}}" style="height: 40px; padding: 0 12px; border-radius: 10px; border: 1px solid #E3E6EB; background: {{b.bg}}; color: {{b.fg}}; font: inherit; font-size: 13px; font-weight: 800; cursor: pointer">{{b.label}}</button></sc-for></div></div>
+<div style="background: #F3F5F8; border-radius: 12px; padding: 10px 12px; display: flex; flex-direction: column; gap: 2px"><span style="display: flex; justify-content: space-between; font-weight: 900"><span>Total</span><span>{{nTotal}}</span></span><span style="font-size: 12px; color: #5B6573">{{nChain}}</span></div>
+<button type="button" onClick="{{send}}" style="height: 50px; border-radius: 12px; border: 0; background: {{sendBg}}; color: {{sendFg}}; font: inherit; font-size: 15px; font-weight: 900; cursor: pointer">Kirim RAB</button>
+</section>
+</sc-if>
+</div>
+</script>
+<script>
+
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { tab: 'ok', sel: null, sheet: false, nTitle: '', nRows: '', nKind: 'op', nNeed: 'n2', extra: [], act: {}, msg: '' };
+  }
+  renderVals() {
+    const rp = (n) => 'Rp' + Math.round(n).toLocaleString('id-ID');
+    const chain = (t, by) => by === 'Wiranata' ? (t <= 5000000 ? ['Intifa (Kepala Staf)'] : ['Intifa (Kepala Staf)', 'Ghozy (CEO)']) : t <= 1000000 ? ['Wiranata (atasan langsung)'] : t <= 5000000 ? ['Wiranata (atasan langsung)', 'Intifa (Kepala Staf)'] : ['Wiranata (atasan langsung)', 'Intifa (Kepala Staf)', 'Ghozy (CEO)'];
+    const B = [
+      { id: 'c1', tab: 'ok', code: 'RAB-TRP-271026-01', title: 'Bensin & parkir trip Papandayan', by: 'Asep · crew trip', via: true, need: 'Jum 30 Okt', when: 'tadi 07.40', st: 'ok', rows: [['Bensin Elf', 1, 450000], ['Parkir & tiket masuk', 12, 25000]], ai: ['Harga bensin sama dengan trip Papandayan 12 Okt.', 'Di bawah Rp1 jt: cukup persetujuan Anda, lalu langsung ke Keuangan.'] },
+      { id: 'c2', tab: 'ok', code: 'RAB-TRP-261026-02', title: 'Cetak brosur paket Halaman Belakang Kebon', by: 'Nayla', via: false, need: 'Sen 2 Nov', when: 'kemarin', st: 'ok', rows: [['Brosur A5 2 sisi', 200, 1500], ['Standing banner', 1, 185000]], ai: ['Brosur A5 di vendor biasa Rp1.400/lembar; selisih kecil.'] },
+      { id: 'b1', tab: 'mine', code: 'RAB-TRP-261026-01', title: 'Trip rombongan 14 orang, 7–8 Nov', by: 'Ariq', via: false, need: 'Sel 3 Nov', when: 'Senin 09.10', st: 'up', holder: 'Intifa', rows: [['Sewa Hiace 2 hari (antarunit Rentalaja)', 2, 850000], ['Guide 2 orang × 2 hari', 4, 350000], ['Tiket destinasi', 14, 100000], ['Makan 2 kali', 28, 55000], ['Bensin & parkir', 1, 810000]], ai: ['Di atas Rp5 jt: perlu Kepala Staf lalu CEO.'] },
+      { id: 'b2', tab: 'mine', code: 'RAB-TRP-191026-01', title: 'Sewa tenda trip Situ Cileunca', by: 'Wiranata', via: false, need: 'Sab 24 Okt', when: '19 Okt', st: 'lpj', rows: [['Tenda dome 4 orang', 4, 250000], ['Matras', 8, 25000]], ai: [] },
+      { id: 'b3', tab: 'mine', code: 'RAB-TRP-221026-01', title: 'Kamera action baru untuk konten trip', by: 'Nayla', via: false, need: '—', when: '22 Okt', st: 'rej', rows: [['Kamera action', 1, 3200000]], reason: 'Ditolak Intifa: pinjam kamera dari Rentalaja (antarunit) dulu; ajukan lagi bila dipakai lebih dari 8 kali sebulan.', ai: [] }
+    ];
+    const ST = { ok: ['Perlu Anda setujui', '#FCEBDD', '#9A3F0A', '#C2410C'], up: ['Menunggu atasan berikutnya', '#FDF3D7', '#7A5200', '#D99A00'], cair: ['Menunggu dana cair', '#E5EEF9', '#1E5AA8', '#1E5AA8'], lpj: ['Upload nota', '#FCEBDD', '#9A3F0A', '#C2410C'], done: ['Nota masuk · dicek Keuangan', '#DDF5F2', '#067A70', '#09BEAF'], rev: ['Diminta revisi', '#EEF0F3', '#4A5160', '#8A94A3'], rej: ['Ditolak', '#EEF0F3', '#4A5160', '#8A94A3'] };
+    const { tab, sel, act, extra } = this.state;
+    const all = [...extra, ...B].map(b => { const tot = b.rows.reduce((s, r) => s + r[1] * r[2], 0); const st = act[b.id] || b.st; return { ...b, tot, st }; });
+    const shown = all.filter(b => b.tab === tab);
+    const items = shown.map(b => { const s = ST[b.st]; return { title: b.title, st: b.st === 'up' ? 'Menunggu ' + (b.holder || 'Intifa') : s[0], stBg: s[1], stFg: s[2], bar: s[3], line: b.code + ' · ' + b.by, total: rp(b.tot), hasVia: b.via, open: () => this.setState({ sel: b.id }) }; });
+    const c = all.find(b => b.id === sel);
+    let d = { code: '', title: '', facts: [], rows: [], total: '', hasAi: false, ai: [], hasNote: false, note: '', noteBg: '', noteFg: '', steps: [], canApprove: false, canUpload: false, approve: () => {}, revise: () => {}, reject: () => {}, upload: () => {} };
+    if (c) {
+      const ch = chain(c.tot, c.by);
+      const after = ['Dana dicairkan Keuangan · Selasa/Jumat 14.00', 'Nota diupload (LPJ) ≤ 2 hari setelah belanja', 'Dicek Keuangan · selesai'];
+      const labels = ['Diajukan ' + c.by + (c.via ? ' lewat Rentalaja App' : ''), ...ch.map(x => 'Disetujui ' + x), ...after];
+      const done = { ok: 1, up: 2, cair: ch.length + 1, lpj: ch.length + 2, done: ch.length + 3, rev: 1, rej: 1 }[c.st];
+      d = {
+        code: c.code, title: c.title,
+        facts: [{ k: 'TOTAL', v: rp(c.tot) }, { k: 'DIAJUKAN', v: c.by }, { k: 'DIBUTUHKAN', v: c.need }, { k: 'MASUK', v: c.when }],
+        rows: c.rows.map(([name, q, p]) => ({ name, qty: q, price: rp(p), total: rp(q * p) })), total: rp(c.tot),
+        hasAi: c.ai.length > 0, ai: c.ai,
+        hasNote: ['rej', 'rev', 'lpj', 'done', 'cair'].includes(c.st),
+        note: c.st === 'rej' ? (c.reason || 'Ditolak. Alasan dikirim ke pengaju.') : c.st === 'rev' ? 'Diminta revisi. Pengaju memperbaiki rincian lalu mengirim ulang.' : c.st === 'lpj' ? 'Dana sudah cair Jum 23 Okt. Nota paling lambat Sab 25 Okt: sudah lewat 3 hari, RAB TripinAja berikutnya ditahan sampai nota masuk.' : c.st === 'done' ? 'Nota terkirim. Keuangan mengecek; sisa dana dikembalikan ke rekening unit.' : 'Disetujui. Dana cair jadwal berikutnya: Jumat 30 Okt 14.00.',
+        noteBg: c.st === 'lpj' ? '#FCEBDD' : c.st === 'done' || c.st === 'cair' ? '#DDF5F2' : '#EEF0F3', noteFg: c.st === 'lpj' ? '#9A3F0A' : c.st === 'done' || c.st === 'cair' ? '#067A70' : '#4A5160',
+        steps: labels.map((label, i) => { const stop = c.st === 'rej' || c.st === 'rev'; const on = i < done || (stop && i === 1); const x = stop && i === 1; return { label: x ? (c.st === 'rej' ? 'Ditolak' : 'Diminta revisi') : label, when: '', mark: x ? '×' : on ? '✓' : i + 1, dot: x ? '#8A94A3' : on ? '#09BEAF' : i === done ? '#C2410C' : '#C9CED6', fg: on || i === done ? '#1F2933' : '#8A94A3' }; }).filter((s, i) => !(c.st === 'rej' || c.st === 'rev') || i <= 1),
+        canApprove: c.st === 'ok', canUpload: c.st === 'lpj',
+        approve: () => { const ch2 = chain(c.tot, c.by); this.setState({ act: { ...act, [c.id]: ch2.length > 1 ? 'up' : 'cair' }, sel: null, msg: c.code + ' disetujui. ' + (ch2.length > 1 ? 'Diteruskan ke ' + ch2[1] + '.' : 'Langsung ke Keuangan, cair Jumat 30 Okt 14.00.') + ' ' + c.by.split(' ·')[0] + ' diberi tahu.' }); },
+        revise: () => this.setState({ act: { ...act, [c.id]: 'rev' }, sel: null, msg: c.code + ' dikembalikan ke ' + c.by.split(' ·')[0] + ' untuk revisi.' }),
+        reject: () => this.setState({ act: { ...act, [c.id]: 'rej' }, sel: null, msg: c.code + ' ditolak.' }),
+        upload: () => this.setState({ act: { ...act, [c.id]: 'done' }, msg: 'Nota ' + c.code + ' terkirim. RAB TripinAja tidak ditahan lagi setelah Keuangan mengecek.' })
+      };
+    }
+    const nOk = all.filter(b => b.st === 'ok').length;
+    const lpjN = all.filter(b => b.st === 'lpj').length;
+    const rows = this.state.nRows.split('\n').map(l => l.split(',').map(x => x.trim())).filter(p => p.length >= 3 && p[0] && +p[1] > 0 && +p[2] > 0);
+    const nTot = rows.reduce((s, p) => s + (+p[1]) * (+p[2]), 0);
+    const ok = !!this.state.nTitle.trim() && rows.length > 0;
+    const NEED = [['n1', 'Besok'], ['n2', 'Jumat ini'], ['n3', 'Minggu depan']];
+    return {
+      isList: !c, isDetail: !!c, items, d, back: () => this.setState({ sel: null }),
+      tabs: [['ok', 'Perlu disetujui (' + nOk + ')'], ['mine', 'RAB unit saya']].map(([k, label]) => ({ label, on: tab === k ? 'true' : 'false', bg: tab === k ? '#09BEAF' : '#2C4664', fg: tab === k ? '#1D3149' : '#FFFFFF', pick: () => this.setState({ tab: k }) })),
+      tabNote: tab === 'ok' ? 'RAB dari tim Anda. Crew mengajukan lewat Rentalaja App; Anda yang menyetujui dan meneruskan.' : 'RAB TripinAja yang sedang berjalan. Data RAB lama di sheet tidak dibawa; sistem mulai dari nol.',
+      lpjN, lpjFg: lpjN ? '#9A3F0A' : '#1F2933',
+      hasMsg: !!this.state.msg, msg: this.state.msg, clearMsg: () => this.setState({ msg: '' }),
+      openNew: () => this.setState({ sheet: true, nTitle: '', nRows: '', nKind: 'op', nNeed: 'n2' }), sheetOpen: this.state.sheet, closeSheet: () => this.setState({ sheet: false }),
+      nTitle: this.state.nTitle, nRows: this.state.nRows, onTitle: (e) => this.setState({ nTitle: e.target.value }), onRows: (e) => this.setState({ nRows: e.target.value }),
+      kindBtns: [['op', 'Kebutuhan operasional'], ['mt', 'Maintenance produk/aset']].map(([k, l]) => ({ label: l, on: this.state.nKind === k ? 'true' : 'false', bg: this.state.nKind === k ? '#1D3149' : '#FFFFFF', fg: this.state.nKind === k ? '#FFFFFF' : '#3B4250', pick: () => this.setState({ nKind: k }) })),
+      needBtns: NEED.map(([k, l]) => ({ label: l, on: this.state.nNeed === k ? 'true' : 'false', bg: this.state.nNeed === k ? '#1D3149' : '#FFFFFF', fg: this.state.nNeed === k ? '#FFFFFF' : '#3B4250', pick: () => this.setState({ nNeed: k }) })),
+      nTotal: rp(nTot), nChain: nTot ? 'Disetujui: ' + chain(nTot, 'Wiranata').join(' → ') + ' · kode RAB dibuat otomatis' : 'Isi rincian, total dan jalur persetujuan dihitung otomatis.',
+      sendBg: ok ? '#09BEAF' : '#E3E6EB', sendFg: ok ? '#1D3149' : '#8A94A3',
+      send: () => {
+        if (!ok) return;
+        const title = this.state.nTitle.trim();
+        const row = { id: 'x' + extra.length, tab: 'mine', code: 'RAB-TRP-281026-0' + (extra.length + 1), title, by: 'Wiranata', via: false, need: NEED.find(n => n[0] === this.state.nNeed)[1], when: 'baru saja', st: 'up', holder: 'Intifa', rows: rows.map(p => [p[0], +p[1], +p[2]]), ai: ['Belum ada RAB serupa bulan ini.'] };
+        this.setState({ extra: [row, ...extra], sheet: false, tab: 'mine', msg: row.code + ' terkirim. Menunggu ' + chain(nTot, 'Wiranata').join(' lalu ') + '.' });
+      }
+    };
+  }
+}
+
+dcBoot(Component);
+</script>
+</body>
+</html>

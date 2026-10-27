@@ -24,6 +24,10 @@ for f in sorted(glob.glob(P + '*.dc.html')):
     tplc = xdc.replace(hel.group(0), '') if hel else xdc
     tplc = re.sub(r'/_blob/[0-9a-f]+', 'rentalaja-logo.png', tplc)
     scr = re.search(r'data-dc-script[^>]*>([\s\S]*?)</script>', s).group(1)
+    # Demo publik: foto tim tidak ikut (privasi), tampil inisial
+    scr = re.sub(r'const PH = \{.*?\}; const AL', 'const PH = {}; const AL', scr)
+    tplc = re.sub(r'(<span aria-label="Wiranata[^>]*>)<img src="data:image/jpeg[^"]*"[^>]*></span>', r'\1WR</span>', tplc)
+    tplc = re.sub(r'(<span aria-hidden="true" style="width: 48px[^>]*>)<img src="data:image/jpeg[^"]*"[^>]*></span>', r'\1WR</span>', tplc)
     title = re.search(r'<title>(.*?)</title>', s).group(1)
     extra = HP_CSS if n.endswith('Hp.dc.html') else ''
     out = f'''<!doctype html>
@@ -53,7 +57,7 @@ dcBoot(Component);
 groups = [('Laptop · masuk & kerja harian', ['Masuk', 'Main', 'KKH', 'Penugasan', 'Review', 'Permintaan', 'Belanja', 'Kehadiran']),
           ('Laptop · unit bisnis', ['Target', 'Omzet', 'Liga']),
           ('Laptop · orang & sistem', ['Tim', 'Bonus', 'Library', 'Pengaturan']),
-          ('HP · tahap 1', ['KKHHp', 'ReviewHp', 'PermintaanHp', 'LainnyaHp']),
+          ('HP · tahap 1', ['KKHHp', 'ReviewHp', 'PermintaanHp', 'BelanjaHp', 'LainnyaHp']),
           ('Catatan CEO', ['Keputusan'])]
 cards = ''
 for g, items in groups:
