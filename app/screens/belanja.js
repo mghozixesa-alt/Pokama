@@ -40,17 +40,17 @@ export default async function belanja(el, params, reload) {
     <div class="tile"><span>Belanja bulan ini</span><b>${jt(spent)}</b></div></div>
   <div class="chips">${tabs.map(([k, l]) => `<a class="chipbtn${tab === k ? ' on' : ''}" href="#/belanja?tab=${k}&u=${scope}">${l} (${sets[k].length})</a>`).join('')}<span style="flex:1"></span>
     ${[['ALL', 'Semua unit']].concat(biz.map(u => [u.code, u.name])).map(([k, l]) => `<a class="chipbtn sm${scope === k ? ' on' : ''}" href="#/belanja?tab=${tab}&u=${k}">${k !== 'ALL' ? logo(k, 16) : ''}${esc(l)}</a>`).join('')}</div>
-  <div class="split">
+  <div class="split${params.get('r') ? ' picked' : ''}">
     <div class="stack">${list.map(r => `<a class="card item${sel && sel.id === r.id ? ' sel' : ''}" style="box-shadow:inset 4px 0 0 ${ST[r.status][2]}" href="#/belanja?tab=${tab}&u=${scope}&r=${r.id}">
       <span class="row between small"><span class="row gap6 b">${logo(r.unit_code, 18)}${esc(unitName(r.unit_code))} · ${esc(r.code)}</span><span class="muted">${ftime(r.created_at)}</span></span>
       <span class="row between"><b>${esc(r.title)}</b><b>${rp(r.total)}</b></span>
       <span class="row between small"><span class="muted">Diajukan ${esc(nick(r.created_by))}${r.via_app ? ' · dari crew' : ''}</span>${chip(r.status === 'diajukan' ? 'Menunggu ' + nick(r.chain[r.step]) : lateLpj(r) ? 'Nota terlambat' : ST[r.status][0], lateLpj(r) ? 'red' : ST[r.status][1])}</span></a>`).join('') || '<div class="card empty-state"><p class="muted">Tidak ada RAB di sini.</p></div>'}</div>
-    <div>${sel ? detail(sel) : ''}</div>
+    <div>${sel ? `<a class="m-only back" href="#/belanja?tab=${tab}&u=${scope}">‹ Kembali ke daftar</a>` + detail(sel) : ''}</div>
   </div>
-  <section class="card"><h2>Aturan belanja</h2><div class="kv">
+  <details class="card rules"><summary><h2>Aturan belanja</h2></summary><div class="kv">
     <div><span>Sampai ${jt(l1)}</span><b>Atasan langsung</b></div><div><span>${jt(l1)}–${jt(l2)}</span><b>+ Kepala Staf</b></div><div><span>Di atas ${jt(l2)}</span><b>+ CEO</b></div>
     <div><span>RAB dari Leader</span><b>Kepala Staf (+ CEO di atas ${jt(l2)})</b></div><div><span>Dana cair</span><b>${esc((ctx.settings.cair_days || []).join(' & '))} ${esc(ctx.settings.cair_time || '')}</b></div><div><span>Nota</span><b>≤ ${lpjDays} hari; telat = RAB berikutnya ditahan</b></div>
-    <div><span>Crew cabang</span><b>Ajukan lewat Leader / Rentalaja App</b></div><div><span>Barang ≥ Rp500 rb</span><b>Masuk daftar aset unit</b></div></div></section>`;
+    <div><span>Crew cabang</span><b>Ajukan lewat Leader / Rentalaja App</b></div><div><span>Barang ≥ Rp500 rb</span><b>Masuk daftar aset unit</b></div></div></details>`;
 
   function detail(r) {
     const its = I(r.id); const lg = L(r.id).slice().reverse();

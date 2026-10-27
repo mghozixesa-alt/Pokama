@@ -114,11 +114,17 @@ function menuView(el) {
   el.querySelector('#lo2').onclick = () => signOut();
 }
 
+// Label kolom tabel supaya di HP tabel tampil sebagai kartu
+function labelTables(root) {
+  root.querySelectorAll('table.tbl:not(.cal)').forEach(t => { const h = [...t.querySelectorAll('thead th')].map(th => th.textContent.trim());
+    t.querySelectorAll('tbody tr, tfoot tr').forEach(tr => { let i = 0; [...tr.children].forEach(td => { if (!td.hasAttribute('data-l')) td.setAttribute('data-l', h[i] || ''); i += +td.colSpan || 1; }); }); });
+}
 let current = null;
 async function route() {
   const k = (location.hash.replace(/^#\/?/, '').split('?')[0] || 'kkh');
   const view = document.getElementById('view'); if (!view) return;
   const el = document.createElement('div'); el.className = 'route'; view.replaceChildren(el);
+  new MutationObserver(() => labelTables(el)).observe(el, { childList: true, subtree: true });
   document.querySelectorAll('[data-k]').forEach(a => a.classList.toggle('on', a.dataset.k === k));
   const r = FLAT.find(x => x[0] === k);
   current = k;

@@ -36,7 +36,7 @@ export default async function unit(el, params, reload) {
   <div class="ucards">${cards.map((c, i) => { const p = c.t ? c.a / c.t : null; const s = p !== null ? stOf(p) : null; const L = lead(c.u.code); const tn = tgt(c.u.code, nm);
     return `<section class="card ucard${i === 0 && c.p !== null ? ' first' : ''}">
       <div class="row gap"><span class="rank">#${i + 1}</span>${logo(c.u.code, 46)}<span style="flex:1"><b class="big">${esc(c.u.name)}</b><small class="row gap6">${L ? avatar(L.id, 20) + ' Leader ' + esc(L.nickname || L.name) : 'Gabungan ' + c.lines.length + ' lini'}</small></span>
-        <span class="r"><b class="pts">${c.p ?? '—'}</b><small class="${c.pp !== null && c.p > c.pp ? 'green-t' : c.pp !== null && c.p < c.pp ? 'red' : 'muted'}">${c.p === null ? 'poin Liga' : c.pp === null ? 'poin' : c.p > c.pp ? '▲ ' + (c.p - c.pp) : c.p < c.pp ? '▼ ' + (c.pp - c.p) : '– tetap'}</small></span></div>
+        <span class="r"><b class="lpts">${c.p ?? '—'}</b><small class="${c.pp !== null && c.p > c.pp ? 'green-t' : c.pp !== null && c.p < c.pp ? 'red' : 'muted'}">${c.p === null ? 'poin Liga' : c.pp === null ? 'poin' : c.p > c.pp ? '▲ ' + (c.p - c.pp) : c.p < c.pp ? '▼ ' + (c.pp - c.p) : '– tetap'}</small></span></div>
       <div><div class="row between"><span class="lab">OMZET ${fmonth(m).toUpperCase()}</span>${s ? chip(s[0], s[1]) : chip('Target belum ada')}</div>
         <div class="row between"><b class="big">${jt(c.a)}</b><span class="muted small">${c.t ? 'dari ' + jt(c.t) + ' · <b>' + Math.round(p * 100) + '%</b>' : 'target belum disahkan'}</span></div>
         <span class="bar lg"><i style="width:${p ? Math.min(100, p * 100) : 0}%;background:${s ? s[2] : '#C9CED6'}"></i></span></div>
@@ -59,7 +59,7 @@ export default async function unit(el, params, reload) {
     try {
       const a = e.target.closest('[data-a]');
       if (a && a.dataset.a === 'lapor') {
-        const r = await modal('Lapor omzet hari ini', `<div class="g2">` + field('Unit / lini', `<select name="u" class="inp">${opts(reporters.map(u => [u.code, unitName(u.parent) + ' · ' + u.name]).concat(bizUnits.filter(u => !lines(u.code).length).map(u => [u.code, u.name])), '')}</select>`) +
+        const r = await modal('Lapor omzet hari ini', `<div class="g2">` + field('Unit / lini', `<select name="u" class="inp">${opts(reporters.map(u => [u.code, (u.parent ? unitName(u.parent) + ' · ' : '') + u.name]).concat(bizUnits.filter(u => !lines(u.code).length).map(u => [u.code, u.name])), '')}</select>`) +
           field('Tanggal', `<input type="date" name="d" class="inp" value="${today()}">`) + `</div>` + field('Omzet', '<span class="pre"><b>Rp</b><input name="amt" class="inp-n" inputmode="numeric" placeholder="0"></span>') + field('Catatan', '<input name="note" class="inp">') +
           '<p class="note">Cabang Rentalaja yang sudah memakai Tutup shift di Rentalaja App tidak perlu lapor di sini.</p>',
           { submit: 'Kirim', onSubmit: async (f) => { need(f.u, 'Pilih unit'); const amt = num(f.amt); if (!amt) throw new Error('Isi omzet');

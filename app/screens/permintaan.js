@@ -23,11 +23,11 @@ export default async function permintaan(el, params, reload) {
     <button class="btn pri" data-a="new">+ Ajukan permintaan</button></header>
   <div class="note"><b>Bedanya dengan Proyek & Tugas:</b> permintaan belum pasti dikerjakan. Kepala Staf memilah paling lambat 24 jam: diberikan ke PIC, ditunda, atau ditolak. Setelah PIC menerima, permintaan otomatis jadi tugas di Proyek & Tugas.</div>
   <div class="chips">${tabs.map(([k, l]) => `<a class="chipbtn${tab === k ? ' on' : ''}" href="#/permintaan?tab=${k}">${l} (${sets[k].length})</a>`).join('')}</div>
-  <div class="split">
+  <div class="split${params.get('r') ? ' picked' : ''}">
     <div class="stack">${list.map(r => `<a class="card item${sel && sel.id === r.id ? ' sel' : ''}" href="#/permintaan?tab=${tab}&r=${r.id}">
       <span class="row between small"><span class="row gap6">${avatar(r.from_id, 20)}<b>${esc(nick(r.from_id))}</b> → ${esc(r.to_team)}</span><span class="muted">${ftime(r.created_at)}</span></span>
       <b>${esc(r.title)}</b><span class="row gap6">${chip(ST[r.status][0], ST[r.status][1])}${chip(PR[r.priority][0], PR[r.priority][1])}${r.due ? `<span class="small muted">dibutuhkan ${fdate(r.due)}</span>` : ''}</span></a>`).join('') || '<div class="card empty-state"><p class="muted">Tidak ada permintaan di sini.</p></div>'}</div>
-    <div>${sel ? detail(sel) : ''}</div>
+    <div>${sel ? `<a class="m-only back" href="#/permintaan?tab=${tab}">‹ Kembali ke daftar</a>` + detail(sel) : ''}</div>
   </div>`;
 
   function detail(r) {

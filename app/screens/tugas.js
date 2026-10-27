@@ -134,13 +134,13 @@ async function review(el, params, reload) {
   <header class="ph"><div><span class="muted small">Pekerjaan baru dianggap selesai setelah dicek dan disetujui reviewer</span><h1>Review & Revisi</h1></div></header>
   <ol class="steps"><li><b>1</b><span><strong>PIC mengajukan</strong><small>hasil + tautan</small></span></li><li><b>2</b><span><strong>Dicek reviewer</strong><small>kekurangan ditulis per poin</small></span></li><li><b>3</b><span><strong>PIC memperbaiki</strong><small>tiap poin dijawab, tenggat 2 hari kerja</small></span></li><li><b class="t">4</b><span><strong>Disetujui = selesai</strong><small>PIC tidak bisa menandai sendiri</small></span></li></ol>
   <div class="chips">${[['cek', 'Perlu saya cek', sets.cek.length], ['saya', 'Pekerjaan saya', sets.saya.length], ['semua', 'Semua yang berjalan', sets.semua.length], ['selesai', 'Baru selesai', null]].map(([k, l, n]) => `<a class="chipbtn${tab === k ? ' on' : ''}" href="#/review?tab=${k}">${l}${n !== null ? ` (${n})` : ''}</a>`).join('')}</div>
-  <div class="split">
+  <div class="split${params.get('t') ? ' picked' : ''}">
     <div class="stack">${list.map(t => `<a class="card item${sel && sel.id === t.id ? ' sel' : ''}${late(t) ? ' late' : ''}" href="#/review?tab=${tab}&t=${t.id}">
       <span class="row gap6 small b">${logo(t.unit_code, 18)}${esc(unitName(bizOf(t.unit_code)))}</span>
       <span class="row between"><b>${esc(t.title)}</b>${stCell(t.status)}</span>
       <span class="small muted">PIC ${avatar(t.pic_id, 18)} <b>${esc(nick(t.pic_id))}</b> · reviewer <b>${esc(nick(t.reviewer_id))}</b> · v${t.version} · putaran ${t.round}</span>
       ${t.status === 'revisi' ? `<span class="small ${late(t) ? 'red' : ''}">Tenggat revisi ${fdate(t.revise_due)} · ${P(t.id).filter(p => p.status === 'accepted').length}/${P(t.id).length} poin diterima</span>` : ''}</a>`).join('') || `<div class="card empty-state"><p class="muted">${{ cek: 'Tidak ada yang menunggu Anda cek.', saya: 'Tidak ada pekerjaan Anda yang sedang direview.', semua: 'Tidak ada review yang berjalan.', selesai: 'Belum ada.' }[tab]}</p></div>`}</div>
-    <div>${sel ? detailHtml(sel, P(sel.id)) : ''}</div>
+    <div>${sel ? `<a class="m-only back" href="#/review?tab=${tab}">‹ Kembali ke daftar</a>` + detailHtml(sel, P(sel.id)) : ''}</div>
   </div>`;
 
   el.onclick = async (e) => {

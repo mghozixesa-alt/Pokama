@@ -102,7 +102,7 @@ details summary{cursor:pointer}
 /* unit bisnis */
 .ucards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
 .ucard{gap:14px}.ucard.first{background:#F0FBF9;border-color:var(--teal)}.rank{font-size:28px;font-weight:900;color:#8A94A3;width:36px}.ucard.first .rank{color:var(--teal-d)}
-.big{font-size:20px;font-weight:900}.pts{font-size:32px;font-weight:900;line-height:1}.ucard .r{display:flex;flex-direction:column;align-items:flex-end}
+.big{font-size:20px;font-weight:900}.lpts{font-size:32px;font-weight:900;line-height:1}.ucard .r{display:flex;flex-direction:column;align-items:flex-end}
 .lab{font-size:11px;font-weight:800;letter-spacing:.06em;color:var(--mut);display:block}
 .mini{display:flex;flex-direction:column;gap:4px;border-top:1px solid var(--line2);padding-top:8px}.mini>div{display:grid;grid-template-columns:1fr 70px 46px;gap:8px;align-items:center;font-size:13px}.mini .bar{width:100%;height:6px}.mini b{text-align:right}
 .tbox{background:var(--bg);border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:6px}
@@ -127,13 +127,50 @@ code.copy{display:block;background:var(--bg);padding:8px 10px;border-radius:8px;
 .menu-list{display:flex;flex-direction:column;gap:8px}.menu-list .card{flex-direction:row;align-items:center;gap:12px;text-decoration:none;color:var(--ink);padding:14px 16px;border:1px solid var(--line);background:#fff;font:inherit;font-weight:800}
 /* HP */
 .main>*{min-width:0}
+.route{display:flex;flex-direction:column;gap:inherit;min-width:0}.route>*{min-width:0}
+.m-only{display:none}
+details.rules>summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between}details.rules>summary::-webkit-details-marker{display:none}
+details.rules>summary::after{content:'Lihat ▾';font-size:13px;font-weight:800;color:var(--teal-d)}details.rules[open]>summary::after{content:'Tutup ▴'}details.rules[open]>summary{margin-bottom:6px}
 @media (max-width:1100px){.tiles{grid-template-columns:repeat(2,minmax(0,1fr))}.ucards{grid-template-columns:minmax(0,1fr)}.split{grid-template-columns:minmax(0,1fr)}.sticky-top{position:static}.g2w{grid-template-columns:minmax(0,1fr)}}
 @media (max-width:760px){
   .side{display:none}.main{padding:16px 14px 96px;gap:14px}h1{font-size:23px}
   .bottom{display:grid;grid-template-columns:repeat(5,1fr);position:fixed;left:0;right:0;bottom:0;height:66px;background:#fff;border-top:1px solid var(--line);z-index:40;padding-bottom:env(safe-area-inset-bottom)}
   .bottom a{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;text-decoration:none;font-size:11px;font-weight:800;color:#8A94A3;position:relative}.bottom a.on{color:var(--teal-d)}
   .bottom .badge{position:absolute;top:6px;left:calc(50% + 6px);min-width:18px;height:18px;font-size:10px}
-  .g2,.g3,.g4,.kv{grid-template-columns:1fr}.days{grid-template-columns:repeat(4,1fr)}.steps{display:none}
+  .g2,.g3,.g4{grid-template-columns:1fr}.kv{grid-template-columns:repeat(2,minmax(0,1fr))}.days{grid-template-columns:repeat(4,1fr)}.steps{display:none}
   .ph{align-items:flex-start}.chips{flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px}.chipbtn{flex-shrink:0}
+  html,body{overflow-x:hidden}
+  /* tombol & baris aksi */
+  .btn{max-width:100%}
+  .row:has(>.btn),.row:has(>.inp){flex-wrap:wrap}
+  .ph{gap:10px}.ph>.btn{width:100%}.ph>.row{width:100%}.ph>.row>button.btn{flex:1 1 auto}.ph>.row>.inp{flex:1 1 140px;min-width:0}
+  .row.gap>button.btn:not(.sm){flex:1 1 auto}
+  .card>.row.between{flex-wrap:wrap;gap:8px}
+  h2{font-size:18px}
+  /* angka ringkas */
+  .tiles{gap:8px}.tile{padding:10px 12px;border-radius:12px}.tile b{font-size:20px}.tile b.small-b{font-size:14px}.tile span{font-size:11.5px}.tile small{font-size:11px;line-height:1.3}
+  /* tabel jadi kartu */
+  table.tbl:not(.cal) thead{display:none}
+  table.tbl:not(.cal),table.tbl:not(.cal) tbody,table.tbl:not(.cal) tfoot,table.tbl:not(.cal) tr{display:block;width:100%}
+  table.tbl:not(.cal) tr{padding:12px 14px;border-bottom:1px solid var(--line2)}
+  table.tbl:not(.cal) td{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:3px 0;border:0;text-align:right;min-height:26px}
+  table.tbl:not(.cal) td{justify-content:flex-end;flex-wrap:wrap}
+  table.tbl:not(.cal) td::before{content:attr(data-l);font-size:12px;font-weight:700;color:var(--mut);text-align:left;flex-shrink:0;margin-right:auto}
+  table.tbl:not(.cal) tr.tot{display:flex;justify-content:space-between;gap:10px}table.tbl:not(.cal) tr.tot td{display:block;padding:0}table.tbl:not(.cal) tr.tot td::before{display:none}
+  table.tbl:not(.cal) td:first-child{display:block;text-align:left;padding-bottom:6px;min-height:0}
+  table.tbl:not(.cal) td:first-child::before,table.tbl:not(.cal) td[data-l=""]::before{display:none}
+  table.tbl:not(.cal) td:empty{display:none}
+  table.tbl.compact tr{padding:8px 0}
+  .scroll-x:has(>table.tbl:not(.cal)){overflow:visible}
+  .cal td:first-child,.cal th:first-child{position:sticky;left:0;background:#fff;z-index:1}
+  /* daftar + detail: di HP tampil bergantian */
+  .m-only{display:inline-flex}.back{font-weight:800;color:var(--teal-d);text-decoration:none;padding:4px 0 10px}
+  .split:not(.picked)>:last-child{display:none}
+  .split.picked>.stack{display:none}
+  .route:has(>.split.picked)>:not(.split):not(.ph){display:none}
+  .route:has(>.split.picked)>.ph span.muted,.route:has(>.split.picked)>.ph>.btn{display:none}
   .modal-wrap{padding:0;align-items:flex-end}.modal{border-radius:18px 18px 0 0;max-height:92vh;overflow-y:auto}
 }
+.fld .inp,.fld select,.fld textarea{font-weight:600}.inp::placeholder{font-weight:500;color:#9AA3AF}
+.pts li{font-size:14px;font-weight:600}
+.pts li>.chip{align-self:flex-start}
