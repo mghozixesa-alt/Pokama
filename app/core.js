@@ -43,19 +43,15 @@ export function takeSessionFromUrl() {
   history.replaceState(null, '', location.pathname + '#/');
   return true;
 }
-export async function waRequest(phone) {
-  const r = await fetch(SB_URL + '/functions/v1/auth-otp', { method: 'POST', headers: { apikey: SB_KEY, 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'request', phone, purpose: 'staff_login' }) });
-  const j = await r.json().catch(() => ({})); if (!r.ok) throw new Error(j.error || 'Gagal mengirim kode'); return j;
-}
-export async function waVerify(phone, code) {
-  const r = await fetch(SB_URL + '/functions/v1/auth-otp', { method: 'POST', headers: { apikey: SB_KEY, 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'verify', phone, code, purpose: 'staff_login' }) });
-  const j = await r.json().catch(() => ({})); if (!r.ok) throw new Error(j.error || 'Kode salah'); saveSession(j.session); return j;
-}
+let refreshing = null;   // satu refresh untuk semua panggilan paralel
 async function token() {
   if (!session) throw new Error('Sesi habis. Silakan masuk lagi.');
   if (session.expires_at - 60 < Date.now() / 1000) {
-    try { saveSession(await authFetch('token?grant_type=refresh_token', { refresh_token: session.refresh_token })); }
-    catch (e) { saveSession(null); location.hash = '#/'; location.reload(); throw e; }
+    if (!refreshing) refreshing = authFetch('token?grant_type=refresh_token', { refresh_token: session.refresh_token })
+      .then(s => saveSession(s))
+      .catch(e => { saveSession(null); location.hash = '#/'; location.reload(); throw e; })
+      .finally(() => { refreshing = null; });
+    await refreshing;
   }
   return session.access_token;
 }
@@ -123,6 +119,7 @@ export const bizOf = (code) => { const u = ctx.unit[code]; if (!u) return code; 
 export const unitName = (code) => (ctx.unit[code] && ctx.unit[code].name) || code || '—';
 
 // ---------- util ----------
+export const safeUrl = (u) => esc(/^https?:\/\//i.test(String(u || '').trim()) ? String(u).trim() : '#');
 export const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 export const rp = (n) => 'Rp' + Math.round(+n || 0).toLocaleString('id-ID');
 export const jt = (n) => { n = +n || 0; return n >= 1e6 ? 'Rp' + (n / 1e6).toLocaleString('id-ID', { maximumFractionDigits: 1 }) + ' jt' : rp(n); };

@@ -1,10 +1,10 @@
-import { ctx, db, esc, today, addDays, fdate, fmonth, monthStart, weekStart, avatar, nick, modal, field, opts, toast, unitName, isFin, isAdmin, isCeo, need, chip, logo, rp, jt, num } from '../core.js';
+import { ctx, db, esc, today, addDays, fdate, fmonth, monthStart, weekStart, avatar, nick, modal, field, opts, toast, unitName, isFin, isAdmin, isCeo, need, chip, logo, rp, jt, num, bizOf } from '../core.js';
 
 const stOf = (p) => p >= 1 ? ['Tercapai', 'green', '#09BEAF'] : p >= .9 ? ['Aman', 'green', '#09BEAF'] : p >= .75 ? ['Diawasi', 'yellow', '#D99A00'] : ['Perlu evaluasi', 'red', '#C2410C'];
 const nextMonth = (m) => { const d = new Date(m + 'T00:00:00Z'); d.setUTCMonth(d.getUTCMonth() + 1); return d.toISOString().slice(0, 10); };
 
 export default async function unit(el, params, reload) {
-  const me = ctx.me.id; const m = params.get('m') || monthStart(today()); const nm = nextMonth(m);
+  const me = ctx.me.id; const canProp = (code) => isAdmin() || isFin() || (ctx.me.role === 'leader' && bizOf(ctx.me.unit_code) === code); const m = params.get('m') || monthStart(today()); const nm = nextMonth(m);
   const end = addDays(nm, -1); const wk = weekStart(today());
   const bizUnits = ctx.units.filter(u => u.kind === 'bisnis' && u.in_liga);
   const lines = (code) => ctx.units.filter(u => u.parent === code);
@@ -35,7 +35,7 @@ export default async function unit(el, params, reload) {
     <div class="row gap"><input type="month" class="inp" id="mpick" value="${m.slice(0, 7)}">${isFin() || isAdmin() ? '<button class="btn" data-a="liga">Isi poin Liga</button>' : ''}<button class="btn pri" data-a="lapor">+ Lapor omzet hari ini</button></div></header>
   <div class="ucards">${cards.map((c, i) => { const p = c.t ? c.a / c.t : null; const s = p !== null ? stOf(p) : null; const L = lead(c.u.code); const tn = tgt(c.u.code, nm);
     return `<section class="card ucard${i === 0 && c.p !== null ? ' first' : ''}">
-      <div class="row gap"><span class="rank">#${i + 1}</span>${logo(c.u.code, 46)}<span style="flex:1"><b class="big">${esc(c.u.name)}</b><small class="row gap6">${L ? avatar(L.id, 20) + ' Leader ' + esc(L.nickname || L.name) : 'Gabungan ' + c.lines.length + ' lini'}</small></span>
+      <div class="row gap">${c.p != null ? `<span class="rank">#${i + 1}</span>` : ''}${logo(c.u.code, 46)}<span style="flex:1"><b class="big">${esc(c.u.name)}</b><small class="row gap6">${L ? avatar(L.id, 20) + ' Leader ' + esc(L.nickname || L.name) : 'Gabungan ' + c.lines.length + ' lini'}</small></span>
         <span class="r"><b class="lpts">${c.p ?? '—'}</b><small class="${c.pp !== null && c.p > c.pp ? 'green-t' : c.pp !== null && c.p < c.pp ? 'red' : 'muted'}">${c.p === null ? 'poin Liga' : c.pp === null ? 'poin' : c.p > c.pp ? '▲ ' + (c.p - c.pp) : c.p < c.pp ? '▼ ' + (c.pp - c.p) : '– tetap'}</small></span></div>
       <div><div class="row between"><span class="lab">OMZET ${fmonth(m).toUpperCase()}</span>${s ? chip(s[0], s[1]) : chip('Target belum ada')}</div>
         <div class="row between"><b class="big">${jt(c.a)}</b><span class="muted small">${c.t ? 'dari ' + jt(c.t) + ' · <b>' + Math.round(p * 100) + '%</b>' : 'target belum disahkan'}</span></div>
@@ -45,7 +45,7 @@ export default async function unit(el, params, reload) {
       <div><span class="lab">KPI UTAMA</span><b>${esc(c.u.kpi || '—')}</b></div>
       <div class="tbox"><div class="row between small"><span class="lab">TARGET ${fmonth(nm).toUpperCase()}</span><span class="${tn ? 'green-t' : 'red'}">${tn ? { usulan: 'Diusulkan', dicek: 'Dicek Keuangan', sah: 'Disahkan CEO' }[tn.status] : 'Belum diisi'}</span></div>
         ${tn ? `<div class="row between"><b>${rp(tn.amount)}</b>${isFin() && tn.status === 'usulan' ? `<button class="btn sm" data-ts="${tn.id}" data-s="dicek">Tandai dicek</button>` : ''}${isCeo() && tn.status !== 'sah' ? `<button class="btn sm pri" data-ts="${tn.id}" data-s="sah">Sahkan</button>` : ''}</div>` : ''}
-        ${!tn || tn.status === 'usulan' ? `<div class="row gap"><span class="pre grow"><b>Rp</b><input class="inp-n" data-tin="${c.u.code}" inputmode="numeric" placeholder="${c.a ? Math.round(c.a * 1.05).toLocaleString('id-ID') + ' (usulan AI +5%)' : 'isi target'}"></span><button class="btn sm pri" data-tp="${c.u.code}">${tn ? 'Ubah' : 'Usulkan'}</button></div>` : ''}</div>
+        ${(!tn || tn.status === 'usulan') && canProp(c.u.code) ? `<div class="row gap"><span class="pre grow"><b>Rp</b><input class="inp-n" data-tin="${c.u.code}" inputmode="numeric" placeholder="${c.a ? Math.round(c.a * 1.05).toLocaleString('id-ID') + ' (usulan AI +5%)' : 'isi target'}"></span><button class="btn sm pri" data-tp="${c.u.code}">${tn ? 'Ubah' : 'Usulkan'}</button></div>` : ''}</div>
     </section>`; }).join('')}</div>
   <div class="g2w">
     <section class="card"><div class="row between"><h2>Laporan omzet hari ini</h2><span class="muted small">ditutup 21.00</span></div>
@@ -76,7 +76,7 @@ export default async function unit(el, params, reload) {
         if (r) { toast('Poin Liga tersimpan'); reload(); } return;
       }
       const tp = e.target.closest('[data-tp]');
-      if (tp) { const code = tp.dataset.tp; const inp = el.querySelector(`[data-tin="${code}"]`); let v = num(inp.value) || num(inp.placeholder); if (!v) return toast('Isi angka target', 'err');
+      if (tp) { const code = tp.dataset.tp; if (!canProp(code)) return toast('Target diusulkan Leader unit', 'err'); const inp = el.querySelector(`[data-tin="${code}"]`); let v = num(inp.value) || num(inp.placeholder); if (!v) return toast('Isi angka target', 'err');
         const ex = tgt(code, nm);
         if (ex) await db.update('pk_targets', 'id=eq.' + ex.id, { amount: v, updated_at: new Date().toISOString() });
         else await db.insert('pk_targets', { unit_code: code, month: nm, amount: v, status: 'usulan', proposed_by: me });

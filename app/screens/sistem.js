@@ -1,4 +1,4 @@
-import { ctx, db, esc, ftime, avatar, nick, modal, field, opts, toast, unitName, unitOpts, isAdmin, isFin, need, chip, logo, ROLE, changePassword, rp, num } from '../core.js';
+import { safeUrl, ctx, db, esc, ftime, avatar, nick, modal, field, opts, toast, unitName, unitOpts, isAdmin, isFin, need, chip, logo, ROLE, changePassword, rp, num } from '../core.js';
 
 const CAT = [['strategi', 'Strategi & rencana'], ['proposal', 'Proposal & penawaran'], ['sop', 'SOP & aturan'], ['laporan', 'Laporan'], ['desain', 'Desain & brand'], ['kontrak', 'Kontrak & legal'], ['lainnya', 'Lainnya']];
 const KINDS = ['Dokumen', 'Deck', 'Sheet', 'Desain', 'PDF', 'Folder'];
@@ -15,7 +15,7 @@ async function library(el, params, reload) {
   <div class="row gap wrap"><input class="inp grow" id="q" placeholder="Cari judul atau unit…" value="${esc(q)}">
     <select class="inp" id="c">${opts([['ALL', 'Semua kategori']].concat(CAT), cat)}</select><select class="inp" id="s">${opts([['ALL', 'Semua status'], ['Final', 'Final'], ['Draf', 'Draf'], ['Template', 'Template'], ['Arsip', 'Arsip']], st)}</select></div>
   <section class="card pad0 scroll-x"><table class="tbl"><thead><tr><th>Dokumen</th><th>Kategori</th><th>Unit</th><th>Status</th><th>Pemilik</th><th>Diperbarui</th><th></th></tr></thead><tbody>
-  ${list.map(d => `<tr><td><b>${d.url ? `<a href="${esc(d.url)}" target="_blank" rel="noopener">${esc(d.title)} ↗</a>` : esc(d.title)}</b> <small class="muted">${esc(d.kind)}</small>${d.restricted ? ' ' + chip('Terbatas', 'red') : ''}</td>
+  ${list.map(d => `<tr><td><b>${d.url ? `<a href="${safeUrl(d.url)}" target="_blank" rel="noopener">${esc(d.title)} ↗</a>` : esc(d.title)}</b> <small class="muted">${esc(d.kind)}</small>${d.restricted ? ' ' + chip('Terbatas', 'red') : ''}</td>
     <td>${esc((CAT.find(c => c[0] === d.category) || [0, d.category])[1])}</td><td><span class="row gap6">${logo(d.unit_code, 18)}${esc(unitName(d.unit_code))}</span></td>
     <td>${chip(d.status, { Final: 'green', Draf: 'yellow', Template: 'blue', Arsip: 'gray' }[d.status])}</td><td>${esc(nick(d.owner_id))}</td><td class="small muted">${ftime(d.updated_at)}</td>
     <td>${isAdmin() || d.owner_id === me ? `<button class="btn sm" data-e="${d.id}">Ubah</button>` : ''}</td></tr>`).join('') || `<tr><td colspan="7" class="muted">Belum ada dokumen. Tambahkan tautan Google Drive, Canva, atau Docs.</td></tr>`}</tbody></table></section>`;
@@ -30,7 +30,7 @@ async function library(el, params, reload) {
       field('Unit', `<select name="unit_code" class="inp">${unitOpts(d.unit_code || ctx.me.unit_code)}</select>`) + field('Status', `<select name="status" class="inp">${opts([['Draf', 'Draf'], ['Final', 'Final'], ['Template', 'Template'], ['Arsip', 'Arsip']], d.status || 'Draf')}</select>`) + `</div>` +
       `<label class="chk"><input type="checkbox" name="restricted" ${d.restricted ? 'checked' : ''}> Terbatas (hanya CEO, Keuangan, dan pemilik)</label>`,
       { danger: d.id ? { label: 'Hapus', onClick: async () => { await db.remove('pk_documents', 'id=eq.' + d.id); return 'del'; } } : null,
-        onSubmit: async (f) => { need(f.title, 'Isi judul'); const row = { title: f.title.trim(), url: f.url.trim() || null, category: f.category, kind: f.kind, unit_code: f.unit_code, status: f.status, restricted: !!f.restricted, updated_at: new Date().toISOString() };
+        onSubmit: async (f) => { need(f.title, 'Isi judul'); if (f.url.trim() && !/^https?:\/\//i.test(f.url.trim())) throw new Error('Tautan harus diawali https://'); const row = { title: f.title.trim(), url: f.url.trim() || null, category: f.category, kind: f.kind, unit_code: f.unit_code, status: f.status, restricted: !!f.restricted, updated_at: new Date().toISOString() };
           if (d.id) await db.update('pk_documents', 'id=eq.' + d.id, row); else await db.insert('pk_documents', { ...row, owner_id: me }); } });
     if (r) { toast('Tersimpan'); reload(); }
   };

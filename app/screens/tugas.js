@@ -1,4 +1,4 @@
-import { ctx, db, esc, today, fdate, ftime, avatar, nick, modal, field, opts, toast, unitName, unitOpts, peopleOpts, isAdmin, logo, bizOf, need, chip, confirmBox } from '../core.js';
+import { safeUrl, ctx, db, esc, today, fdate, ftime, avatar, nick, modal, field, opts, toast, unitName, unitOpts, peopleOpts, isAdmin, logo, bizOf, need, chip, confirmBox } from '../core.js';
 
 export const ST = {
   todo: ['Belum mulai', '#C9CED6', '#1F2933'], doing: ['Dikerjakan', '#2F6FDB', '#fff'], review: ['Menunggu review', '#F2B33D', '#1F2933'],
@@ -62,7 +62,7 @@ async function board(el, params, reload) {
       <td><span class="bar"><i style="width:${t.progress}%"></i></span> ${t.progress}%</td></tr>`; }).join('')}</tbody></table></div></section>`).join('')
     : `<div class="empty-state card"><h2>Belum ada tugas di sini</h2><p class="muted">Buat tugas baru, atau terima Permintaan Bantuan supaya otomatis jadi tugas.</p><button class="btn pri" data-a="new">+ Tugas baru</button></div>`}
   ${projects.length ? `<section class="card"><h2>Proyek</h2><div class="list">${projects.map(p => { const ts = tasks.filter(t => t.project_id === p.id); const dn = ts.filter(t => t.status === 'done').length;
-    return `<div class="li row gap">${logo(p.unit_code, 22)}<b style="flex:1">${esc(p.name)}</b><span class="muted small">${dn}/${ts.length} selesai · ${p.due ? 'tenggat ' + fdate(p.due) : ''} · PJ ${esc(nick(p.owner_id))}</span>${p.is_closed ? chip('Ditutup') : ''}<button class="btn sm" data-pe="${p.id}">Ubah</button></div>`; }).join('')}</div></section>` : ''}`;
+    return `<div class="li row gap">${logo(p.unit_code, 22)}<b style="flex:1">${esc(p.name)}</b><span class="muted small">${dn}/${ts.length} selesai · ${p.due ? 'tenggat ' + fdate(p.due) : ''} · PJ ${esc(nick(p.owner_id))}</span>${p.is_closed ? chip('Ditutup') : ''}${p.owner_id === me || isAdmin() ? `<button class="btn sm" data-pe="${p.id}">Ubah</button>` : ''}</div>`; }).join('')}</div></section>` : ''}`;
 
   el.onclick = async (e) => {
     const a = e.target.closest('[data-a]');
@@ -94,7 +94,7 @@ async function detail(t, projects) {
     <div><span>PIC</span><b>${avatar(t.pic_id, 22)} ${esc(nick(t.pic_id))}</b></div><div><span>Reviewer</span><b>${t.reviewer_id ? avatar(t.reviewer_id, 22) + ' ' + esc(nick(t.reviewer_id)) : '<span class="red">belum ada</span>'}</b></div>
     <div><span>Tenggat</span><b>${t.due ? fdate(t.due) : '—'}</b></div><div><span>Versi · putaran</span><b>v${t.version} · ${t.round}</b></div></div>
     ${t.dod ? `<p class="note"><b>Selesai bila:</b> ${esc(t.dod)}</p>` : ''}
-    ${t.last_link ? `<p><a href="${esc(t.last_link)}" target="_blank" rel="noopener">Buka hasil terakhir ↗</a></p>` : ''}
+    ${t.last_link ? `<p><a href="${safeUrl(t.last_link)}" target="_blank" rel="noopener">Buka hasil terakhir ↗</a></p>` : ''}
     ${points.length ? `<h3>Poin review</h3><ul class="pts">${points.map(p => `<li>${chip({ open: 'Belum dijawab', fixed: 'Sudah diperbaiki', disagree: 'Tidak setuju', accepted: 'Diterima' }[p.status], { open: 'red', fixed: 'blue', disagree: 'yellow', accepted: 'green' }[p.status])} ${esc(p.text)}${p.answer ? `<small> ↳ ${esc(p.answer)}</small>` : ''}</li>`).join('')}</ul>` : ''}
     ${canEdit && !['review', 'done'].includes(t.status) ? `<div class="row gap wrap"><span class="muted small">Ubah status:</span>${['todo', 'doing', 'hold'].map(s => `<label class="chk"><input type="radio" name="st" value="${s}" ${t.status === s ? 'checked' : ''}> ${ST[s][0]}</label>`).join('')}</div>` : ''}
     ${isPic && ['todo', 'doing', 'revisi', 'hold'].includes(t.status) ? field('Ajukan ke reviewer · tautan hasil', `<input name="link" class="inp" placeholder="https://drive.google.com/…" value="${esc(t.last_link || '')}">`, 'Isi tautan lalu Simpan untuk mengajukan ke reviewer. Kalau ada poin revisi, jawab dulu di Review & Revisi.') : ''}
@@ -175,7 +175,7 @@ async function review(el, params, reload) {
       <div class="row between"><h2>${esc(t.title)}</h2>${stCell(t.status)}</div>
       ${t.dod ? `<p class="muted">Selesai bila: ${esc(t.dod)}</p>` : ''}
       <div class="kv"><div><span>PIC</span><b>${avatar(t.pic_id, 22)} ${esc(nick(t.pic_id))}</b></div><div><span>Reviewer</span><b>${avatar(t.reviewer_id, 22)} ${esc(nick(t.reviewer_id))}</b></div><div><span>Versi · putaran</span><b>v${t.version} · ${t.round}</b></div><div><span>Tenggat</span><b>${t.status === 'revisi' ? 'revisi ' + fdate(t.revise_due) : fdate(t.due)}</b></div></div>
-      ${t.last_link ? `<a class="btn" href="${esc(t.last_link)}" target="_blank" rel="noopener">Buka hasil ↗</a>` : ''}
+      ${t.last_link ? `<a class="btn" href="${safeUrl(t.last_link)}" target="_blank" rel="noopener">Buka hasil ↗</a>` : ''}
       ${t.status === 'revisi' && t.revise_due && t.revise_due < today() ? '<p class="note err">Revisi lewat tenggat. Kepala Staf menindaklanjuti langsung dengan PIC.</p>' : ''}
       <h3>Poin review (${pts.length})</h3>
       ${pts.length ? `<ul class="pts">${pts.map(p => `<li><div class="row between gap"><span>${esc(p.text)}</span>${chip({ open: 'Belum dijawab', fixed: 'Sudah diperbaiki', disagree: 'Tidak setuju', accepted: 'Diterima' }[p.status], { open: 'red', fixed: 'blue', disagree: 'yellow', accepted: 'green' }[p.status])}</div>

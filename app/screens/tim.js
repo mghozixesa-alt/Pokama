@@ -45,7 +45,7 @@ async function personForm(p = null) {
     field('Mulai bekerja', `<input type="date" name="joined_on" class="inp" value="${esc(p.joined_on || '')}">`) + field('Jatah cuti / tahun', `<input type="number" name="leave_quota" class="inp" value="${p.leave_quota ?? 12}">`) +
     field('Foto (tautan gambar, opsional)', `<input name="photo" class="inp" value="${esc(p.photo || '')}">`) + `</div>` +
     (isNew ? '' : `<label class="chk"><input type="checkbox" name="is_active" ${p.is_active ? 'checked' : ''}> Aktif</label>`) +
-    (isNew ? '' : `<div class="note"><b>Akun login:</b> ${p.user_id ? 'sudah tersambung' : p.email ? 'email terdaftar' : 'belum ada'}. <button type="button" class="btn sm" id="mkacc">${p.user_id || p.email ? 'Buat password baru' : 'Buat akun'}</button><span id="accout"></span></div>`),
+    (isNew ? '' : `<div class="note"><b>Akun login:</b> ${p.user_id ? 'sudah tersambung' : p.email ? 'email terdaftar' : 'belum ada'}. <button type="button" class="btn sm" id="mkacc">${p.user_id ? 'Buat password baru' : 'Buat akun'}</button><span id="accout"></span></div>`),
     { wide: true, onSubmit: async (f) => {
       need(f.name, 'Isi nama'); need(f.code, 'Isi kode/inisial');
       const ks = ctx.people.find(x => x.role === 'kepala_staf');
@@ -62,7 +62,7 @@ document.addEventListener('click', async (e) => {
   const name = form.querySelector('[name=code]').value; const p = ctx.people.find(x => x.code === name); const email = form.querySelector('[name=email]').value.trim();
   if (!email) { out.textContent = ' Isi email dulu.'; return; }
   e.target.disabled = true; out.textContent = ' Membuat…';
-  try { const r = await callFn('pk-account', { action: p.user_id || p.email ? 'reset' : 'create', person_id: p.id, email });
+  try { const r = await callFn('pk-account', { action: p.user_id ? 'reset' : 'create', person_id: p.id, email });
     out.innerHTML = `<br>Kirim ke ${esc(r.name)} lewat WhatsApp:<br><code class="copy">Email: ${esc(r.email)}<br>Password: ${esc(r.password)}<br>Masuk di https://pokama.org</code><br><small>Minta ganti password setelah masuk (menu Pengaturan).</small>`;
   } catch (er) { out.textContent = ' ' + er.message; }
   e.target.disabled = false;

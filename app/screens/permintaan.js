@@ -1,4 +1,4 @@
-import { ctx, db, esc, today, addDays, fdate, ftime, avatar, nick, modal, field, opts, toast, unitName, peopleOpts, isAdmin, need, chip, logo } from '../core.js';
+import { safeUrl, ctx, db, esc, today, addDays, fdate, ftime, avatar, nick, modal, field, opts, toast, unitName, peopleOpts, isAdmin, need, chip, logo } from '../core.js';
 
 const TEAMS = ['Rentalaja', 'TripinAja', 'Niagaaja', 'Marketing', 'Keuangan', 'Purchasing & Aset', 'Kepala Staf', 'Data & BizDev'];
 const ST = { baru: ['Menunggu dipilah', 'yellow'], ditunda: ['Ditunda', 'gray'], diterima: ['Diberikan ke PIC', 'blue'], ditolak: ['Ditolak', 'gray'], diperjelas: ['Perlu diperjelas', 'blue'], jadi_tugas: ['Jadi tugas', 'green'], selesai: ['Selesai', 'green'] };
@@ -37,7 +37,7 @@ export default async function permintaan(el, params, reload) {
       <span class="small muted">Dari ${esc(nick(r.from_id))} · ${esc(unitName(ctx.byId[r.from_id] && ctx.byId[r.from_id].unit_code))} → <b>${esc(r.to_team)}</b></span>
       <div class="row between"><h2>${esc(r.title)}</h2>${chip(ST[r.status][0], ST[r.status][1])}</div>
       <p>${esc(r.description || 'Tanpa keterangan.')}</p>
-      ${r.file_link ? `<p><a href="${esc(r.file_link)}" target="_blank" rel="noopener">Buka file ↗</a></p>` : ''}
+      ${r.file_link ? `<p><a href="${safeUrl(r.file_link)}" target="_blank" rel="noopener">Buka file ↗</a></p>` : ''}
       <div class="kv"><div><span>Prioritas</span><b>${PR[r.priority][0]}</b></div><div><span>Dibutuhkan</span><b>${fdate(r.due)}</b></div>
         <div><span>Dikerjakan oleh</span><b>${r.pic_id ? avatar(r.pic_id, 20) + ' ' + esc(nick(r.pic_id)) : '—'}</b></div><div><span>Dipilah</span><b>${r.triage_by ? esc(nick(r.triage_by)) + ' · ' + ftime(r.triage_at) : 'belum'}</b></div></div>
       ${r.reason ? `<p class="note">${esc(r.reason)}</p>` : ''}
@@ -82,6 +82,7 @@ export default async function permintaan(el, params, reload) {
       field('Kenapa perlu', `<textarea name="desc" class="inp" rows="3">${esc(r.description || '')}</textarea>`),
       { submit: r.id ? 'Kirim ulang' : 'Kirim permintaan', onSubmit: async (f) => {
         need(f.title, 'Isi apa yang diminta'); need(f.to, 'Pilih tujuan');
+        if (f.link.trim() && !/^https?:\/\//i.test(f.link.trim())) throw new Error('Tautan file harus diawali https://');
         const row = { title: f.title.trim(), to_team: f.to, priority: f.pr, due: f.due || null, file_link: f.link.trim() || null, description: f.desc.trim() || null };
         if (r.id) await db.update('pk_requests', 'id=eq.' + r.id, { ...row, status: 'baru', reason: null });
         else await db.insert('pk_requests', { ...row, from_id: me, status: 'baru' });

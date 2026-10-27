@@ -110,6 +110,7 @@ async function route() {
     if (!r) { location.hash = '#/kkh'; return; }
     document.title = r[1] + ' · Pokama';
     const params = new URLSearchParams(location.hash.split('?')[1] || '');
+    for (const [pk, pv] of [...params]) if (!/^[\w.-]{0,64}$/.test(pv)) params.delete(pk);
     await r[3](el, params, () => { if (current === k) route(); });
   } catch (e) {
     if (!el.isConnected) return;

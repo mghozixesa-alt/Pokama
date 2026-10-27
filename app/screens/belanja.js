@@ -1,4 +1,4 @@
-import { ctx, db, esc, today, addDays, fdate, ftime, avatar, nick, modal, field, opts, toast, unitName, unitOpts, isFin, isCeo, need, chip, logo, rp, jt, num, bizOf } from '../core.js';
+import { safeUrl, ctx, db, esc, today, addDays, fdate, ftime, avatar, nick, modal, field, opts, toast, unitName, unitOpts, isFin, isCeo, need, chip, logo, rp, jt, num, bizOf } from '../core.js';
 
 const ST = { diajukan: ['Menunggu persetujuan', 'yellow', '#D99A00'], revisi: ['Diminta revisi', 'gray', '#8A94A3'], ditolak: ['Ditolak', 'gray', '#8A94A3'],
   siap_cair: ['Siap dicairkan', 'blue', '#2F6FDB'], cair: ['Dana cair · tunggu nota', 'red', '#C2410C'], lpj: ['Nota masuk · dicek Keuangan', 'blue', '#2F6FDB'], selesai: ['Selesai', 'green', '#09BEAF'] };
@@ -68,14 +68,14 @@ export default async function belanja(el, params, reload) {
       <div class="row between"><h2>${esc(r.title)}</h2>${chip(ST[r.status][0], ST[r.status][1])}</div>
       <span class="small muted">Disusun ${esc(nick(r.created_by))} · dibutuhkan ${fdate(r.need_date)}${r.is_emergency ? ' · dana darurat' : ''}</span>
       <div class="scroll-x"><table class="tbl compact"><thead><tr><th>Uraian</th><th class="r">Qty</th><th class="r">Harga</th><th class="r">Total</th><th class="r">Realisasi</th></tr></thead><tbody>
-        ${its.map(i => `<tr><td>${esc(i.name)}${i.nota_link ? ` <a href="${esc(i.nota_link)}" target="_blank" rel="noopener" class="small">nota ↗</a>` : ''}</td><td class="r">${(+i.qty).toLocaleString('id-ID')}</td><td class="r">${rp(i.price)}</td><td class="r b">${rp(i.qty * i.price)}</td><td class="r">${i.real_amount != null ? rp(i.real_amount) : '—'}</td></tr>`).join('')}
+        ${its.map(i => `<tr><td>${esc(i.name)}${i.nota_link ? ` <a href="${safeUrl(i.nota_link)}" target="_blank" rel="noopener" class="small">nota ↗</a>` : ''}</td><td class="r">${(+i.qty).toLocaleString('id-ID')}</td><td class="r">${rp(i.price)}</td><td class="r b">${rp(i.qty * i.price)}</td><td class="r">${i.real_amount != null ? rp(i.real_amount) : '—'}</td></tr>`).join('')}
         <tr class="tot"><td>Total</td><td></td><td></td><td class="r">${rp(r.total)}</td><td class="r">${r.realisasi != null ? rp(r.realisasi) : '—'}</td></tr></tbody></table></div>
       ${r.realisasi != null ? `<p class="note">${r.realisasi <= r.total ? 'Sisa dana ' + rp(r.total - r.realisasi) + ' dikembalikan ke rekening unit.' : 'Kurang ' + rp(r.realisasi - r.total) + ', ajukan sebagai RAB tambahan.'}</p>` : ''}
       ${ai.length ? `<div class="note warn"><b class="small">CEK OTOMATIS</b><ul>${ai.map(a => `<li>${esc(a)}</li>`).join('')}</ul></div>` : ''}
       ${r.note ? `<p class="note err">${esc(r.note)}</p>` : ''}
       <h3>Perjalanan RAB</h3><ol class="journey">${steps.map((s, i) => `<li class="${s[1] ? 'done' : stopped && i === curIdx ? 'stop' : i === curIdx ? 'cur' : ''}"><b>${s[1] ? '✓' : stopped && i === curIdx ? '×' : i + 1}</b><span>${esc(s[0])}<small>${esc(s[2])}</small></span></li>`).join('')}</ol>
       <div class="row gap wrap">
-        ${myTurn(r) || (isCeo() && r.status === 'diajukan' && r.created_by !== me) ? `<button class="btn pri" data-a="approve">Setujui${myTurn(r) ? '' : ' (CEO)'}</button><button class="btn" data-a="revise">Minta revisi</button><button class="btn danger" data-a="reject">Tolak</button>` : ''}
+        ${myTurn(r) || (isCeo() && r.status === 'diajukan' && r.created_by !== me) ? `<button class="btn pri" data-a="approve">${myTurn(r) ? 'Setujui' : 'Setujui langsung (CEO)'}</button><button class="btn" data-a="revise">Minta revisi</button><button class="btn danger" data-a="reject">Tolak</button>` : ''}
         ${r.status === 'revisi' && r.created_by === me ? `<button class="btn pri" data-a="resubmit">Revisi & ajukan ulang</button>` : ''}
         ${r.status === 'siap_cair' && isFin() ? `<button class="btn pri" data-a="cair">Tandai dana sudah dicairkan</button>` : ''}
         ${r.status === 'cair' && (r.created_by === me || isFin()) ? `<button class="btn pri" data-a="lpj">Upload nota (LPJ)</button>` : ''}
@@ -115,7 +115,7 @@ export default async function belanja(el, params, reload) {
       field('Rincian · satu baris satu barang: nama, jumlah, harga', `<textarea name="rows" class="inp mono" rows="5" id="rab-rows" placeholder="Ban dalam, 6, 45000\nOli mesin, 6, 65000">${esc(rows)}</textarea>`) +
       `<p class="note" id="rab-sum">Isi rincian, total dan jalur persetujuan dihitung otomatis.</p>` +
       (r ? '' : `<div class="g2">` + field('Dibutuhkan tanggal', `<input type="date" name="need" class="inp" value="${addDays(today(), 3)}">`) +
-      `<div class="stack">${isLeader ? `<label class="chk"><input type="checkbox" name="crew"> Dari crew cabang (diteruskan Leader)</label>` : ''}<label class="chk"><input type="checkbox" name="emg"> Pakai dana darurat (mendadak)</label></div></div>`),
+      `<div class="stack">${isLeader ? `<label class="chk"><input type="checkbox" name="crew"> Dari crew cabang (diteruskan Leader)</label>` : ''}${isLeader || ctx.me.role === 'keuangan' ? '<label class="chk"><input type="checkbox" name="emg"> Pakai dana darurat (mendadak)</label>' : ''}</div></div>`),
       { wide: true, submit: r ? 'Ajukan ulang' : 'Kirim RAB', onSubmit: async (f) => {
         const items = parseRows(f.rows); need(f.title, 'Isi untuk apa belanjanya'); if (!items.length) throw new Error('Isi minimal satu barang: nama, jumlah, harga');
         if (r) await db.rpc('pk_rab_resubmit', { p_id: r.id, p_title: f.title, p_items: items });
