@@ -117,7 +117,8 @@ function menuView(el) {
 let current = null;
 async function route() {
   const k = (location.hash.replace(/^#\/?/, '').split('?')[0] || 'kkh');
-  const el = document.getElementById('view'); if (!el) return;
+  const view = document.getElementById('view'); if (!view) return;
+  const el = document.createElement('div'); el.className = 'route'; view.replaceChildren(el);
   document.querySelectorAll('[data-k]').forEach(a => a.classList.toggle('on', a.dataset.k === k));
   const r = FLAT.find(x => x[0] === k);
   current = k;
@@ -130,6 +131,7 @@ async function route() {
     const params = new URLSearchParams(location.hash.split('?')[1] || '');
     await r[3](el, params, () => { if (current === k) route(); });
   } catch (e) {
+    if (!el.isConnected) return;
     el.innerHTML = `<div class="card"><h2>Gagal memuat</h2><p class="muted">${esc(e.message)}</p><button class="btn" onclick="location.reload()">Muat ulang</button></div>`;
   }
   badges();
