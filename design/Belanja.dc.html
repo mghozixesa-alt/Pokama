@@ -218,7 +218,7 @@ class Component extends DCLogic {
       note: c.rejected ? c.rejected : c.S[0] === 'done' ? (realArr && realTotal < c.total ? 'Selesai. Belanja ' + rp(realTotal) + ', sisa ' + rp(c.total - realTotal) + ' dikembalikan ke rekening unit.' : 'Selesai. Belanja sesuai RAB, sisa dana Rp0.') : 'LPJ lewat 2 hari. RAB Niagaaja berikutnya ditahan sampai nota masuk, dan Kepala Staf sudah diberi tahu.',
       noteBg: c.rejected ? '#EEF0F3' : c.S[0] === 'done' ? '#DDF5F2' : '#FCEBDD', noteFg: c.rejected ? '#4A5160' : c.S[0] === 'done' ? '#067A70' : '#9A3F0A',
       hasAct: act, canReject: !!who, goText,
-      actNote: who ? 'Demo: tombol mengikuti siapa yang sedang memegang RAB ini.' : c.S[0] === 'cair' ? 'Dicairkan sesuai jadwal Selasa & Jumat 14.00.' : 'Foto nota per barang. Sisa dana otomatis dihitung.',
+      actNote: who ? 'Tombol mengikuti siapa yang sedang memegang RAB ini.' : c.S[0] === 'cair' ? 'Dicairkan sesuai jadwal Selasa & Jumat 14.00.' : 'Foto nota per barang. Sisa dana otomatis dihitung.',
       go: () => this.setState({ stage: { ...stage, [c.id]: c.stg + 1 }, msg: c.code + ': ' + (who ? 'disetujui ' + who[1] + '.' : c.S[0] === 'cair' ? 'dana ' + rp(c.total) + ' dicairkan. Bukti transfer tersimpan sebagai "Dana Cair".' : 'nota masuk, LPJ lengkap. Keuangan mengecek lalu RAB selesai.') }),
       back: () => this.setState({ msg: c.code + ': dikembalikan ke ' + c.by + ' untuk direvisi.' }),
       reject: () => this.setState({ rej: { ...rej, [c.id]: 'Ditolak ' + (who ? who[1] : '') + '. Alasan dikirim ke ' + c.by + '.' } })

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Pengajuan Belanja — Pokama · Demo</title>
+<title>Pengajuan Belanja — Pokama</title>
 <meta name="robots" content="noindex">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -16,7 +16,7 @@ a{color:#1D3149}a:hover{color:#0F1D2E}
 </head>
 <body>
 <div id="root"></div>
-<a class="demo-tag" href="index.html"><b>DEMO</b> · data contoh · semua layar</a>
+<a class="demo-tag" href="index.html"><b>☰</b> Semua layar</a>
 <script type="text/plain" id="dc-tpl">
 
 <div style="min-height: 100vh; display: flex; flex-wrap: wrap; background: #F3F5F8; color: #1F2933; font-family: 'Nunito', system-ui, sans-serif; font-size: 14px; line-height: 1.45">
@@ -224,7 +224,7 @@ class Component extends DCLogic {
       note: c.rejected ? c.rejected : c.S[0] === 'done' ? (realArr && realTotal < c.total ? 'Selesai. Belanja ' + rp(realTotal) + ', sisa ' + rp(c.total - realTotal) + ' dikembalikan ke rekening unit.' : 'Selesai. Belanja sesuai RAB, sisa dana Rp0.') : 'LPJ lewat 2 hari. RAB Niagaaja berikutnya ditahan sampai nota masuk, dan Kepala Staf sudah diberi tahu.',
       noteBg: c.rejected ? '#EEF0F3' : c.S[0] === 'done' ? '#DDF5F2' : '#FCEBDD', noteFg: c.rejected ? '#4A5160' : c.S[0] === 'done' ? '#067A70' : '#9A3F0A',
       hasAct: act, canReject: !!who, goText,
-      actNote: who ? 'Demo: tombol mengikuti siapa yang sedang memegang RAB ini.' : c.S[0] === 'cair' ? 'Dicairkan sesuai jadwal Selasa & Jumat 14.00.' : 'Foto nota per barang. Sisa dana otomatis dihitung.',
+      actNote: who ? 'Tombol mengikuti siapa yang sedang memegang RAB ini.' : c.S[0] === 'cair' ? 'Dicairkan sesuai jadwal Selasa & Jumat 14.00.' : 'Foto nota per barang. Sisa dana otomatis dihitung.',
       go: () => this.setState({ stage: { ...stage, [c.id]: c.stg + 1 }, msg: c.code + ': ' + (who ? 'disetujui ' + who[1] + '.' : c.S[0] === 'cair' ? 'dana ' + rp(c.total) + ' dicairkan. Bukti transfer tersimpan sebagai "Dana Cair".' : 'nota masuk, LPJ lengkap. Keuangan mengecek lalu RAB selesai.') }),
       back: () => this.setState({ msg: c.code + ': dikembalikan ke ' + c.by + ' untuk direvisi.' }),
       reject: () => this.setState({ rej: { ...rej, [c.id]: 'Ditolak ' + (who ? who[1] : '') + '. Alasan dikirim ke ' + c.by + '.' } })

@@ -4,7 +4,7 @@ Sistem kerja internal management PT Popo Karya Investama: KKH harian, penugasan,
 
 ## Isi repo
 
-- `demo/` — prototipe yang bisa diklik (HTML statis, tanpa database). Dideploy ke Vercel proyek **pokama** → demo.pokama.org. Semua data contoh dan tidak tersimpan.
+- `demo/` — prototipe yang bisa diklik (HTML statis, tanpa database). Dideploy ke Vercel proyek **pokama** → pokama.org (demo.pokama.org tetap jalan). Semua data contoh dan tidak tersimpan.
 - `design/` — file sumber rancangan per layar (`*.dc.html`) dan `canvas.json` dari kanvas desain. Dipakai sebagai acuan saat membangun aplikasi asli.
 - `tools/build_demo.py` — membangun ulang `demo/` dari `design/` (`python3 tools/build_demo.py`).
 

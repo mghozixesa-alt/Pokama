@@ -35,7 +35,7 @@ for f in sorted(glob.glob(P + '*.dc.html')):
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{title} · Demo</title>
+<title>{title}</title>
 <meta name="robots" content="noindex">
 {helc.strip()}
 <style>.demo-tag{{position:fixed;right:16px;bottom:16px;z-index:50;background:#1D3149;color:#fff;font:700 12px/1 Nunito,system-ui,sans-serif;padding:10px 14px;border-radius:999px;text-decoration:none;box-shadow:0 6px 18px rgba(29,49,73,.3)}}.demo-tag b{{color:#09BEAF}}</style>
@@ -44,7 +44,7 @@ for f in sorted(glob.glob(P + '*.dc.html')):
 </head>
 <body>
 <div id="root"></div>
-<a class="demo-tag" href="index.html"><b>DEMO</b> · data contoh · semua layar</a>
+<a class="demo-tag" href="index.html"><b>☰</b> Semua layar</a>
 <script type="text/plain" id="dc-tpl">{tplc}</script>
 <script>
 {scr}
