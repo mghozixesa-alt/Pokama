@@ -50,9 +50,9 @@ dcBoot(Component);
 </html>
 '''
     open(O + n, 'w').write(out)
-groups = [('Laptop · masuk & kerja harian', ['Masuk', 'Main', 'KKH', 'Penugasan', 'Review', 'Permintaan', 'Kehadiran']),
+groups = [('Laptop · masuk & kerja harian', ['Masuk', 'Main', 'KKH', 'Penugasan', 'Review', 'Permintaan', 'Belanja', 'Kehadiran']),
           ('Laptop · unit bisnis', ['Target', 'Omzet', 'Liga']),
-          ('Laptop · orang & sistem', ['Tim', 'Bonus', 'Library', 'Peta', 'Pengaturan']),
+          ('Laptop · orang & sistem', ['Tim', 'Bonus', 'Library', 'Pengaturan']),
           ('HP · tahap 1', ['KKHHp', 'ReviewHp', 'PermintaanHp', 'LainnyaHp']),
           ('Catatan CEO', ['Keputusan'])]
 cards = ''
