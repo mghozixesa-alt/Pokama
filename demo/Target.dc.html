@@ -118,12 +118,13 @@ a{color:#1D3149}a:hover{color:#0F1D2E}
 
 <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start">
 <section aria-labelledby="unit-h" style="flex: 1 1 100%; min-width: 0; background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 20px; overflow-x: auto">
-<div style="padding: 18px 20px 8px; display: flex; flex-direction: column"><h2 id="unit-h" style="margin: 0; font-size: 18px; font-weight: 800">Target per unit bisnis</h2><span style="font-size: 13px; color: #5B6573">KPI utama adalah patokan yang sudah diputuskan; target omzet bulanan diisi Keuangan bersama Leader.</span></div>
+<div style="padding: 18px 20px 8px; display: flex; flex-direction: column"><h2 id="unit-h" style="margin: 0; font-size: 18px; font-weight: 800">Target per unit bisnis</h2><span style="font-size: 13px; color: #5B6573">KPI utama adalah patokan yang sudah diputuskan. Target omzet bulanan yang asli ditetapkan setiap akhir bulan.</span></div>
+<div style="margin: 4px 20px 12px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; background: #DDF5F2; border-radius: 12px; padding: 12px 16px; font-size: 13px; color: #1D3149"><strong>Jendela target bulan depan: 3 hari kerja terakhir tiap bulan</strong><span>Leader mengusulkan → Keuangan mengecek → CEO mengesahkan di rapat bulanan. Target November diisi 28–30 Okt.</span></div>
 <table style="width: 100%; min-width: 860px; border-collapse: collapse">
 <thead><tr style="border-bottom: 1px solid #E3E6EB">
 <th scope="col" style="text-align: left; padding: 12px 20px; font-size: 12px; color: #5B6573; font-weight: 800; letter-spacing: 0.06em">UNIT</th>
 <th scope="col" style="text-align: left; padding: 12px 8px; font-size: 12px; color: #5B6573; font-weight: 800; letter-spacing: 0.06em">KPI UTAMA</th>
-<th scope="col" style="text-align: left; padding: 12px 8px; font-size: 12px; color: #5B6573; font-weight: 800; letter-spacing: 0.06em; width: 170px">TARGET OMZET NOV</th>
+<th scope="col" style="text-align: left; padding: 12px 8px; font-size: 12px; color: #5B6573; font-weight: 800; letter-spacing: 0.06em; width: 170px">TARGET OMZET NOV · ISI AKHIR OKT</th>
 <th scope="col" style="text-align: left; padding: 12px 20px 12px 8px; font-size: 12px; color: #5B6573; font-weight: 800; letter-spacing: 0.06em; width: 150px">TARGET MINGGU INI</th>
 </tr></thead>
 <tbody>
@@ -222,7 +223,7 @@ class Component extends DCLogic {
       ['CP', 'Rentalaja Ciputat', '', 'Etalase iPhone cukup penuh untuk dipercaya', false, '-'],
       ['JP', 'ATVaja (Jeep)', '', 'Sesi trip Jeep per minggu (usulan AI)', false, '-'],
       ['WN', 'Rentalaja Wanaraja', '', 'Omzet bulanan & utilisasi motor (usulan AI)', false, '-'],
-      ['MP', 'Maripoto Photobooth', '', 'Sesi foto terjual per bulan (usulan AI)', false, '-']
+      ['MP', 'Maripoto Photobooth (masuk Rentalaja)', '', 'Sesi foto terjual per bulan (usulan AI)', false, '-']
     ];
     const units = U.filter(u => isH || u[0] === scope).map(([code, name, lead, kpi, has, st]) => ({
       name, lead: lead ? 'Leader: ' + lead : 'Leader belum ditetapkan', leadFg: lead ? '#5B6573' : '#9A3F0A',

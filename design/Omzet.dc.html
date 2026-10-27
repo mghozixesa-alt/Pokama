@@ -233,7 +233,7 @@ class Component extends DCLogic {
       { k: 'RA', name: 'Rentalaja', sub: 'Gabungan semua lini', t: 150000000, lines: [['GK', 'Garut Kota', 85000000, 71452000], ['JP', 'ATVaja (Jeep)', 22000000, 18905000], ['BD', 'Bandung', 25000000, 16408000], ['EX', 'Experience', 12000000, 6192410], ['WN', 'Wanaraja', 6000000, 3240000]] },
       { k: 'WG', name: 'TripinAja', sub: 'Leader Wiranata', t: 25000000, a: 20294000 },
       { k: 'NA', name: 'Niagaaja', sub: 'Leader Yusril Firdaus', t: 30000000, a: 24527000 },
-      { k: 'MP', name: 'Maripoto Photobooth', sub: 'Di luar liga 3 unit', t: 15000000, a: 14243000 }
+      { k: 'MP', name: 'Maripoto Photobooth', sub: 'Dihitung ke Rentalaja di Liga', t: 15000000, a: 14243000 }
     ];
     const stOf = (p) => p >= 1 ? ['Tercapai', '#DDF5F2', '#067A70', '#09BEAF'] : p >= 0.9 ? ['Aman', '#DDF5F2', '#067A70', '#09BEAF'] : p >= 0.75 ? ['Diawasi', '#FDF3D7', '#7A5200', '#D99A00'] : ['Perlu evaluasi', '#FCEBDD', '#9A3F0A', '#C2410C'];
     const row = (name, sub, t, a, lvl) => { const p = a / t, st = stOf(p); return { name, sub, t: rp(t), a: rp(a), pct: Math.round(p * 100) + '%', w: Math.min(100, Math.round(p * 100)) + '%', gap: a >= t ? '—' : rp(t - a), st: st[0], stBg: st[1], stFg: st[2], bar: st[3], pctFg: st[2], evalNeeded: p < 0.75, indent: lvl ? '44px' : '22px', fw: lvl ? 600 : 900, fs: lvl ? '13px' : '15px', bg: lvl ? '#FAFAFB' : 'transparent' }; };
