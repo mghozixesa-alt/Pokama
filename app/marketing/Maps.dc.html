@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Google Maps — Pokama</title>
+<link rel="icon" href="logo-pokama.png">
+
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F3F5F8}
+a{color:#1D3149}a:hover{color:#0F1D2E}
+</style>
+
+<script src="dc-lite.js"></script>
+</head>
+<body>
+<template id="dc-tpl">
+
+<div style="min-height: 2000px; display: flex; flex-wrap: wrap; background: #F3F5F8; color: #1F2933; font-family: 'Nunito', system-ui, sans-serif; font-size: 14px; line-height: 1.45;">
+
+<nav aria-label="Menu utama" style="flex: 1 1 232px; box-sizing: border-box; background: #FFFFFF; border-right: 1px solid #E3E6EB; padding: 24px 16px; display: flex; flex-direction: column; gap: 20px;">
+<div style="display: flex; flex-direction: column; gap: 8px; padding: 0 8px;">
+<img src="logo-pokama.png" alt="Pokama" style="width: 140px; height: auto;">
+<span style="font-size: 12px; color: #5B6573; font-weight: 600;">Divisi Marketing</span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 2px;">
+<span style="font-size: 11px; font-weight: 800; letter-spacing: 0.08em; color: #5B6573; padding: 0 12px 4px;">MARKETING</span>
+<a href="Main.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250;"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"></rect><rect x="14" y="3" width="7" height="5" rx="1.5"></rect><rect x="14" y="12" width="7" height="9" rx="1.5"></rect><rect x="3" y="16" width="7" height="5" rx="1.5"></rect></svg><span style="flex-grow: 1;">Ringkasan</span></a>
+<a href="Instagram.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250;"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"></rect><circle cx="12" cy="12" r="4"></circle><circle cx="17.5" cy="6.5" r="0.6"></circle></svg><span style="flex-grow: 1;">Sosial Media</span></a>
+<a href="KOL.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250;"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.4l-5.2 2.7 1-5.8L3.5 9.2l5.9-.9z"></path></svg><span style="flex-grow: 1;">KOL</span><span style="min-width: 22px; height: 22px; border-radius: 11px; background: #C2410C; color: #FFFFFF; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; padding: 0 6px; box-sizing: border-box;">2</span></a>
+<a href="Ads.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250;"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11v2a1 1 0 001 1h3l6 4V6L7 10H4a1 1 0 00-1 1z"></path><path d="M17 9a4 4 0 010 6"></path></svg><span style="flex-grow: 1;">Ads</span></a>
+<a href="Maps.dc.html" aria-current="page" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 700; color: #1D3149; background: #DDF5F2;"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0114 0C19 14.8 12 21 12 21z"></path><circle cx="12" cy="9.5" r="2.5"></circle></svg><span style="flex-grow: 1;">Google Maps</span><span style="min-width: 22px; height: 22px; border-radius: 11px; background: #C2410C; color: #FFFFFF; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; padding: 0 6px; box-sizing: border-box;">9</span></a>
+<a href="WALeads.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250;"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 01-11.6 7.1L4 20l1-4.6A8 8 0 1121 12z"></path><path d="M9 10.5h6M9 13.5h4"></path></svg><span style="flex-grow: 1;">WA Leads</span><span style="min-width: 22px; height: 22px; border-radius: 11px; background: #C2410C; color: #FFFFFF; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; padding: 0 6px; box-sizing: border-box;">6</span></a>
+<a href="WAStory.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250;"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5" stroke-dasharray="3.2 2.4"></circle><circle cx="12" cy="12" r="3.5"></circle></svg><span style="flex-grow: 1;">WA Story &amp; Broadcast</span></a>
+<a href="Konten.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250;"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M3 10h18M8 3v4M16 3v4M8 14h3M8 17h6"></path></svg><span style="flex-grow: 1;">Kalender Konten</span><span style="min-width: 22px; height: 22px; border-radius: 11px; background: #C2410C; color: #FFFFFF; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; padding: 0 6px; box-sizing: border-box;">4</span></a>
+</div>
+<div style="display: flex; flex-direction: column; gap: 2px;">
+<span style="font-size: 11px; font-weight: 800; letter-spacing: 0.08em; color: #5B6573; padding: 0 12px 4px;">SISTEM</span>
+<a href="Integrasi.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250;"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 7H7a5 5 0 000 10h2M15 7h2a5 5 0 010 10h-2M8 12h8"></path></svg><span style="flex-grow: 1;">Integrasi &amp; Sinkron</span></a>
+<a href="DataInput.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250;"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="6" rx="7" ry="3"></ellipse><path d="M5 6v6c0 1.7 3.1 3 7 3s7-1.3 7-3V6M5 12v6c0 1.7 3.1 3 7 3s7-1.3 7-3v-6"></path></svg><span style="flex-grow: 1;">Input &amp; Kualitas Data</span></a>
+</div>
+<div style="display: flex; flex-direction: column; gap: 2px;">
+<span style="font-size: 11px; font-weight: 800; letter-spacing: 0.08em; color: #5B6573; padding: 0 12px 4px;">TAUTAN CEPAT</span>
+<a href="https://claude.ai/artifact/DLcZe37XpMrYqTjz4brsot" target="_blank" rel="noopener" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; color: #067A70; font-weight: 700;"><span style="flex-grow: 1;">Sistem Kerja Pokama</span><span aria-hidden="true">↗</span></a>
+</div>
+<div style="margin-top: auto; display: flex; align-items: center; gap: 10px; padding: 14px 12px 0; border-top: 1px solid #E3E6EB;">
+<div aria-hidden="true" style="width: 36px; height: 36px; border-radius: 18px; background: #DDF5F2; color: #1D3149; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px;">GZ</div>
+<div style="display: flex; flex-direction: column;"><span style="font-weight: 600;">Ghozy</span><span style="font-size: 12px; color: #5B6573;">CEO · Holding</span></div>
+</div>
+</nav>
+
+<main style="flex: 999 1 560px; min-width: 0; box-sizing: border-box; padding: 28px 36px 48px; display: flex; flex-direction: column; gap: 22px;">
+
+<header style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px;">
+<div style="display: flex; flex-direction: column; gap: 4px;">
+<span style="font-size: 13px; color: #5B6573; font-weight: 600;">Oktober 2026 · data 1–27 Oktober · Google Business Profile</span>
+<h1 style="margin: 0; font-size: 30px; font-weight: 900; letter-spacing: -0.01em;">Google Maps</h1>
+</div>
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px;">
+<span style="display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 12px; border-radius: 18px; background: #FDF3D7; color: #7A5200; font-size: 12px; font-weight: 800;"><span style="width: 8px; height: 8px; border-radius: 4px; background: #F2A33A;"></span>Akses API sedang diajukan · sementara impor CSV</span>
+<span style="font-size: 12px; font-weight: 700; color: #5B6573; border: 1px dashed #A9B4C2; border-radius: 18px; padding: 8px 12px;">Data contoh</span>
+</div>
+</header>
+
+<div role="group" aria-label="Filter unit bisnis" style="display: flex; flex-wrap: wrap; gap: 8px;">
+<template data-sc="for" list="{{filters}}" as="f" hint-placeholder-count="4">
+<button type="button" onClick="{{f.pick}}" aria-pressed="{{f.pressed}}" style="display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 18px; border-radius: 22px; border: 1px solid {{f.border}}; background: {{f.bg}}; color: {{f.fg}}; font-family: inherit; font-size: 14px; font-weight: 700; cursor: pointer;"><span style="width: 10px; height: 10px; border-radius: 5px; background: {{f.dot}};"></span>{{f.label}}</button>
+</template>
+</div>
+
+<section aria-label="Metrik Maps" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 14px;">
+<template data-sc="for" list="{{tiles}}" as="t" hint-placeholder-count="8">
+<div style="background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 20px; padding: 16px 18px; display: flex; flex-direction: column; gap: 4px;">
+<span style="font-size: 13px; font-weight: 700; color: #3B4250;">{{t.label}}</span>
+<span style="font-size: 26px; font-weight: 900; letter-spacing: -0.02em; color: #1D3149;">{{t.value}}</span>
+<span style="font-size: 12px; font-weight: 700; color: {{t.color}};">{{t.note}}</span>
+</div>
+</template>
+</section>
+
+<section aria-labelledby="loc-h" style="background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 8px;">
+<div style="display: flex; flex-direction: column;"><h2 id="loc-h" style="margin: 0; font-size: 18px; font-weight: 800;">Per lokasi</h2><span style="font-size: 13px; color: #5B6573;">Dilihat = muncul di pencarian Google + Maps. Aksi = minta rute, telepon, klik web, klik WA.</span></div>
+<span style="font-size: 12px; color: #5B6573;">Kelengkapan profil: foto &lt; 30 hari, jam buka, katalog, post mingguan, tanya-jawab</span>
+</div>
+<div style="overflow-x: auto;">
+<table style="width: 100%; min-width: 1240px; border-collapse: collapse; font-size: 13px;">
+<thead><tr style="text-align: right; color: #5B6573; font-size: 12px;">
+<th scope="col" style="text-align: left; padding: 8px; border-bottom: 1px solid #E3E6EB; font-weight: 800;">Lokasi</th>
+<th scope="col" style="text-align: left; padding: 8px; border-bottom: 1px solid #E3E6EB; font-weight: 800;">Status</th>
+<th scope="col" style="padding: 8px; border-bottom: 1px solid #E3E6EB; font-weight: 800;">Rating</th>
+<th scope="col" style="padding: 8px; border-bottom: 1px solid #E3E6EB; font-weight: 800;">Ulasan</th>
+<th scope="col" style="padding: 8px; border-bottom: 1px solid #E3E6EB; font-weight: 800;">Baru</th>
+<th scope="col" style="padding: 8px; border-bottom: 1px solid #E3E6EB; font-weight: 800;">Belum dibalas</th>
+<th scope="col" style="padding: 8px; border-bottom: 1px solid #E3E6EB; font-weight: 800;">Dilihat Search</th>
+<th scope="col" style="padding: 8px; border-bottom: 1px solid #E3E6EB; font-weight: 800;">Dilihat Maps</th>
+<th scope="col" style="padding: 8px; border-bottom: 1px solid #E3E6EB; font-weight: 800;">Rute</th>
+<th scope="col" style="padding: 8px; border-bottom: 1px solid #E3E6EB; font-weight: 800;">Telepon</th>
+<th scope="col" style="padding: 8px; border-bottom: 1px solid #E3E6EB; font-weight: 800;">Web</th>
+<th scope="col" style="padding: 8px; border-bottom: 1px solid #E3E6EB; font-weight: 800;">WA</th>
+<th scope="col" style="padding: 8px; border-bottom: 1px solid #E3E6EB; font-weight: 800;">Aksi / dilihat</th>
+<th scope="col" style="padding: 8px; border-bottom: 1px solid #E3E6EB; font-weight: 800;">Kelengkapan</th>
+</tr></thead>
+<tbody>
+<template data-sc="for" list="{{locs}}" as="l" hint-placeholder-count="7">
+<tr style="text-align: right;">
+<th scope="row" style="text-align: left; padding: 10px 8px; border-bottom: 1px solid #EEF0F3;"><span style="font-weight: 800;">{{l.name}}</span><br><span style="font-size: 12px; font-weight: 600; color: #5B6573;"><span style="display: inline-block; width: 8px; height: 8px; border-radius: 4px; background: {{l.dot}}; margin-right: 4px;"></span>{{l.unit}}</span></th>
+<td style="text-align: left; padding: 10px 8px; border-bottom: 1px solid #EEF0F3;"><span style="font-size: 12px; font-weight: 800; border-radius: 8px; padding: 2px 8px; background: {{l.stBg}}; color: {{l.stFg}}; white-space: nowrap;">{{l.status}}</span></td>
+<td style="padding: 10px 8px; border-bottom: 1px solid #EEF0F3; font-weight: 900;">{{l.rating}}</td>
+<td style="padding: 10px 8px; border-bottom: 1px solid #EEF0F3;">{{l.reviews}}</td>
+<td style="padding: 10px 8px; border-bottom: 1px solid #EEF0F3;">{{l.fresh}}</td>
+<td style="padding: 10px 8px; border-bottom: 1px solid #EEF0F3; font-weight: 800; color: {{l.unrepColor}};">{{l.unrep}}</td>
+<td style="padding: 10px 8px; border-bottom: 1px solid #EEF0F3;">{{l.search}}</td>
+<td style="padding: 10px 8px; border-bottom: 1px solid #EEF0F3;">{{l.maps}}</td>
+<td style="padding: 10px 8px; border-bottom: 1px solid #EEF0F3;">{{l.dir}}</td>
+<td style="padding: 10px 8px; border-bottom: 1px solid #EEF0F3;">{{l.call}}</td>
+<td style="padding: 10px 8px; border-bottom: 1px solid #EEF0F3;">{{l.web}}</td>
+<td style="padding: 10px 8px; border-bottom: 1px solid #EEF0F3;">{{l.wa}}</td>
+<td style="padding: 10px 8px; border-bottom: 1px solid #EEF0F3; font-weight: 800;">{{l.conv}}</td>
+<td style="padding: 10px 8px; border-bottom: 1px solid #EEF0F3;"><div style="display: flex; align-items: center; gap: 6px; justify-content: flex-end;"><div style="width: 60px; height: 6px; background: #EEF0F3; border-radius: 3px; overflow: hidden;"><div style="height: 100%; width: {{l.comp}}; background: {{l.compColor}};"></div></div><span style="font-weight: 800;">{{l.comp}}</span></div></td>
+</tr>
+</template>
+</tbody>
+</table>
+</div>
+</section>
+
+<div style="display: flex; flex-wrap: wrap; gap: 22px; align-items: stretch;">
+<section aria-labelledby="rev-h" style="flex: 3 1 560px; min-width: 0; background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 8px;">
+<div style="display: flex; flex-direction: column;"><h2 id="rev-h" style="margin: 0; font-size: 18px; font-weight: 800;">Ulasan terbaru</h2><span style="font-size: 13px; color: #5B6573;">Pilih ulasan untuk melihat draf balasan. Target: dibalas &lt; 24 jam.</span></div>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start;">
+<div style="flex: 1 1 320px; min-width: 0; display: flex; flex-direction: column; gap: 8px;">
+<template data-sc="for" list="{{reviews}}" as="r" hint-placeholder-count="6">
+<button type="button" onClick="{{r.pick}}" aria-pressed="{{r.pressed}}" style="text-align: left; font-family: inherit; color: #1F2933; cursor: pointer; display: flex; flex-direction: column; gap: 4px; padding: 12px; border-radius: 12px; border: 2px solid {{r.border}}; background: {{r.bg}};">
+<span style="display: flex; justify-content: space-between; gap: 8px; width: 100%;"><span style="font-size: 13px; font-weight: 800;">{{r.stars}} <span style="font-weight: 600; color: #5B6573;">· {{r.loc}}</span></span><span style="font-size: 12px; font-weight: 800; color: {{r.ageColor}};">{{r.age}}</span></span>
+<span style="font-size: 13px; color: #3B4250;">{{r.text}}</span>
+</button>
+</template>
+</div>
+<div style="flex: 1 1 280px; min-width: 0; background: #F3F5F8; border-radius: 14px; padding: 14px; display: flex; flex-direction: column; gap: 10px;">
+<span style="font-size: 12px; font-weight: 800; letter-spacing: 0.08em; color: #5B6573;">DRAF BALASAN</span>
+<span style="font-size: 13px; font-weight: 800;">{{sel.stars}} · {{sel.loc}}</span>
+<label for="reply" style="font-size: 12px; color: #5B6573;">Bisa diedit sebelum dikirim</label>
+<textarea id="reply" rows="7" style="font-family: inherit; font-size: 13px; color: #1F2933; border: 1px solid #E3E6EB; border-radius: 10px; padding: 10px; resize: vertical; background: #FFFFFF;">{{sel.reply}}</textarea>
+<div style="display: flex; gap: 8px; flex-wrap: wrap;">
+<button type="button" style="height: 44px; padding: 0 16px; border-radius: 10px; border: 0; background: #09BEAF; color: #1D3149; font-family: inherit; font-size: 14px; font-weight: 800; cursor: pointer;">Kirim balasan</button>
+<button type="button" style="height: 44px; padding: 0 14px; border-radius: 10px; border: 1px solid #E3E6EB; background: #FFFFFF; color: #1D3149; font-family: inherit; font-size: 14px; font-weight: 700; cursor: pointer;">Teruskan ke cabang</button>
+</div>
+<span style="font-size: 12px; color: #5B6573;">{{sel.hint}}</span>
+</div>
+</div>
+</section>
+
+<section aria-labelledby="dist-h" style="flex: 2 1 340px; min-width: 0; background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+<div style="display: flex; flex-direction: column;"><h2 id="dist-h" style="margin: 0; font-size: 18px; font-weight: 800;">Sebaran bintang</h2><span style="font-size: 13px; color: #5B6573;">Semua ulasan lokasi terpilih.</span></div>
+<div style="display: flex; align-items: baseline; gap: 8px;"><span style="font-size: 40px; font-weight: 900; color: #1D3149;">{{avg}}</span><span style="font-size: 14px; color: #5B6573;">dari {{totalRev}} ulasan</span></div>
+<template data-sc="for" list="{{dist}}" as="d" hint-placeholder-count="5">
+<div style="display: grid; grid-template-columns: 36px minmax(0, 1fr) 40px; align-items: center; gap: 10px;">
+<span style="font-size: 13px; font-weight: 800;">{{d.s}} ★</span>
+<div style="height: 12px; background: #F3F5F8; border-radius: 4px; overflow: hidden;"><div style="height: 100%; width: {{d.w}}; background: {{d.c}}; border-radius: 4px;"></div></div>
+<span style="font-size: 12px; font-weight: 800; text-align: right;">{{d.n}}</span>
+</div>
+</template>
+<div style="border-top: 1px solid #EEF0F3; padding-top: 12px; display: flex; flex-direction: column; gap: 8px;">
+<span style="font-size: 13px; font-weight: 800;">Yang sering disebut</span>
+<div style="display: flex; flex-wrap: wrap; gap: 6px;">
+<span style="font-size: 12px; font-weight: 700; border-radius: 12px; padding: 3px 10px; background: #DDF5F2; color: #067A70;">ramah · 38</span>
+<span style="font-size: 12px; font-weight: 700; border-radius: 12px; padding: 3px 10px; background: #DDF5F2; color: #067A70;">motor bersih · 24</span>
+<span style="font-size: 12px; font-weight: 700; border-radius: 12px; padding: 3px 10px; background: #DDF5F2; color: #067A70;">antar tepat waktu · 19</span>
+<span style="font-size: 12px; font-weight: 700; border-radius: 12px; padding: 3px 10px; background: #FCEBDD; color: #9A3F0A;">syarat ribet · 7</span>
+<span style="font-size: 12px; font-weight: 700; border-radius: 12px; padding: 3px 10px; background: #FCEBDD; color: #9A3F0A;">deposit lama kembali · 4</span>
+</div>
+</div>
+</section>
+</div>
+
+<div style="display: flex; flex-wrap: wrap; gap: 22px; align-items: stretch;">
+<section aria-labelledby="kw-h" style="flex: 1 1 420px; min-width: 0; background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+<div style="display: flex; flex-direction: column;"><h2 id="kw-h" style="margin: 0; font-size: 18px; font-weight: 800;">Kata kunci yang memunculkan kita</h2><span style="font-size: 13px; color: #5B6573;">Pencarian bulanan dari Business Profile.</span></div>
+<template data-sc="for" list="{{keywords}}" as="k" hint-placeholder-count="6">
+<div style="display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) 56px; align-items: center; gap: 10px;">
+<span style="font-size: 13px; font-weight: 700;">{{k.q}} <span style="font-weight: 600; color: #5B6573;">· {{k.unit}}</span></span>
+<div style="height: 12px; background: #F3F5F8; border-radius: 4px; overflow: hidden;"><div style="height: 100%; width: {{k.w}}; background: #1D3149; border-radius: 4px;"></div></div>
+<span style="font-size: 12px; font-weight: 800; text-align: right;">{{k.n}}</span>
+</div>
+</template>
+</section>
+
+<section aria-labelledby="cmp-h" style="flex: 1 1 420px; min-width: 0; background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+<div style="display: flex; flex-direction: column;"><h2 id="cmp-h" style="margin: 0; font-size: 18px; font-weight: 800;">Pesaing terdekat di Maps</h2><span style="font-size: 13px; color: #5B6573;">Dari Places API (gratis sampai kuota bulanan). Dicek tiap Senin.</span></div>
+<div style="overflow-x: auto;">
+<table style="width: 100%; min-width: 380px; border-collapse: collapse; font-size: 13px;">
+<thead><tr style="text-align: right; color: #5B6573; font-size: 12px;">
+<th scope="col" style="text-align: left; padding: 8px; border-bottom: 1px solid #E3E6EB; font-weight: 800;">Tempat</th>
+<th scope="col" style="padding: 8px; border-bottom: 1px solid #E3E6EB; font-weight: 800;">Rating</th>
+<th scope="col" style="padding: 8px; border-bottom: 1px solid #E3E6EB; font-weight: 800;">Ulasan</th>
+<th scope="col" style="padding: 8px; border-bottom: 1px solid #E3E6EB; font-weight: 800;">+ 30 hari</th>
+</tr></thead>
+<tbody>
+<template data-sc="for" list="{{comps}}" as="c" hint-placeholder-count="5">
+<tr style="text-align: right; background: {{c.bg}};">
+<th scope="row" style="text-align: left; padding: 10px 8px; border-bottom: 1px solid #EEF0F3; font-weight: {{c.weight}};">{{c.name}}</th>
+<td style="padding: 10px 8px; border-bottom: 1px solid #EEF0F3; font-weight: 800;">{{c.rating}}</td>
+<td style="padding: 10px 8px; border-bottom: 1px solid #EEF0F3;">{{c.reviews}}</td>
+<td style="padding: 10px 8px; border-bottom: 1px solid #EEF0F3;">{{c.fresh}}</td>
+</tr>
+</template>
+</tbody>
+</table>
+</div>
+</section>
+</div>
+
+<section aria-labelledby="todo-h" style="background: #1D3149; color: #FFFFFF; border-radius: 20px; padding: 22px 24px; display: flex; flex-direction: column; gap: 14px;">
+<div style="display: flex; flex-direction: column;"><span style="font-size: 12px; font-weight: 800; letter-spacing: 0.1em; color: #86DCD3;">PEKERJAAN MAPS MINGGU INI</span><h2 id="todo-h" style="margin: 0; font-size: 20px; font-weight: 900;">Supaya muncul paling atas saat orang cari "rental di Garut"</h2></div>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px;">
+<div style="background: #2C4664; border-radius: 14px; padding: 14px; display: flex; flex-direction: column; gap: 4px;"><span style="font-size: 13px; font-weight: 900; color: #86DCD3;">Klaim Wanaraja</span><span style="font-size: 13px; color: #E3E6EB;">Profil belum diklaim. Verifikasi butuh video lokasi &amp; papan nama.</span></div>
+<div style="background: #2C4664; border-radius: 14px; padding: 14px; display: flex; flex-direction: column; gap: 4px;"><span style="font-size: 13px; font-weight: 900; color: #86DCD3;">Buat profil Ciputat</span><span style="font-size: 13px; color: #E3E6EB;">Cabang baru belum ada di Maps. Daftarkan sebelum buka resmi.</span></div>
+<div style="background: #2C4664; border-radius: 14px; padding: 14px; display: flex; flex-direction: column; gap: 4px;"><span style="font-size: 13px; font-weight: 900; color: #86DCD3;">Balas 9 ulasan</span><span style="font-size: 13px; color: #E3E6EB;">Dahulukan 3 ulasan bintang ≤ 3. Draf balasan sudah disiapkan.</span></div>
+<div style="background: #2C4664; border-radius: 14px; padding: 14px; display: flex; flex-direction: column; gap: 4px;"><span style="font-size: 13px; font-weight: 900; color: #86DCD3;">Minta ulasan setelah sewa</span><span style="font-size: 13px; color: #E3E6EB;">Kirim link ulasan lewat WA saat unit kembali. Target +40 ulasan per bulan.</span></div>
+</div>
+</section>
+
+</main>
+</div>
+</template>
+<div id="dc-root"></div>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2000}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { unit: 'Semua', sel: 0 };
+  }
+  renderVals() {
+    var self = this;
+    var unit = this.state.unit;
+    var COLOR = { Rentalaja: '#2F6FD0', TripinAja: '#0FA394', Niagaaja: '#D08A1E' };
+    var dec = function (n, d) { return n.toFixed(d).replace('.', ','); };
+    var num = function (n) { return Math.round(n).toLocaleString('id-ID'); };
+    var GOOD = '#067A70', BAD = '#9A3F0A';
+
+    var L = [
+      { name: 'Rentalaja Garut Kota', unit: 'Rentalaja', st: 'ok', rating: 4.8, reviews: 126, fresh: 9, unrep: 4, search: 6840, maps: 9120, dir: 1160, call: 142, web: 210, wa: 168, comp: 90, dist: [104, 14, 4, 2, 2] },
+      { name: 'Rentalaja Bandung Hub', unit: 'Rentalaja', st: 'ok', rating: 4.6, reviews: 38, fresh: 4, unrep: 2, search: 2410, maps: 3380, dir: 320, call: 46, web: 88, wa: 51, comp: 70, dist: [29, 5, 2, 1, 1] },
+      { name: 'Ruma Metua', unit: 'Rentalaja', st: 'ok', rating: 4.9, reviews: 57, fresh: 3, unrep: 1, search: 1920, maps: 2640, dir: 290, call: 38, web: 64, wa: 22, comp: 80, dist: [52, 4, 1, 0, 0] },
+      { name: 'Rentalaja Wanaraja', unit: 'Rentalaja', st: 'none', comp: 0 },
+      { name: 'Rentalaja Poin Jakal', unit: 'Rentalaja', st: 'proc', comp: 40 },
+      { name: 'TripinAja', unit: 'TripinAja', st: 'ok', rating: 4.7, reviews: 84, fresh: 6, unrep: 2, search: 3880, maps: 2150, dir: 260, call: 61, web: 190, wa: 74, comp: 85, dist: [66, 13, 3, 1, 1] },
+      { name: 'Laptopaja', unit: 'Niagaaja', st: 'ok', rating: 4.5, reviews: 22, fresh: 1, unrep: 0, search: 1240, maps: 1020, dir: 110, call: 31, web: 42, wa: 19, comp: 60, dist: [16, 3, 2, 1, 0] }
+    ];
+    var inUnit = function (x) { return unit === 'Semua' || x.unit === unit; };
+    var ls = L.filter(inUnit);
+    var ok = ls.filter(function (l) { return l.st === 'ok'; });
+    var sum = function (f) { return ok.reduce(function (a, l) { return a + l[f]; }, 0); };
+    var views = sum('search') + sum('maps');
+    var acts = sum('dir') + sum('call') + sum('web') + sum('wa');
+    var totRev = sum('reviews');
+    var avg = totRev ? ok.reduce(function (a, l) { return a + l.rating * l.reviews; }, 0) / totRev : 0;
+
+    var tiles = [
+      { label: 'Lokasi terverifikasi', value: ok.length + ' / ' + ls.length, note: ls.length - ok.length ? (ls.length - ok.length) + ' perlu diklaim / diverifikasi' : 'Semua aman', color: ls.length - ok.length ? BAD : GOOD },
+      { label: 'Rating rata-rata', value: avg ? dec(avg, 1) + ' ★' : '—', note: 'Tertimbang jumlah ulasan', color: avg >= 4.7 ? GOOD : '#7A5200' },
+      { label: 'Ulasan baru', value: '+' + sum('fresh'), note: 'Target +40 per bulan', color: sum('fresh') >= 40 ? GOOD : BAD },
+      { label: 'Belum dibalas', value: String(sum('unrep')), note: 'Target 0 di atas 24 jam', color: sum('unrep') ? BAD : GOOD },
+      { label: 'Dilihat', value: num(views), note: num(sum('search')) + ' Search · ' + num(sum('maps')) + ' Maps', color: '#5B6573' },
+      { label: 'Minta rute', value: num(sum('dir')), note: 'Orang yang mau datang', color: '#5B6573' },
+      { label: 'Telepon + WA', value: num(sum('call') + sum('wa')), note: num(sum('call')) + ' telepon · ' + num(sum('wa')) + ' WA', color: '#5B6573' },
+      { label: 'Aksi per dilihat', value: views ? dec(acts / views * 100, 1) + '%' : '—', note: 'Patokan sehat ≥ 6%', color: views && acts / views >= 0.06 ? GOOD : BAD }
+    ];
+
+    var ST = { ok: ['Terverifikasi', '#DDF5F2', GOOD], proc: ['Proses verifikasi', '#FDF3D7', '#7A5200'], none: ['Belum diklaim', '#FCEBDD', BAD] };
+    var locs = ls.map(function (l) {
+      var s = ST[l.st], has = l.st === 'ok';
+      var v = has ? l.search + l.maps : 0, a = has ? l.dir + l.call + l.web + l.wa : 0;
+      return { name: l.name, unit: l.unit, dot: COLOR[l.unit], status: s[0], stBg: s[1], stFg: s[2], rating: has ? dec(l.rating, 1) : '—', reviews: has ? num(l.reviews) : '—', fresh: has ? '+' + l.fresh : '—', unrep: has ? String(l.unrep) : '—', unrepColor: has && l.unrep ? BAD : '#1F2933', search: has ? num(l.search) : '—', maps: has ? num(l.maps) : '—', dir: has ? num(l.dir) : '—', call: has ? num(l.call) : '—', web: has ? num(l.web) : '—', wa: has ? num(l.wa) : '—', conv: has ? dec(a / v * 100, 1) + '%' : '—', comp: l.comp + '%', compColor: l.comp >= 80 ? '#09BEAF' : '#F2A33A' };
+    });
+
+    var R = [
+      { stars: 2, loc: 'Rentalaja Garut Kota', unit: 'Rentalaja', age: '3 hari', late: true, text: 'Motornya oke tapi deposit baru kembali besok harinya, padahal katanya langsung.', reply: 'Halo Kak, terima kasih sudah sewa di Rentalaja dan maaf soal pengembalian deposit yang terlambat. Ini masukan penting buat kami. Mulai minggu ini deposit kami kembalikan di hari yang sama setelah unit dicek. Boleh kami hubungi lewat WA untuk menebusnya di sewa berikutnya?', hint: 'Bintang rendah: minta maaf spesifik, sebut perbaikannya, ajak lanjut di WA.' },
+      { stars: 3, loc: 'Rentalaja Bandung Hub', unit: 'Rentalaja', age: '2 hari', late: true, text: 'Syaratnya lumayan banyak buat sewa iPhone, sempat bingung harus bawa apa.', reply: 'Halo Kak, terima kasih masukannya. Untuk iPhone cukup KTP + KK (atau KTP + satu dokumen tambahan). Daftar syarat lengkap sekarang kami kirim otomatis begitu Kakak chat. Semoga sewa berikutnya lebih lancar!', hint: 'Jelaskan syarat dengan singkat dan tunjukkan sudah dipermudah.' },
+      { stars: 3, loc: 'TripinAja', unit: 'TripinAja', age: '4 hari', late: true, text: 'Tripnya seru, cuma berangkatnya molor hampir satu jam.', reply: 'Halo Kak, terima kasih sudah ikut trip bersama TripinAja dan maaf atas keterlambatan keberangkatan. Kami sudah menambah titik kumpul dan konfirmasi H-1 supaya berangkat tepat waktu. Ditunggu di trip berikutnya!', hint: 'Akui masalahnya, sebut langkah konkret yang sudah diambil.' },
+      { stars: 5, loc: 'Ruma Metua', unit: 'Rentalaja', age: '1 hari', late: false, text: 'Tempatnya adem, bersih, anak-anak betah. Pasti balik lagi.', reply: 'Terima kasih banyak, Kak! Senang sekali keluarga betah di Ruma Metua. Ditunggu kunjungan berikutnya — ada promo menginap 2 malam untuk tamu yang kembali.', hint: 'Bintang 5: terima kasih personal dan ajak kembali.' },
+      { stars: 5, loc: 'Rentalaja Garut Kota', unit: 'Rentalaja', age: '1 hari', late: false, text: 'Antar motor tepat waktu ke hotel, adminnya ramah.', reply: 'Terima kasih, Kak! Senang bisa bantu liburan di Garut lebih praktis. Sampai jumpa di sewa berikutnya!', hint: 'Bintang 5: cukup singkat dan hangat.' },
+      { stars: 4, loc: 'Laptopaja', unit: 'Niagaaja', age: '6 hari', late: false, text: 'Laptop sesuai deskripsi, garansi tokonya bikin tenang.', reply: 'Terima kasih, Kak! Garansi toko 30 hari memang supaya beli laptop bekas tetap tenang. Kalau ada kendala, langsung chat kami ya.', hint: 'Sudah dibalas · contoh balasan tersimpan.' }
+    ];
+    var rs = R.filter(inUnit);
+    var selIdx = Math.min(this.state.sel, Math.max(0, rs.length - 1));
+    var star = function (n) { return '★★★★★'.slice(0, n) + '☆☆☆☆☆'.slice(0, 5 - n); };
+    var reviews = rs.map(function (r, i) {
+      var on = i === selIdx;
+      return { stars: star(r.stars), loc: r.loc, age: r.late ? 'Belum dibalas · ' + r.age : r.age, ageColor: r.late ? BAD : '#5B6573', text: r.text, pressed: on ? 'true' : 'false', border: on ? '#09BEAF' : '#E3E6EB', bg: on ? '#F0FBF9' : '#FFFFFF', pick: function () { self.setState({ sel: i }); } };
+    });
+    var s0 = rs[selIdx] || { stars: 5, loc: '—', reply: 'Tidak ada ulasan untuk unit ini.', hint: '' };
+    var sel = { stars: star(s0.stars), loc: s0.loc, reply: s0.reply, hint: s0.hint };
+
+    var d = [0, 0, 0, 0, 0];
+    ok.forEach(function (l) { l.dist.forEach(function (n, i) { d[i] += n; }); });
+    var maxD = Math.max.apply(null, d.concat([1]));
+    var dist = d.map(function (n, i) { var s = 5 - i; return { s: s, n: n, w: (n / maxD * 100) + '%', c: s >= 4 ? '#09BEAF' : (s === 3 ? '#F2A33A' : '#C2410C') }; });
+
+    var KW = [['wisata garut', 'TripinAja', 2100], ['rental motor garut', 'Rentalaja', 1240], ['sewa motor garut', 'Rentalaja', 980], ['penginapan garut keluarga', 'Rentalaja', 620], ['rental iphone bandung', 'Rentalaja', 410], ['laptop bekas garut', 'Niagaaja', 260], ['open trip papandayan', 'TripinAja', 240]];
+    var kws = KW.filter(function (k) { return unit === 'Semua' || k[1] === unit; });
+    var maxK = kws.length ? kws[0][2] : 1;
+    var keywords = kws.map(function (k) { return { q: k[0], unit: k[1], n: num(k[2]), w: (k[2] / maxK * 100) + '%' }; });
+
+    var CP = [['Rentalaja Garut Kota (kita)', 'Rentalaja', 4.8, 126, 9, true], ['Pesaing A · rental motor Garut', 'Rentalaja', 4.6, 214, 15], ['Pesaing B · rental motor Garut', 'Rentalaja', 4.3, 88, 4], ['TripinAja (kita)', 'TripinAja', 4.7, 84, 6, true], ['Pesaing D · open trip Garut', 'TripinAja', 4.8, 156, 12], ['Laptopaja (kita)', 'Niagaaja', 4.5, 22, 1, true], ['Pesaing G · laptop bekas Garut', 'Niagaaja', 4.4, 61, 5]];
+    var comps = CP.filter(function (c) { return unit === 'Semua' || c[1] === unit; }).map(function (c) { return { name: c[0], rating: dec(c[2], 1), reviews: num(c[3]), fresh: '+' + c[4], bg: c[5] ? '#F0FBF9' : '#FFFFFF', weight: c[5] ? '900' : '700' }; });
+
+    var filters = ['Semua', 'Rentalaja', 'TripinAja', 'Niagaaja'].map(function (label) {
+      var on = label === unit;
+      return { label: label, pressed: on ? 'true' : 'false', bg: on ? '#1D3149' : '#FFFFFF', fg: on ? '#FFFFFF' : '#1D3149', border: on ? '#1D3149' : '#E3E6EB', dot: label === 'Semua' ? '#09BEAF' : COLOR[label], pick: function () { self.setState({ unit: label, sel: 0 }); } };
+    });
+
+    return { filters: filters, tiles: tiles, locs: locs, reviews: reviews, sel: sel, dist: dist, avg: avg ? dec(avg, 1) : '—', totalRev: num(totRev), keywords: keywords, comps: comps };
+  }
+}
+</script>
+</body>
+</html>

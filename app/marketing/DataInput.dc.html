@@ -1,0 +1,407 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Input &amp; Kualitas Data — Pokama</title>
+<link rel="icon" href="logo-pokama.png">
+
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F3F5F8}
+a{color:#1D3149}a:hover{color:#0F1D2E}
+</style>
+
+<script src="dc-lite.js"></script>
+</head>
+<body>
+<template id="dc-tpl">
+
+<div style="min-height: 3300px; display: flex; flex-wrap: wrap; background: #F3F5F8; color: #1F2933; font-family: 'Nunito', system-ui, sans-serif; font-size: 14px; line-height: 1.45;">
+
+<nav aria-label="Menu utama" style="flex: 1 1 232px; box-sizing: border-box; background: #FFFFFF; border-right: 1px solid #E3E6EB; padding: 24px 16px; display: flex; flex-direction: column; gap: 20px;">
+<div style="display: flex; flex-direction: column; gap: 8px; padding: 0 8px;">
+<img src="logo-pokama.png" alt="Pokama" style="width: 140px; height: auto;">
+<span style="font-size: 12px; color: #5B6573; font-weight: 600;">Divisi Marketing</span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 2px;">
+<span style="font-size: 11px; font-weight: 800; letter-spacing: 0.08em; color: #5B6573; padding: 0 12px 4px;">MARKETING</span>
+<a href="Main.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250;"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"></rect><rect x="14" y="3" width="7" height="5" rx="1.5"></rect><rect x="14" y="12" width="7" height="9" rx="1.5"></rect><rect x="3" y="16" width="7" height="5" rx="1.5"></rect></svg><span style="flex-grow: 1;">Ringkasan</span></a>
+<a href="Instagram.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250;"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"></rect><circle cx="12" cy="12" r="4"></circle><circle cx="17.5" cy="6.5" r="0.6"></circle></svg><span style="flex-grow: 1;">Sosial Media</span></a>
+<a href="KOL.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250;"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.4l-5.2 2.7 1-5.8L3.5 9.2l5.9-.9z"></path></svg><span style="flex-grow: 1;">KOL</span><span style="min-width: 22px; height: 22px; border-radius: 11px; background: #C2410C; color: #FFFFFF; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; padding: 0 6px; box-sizing: border-box;">2</span></a>
+<a href="Ads.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250;"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11v2a1 1 0 001 1h3l6 4V6L7 10H4a1 1 0 00-1 1z"></path><path d="M17 9a4 4 0 010 6"></path></svg><span style="flex-grow: 1;">Ads</span></a>
+<a href="Maps.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250;"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0114 0C19 14.8 12 21 12 21z"></path><circle cx="12" cy="9.5" r="2.5"></circle></svg><span style="flex-grow: 1;">Google Maps</span><span style="min-width: 22px; height: 22px; border-radius: 11px; background: #C2410C; color: #FFFFFF; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; padding: 0 6px; box-sizing: border-box;">9</span></a>
+<a href="WALeads.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250;"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 01-11.6 7.1L4 20l1-4.6A8 8 0 1121 12z"></path><path d="M9 10.5h6M9 13.5h4"></path></svg><span style="flex-grow: 1;">WA Leads</span><span style="min-width: 22px; height: 22px; border-radius: 11px; background: #C2410C; color: #FFFFFF; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; padding: 0 6px; box-sizing: border-box;">6</span></a>
+<a href="WAStory.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250;"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5" stroke-dasharray="3.2 2.4"></circle><circle cx="12" cy="12" r="3.5"></circle></svg><span style="flex-grow: 1;">WA Story &amp; Broadcast</span></a>
+<a href="Konten.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250;"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M3 10h18M8 3v4M16 3v4M8 14h3M8 17h6"></path></svg><span style="flex-grow: 1;">Kalender Konten</span><span style="min-width: 22px; height: 22px; border-radius: 11px; background: #C2410C; color: #FFFFFF; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; padding: 0 6px; box-sizing: border-box;">4</span></a>
+</div>
+<div style="display: flex; flex-direction: column; gap: 2px;">
+<span style="font-size: 11px; font-weight: 800; letter-spacing: 0.08em; color: #5B6573; padding: 0 12px 4px;">SISTEM</span>
+<a href="Integrasi.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250;"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 7H7a5 5 0 000 10h2M15 7h2a5 5 0 010 10h-2M8 12h8"></path></svg><span style="flex-grow: 1;">Integrasi &amp; Sinkron</span></a>
+<a href="DataInput.dc.html" aria-current="page" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 700; color: #1D3149; background: #DDF5F2;"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="6" rx="7" ry="3"></ellipse><path d="M5 6v6c0 1.7 3.1 3 7 3s7-1.3 7-3V6M5 12v6c0 1.7 3.1 3 7 3s7-1.3 7-3v-6"></path></svg><span style="flex-grow: 1;">Input &amp; Kualitas Data</span></a>
+</div>
+<div style="display: flex; flex-direction: column; gap: 2px;">
+<span style="font-size: 11px; font-weight: 800; letter-spacing: 0.08em; color: #5B6573; padding: 0 12px 4px;">TAUTAN CEPAT</span>
+<a href="https://claude.ai/artifact/DLcZe37XpMrYqTjz4brsot" target="_blank" rel="noopener" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; color: #067A70; font-weight: 700;"><span style="flex-grow: 1;">Sistem Kerja Pokama</span><span aria-hidden="true">↗</span></a>
+</div>
+<div style="margin-top: auto; display: flex; align-items: center; gap: 10px; padding: 14px 12px 0; border-top: 1px solid #E3E6EB;">
+<div aria-hidden="true" style="width: 36px; height: 36px; border-radius: 18px; background: #DDF5F2; color: #1D3149; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px;">GZ</div>
+<div style="display: flex; flex-direction: column;"><span style="font-weight: 600;">Ghozy</span><span style="font-size: 12px; color: #5B6573;">CEO · Holding</span></div>
+</div>
+</nav>
+
+<main style="flex: 999 1 560px; min-width: 0; box-sizing: border-box; padding: 28px 36px 48px; display: flex; flex-direction: column; gap: 22px;">
+
+<header style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px;">
+<div style="display: flex; flex-direction: column; gap: 4px;">
+<span style="font-size: 13px; color: #5B6573; font-weight: 600;">Dari mana setiap angka, siapa yang mengisi, kapan, dan bagaimana dijaga</span>
+<h1 style="margin: 0; font-size: 30px; font-weight: 900; letter-spacing: -0.01em;">Input &amp; Kualitas Data</h1>
+</div>
+<span style="font-size: 12px; font-weight: 700; color: #5B6573; border: 1px dashed #A9B4C2; border-radius: 18px; padding: 8px 12px;">Status contoh</span>
+</header>
+
+<section aria-label="Status saat ini" style="background: #1D3149; color: #FFFFFF; border-radius: 20px; padding: 22px 24px; display: flex; flex-wrap: wrap; gap: 28px; align-items: center;">
+<div style="flex: 1 1 300px; display: flex; flex-direction: column; gap: 6px;">
+<span style="font-size: 12px; font-weight: 800; letter-spacing: 0.1em; color: #86DCD3;">KONDISI HARI INI</span>
+<span style="font-size: 22px; font-weight: 900; line-height: 1.3;">Belum ada sumber yang tersambung. Semua angka di dashboard masih contoh.</span>
+<span style="font-size: 13px; color: #C5D3E3;">Dari {{total}} jenis data: sebagian bisa otomatis setelah disambung, sebagian memang harus diisi manusia karena tidak ada API-nya.</span>
+</div>
+<div style="flex: 2 1 520px; display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 14px;">
+<template data-sc="for" list="{{catSum}}" as="c" hint-placeholder-count="5">
+<div style="display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 30px; font-weight: 900;">{{c.n}}</span><span style="font-size: 12px; font-weight: 700; color: #C5D3E3;"><span style="display: inline-block; width: 8px; height: 8px; border-radius: 4px; background: {{c.dot}}; margin-right: 6px;"></span>{{c.label}}</span><span style="font-size: 11px; color: #A9B4C2;">{{c.desc}}</span></div>
+</template>
+</div>
+</section>
+
+<section aria-labelledby="cls-h" style="background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 10px;">
+<div style="display: flex; flex-direction: column;"><h2 id="cls-h" style="margin: 0; font-size: 18px; font-weight: 800;">Klasifikasi semua data</h2><span style="font-size: 13px; color: #5B6573;">Pilih kategori untuk menyaring. Kolom "Penjaga kualitas" = cara memastikan angkanya benar.</span></div>
+<div role="group" aria-label="Filter kategori" style="display: flex; flex-wrap: wrap; gap: 6px;">
+<template data-sc="for" list="{{catFilters}}" as="f" hint-placeholder-count="6">
+<button type="button" onClick="{{f.pick}}" aria-pressed="{{f.pressed}}" style="height: 36px; padding: 0 14px; border-radius: 18px; border: 1px solid {{f.border}}; background: {{f.bg}}; color: {{f.fg}}; font-family: inherit; font-size: 13px; font-weight: 700; cursor: pointer;">{{f.label}}</button>
+</template>
+</div>
+</div>
+<div style="overflow-x: auto;">
+<table style="width: 100%; min-width: 1260px; border-collapse: collapse; font-size: 13px;">
+<thead><tr style="text-align: left; color: #5B6573; font-size: 12px;">
+<th scope="col" style="padding: 8px; border-bottom: 1px solid #E3E6EB; font-weight: 800;">Data</th>
+<th scope="col" style="padding: 8px; border-bottom: 1px solid #E3E6EB; font-weight: 800;">Kategori</th>
+<th scope="col" style="padding: 8px; border-bottom: 1px solid #E3E6EB; font-weight: 800;">Sumber</th>
+<th scope="col" style="padding: 8px; border-bottom: 1px solid #E3E6EB; font-weight: 800;">Yang mengisi</th>
+<th scope="col" style="padding: 8px; border-bottom: 1px solid #E3E6EB; font-weight: 800;">Kapan</th>
+<th scope="col" style="padding: 8px; border-bottom: 1px solid #E3E6EB; font-weight: 800;">Penjaga kualitas</th>
+<th scope="col" style="padding: 8px; border-bottom: 1px solid #E3E6EB; font-weight: 800;">Risiko</th>
+</tr></thead>
+<tbody>
+<template data-sc="for" list="{{rows}}" as="r" hint-placeholder-count="12">
+<tr>
+<th scope="row" style="text-align: left; padding: 10px 8px; border-bottom: 1px solid #EEF0F3; vertical-align: top;"><span style="font-weight: 800;">{{r.data}}</span><br><span style="font-size: 12px; font-weight: 600; color: #5B6573;">Halaman: {{r.page}}</span></th>
+<td style="padding: 10px 8px; border-bottom: 1px solid #EEF0F3; vertical-align: top;"><span style="font-size: 12px; font-weight: 800; border-radius: 8px; padding: 2px 8px; background: {{r.bg}}; color: {{r.fg}}; white-space: nowrap;">{{r.cat}}</span></td>
+<td style="padding: 10px 8px; border-bottom: 1px solid #EEF0F3; vertical-align: top; color: #3B4250;">{{r.src}}</td>
+<td style="padding: 10px 8px; border-bottom: 1px solid #EEF0F3; vertical-align: top; font-weight: 700;">{{r.who}}</td>
+<td style="padding: 10px 8px; border-bottom: 1px solid #EEF0F3; vertical-align: top; white-space: nowrap;">{{r.when}}</td>
+<td style="padding: 10px 8px; border-bottom: 1px solid #EEF0F3; vertical-align: top; color: #3B4250;">{{r.qc}}</td>
+<td style="padding: 10px 8px; border-bottom: 1px solid #EEF0F3; vertical-align: top; color: {{r.riskColor}}; font-weight: 700;">{{r.risk}}</td>
+</tr>
+</template>
+</tbody>
+</table>
+</div>
+</section>
+
+<section aria-labelledby="form-h" style="background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 16px;">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 10px;">
+<div style="display: flex; flex-direction: column;"><span style="font-size: 12px; font-weight: 800; letter-spacing: 0.08em; color: #067A70;">CONTOH FORM · DIISI PIC WA TIAP HARI SEBELUM 21.00</span><h2 id="form-h" style="margin: 0; font-size: 20px; font-weight: 900;">Laporan Harian PIC WA</h2><span style="font-size: 13px; color: #5B6573;">Satu laporan per nomor CS. Angka klik tautan sudah terisi otomatis sebagai pembanding. Coba ubah angka untuk melihat pengecekan otomatis.</span></div>
+<span style="font-size: 13px; font-weight: 800; border-radius: 12px; padding: 4px 12px; background: #FDF3D7; color: #7A5200;">Batas kirim 21.00 · sisa 7 jam 30 menit</span>
+</div>
+
+<div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start;">
+<form style="flex: 3 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 18px;">
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px;">
+<div style="display: flex; flex-direction: column; gap: 4px;"><label for="tgl" style="font-size: 12px; font-weight: 800;">Tanggal</label><input id="tgl" type="text" value="Rabu, 28 Okt 2026" readonly style="min-height: 44px; padding: 0 12px; border-radius: 10px; border: 1px solid #E3E6EB; background: #F3F5F8; font-family: inherit; font-size: 14px; color: #1F2933;"></div>
+<div style="display: flex; flex-direction: column; gap: 4px;"><label for="nomor" style="font-size: 12px; font-weight: 800;">Nomor CS</label><select id="nomor" style="min-height: 44px; padding: 0 12px; border-radius: 10px; border: 1px solid #C9CED6; background: #FFFFFF; font-family: inherit; font-size: 14px; color: #1F2933;"><option>CS Garut Kota</option><option>CS Bandung</option><option>CS Wanaraja</option><option>CS TripinAja</option><option>CS Niagaaja</option></select></div>
+<div style="display: flex; flex-direction: column; gap: 4px;"><label for="pic" style="font-size: 12px; font-weight: 800;">PIC (dari login)</label><input id="pic" type="text" value="Admin CS Garut Kota" readonly style="min-height: 44px; padding: 0 12px; border-radius: 10px; border: 1px solid #E3E6EB; background: #F3F5F8; font-family: inherit; font-size: 14px; color: #1F2933;"></div>
+<div style="display: flex; flex-direction: column; gap: 4px;"><label for="shift" style="font-size: 12px; font-weight: 800;">Shift</label><select id="shift" style="min-height: 44px; padding: 0 12px; border-radius: 10px; border: 1px solid #C9CED6; background: #FFFFFF; font-family: inherit; font-size: 14px; color: #1F2933;"><option>Pagi 07.30–15.00</option><option>Sore 15.00–23.00</option><option>Penuh</option></select></div>
+</div>
+
+<fieldset style="border: 1px solid #E3E6EB; border-radius: 14px; margin: 0; padding: 14px; display: flex; flex-direction: column; gap: 10px;">
+<legend style="font-size: 14px; font-weight: 900; padding: 0 6px;">A · Chat masuk per sumber</legend>
+<div style="display: grid; grid-template-columns: minmax(0, 1.6fr) 110px 120px minmax(0, 1fr); gap: 8px; font-size: 12px; font-weight: 800; color: #5B6573;"><span>Kode sumber</span><span style="text-align: right;">Klik tautan (otomatis)</span><span style="text-align: right;">Chat masuk (isi)</span><span>Cek</span></div>
+<template data-sc="for" list="{{srcRows}}" as="s" hint-placeholder-count="8">
+<div style="display: grid; grid-template-columns: minmax(0, 1.6fr) 110px 120px minmax(0, 1fr); gap: 8px; align-items: center;">
+<label for="{{s.id}}" style="font-size: 13px; font-weight: 700;">{{s.name}} <span style="font-weight: 600; color: #5B6573;">{{s.code}}</span></label>
+<span style="font-size: 13px; text-align: right; color: #5B6573;">{{s.clicks}}</span>
+<input id="{{s.id}}" type="number" min="0" value="{{s.val}}" onInput="{{s.set}}" style="min-height: 40px; padding: 0 10px; border-radius: 8px; border: 2px solid {{s.border}}; font-family: inherit; font-size: 14px; font-weight: 800; color: #1F2933; text-align: right;">
+<span style="font-size: 12px; font-weight: 800; color: {{s.flagColor}};">{{s.flag}}</span>
+</div>
+</template>
+<div style="display: flex; justify-content: space-between; align-items: center; padding-top: 6px; border-top: 1px solid #EEF0F3;"><span style="font-size: 13px; font-weight: 800;">Total chat masuk</span><span style="font-size: 18px; font-weight: 900;">{{totalChat}}</span></div>
+</fieldset>
+
+<fieldset style="border: 1px solid #E3E6EB; border-radius: 14px; margin: 0; padding: 14px; display: flex; flex-direction: column; gap: 10px;">
+<legend style="font-size: 14px; font-weight: 900; padding: 0 6px;">B · Hasil percakapan hari ini</legend>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px;">
+<template data-sc="for" list="{{outRows}}" as="o" hint-placeholder-count="4">
+<div style="display: flex; flex-direction: column; gap: 4px;"><label for="{{o.id}}" style="font-size: 12px; font-weight: 800;">{{o.label}}</label><input id="{{o.id}}" type="number" min="0" value="{{o.val}}" onInput="{{o.set}}" style="min-height: 44px; padding: 0 12px; border-radius: 10px; border: 2px solid {{o.border}}; font-family: inherit; font-size: 15px; font-weight: 800; color: #1F2933;"><span style="font-size: 11px; color: #5B6573;">{{o.hint}}</span></div>
+</template>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px;">
+<span style="font-size: 12px; font-weight: 800;">Alasan tidak jadi (pilih, bukan ketik bebas)</span>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px;">
+<template data-sc="for" list="{{lostRows}}" as="l" hint-placeholder-count="6">
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 6px 10px; border-radius: 10px; background: #F3F5F8;"><label for="{{l.id}}" style="font-size: 12px; font-weight: 700;">{{l.name}}</label><input id="{{l.id}}" type="number" min="0" value="{{l.val}}" style="width: 56px; min-height: 36px; padding: 0 6px; border-radius: 8px; border: 1px solid #C9CED6; font-family: inherit; font-size: 14px; font-weight: 800; text-align: right;"></div>
+</template>
+</div>
+</div>
+</fieldset>
+
+<fieldset style="border: 1px solid #E3E6EB; border-radius: 14px; margin: 0; padding: 14px; display: flex; flex-direction: column; gap: 10px;">
+<legend style="font-size: 14px; font-weight: 900; padding: 0 6px;">C · Kecepatan balas (sampel 5 chat pertama shift)</legend>
+<span style="font-size: 12px; color: #5B6573;">WA Business tidak mencatat waktu balas, jadi diambil sampel. Salin jam dari layar chat.</span>
+<div style="display: grid; grid-template-columns: repeat(5, minmax(110px, 1fr)); gap: 8px; overflow-x: auto;">
+<template data-sc="for" list="{{samples}}" as="t" hint-placeholder-count="5">
+<div style="display: flex; flex-direction: column; gap: 4px; padding: 8px; border-radius: 10px; background: #F3F5F8;"><span style="font-size: 11px; font-weight: 800; color: #5B6573;">Chat {{t.n}}</span><span style="font-size: 12px;">Masuk <strong>{{t.in}}</strong></span><span style="font-size: 12px;">Dibalas <strong>{{t.out}}</strong></span><span style="font-size: 12px; font-weight: 800; color: {{t.color}};">{{t.gap}}</span></div>
+</template>
+</div>
+<span style="font-size: 13px; font-weight: 800;">Median hari ini: {{median}}</span>
+</fieldset>
+
+<fieldset style="border: 1px solid #E3E6EB; border-radius: 14px; margin: 0; padding: 14px; display: flex; flex-direction: column; gap: 10px;">
+<legend style="font-size: 14px; font-weight: 900; padding: 0 6px;">D · Story, kontak, dan tindak lanjut</legend>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px;">
+<div style="display: flex; flex-direction: column; gap: 4px;"><label for="st" style="font-size: 12px; font-weight: 800;">Story diunggah</label><input id="st" type="number" value="4" style="min-height: 44px; padding: 0 12px; border-radius: 10px; border: 1px solid #C9CED6; font-family: inherit; font-size: 15px; font-weight: 800;"></div>
+<div style="display: flex; flex-direction: column; gap: 4px;"><label for="vw" style="font-size: 12px; font-weight: 800;">Viewer rata-rata</label><input id="vw" type="number" value="312" style="min-height: 44px; padding: 0 12px; border-radius: 10px; border: 1px solid #C9CED6; font-family: inherit; font-size: 15px; font-weight: 800;"></div>
+<div style="display: flex; flex-direction: column; gap: 4px;"><label for="kt" style="font-size: 12px; font-weight: 800;">Kontak baru disimpan</label><input id="kt" type="number" value="9" style="min-height: 44px; padding: 0 12px; border-radius: 10px; border: 1px solid #C9CED6; font-family: inherit; font-size: 15px; font-weight: 800;"></div>
+<div style="display: flex; flex-direction: column; gap: 4px;"><label for="ub" style="font-size: 12px; font-weight: 800;">Belum dibalas saat tutup</label><input id="ub" type="number" value="2" style="min-height: 44px; padding: 0 12px; border-radius: 10px; border: 1px solid #C9CED6; font-family: inherit; font-size: 15px; font-weight: 800;"></div>
+<div style="display: flex; flex-direction: column; gap: 4px;"><label for="fu" style="font-size: 12px; font-weight: 800;">Penawaran belum di-follow-up</label><input id="fu" type="number" value="5" style="min-height: 44px; padding: 0 12px; border-radius: 10px; border: 1px solid #C9CED6; font-family: inherit; font-size: 15px; font-weight: 800;"></div>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 10px;">
+<button type="button" onClick="{{toggleShot}}" aria-pressed="{{shotPressed}}" style="height: 44px; padding: 0 16px; border-radius: 10px; border: 2px dashed {{shotBorder}}; background: {{shotBg}}; color: #1D3149; font-family: inherit; font-size: 13px; font-weight: 800; cursor: pointer;">{{shotLabel}}</button>
+<button type="button" style="height: 44px; padding: 0 16px; border-radius: 10px; border: 2px dashed #C9CED6; background: #FFFFFF; color: #1D3149; font-family: inherit; font-size: 13px; font-weight: 800; cursor: pointer;">✓ Screenshot daftar label WA (terunggah)</button>
+</div>
+</fieldset>
+
+<div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center;">
+<button type="button" style="height: 48px; padding: 0 22px; border-radius: 10px; border: 0; background: {{sendBg}}; color: #1D3149; font-family: inherit; font-size: 15px; font-weight: 900; cursor: pointer;">Kirim ke Kepala Staf</button>
+<span style="font-size: 13px; font-weight: 700; color: {{sendColor}};">{{sendNote}}</span>
+</div>
+</form>
+
+<aside aria-label="Pengecekan otomatis" style="flex: 2 1 320px; min-width: 0; display: flex; flex-direction: column; gap: 10px; background: #F3F5F8; border-radius: 16px; padding: 16px;">
+<span style="font-size: 12px; font-weight: 800; letter-spacing: 0.08em; color: #5B6573;">PENGECEKAN OTOMATIS</span>
+<span style="font-size: 16px; font-weight: 900;">{{checkHead}}</span>
+<template data-sc="for" list="{{checks}}" as="c" hint-placeholder-count="7">
+<div style="display: flex; gap: 10px; align-items: flex-start; padding: 10px; border-radius: 10px; background: #FFFFFF;">
+<span style="flex-shrink: 0; width: 22px; height: 22px; border-radius: 11px; background: {{c.bg}}; color: {{c.fg}}; font-size: 12px; font-weight: 900; display: flex; align-items: center; justify-content: center;">{{c.icon}}</span>
+<div style="display: flex; flex-direction: column;"><span style="font-size: 13px; font-weight: 800;">{{c.title}}</span><span style="font-size: 12px; color: #3B4250;">{{c.body}}</span></div>
+</div>
+</template>
+<span style="font-size: 12px; color: #5B6573;">Setelah dikirim, laporan terkunci. Kepala Staf memvalidasi sebelum 09.00 besok; koreksi tercatat di riwayat.</span>
+</aside>
+</div>
+</section>
+
+<section aria-labelledby="sch-h" style="background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+<div style="display: flex; flex-direction: column;"><h2 id="sch-h" style="margin: 0; font-size: 18px; font-weight: 800;">Jadwal input manual</h2><span style="font-size: 13px; color: #5B6573;">Semuanya masuk sebagai slot KKH orang yang bertanggung jawab, jadi tidak ada yang terlewat.</span></div>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px;">
+<template data-sc="for" list="{{schedule}}" as="g" hint-placeholder-count="4">
+<div style="border: 1px solid #E3E6EB; border-radius: 14px; padding: 14px; display: flex; flex-direction: column; gap: 8px;">
+<span style="font-size: 14px; font-weight: 900; color: #1D3149;">{{g.when}}</span>
+<template data-sc="for" list="{{g.items}}" as="i" hint-placeholder-count="3">
+<div style="display: flex; flex-direction: column; padding: 8px 10px; border-radius: 10px; background: #F3F5F8;"><span style="font-size: 13px; font-weight: 800;">{{i.what}}</span><span style="font-size: 12px; color: #3B4250;">{{i.who}} · {{i.time}}</span></div>
+</template>
+</div>
+</template>
+</div>
+</section>
+
+<section aria-labelledby="qs-h" style="background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 8px;">
+<div style="display: flex; flex-direction: column;"><h2 id="qs-h" style="margin: 0; font-size: 18px; font-weight: 800;">Skor kualitas data · Oktober</h2><span style="font-size: 13px; color: #5B6573;">Skor = rata-rata kelengkapan, ketepatan waktu, kecocokan dengan data otomatis, dan bukti. Masuk ke performa di Sistem Kerja.</span></div>
+<span style="font-size: 12px; color: #5B6573;">Batas layak pakai: 85</span>
+</div>
+<div style="overflow-x: auto;">
+<table style="width: 100%; min-width: 980px; border-collapse: collapse; font-size: 13px;">
+<thead><tr style="text-align: right; color: #5B6573; font-size: 12px;">
+<th scope="col" style="text-align: left; padding: 8px; border-bottom: 1px solid #E3E6EB; font-weight: 800;">Pengisi</th>
+<th scope="col" style="text-align: left; padding: 8px; border-bottom: 1px solid #E3E6EB; font-weight: 800;">Laporan</th>
+<th scope="col" style="padding: 8px; border-bottom: 1px solid #E3E6EB; font-weight: 800;">Lengkap</th>
+<th scope="col" style="padding: 8px; border-bottom: 1px solid #E3E6EB; font-weight: 800;">Tepat waktu</th>
+<th scope="col" style="padding: 8px; border-bottom: 1px solid #E3E6EB; font-weight: 800;">Cocok dgn data otomatis</th>
+<th scope="col" style="padding: 8px; border-bottom: 1px solid #E3E6EB; font-weight: 800;">Chat tanpa kode</th>
+<th scope="col" style="padding: 8px; border-bottom: 1px solid #E3E6EB; font-weight: 800;">Bukti lengkap</th>
+<th scope="col" style="padding: 8px; border-bottom: 1px solid #E3E6EB; font-weight: 800;">Skor</th>
+</tr></thead>
+<tbody>
+<template data-sc="for" list="{{quality}}" as="q" hint-placeholder-count="8">
+<tr style="text-align: right;">
+<th scope="row" style="text-align: left; padding: 10px 8px; border-bottom: 1px solid #EEF0F3; font-weight: 800;">{{q.who}}</th>
+<td style="text-align: left; padding: 10px 8px; border-bottom: 1px solid #EEF0F3; color: #3B4250;">{{q.what}}</td>
+<td style="padding: 10px 8px; border-bottom: 1px solid #EEF0F3;">{{q.comp}}</td>
+<td style="padding: 10px 8px; border-bottom: 1px solid #EEF0F3;">{{q.time}}</td>
+<td style="padding: 10px 8px; border-bottom: 1px solid #EEF0F3;">{{q.match}}</td>
+<td style="padding: 10px 8px; border-bottom: 1px solid #EEF0F3;">{{q.nocode}}</td>
+<td style="padding: 10px 8px; border-bottom: 1px solid #EEF0F3;">{{q.proof}}</td>
+<td style="padding: 10px 8px; border-bottom: 1px solid #EEF0F3;"><span style="display: inline-block; min-width: 40px; text-align: center; border-radius: 6px; padding: 2px 6px; font-weight: 900; background: {{q.bg}}; color: {{q.fg}};">{{q.score}}</span></td>
+</tr>
+</template>
+</tbody>
+</table>
+</div>
+</section>
+
+<section aria-labelledby="rl-h" style="background: #1D3149; color: #FFFFFF; border-radius: 20px; padding: 22px 24px; display: flex; flex-direction: column; gap: 14px;">
+<div style="display: flex; flex-direction: column;"><span style="font-size: 12px; font-weight: 800; letter-spacing: 0.1em; color: #86DCD3;">8 ATURAN KUALITAS DATA</span><h2 id="rl-h" style="margin: 0; font-size: 20px; font-weight: 900;">Supaya angka di dashboard bisa dipakai untuk mengambil keputusan</h2></div>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 12px;">
+<template data-sc="for" list="{{rules}}" as="r" hint-placeholder-count="8">
+<div style="background: #2C4664; border-radius: 14px; padding: 14px; display: flex; flex-direction: column; gap: 4px;"><span style="font-size: 13px; font-weight: 900; color: #86DCD3;">{{r.t}}</span><span style="font-size: 13px; color: #E3E6EB;">{{r.b}}</span></div>
+</template>
+</div>
+</section>
+
+</main>
+</div>
+</template>
+<div id="dc-root"></div>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":3300}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { cat: 'Semua', src: { ads: 14, ig: 4, kol: 1, web: 1, maps: 6, story: 5, lama: 7, none: 2 }, out: { offer: 24, dp: 13, close: 11, value: 5850000 }, shot: false };
+  }
+  renderVals() {
+    var self = this;
+    var CAT = {
+      'Otomatis · API': ['#DDF5F2', '#067A70', '#09BEAF', 'Ditarik sendiri setelah disambung'],
+      'Menunggu izin API': ['#FDF3D7', '#7A5200', '#F2A33A', 'Sementara impor CSV'],
+      'Otomatis · pokama.org': ['#E5EEF9', '#1E5AA8', '#6FA0E8', 'Tercatat oleh sistem sendiri'],
+      'Manual': ['#FCEBDD', '#9A3F0A', '#C2410C', 'Tidak ada API, diisi orang'],
+      'Dihitung': ['#EEF0F3', '#3B4250', '#A9B4C2', 'Rumus dari data lain']
+    };
+    var R = [
+      ['Reach, views, suka, komentar, simpan, bagikan per postingan IG', 'Sosial Media', 'Otomatis · API', 'Instagram API', 'Sistem', 'Harian 05.00', 'Tarik ulang 2 hari terakhir tiap pagi', 'Angka 48 jam terakhir masih bisa berubah', 0],
+      ['Followers, follow/unfollow, jam online followers', 'Sosial Media', 'Otomatis · API', 'Instagram API', 'Sistem', 'Harian 05.00', '—', 'Tidak keluar kalau followers < 100', 0],
+      ['Data akun pesaing IG', 'Sosial Media', 'Otomatis · API', 'Instagram Business Discovery', 'Kevin memilih akunnya', 'Mingguan', 'Daftar pesaing ditinjau tiap bulan', 'Hanya suka, komentar, views', 0],
+      ['Belanja, reach, frekuensi, CTR, CPM iklan', 'Ads', 'Otomatis · API', 'Meta Marketing API', 'Sistem', 'Tiap jam', 'Total harian dicocokkan dengan tagihan Meta', '—', 0],
+      ['Chat WA dimulai dari iklan', 'Ads · WA Leads', 'Otomatis · API', 'Meta Marketing API', 'Sistem', 'Tiap jam', 'Dibandingkan dengan chat [ADS] di laporan PIC WA', 'Hitungan Meta bisa beda dari chat riil', 1],
+      ['Kunjungan web & sumber UTM', 'Ringkasan', 'Otomatis · API', 'Google Analytics 4', 'Sistem', 'Harian', 'Semua tautan wajib UTM dari pembuat link', '—', 0],
+      ['Kata kunci Google ke website', 'Integrasi', 'Otomatis · API', 'Search Console', 'Sistem', 'Harian', '—', 'Baru berguna setelah web aktif', 0],
+      ['Rating & jumlah ulasan pesaing di Maps', 'Google Maps', 'Otomatis · API', 'Places API', 'Sistem', 'Senin', 'Batas pemakaian dipasang supaya gratis', '—', 0],
+      ['Dilihat, rute, telepon, klik WA tiap lokasi Maps', 'Google Maps', 'Menunggu izin API', 'Business Profile API · sementara CSV', 'Admin Marketing (Mugni)', 'Senin 10.00', 'Unggah file CSV asli, bukan ketik ulang', 'Telat seminggu sampai API disetujui', 1],
+      ['Ulasan baru & status balasan', 'Google Maps', 'Menunggu izin API', 'Business Profile API · sementara salin', 'CS cabang', 'Harian', 'Tautan ulasan disimpan sebagai bukti', 'Bisa terlewat kalau tidak dicek harian', 1],
+      ['Klik link-in-bio per tombol', 'Ringkasan', 'Otomatis · pokama.org', 'Halaman pokama.org/[unit]', 'Sistem', 'Saat diklik', '—', '—', 0],
+      ['Klik link KOL', 'KOL', 'Otomatis · pokama.org', 'pokama.org/go/[nama]', 'Sistem', 'Saat diklik', 'Satu link unik per KOL per kampanye', '—', 0],
+      ['Klik tautan WA berkode', 'WA Leads', 'Otomatis · pokama.org', 'Tautan wa.me lewat pokama.org', 'Sistem', 'Saat diklik', 'Jadi pembanding laporan PIC WA', 'Klik belum tentu jadi chat', 0],
+      ['Status konten & tautan postingan', 'Kalender Konten', 'Otomatis · pokama.org', 'Kalender Konten', 'Pembuat konten', 'Saat pindah tahap', 'Tidak bisa "Tayang" tanpa tautan', '—', 0],
+      ['Chat masuk per kode sumber', 'WA Leads', 'Manual', 'Label WA Business', 'PIC WA tiap nomor', 'Harian 21.00', 'Dicocokkan dengan klik tautan berkode; selisih > 20% wajib alasan', 'Paling rawan: lupa memberi label', 2],
+      ['Penawaran, DP, closing, nilai closing', 'WA Leads · Ringkasan', 'Manual', 'Label WA + nota', 'PIC WA', 'Harian 21.00', 'Dicocokkan dengan transaksi di Rentalaja App / kasir', 'Closing tercatat dobel', 2],
+      ['Alasan tidak jadi', 'WA Leads', 'Manual', 'Label "Gagal" WA', 'PIC WA', 'Harian 21.00', 'Pilihan tetap, bukan ketik bebas', 'Semua masuk "lainnya"', 1],
+      ['Waktu balas pertama', 'WA Leads', 'Manual', 'Sampel 5 chat pertama shift', 'PIC WA', 'Harian 21.00', 'Screenshot jam chat diacak dicek Kepala Staf', 'Hanya perkiraan, bukan semua chat', 1],
+      ['Chat belum dibalas & belum di-follow-up', 'WA Leads', 'Manual', 'Daftar chat WA', 'PIC WA', 'Tiap tutup shift', 'Dicek acak saat validasi', '—', 1],
+      ['Viewer story & jumlah story', 'WA Story', 'Manual', 'Layar "dilihat oleh" WA', 'PIC WA', 'Harian 21.00 (story hilang 24 jam)', 'Wajib screenshot', 'Data hilang kalau lewat sehari', 2],
+      ['Kontak baru disimpan', 'WA Story', 'Manual', 'Kontak di HP CS', 'PIC WA', 'Harian 21.00', 'Dicek dengan jumlah kontak di akhir bulan', '—', 1],
+      ['Broadcast: terkirim, dibaca, dibalas', 'WA Story', 'Manual', 'Info pesan broadcast', 'PIC WA', 'H+1 setelah broadcast', 'Screenshot info pesan', '—', 1],
+      ['Data TikTok', 'Sosial Media', 'Manual', 'TikTok Studio', 'Dita', 'Senin 10.00', 'Screenshot analitik', 'Sampai audit API disetujui', 1],
+      ['Kesepakatan KOL: biaya, jadwal, jenis kerja sama', 'KOL', 'Manual', 'Chat / dokumen kesepakatan', 'Kevin', 'Saat deal', 'Foto kesepakatan + diajukan lewat Pengajuan Belanja', '—', 1],
+      ['Insight KOL yang tidak pakai Collab', 'KOL', 'Manual', 'Screenshot dari KOL', 'Kevin', 'H+7 setelah tayang', 'Pembayaran 50% kedua menunggu ini', 'Angka dari pihak luar', 1],
+      ['Kode promo saat transaksi', 'KOL · Ads · Ringkasan', 'Manual', 'Rentalaja App / kasir unit', 'Kasir & CS cabang', 'Setiap transaksi', 'Pilihan kode wajib diisi; tanpa kode = "tidak diketahui"', 'Tanpa ini ROAS tidak bisa dihitung', 2],
+      ['Target bulanan per kanal per unit', 'Ringkasan', 'Manual', 'Rapat akhir bulan', 'CEO + Keuangan', 'Tanggal 28', 'Terkunci setelah disetujui', '—', 0],
+      ['Budget marketing per kanal', 'Ringkasan · Ads · KOL', 'Manual', 'Keuangan', 'Reza', 'Tanggal 1', 'Perubahan lewat Pengajuan Belanja', '—', 0],
+      ['Harga & promo pesaing', 'Pesaing', 'Manual', 'Cek langsung / Ad Library', 'Kevin', 'Senin', 'Screenshot iklan atau price list', '—', 1],
+      ['ER, CPM, biaya per chat, ROAS, rasio closing', 'Semua halaman', 'Dihitung', 'Rumus dari data di atas', 'Sistem', 'Ikut sumbernya', 'Hanya dihitung kalau sumbernya lengkap', 'Salah kalau input salah', 0],
+      ['Skor marketing & skor kanal', 'Ringkasan', 'Dihitung', 'Capaian target', 'Sistem', 'Harian', '—', '—', 0],
+      ['Rekomendasi & daftar "perlu keputusan"', 'Semua halaman', 'Dihitung', 'Aturan dari angka', 'Sistem', 'Harian', 'Ditinjau Kepala Staf sebelum rapat', '—', 0]
+    ];
+    var cat = this.state.cat;
+    var RISK = ['#5B6573', '#7A5200', '#9A3F0A'];
+    var rows = R.filter(function (r) { return cat === 'Semua' || r[2] === cat; }).map(function (r) { var c = CAT[r[2]]; return { data: r[0], page: r[1], cat: r[2], bg: c[0], fg: c[1], src: r[3], who: r[4], when: r[5], qc: r[6], risk: r[7], riskColor: RISK[r[8]] }; });
+    var order = Object.keys(CAT);
+    var catSum = order.map(function (k) { return { label: k, n: R.filter(function (r) { return r[2] === k; }).length, dot: CAT[k][2], desc: CAT[k][3] }; });
+    var catFilters = ['Semua'].concat(order).map(function (k) { var on = k === cat; return { label: k, pressed: on ? 'true' : 'false', bg: on ? '#1D3149' : '#FFFFFF', fg: on ? '#FFFFFF' : '#1D3149', border: on ? '#1D3149' : '#E3E6EB', pick: function () { self.setState({ cat: k }); } }; });
+
+    var S = this.state.src;
+    var SRC = [['ads', 'Meta Ads', '[ADS-…]', 21], ['ig', 'Instagram bio & DM', '[IG-…]', 5], ['kol', 'KOL', '[KOL-…]', 1], ['web', 'Website', '[WEB]', 2], ['maps', 'Google Maps', '[MAPS-…]', 7], ['story', 'Story & broadcast', '[STORY] [BC]', 6], ['lama', 'Pelanggan lama & referral', 'tanpa tautan', null], ['none', 'Tanpa kode', '—', null]];
+    var flagsBad = 0;
+    var srcRows = SRC.map(function (s) {
+      var v = Number(S[s[0]]) || 0;
+      var flag = '✓ wajar', fc = '#067A70', border = '#C9CED6';
+      if (s[3] !== null) {
+        var diff = s[3] ? Math.abs(v - s[3]) / s[3] : 0;
+        if (v > s[3]) { flag = '⚠ lebih banyak dari klik — cek label'; fc = '#9A3F0A'; border = '#C2410C'; flagsBad++; }
+        else if (diff > 0.2) { flag = '⚠ selisih ' + Math.round(diff * 100) + '% — isi alasan'; fc = '#7A5200'; border = '#F2A33A'; flagsBad++; }
+      } else if (s[0] === 'none' && v > 0) { flag = 'Usahakan diberi kode'; fc = '#7A5200'; }
+      else { flag = 'Tidak ada pembanding'; fc = '#5B6573'; }
+      return { id: 'src-' + s[0], name: s[1], code: s[2], clicks: s[3] === null ? '—' : s[3], val: v, border: border, flag: flag, flagColor: fc, set: function (e) { var n = {}; Object.keys(self.state.src).forEach(function (k) { n[k] = self.state.src[k]; }); n[s[0]] = e && e.target ? e.target.value : v; self.setState({ src: n }); } };
+    });
+    var totalChat = SRC.reduce(function (a, s) { return a + (Number(S[s[0]]) || 0); }, 0);
+    var O = this.state.out;
+    var OUT = [['offer', 'Penawaran dikirim', 'Syarat + harga sudah dikirim'], ['dp', 'DP / booking', 'Sudah transfer DP'], ['close', 'Closing', 'Unit sudah diambil / trip jalan'], ['value', 'Nilai closing (Rp)', 'Total nilai transaksi closing']];
+    var orderBad = !(Number(O.close) <= Number(O.dp) && Number(O.dp) <= Number(O.offer) && Number(O.offer) <= totalChat);
+    var outRows = OUT.map(function (o) { return { id: 'out-' + o[0], label: o[1], hint: o[2], val: O[o[0]], border: (orderBad && o[0] !== 'value') ? '#C2410C' : '#C9CED6', set: function (e) { var n = {}; Object.keys(self.state.out).forEach(function (k) { n[k] = self.state.out[k]; }); n[o[0]] = e && e.target ? e.target.value : O[o[0]]; self.setState({ out: n }); } }; });
+    var lostRows = [['Harga', 3], ['Unit / tanggal penuh', 2], ['Syarat dokumen', 1], ['Tidak membalas lagi', 4], ['Pilih tempat lain', 1], ['Lokasi / ongkir', 0]].map(function (l, i) { return { id: 'lost-' + i, name: l[0], val: l[1] }; });
+    var SM = [['08.02', '08.05'], ['08.40', '08.44'], ['09.11', '09.31'], ['09.27', '09.30'], ['10.05', '10.08']];
+    var mins = function (t) { var p = t.split('.'); return Number(p[0]) * 60 + Number(p[1]); };
+    var gaps = SM.map(function (s) { return mins(s[1]) - mins(s[0]); });
+    var samples = SM.map(function (s, i) { return { n: i + 1, in: s[0], out: s[1], gap: gaps[i] + ' menit', color: gaps[i] <= 5 ? '#067A70' : '#9A3F0A' }; });
+    var sorted = gaps.slice().sort(function (a, b) { return a - b; });
+    var median = sorted[2] + ' menit';
+
+    var avgVal = Number(O.close) ? Number(O.value) / Number(O.close) : 0;
+    var valBad = Number(O.close) && (avgVal < 50000 || avgVal > 25000000);
+    var noCodeShare = totalChat ? (Number(S.none) || 0) / totalChat : 0;
+    var C = [
+      { ok: !flagsBad, warn: flagsBad > 0, title: 'Chat vs klik tautan berkode', body: flagsBad ? flagsBad + ' sumber selisih besar dengan klik. Cek label atau tulis alasannya.' : 'Semua sumber wajar dibanding klik tautan.' },
+      { ok: !orderBad, title: 'Urutan corong masuk akal', body: orderBad ? 'Closing ≤ DP ≤ penawaran ≤ total chat belum terpenuhi.' : 'Closing ≤ DP ≤ penawaran ≤ total chat.' },
+      { ok: !valBad, title: 'Nilai per closing wajar', body: Number(O.close) ? 'Rata-rata Rp ' + Math.round(avgVal / 1000).toLocaleString('id-ID') + ' rb per closing (batas Rp 50 rb–25 jt).' : 'Belum ada closing.' },
+      { ok: true, title: 'Closing cocok dengan kasir', body: 'Rentalaja App mencatat 11 transaksi bertanda [CS Garut Kota] hari ini.' },
+      { ok: noCodeShare < 0.05, warn: noCodeShare >= 0.05, title: 'Chat tanpa kode', body: Math.round(noCodeShare * 100) + '% dari chat (target < 5%).' },
+      { ok: Number(S.ads) > 0, title: 'Sesuai data Meta Ads', body: 'Meta mencatat 16 chat dimulai dari iklan untuk nomor ini.' },
+      { ok: this.state.shot, title: 'Bukti story diunggah', body: this.state.shot ? 'Screenshot viewer story sudah ada.' : 'Wajib, karena story hilang setelah 24 jam.' }
+    ];
+    var checks = C.map(function (c) { var bad = !c.ok && !c.warn; return { title: c.title, body: c.body, icon: c.ok ? '✓' : (c.warn ? '!' : '✕'), bg: c.ok ? '#DDF5F2' : (c.warn ? '#FDF3D7' : '#FCEBDD'), fg: c.ok ? '#067A70' : (c.warn ? '#7A5200' : '#9A3F0A') }; });
+    var nBad = C.filter(function (c) { return !c.ok && !c.warn; }).length;
+    var nWarn = C.filter(function (c) { return c.warn; }).length;
+
+    var schedule = [
+      { when: 'Setiap transaksi', items: [{ what: 'Kode promo / sumber', who: 'Kasir & CS cabang', time: 'saat input transaksi' }, { what: 'Status konten + tautan', who: 'Pembuat konten', time: 'saat pindah tahap' }] },
+      { when: 'Harian · sebelum 21.00', items: [{ what: 'Laporan Harian PIC WA', who: 'PIC WA tiap nomor', time: '±10 menit' }, { what: 'Viewer story + screenshot', who: 'PIC WA', time: '±2 menit' }, { what: 'Ulasan Maps baru', who: 'CS cabang', time: '±5 menit' }] },
+      { when: 'Mingguan · Senin 10.00', items: [{ what: 'Data TikTok', who: 'Dita', time: '±10 menit' }, { what: 'CSV Google Maps', who: 'Mugni', time: '±5 menit' }, { what: 'Harga & promo pesaing', who: 'Kevin', time: '±20 menit' }] },
+      { when: 'Bulanan & per kejadian', items: [{ what: 'Target bulan depan', who: 'CEO + Keuangan', time: 'tanggal 28' }, { what: 'Budget per kanal', who: 'Reza', time: 'tanggal 1' }, { what: 'Deal & insight KOL', who: 'Kevin', time: 'saat deal · H+7' }] }
+    ];
+    var Q = [
+      ['CS Garut Kota', 'Laporan harian PIC WA', 100, 96, 91, 5, 96], ['CS Bandung', 'Laporan harian PIC WA', 92, 78, 74, 12, 81], ['CS Wanaraja', 'Laporan harian PIC WA', 85, 70, 80, 9, 74],
+      ['CS TripinAja', 'Laporan harian PIC WA', 100, 92, 88, 7, 92], ['CS Niagaaja', 'Laporan harian PIC WA', 96, 88, 90, 11, 88],
+      ['Dita', 'TikTok mingguan · status konten', 100, 100, null, null, 100], ['Mugni', 'CSV Maps · status konten', 75, 75, null, null, 75], ['Kevin', 'KOL · pesaing · status konten', 100, 75, null, null, 83]
+    ];
+    var quality = Q.map(function (q) {
+      var parts = [q[2], q[3], q[6]].concat(q[4] === null ? [] : [q[4]]);
+      var sc = Math.round(parts.reduce(function (a, b) { return a + b; }, 0) / parts.length);
+      return { who: q[0], what: q[1], comp: q[2] + '%', time: q[3] + '%', match: q[4] === null ? '—' : q[4] + '%', nocode: q[5] === null ? '—' : q[5] + '%', proof: q[6] + '%', score: sc, bg: sc >= 85 ? '#DDF5F2' : '#FCEBDD', fg: sc >= 85 ? '#067A70' : '#9A3F0A' };
+    });
+    var rules = [
+      { t: '1 · Semua tautan berkode', b: 'Tidak ada tautan WA atau web yang disebar tanpa kode sumber. Link dibuat hanya dari pokama.org.' },
+      { t: '2 · Pilihan, bukan ketik bebas', b: 'Sumber, alasan gagal, jenis konten dipilih dari daftar tetap supaya bisa dijumlahkan.' },
+      { t: '3 · Satu angka, satu pemilik', b: 'Setiap data punya satu PIC. Kalau kosong, yang ditanya jelas siapa.' },
+      { t: '4 · Batas waktu = slot KKH', b: 'Input manual masuk KKH. Telat mengisi tercatat seperti telat pekerjaan lain.' },
+      { t: '5 · Dicocokkan otomatis', b: 'Angka manual dibandingkan dengan data otomatis (klik tautan, Meta, kasir). Selisih besar wajib alasan.' },
+      { t: '6 · Bukti untuk yang hilang 24 jam', b: 'Story dan jam balas wajib screenshot karena tidak bisa dicek ulang besoknya.' },
+      { t: '7 · Terkunci setelah validasi', b: 'Kepala Staf memvalidasi sebelum 09.00. Koreksi setelahnya tercatat siapa dan kapan.' },
+      { t: '8 · Skor kualitas masuk performa', b: 'Skor di bawah 85 dua minggu berturut-turut dibahas di review mingguan.' }
+    ];
+
+    return {
+      total: R.length, catSum: catSum, catFilters: catFilters, rows: rows,
+      srcRows: srcRows, totalChat: totalChat, outRows: outRows, lostRows: lostRows, samples: samples, median: median,
+      checks: checks, checkHead: nBad ? nBad + ' harus diperbaiki sebelum kirim' : (nWarn ? 'Bisa dikirim, ' + nWarn + ' perlu alasan' : 'Siap dikirim'),
+      sendBg: nBad ? '#E3E6EB' : '#09BEAF', sendColor: nBad ? '#9A3F0A' : '#067A70', sendNote: nBad ? 'Perbaiki tanda merah dulu' : 'Laporan siap dikirim',
+      shotLabel: this.state.shot ? '✓ Screenshot viewer story (terunggah)' : '+ Unggah screenshot viewer story', shotPressed: this.state.shot ? 'true' : 'false', shotBorder: this.state.shot ? '#09BEAF' : '#C2410C', shotBg: this.state.shot ? '#F0FBF9' : '#FFFFFF',
+      toggleShot: function () { self.setState({ shot: !self.state.shot }); },
+      schedule: schedule, quality: quality, rules: rules
+    };
+  }
+}
+</script>
+</body>
+</html>
