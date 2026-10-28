@@ -1,0 +1,2 @@
+-- 014: pk_rab_items + category, uom, vendor, note; pk_rab.description; pk_rab_put_items; pk_rab_submit/resubmit memakai kolom baru; pk_rab_describe(p_id, p_desc)
+-- Definisi lengkap: migrasi Supabase pk_014_rab_items_detail.

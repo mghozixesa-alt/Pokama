@@ -1,4 +1,4 @@
-import { ctx, db, esc, today, addDays, fdate, fmonth, monthStart, weekStart, avatar, nick, modal, field, opts, toast, unitName, isFin, isAdmin, isCeo, need, chip, logo, rp, jt, num, bizOf, confirmBox } from '../core.js';
+import { ctx, db, esc, today, addDays, fdate, fmonth, monthStart, weekStart, avatar, nick, modal, field, opts, toast, unitName, isFin, isAdmin, isCeo, need, chip, logo, rp, jt, num, bizOf, confirmBox, waReport } from '../core.js';
 
 const stOf = (p) => p >= 1 ? ['Tercapai', 'green', '#09BEAF'] : p >= .9 ? ['Aman', 'green', '#09BEAF'] : p >= .75 ? ['Diawasi', 'yellow', '#D99A00'] : ['Perlu evaluasi', 'red', '#C2410C'];
 const nextMonth = (m) => { const d = new Date(m + 'T00:00:00Z'); d.setUTCMonth(d.getUTCMonth() + 1); return d.toISOString().slice(0, 10); };
@@ -38,7 +38,7 @@ export default async function unit(el, params, reload) {
   const lw = ctx.settings.liga_weights || { kas: 35, profit: 30, kapasitas: 20, growth: 15 };
   el.innerHTML = `
   <header class="ph"><div><span class="muted small">${latestWeek ? 'Poin Liga minggu ' + fdate(latestWeek, false) : 'Poin Liga belum diisi'} · omzet ${fmonth(m)}</span><h1>Unit Bisnis</h1></div>
-    <div class="row gap"><input type="month" class="inp" id="mpick" value="${m.slice(0, 7)}">${isFin() || isAdmin() ? '<button class="btn" data-a="liga">Isi poin Liga</button>' : ''}<button class="btn pri" data-a="lapor">+ Lapor omzet</button></div></header>
+    <div class="row gap"><input type="month" class="inp" id="mpick" value="${m.slice(0, 7)}"><button class="btn" data-a="wa">Laporan WA</button>${isFin() || isAdmin() ? '<button class="btn" data-a="liga">Isi poin Liga</button>' : ''}<button class="btn pri" data-a="lapor">+ Lapor omzet</button></div></header>
   <div class="ucards">${cards.map((c, i) => { const p = c.t ? c.a / c.t : null; const s = p !== null ? stOf(p) : null; const L = lead(c.u.code); const tn = nextT(c.u.code);
     return `<section class="card ucard${i === 0 && c.p !== null ? ' first' : ''}">
       <div class="uhead">${c.p != null ? `<span class="rank">#${i + 1}</span>` : ''}${logo(c.u.code, 44)}<span class="uname"><b>${esc(c.u.name)}</b><small>${L ? avatar(L.id, 18) + '<span>Leader ' + esc(L.nickname || L.name) + '</span>' : '<span>Gabungan ' + c.lines.length + ' lini</span>'}</small></span>
@@ -133,6 +133,20 @@ export default async function unit(el, params, reload) {
           if (isCeo()) { const fresh = await db.get('pk_targets', `select=id,status&month=eq.${mon}&unit_code=in.(${ls.map(l => l.code).join(',')})`);
             for (const t of fresh.filter(x => x.status !== 'sah')) await db.rpc('pk_target_status', { p_id: t.id, p_status: 'sah' }); } } });
         if (r) { toast('Target ' + fmonth(monSaved) + ' tersimpan'); reload(); } return;
+      }
+      if (a && a.dataset.a === 'wa') {
+        const day = today(); const dsum = (codes) => todayRows.filter(r => codes.includes(r.unit_code)).reduce((s, r) => s + +r.amount, 0);
+        const rowsAll = reporters.concat(bizUnits.filter(u => !lines(u.code).length)).filter((u, i, arr) => arr.findIndex(x => x.code === u.code) === i);
+        const late = rowsAll.filter(u => !todayRows.some(r => r.unit_code === u.code)).map(u => u.name);
+        let t = `*Laporan Omzet Pokama*\n${fdate(day)}\n\n*HARI INI*\n`;
+        for (const c of cards) { const codes = [c.u.code, ...c.lines.map(x => x.l.code)]; t += `*${c.u.name}*: ${rp(dsum(codes))}\n`;
+          for (const x of c.lines) { const v = dsum([x.l.code]); t += `  • ${x.l.name}: ${todayRows.some(r => r.unit_code === x.l.code) ? rp(v) : '_belum lapor_'}\n`; } }
+        t += `Total hari ini: *${rp(todayRows.reduce((s, r) => s + +r.amount, 0))}*\n`;
+        if (late.length) t += `Belum lapor: ${late.join(', ')}\n`;
+        t += `\n*${fmonth(m).toUpperCase()} (s.d. hari ini)*\n`;
+        for (const c of cards) t += `${c.t && c.a / c.t >= .9 ? '🟢' : c.t && c.a / c.t >= .75 ? '🟡' : c.t ? '🔴' : '⚪'} *${c.u.name}*: ${jt(c.a)}${c.t ? ` dari ${jt(c.t)} (${Math.round(c.a / c.t * 100)}%)` : ' · target belum ada'}\n`;
+        t += `\nTotal grup: *${jt(grpA)}*${grpT ? ` dari ${jt(grpT)} (${Math.round(grpA / grpT * 100)}%)` : ''}\n\npokama.org`;
+        await waReport('Omzet ' + fdate(day, false), t); return;
       }
       if (a && a.dataset.a === 'liga') {
         const w = weekStart(today());

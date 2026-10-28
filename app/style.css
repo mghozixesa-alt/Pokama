@@ -239,3 +239,11 @@ button.chipdel{border:0;cursor:pointer;font:inherit;font-size:11px;font-weight:8
 .proj-p{text-align:right;display:flex;flex-direction:column;line-height:1.1}.proj-p b{font-size:22px;color:var(--navy)}.proj .card.pad0{box-shadow:none;border:1px solid var(--line2)}
 /* valuer */
 .pf-valuer{border:1.5px solid var(--teal);background:linear-gradient(180deg,#F1FBFA,#fff 60%)}.pf-vlist{display:flex;flex-direction:column;gap:10px}.pf-v{display:flex;align-items:center;gap:12px}.pf-v .grow{display:flex;flex-direction:column;gap:1px}.pf-v b{font-size:16px;color:var(--navy)}
+/* RAB lengkap */
+.rab-tools{align-items:center;margin-top:6px}.inp.sm{padding:6px 10px;font-size:13px;height:auto}.rab-paste{display:flex;flex-direction:column;gap:8px;background:var(--bg);border-radius:12px;padding:10px}
+.rab-ed{border:1px solid var(--line);border-radius:12px;max-height:46vh;overflow:auto}.rab-ed table{min-width:860px}.rab-ed td{padding:4px 5px;vertical-align:middle}.rab-ed th{position:sticky;top:0;background:#fff;z-index:1}
+.rab-ed .inp{padding:7px 8px;font-size:13px;min-width:0;width:100%}.rab-ed td:nth-child(2){min-width:200px}.w-qty{width:64px!important}.w-uom{width:70px!important}.w-price{width:118px!important}.w-cat{width:150px!important}.w-ven{width:130px!important}
+.rab-ed .n{width:26px;text-align:center;font-size:12px}.rab-ed .sub{white-space:nowrap;min-width:100px}.rab-ed .x{background:none;border:0;font-size:18px;color:var(--mut);cursor:pointer;padding:2px 6px}.rab-ed .x:hover{color:var(--red)}
+.rab-sum{background:var(--mint);border-radius:12px;padding:10px 14px;display:flex;flex-direction:column;gap:6px}.rab-sum .big{font-size:20px;color:var(--navy)}.rab-cats{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:13px}
+.rab-items tr.cat td{background:var(--bg);font-weight:800;font-size:12px;color:var(--navy);text-transform:uppercase;letter-spacing:.03em}
+.wa-prev{font-size:13px;line-height:1.45;white-space:pre-wrap}

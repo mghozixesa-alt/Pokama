@@ -1,4 +1,4 @@
-import { ctx, db, esc, today, addDays, fdate, avatar, nick, modal, field, opts, toast, active, unitName, isAdmin, logo, ROLE } from '../core.js';
+import { ctx, db, esc, today, addDays, fdate, avatar, nick, modal, field, opts, toast, active, unitName, isAdmin, logo, ROLE, waReport } from '../core.js';
 
 const CODES = [['SW', 'SW · kerja sendiri'], ['CW', 'CW · kerja bersama tim'], ['CP/SR', 'CP/SR · checkpoint / review dengan atasan'], ['IN/EX', 'IN/EX · acara internal / eksternal'], ['IZIN', 'Izin / cuti']];
 const MODES = [['kantor', 'Di kantor / cabang'], ['wfh', 'WFH'], ['wfe', 'WFE (dekat rumah)'], ['izin', 'Izin / cuti']];
@@ -143,7 +143,7 @@ async function tim(el, params, reload) {
   const onDuty = ppl.filter(p => !leave[p.id]).length;
   el.innerHTML = `
   <header class="ph"><div><span class="muted small">Agenda per jam tim management · klik slot berwarna biru untuk memvalidasi</span><h1>KKH Tim</h1></div>
-    <div class="row gap"><a class="btn" href="#/kkh-tim?u=${scope}&d=${addDays(day, -1)}">‹</a><input type="date" class="inp" id="dpick" value="${day}"><a class="btn" href="#/kkh-tim?u=${scope}&d=${addDays(day, 1)}">›</a></div></header>
+    <div class="row gap"><a class="btn" href="#/kkh-tim?u=${scope}&d=${addDays(day, -1)}">‹</a><input type="date" class="inp" id="dpick" value="${day}"><a class="btn" href="#/kkh-tim?u=${scope}&d=${addDays(day, 1)}">›</a><button class="btn" data-a="wa">Laporan WA</button></div></header>
   <div class="chips">${[['ALL', 'Semua']].concat(biz.map(u => [u.code, u.name])).map(([k, l]) => `<a class="chipbtn${scope === k ? ' on' : ''}" href="#/kkh-tim?u=${k}&d=${day}">${k !== 'ALL' ? logo(k, 18) : ''}${esc(l)}</a>`).join('')}</div>
   <div class="tiles"><div class="tile"><span>Jaga hari ini</span><b>${onDuty} / ${ppl.length}</b></div><div class="tile"><span>Slot terisi</span><b>${rows.filter(r => ids.includes(r.person_id)).length}</b></div>
     <div class="tile"><span>Menunggu validasi</span><b>${rows.filter(r => ids.includes(r.person_id) && r.status === 'siap').length}</b></div><div class="tile"><span>Tervalidasi</span><b>${rows.filter(r => ids.includes(r.person_id) && r.status === 'valid').length}</b></div></div>
@@ -156,6 +156,12 @@ async function tim(el, params, reload) {
     return `<td><button type="button" class="cell${v ? ' valid' : ''}${ready ? ' ready' : ''}" data-id="${r.id}" data-can="${ready ? 1 : 0}" style="--m:${MODE_BG[r.mode]}" title="${esc(r.note || '')}"><b>${esc(r.code)}${v ? ' ✓' : ''}</b><small>${esc((r.note || '').slice(0, 26))}</small></button></td>`; }).join('')}</tr>`).join('')}</tbody></table></section>`;
   el.querySelector('#dpick').onchange = (e) => { location.hash = `#/kkh-tim?u=${scope}&d=${e.target.value}`; };
   el.onclick = async (e) => {
+    if (e.target.closest('[data-a="wa"]')) {
+      let t = `*Laporan KKH Tim${scope !== 'ALL' ? ' · ' + unitName(scope) : ''}*\n${fdate(day)}\nJaga ${onDuty}/${ppl.length} orang · ${rows.filter(r => ids.includes(r.person_id)).length} jam tercatat · ${rows.filter(r => ids.includes(r.person_id) && r.status === 'valid').length} tervalidasi\n`;
+      for (const p of ppl) { const rs = rows.filter(r => r.person_id === p.id).sort((a, b) => a.hour - b.hour);
+        t += `\n*${p.nickname || p.name}*${leave[p.id] ? ' · ' + leave[p.id] : rs.length ? ` · ${rs.length} jam${rs.some(r => r.status === 'valid') ? ', ' + rs.filter(r => r.status === 'valid').length + ' ✓' : ''}` : ' · _KKH kosong_'}\n`;
+        for (const r of rs.filter(r => r.note)) t += `  ${String(r.hour).padStart(2, '0')}.00 ${r.code} – ${r.note}${r.status === 'valid' ? ' ✓' : ''}\n`; }
+      await waReport('KKH ' + fdate(day, false), t + '\npokama.org'); return; }
     const c = e.target.closest('.cell'); if (!c) return;
     const r = rows.find(x => x.id === c.dataset.id); const p = ctx.byId[r.person_id];
     const can = c.dataset.can === '1';

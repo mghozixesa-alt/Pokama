@@ -210,3 +210,17 @@ export async function confirmBox(text, label = 'Ya, lanjutkan') {
 }
 export const field = (label, inner, hint) => `<label class="fld"><span>${esc(label)}</span>${inner}${hint ? `<small>${esc(hint)}</small>` : ''}</label>`;
 export const need = (v, msg) => { if (v === undefined || v === null || String(v).trim() === '') throw new Error(msg); return v; };
+
+// Laporan siap kirim ke WhatsApp: pratinjau, salin, atau buka WhatsApp (gratis, lewat WA masing-masing)
+export async function waReport(title, text) {
+  const href = 'https://wa.me/?text=' + encodeURIComponent(text);
+  return modal('Laporan WhatsApp · ' + title,
+    `<p class="muted small" style="margin-top:0">Teks sudah diformat untuk WhatsApp (*tebal*, daftar). Bisa diedit dulu sebelum dikirim ke grup.</p>
+     <textarea name="t" class="inp mono wa-prev" rows="14">${esc(text)}</textarea>
+     <div class="row gap"><a class="btn pri" id="wa-open" href="${esc(href)}" target="_blank" rel="noopener">Buka WhatsApp</a><span class="muted small">atau Salin lalu tempel di grup</span></div>`,
+    { submit: 'Salin teks', onSubmit: async (f, form) => {
+      const v = form.querySelector('[name=t]').value;
+      try { await navigator.clipboard.writeText(v); } catch (e) { form.querySelector('[name=t]').select(); document.execCommand('copy'); }
+      toast('Teks laporan disalin'); } });
+}
+document.addEventListener('input', (e) => { if (!e.target.classList || !e.target.classList.contains('wa-prev')) return; const a = document.getElementById('wa-open'); if (a) a.href = 'https://wa.me/?text=' + encodeURIComponent(e.target.value); });
