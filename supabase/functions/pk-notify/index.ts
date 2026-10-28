@@ -2,14 +2,17 @@
 // mode "instant" (tiap 5 menit): kirim notifikasi penting yang belum terkirim, digabung per orang.
 // mode "digest"  (07.00 WIB): ringkasan pagi per orang, sekali sehari.
 // mode "test"    : kirim email uji ke pemanggil (harus login sebagai CEO / Kepala Staf).
-// Tanpa RESEND_API_KEY, tidak ada yang dikirim dan antrean tetap tersimpan.
+// Layanan: Brevo (BREVO_API_KEY) atau Resend (RESEND_API_KEY). Tanpa kunci, tidak ada yang dikirim dan antrean tetap tersimpan.
 import { createClient } from "npm:@supabase/supabase-js@2.45.4";
 
 const URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const ANON = Deno.env.get("SUPABASE_ANON_KEY")!;
-const KEY = Deno.env.get("RESEND_API_KEY") || "";
-const FROM = Deno.env.get("PK_MAIL_FROM") || "Sistem Kerja Pokama <notifikasi@pokama.org>";
+const BREVO = Deno.env.get("BREVO_API_KEY") || "";
+const RESEND = Deno.env.get("RESEND_API_KEY") || "";
+const KEY = BREVO || RESEND;
+const FROM_NAME = Deno.env.get("PK_MAIL_NAME") || "Sistem Kerja Pokama";
+const FROM_EMAIL = Deno.env.get("PK_MAIL_FROM") || "notifikasi@pokama.org";
 const APP = "https://pokama.org/";
 const db = createClient(URL, SERVICE, { auth: { persistSession: false } });
 const json = (b: unknown, s = 200) => new Response(JSON.stringify(b), { status: s, headers: { "Content-Type": "application/json" } });
@@ -37,9 +40,12 @@ const item = (n: any) => `<tr><td style="padding:10px 0;border-top:1px solid #EE
   <div style="margin-top:6px"><a href="${esc(APP + (n.link || ""))}" style="font-size:13px;font-weight:800;color:#067A70">Buka →</a></div></td></tr>`;
 
 async function send(to: string, subject: string, html: string) {
-  if (!KEY) return { ok: false, skipped: "RESEND_API_KEY belum diisi" };
-  const r = await fetch("https://api.resend.com/emails", { method: "POST", headers: { Authorization: "Bearer " + KEY, "Content-Type": "application/json" },
-    body: JSON.stringify({ from: FROM, to: [to], subject, html }) });
+  if (!KEY) return { ok: false, skipped: "Kunci layanan email (BREVO_API_KEY) belum diisi" };
+  const r = BREVO
+    ? await fetch("https://api.brevo.com/v3/smtp/email", { method: "POST", headers: { "api-key": BREVO, "Content-Type": "application/json", accept: "application/json" },
+        body: JSON.stringify({ sender: { name: FROM_NAME, email: FROM_EMAIL }, to: [{ email: to }], subject, htmlContent: html }) })
+    : await fetch("https://api.resend.com/emails", { method: "POST", headers: { Authorization: "Bearer " + RESEND, "Content-Type": "application/json" },
+        body: JSON.stringify({ from: `${FROM_NAME} <${FROM_EMAIL}>`, to: [to], subject, html }) });
   return r.ok ? { ok: true } : { ok: false, error: await r.text() };
 }
 
@@ -120,9 +126,10 @@ Deno.serve(async (req) => {
       if (!(role === "ceo" || role === "kepala_staf")) return json({ error: "Hanya CEO atau Kepala Staf" }, 403);
       const { data: p } = await db.from("pk_people").select("name,nickname,email").eq("id", me).maybeSingle();
       if (!p?.email) return json({ error: "Email Anda belum terdaftar" }, 400);
+      if (!KEY) return json({ error: "Layanan email belum disambungkan (BREVO_API_KEY belum diisi)" }, 400);
       const r = await send(p.email, "Uji email notifikasi Pokama", shell(p.nickname || p.name, "Email notifikasi sudah tersambung",
         `<p style="font-size:14px;color:#3B4250">Mulai sekarang hal yang perlu tindakan dikirim langsung, sisanya dirangkum setiap pagi jam 07.00.</p>${btn(APP, "Buka Sistem Kerja")}`));
-      return json({ to: p.email, ...r }, r.ok ? 200 : 500);
+      return json({ to: p.email, ...r }, r.ok ? 200 : 400);
     }
     return json(await instant());
   } catch (e) { return json({ error: String(e) }, 500); }
