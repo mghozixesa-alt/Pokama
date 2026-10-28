@@ -41,16 +41,16 @@ export default async function unit(el, params, reload) {
     <div class="row gap"><input type="month" class="inp" id="mpick" value="${m.slice(0, 7)}">${isFin() || isAdmin() ? '<button class="btn" data-a="liga">Isi poin Liga</button>' : ''}<button class="btn pri" data-a="lapor">+ Lapor omzet</button></div></header>
   <div class="ucards">${cards.map((c, i) => { const p = c.t ? c.a / c.t : null; const s = p !== null ? stOf(p) : null; const L = lead(c.u.code); const tn = nextT(c.u.code);
     return `<section class="card ucard${i === 0 && c.p !== null ? ' first' : ''}">
-      <div class="row gap">${c.p != null ? `<span class="rank">#${i + 1}</span>` : ''}${logo(c.u.code, 46)}<span style="flex:1"><b class="big">${esc(c.u.name)}</b><small class="row gap6">${L ? avatar(L.id, 20) + ' Leader ' + esc(L.nickname || L.name) : 'Gabungan ' + c.lines.length + ' lini'}</small></span>
-        <span class="r"><b class="lpts">${c.p ?? '—'}</b><small class="${c.pp !== null && c.p > c.pp ? 'green-t' : c.pp !== null && c.p < c.pp ? 'red' : 'muted'}">${c.p === null ? 'poin Liga' : c.pp === null ? 'poin' : c.p > c.pp ? '▲ ' + (c.p - c.pp) : c.p < c.pp ? '▼ ' + (c.pp - c.p) : '– tetap'}</small></span></div>
+      <div class="uhead">${c.p != null ? `<span class="rank">#${i + 1}</span>` : ''}${logo(c.u.code, 44)}<span class="uname"><b>${esc(c.u.name)}</b><small>${L ? avatar(L.id, 18) + '<span>Leader ' + esc(L.nickname || L.name) + '</span>' : '<span>Gabungan ' + c.lines.length + ' lini</span>'}</small></span>
+        ${c.p != null ? `<span class="upts"><b>${c.p}</b><small class="${c.pp !== null && c.p > c.pp ? 'green-t' : c.pp !== null && c.p < c.pp ? 'red' : 'muted'}">${c.pp === null ? 'poin Liga' : c.p > c.pp ? '▲ ' + (c.p - c.pp) : c.p < c.pp ? '▼ ' + (c.pp - c.p) : '– tetap'}</small></span>` : ''}</div>
       <div><div class="row between"><span class="lab">OMZET ${fmonth(m).toUpperCase()}</span>${s ? chip(s[0], s[1]) : chip('Target belum ada')}</div>
-        <div class="row between"><b class="big">${jt(c.a)}</b><span class="muted small">${c.t ? 'dari ' + jt(c.t) + ' · <b>' + Math.round(p * 100) + '%</b>' : 'target belum disahkan'}</span></div>
+        <div class="row between"><b class="big">${jt(c.a)}</b><span class="muted small">${c.t ? 'dari ' + jt(c.t) + ' · <b>' + Math.round(p * 100) + '%</b>' : ''}</span></div>
         <span class="bar lg"><i style="width:${p ? Math.min(100, p * 100) : 0}%;background:${s ? s[2] : '#C9CED6'}"></i></span></div>
       ${c.lines.length ? `<div class="mini">${c.lines.map(x => { const q = x.t ? x.a / x.t : null; const ss = q !== null ? stOf(q) : null;
-        return `<div><span>${esc(x.l.name)}</span><span class="bar"><i style="width:${q ? Math.min(100, q * 100) : 0}%;background:${ss ? ss[2] : '#C9CED6'}"></i></span><b class="${q !== null && q < .75 ? 'red' : ''}">${jt(x.a)}${x.t ? ` <small class="muted">/ ${jt(x.t)}</small>` : ` <small class="muted">/ target —</small>`}</b></div>`; }).join('')}</div>` : ''}
+        return `<div><span>${esc(x.l.name)}</span><span class="bar"><i style="width:${q ? Math.min(100, q * 100) : 0}%;background:${ss ? ss[2] : '#C9CED6'}"></i></span><b class="${q !== null && q < .75 ? 'red' : ''}">${jt(x.a)}<small>${x.t ? 'dari ' + jt(x.t) + ' · ' + Math.round(q * 100) + '%' : 'belum ada target'}</small></b></div>`; }).join('')}</div>` : ''}
       <div><span class="lab">KPI UTAMA</span><b>${esc(c.u.kpi || '—')}</b></div>
       <div class="tbox"><div class="row between small"><span class="lab">TARGET ${fmonth(nm).toUpperCase()}</span><span class="${tn ? 'green-t' : 'red'}">${tn ? ST[tn.status] : 'Belum diisi'}</span></div>
-        ${tn ? `<div class="row between"><b>${rp(tn.amount)}</b><span class="row gap6">${isFin() && tn.status === 'usulan' ? `<button class="btn sm" data-ts="${tn.ids.join(',')}" data-s="dicek">Tandai dicek</button>` : ''}${isCeo() && tn.status !== 'sah' ? `<button class="btn sm pri" data-ts="${tn.ids.join(',')}" data-s="sah">Sahkan</button>` : ''}${!tn.lined && tn.status === 'usulan' && (tn.proposed_by === me || isFin() || isAdmin()) ? `<button class="btn sm danger" data-tdel="${tn.id}">Hapus usulan</button>` : ''}</span></div>` : ''}
+        ${tn ? `<div class="row between"><b>${rp(tn.amount)}</b><span class="row gap6">${isFin() && tn.status === 'usulan' ? `<button class="btn sm" data-ts="${tn.ids.join(',')}" data-s="dicek">Tandai dicek</button>` : ''}${isCeo() && tn.status !== 'sah' ? `<button class="btn sm pri" data-ts="${tn.ids.join(',')}" data-s="sah">Sahkan</button>` : ''}${!tn.lined && (isCeo() || (tn.status === 'usulan' && (tn.proposed_by === me || isFin() || isAdmin()))) ? `<button class="btn sm danger" data-tdel="${tn.id}">${tn.status === 'usulan' ? 'Hapus usulan' : 'Hapus target'}</button>` : ''}</span></div>` : ''}
         ${tn && tn.lined ? `<div class="tlines">${c.lines.map(x => { const r = tn.rows.find(y => y.unit_code === x.l.code); return `<div><span>${esc(x.l.name)}</span><b>${r ? jt(r.amount) : '—'}</b></div>`; }).join('')}</div>` : ''}
         ${canProp(c.u.code) && (c.lines.length || !tn || tn.status === 'usulan') ? (c.lines.length
           ? `<button class="btn sm pri" data-tl="${c.u.code}">Atur target tiap cabang / lini</button>`
@@ -110,7 +110,7 @@ export default async function unit(el, params, reload) {
           ${ls.map(l => { const cur = sumOm([l.code]);
             return `<label class="bulk-r"><span>${esc(l.name)}<small class="muted" data-st="${l.code}"></small><small class="muted">${cur ? ' · omzet ' + fmonth(m) + ' ' + jt(cur) : ''}</small></span><span class="pre"><b>Rp</b><input name="t_${l.code}" class="inp-n" inputmode="numeric" placeholder="${cur ? Math.round(cur * 1.05).toLocaleString('id-ID') : '0'}"></span></label>`; }).join('')}
           <div class="row between bulk-sum"><span class="lab">TOTAL ${esc(u.name.toUpperCase())}</span><b id="ttot">Rp0</b></div>
-          <p class="note">Lini yang dikosongkan tidak diberi target. Yang sudah dicek Keuangan atau disahkan CEO terkunci${isCeo() ? ', kecuali untuk Anda (CEO)' : ''}.${tgt(code, nm) ? ` Target unit ${jt(tgt(code, nm).amount)} yang lama digantikan oleh target per lini.` : ''}</p>`;
+          <p class="note">Lini yang dikosongkan tidak diberi target. ${isCeo() ? 'Karena Anda CEO, target yang disimpan langsung sah. Kosongkan kolom untuk menghapus target cabang itu.' : 'Yang sudah dicek Keuangan atau disahkan CEO terkunci.'}${tgt(code, nm) ? ` Target unit ${jt(tgt(code, nm).amount)} yang lama digantikan oleh target per lini.` : ''}</p>`;
         const T0 = (lc, mon) => allT.find(t => t.unit_code === lc && t.month === mon);
         const onOpen = (ev) => { document.removeEventListener('modal:open', onOpen); const form = ev.detail;
           const total = () => { let t = 0; form.querySelectorAll('[name^="t_"]').forEach(i => t += num(i.value) || 0); form.querySelector('#ttot').textContent = rp(t); };
@@ -127,7 +127,8 @@ export default async function unit(el, params, reload) {
           for (const l of ls) { const ex = T0(l.code, mon); if (ex && ex.status !== 'usulan' && !isCeo()) continue; const v = num(f['t_' + l.code]);
             if (v && ex) { if (+ex.amount !== v) { await db.update('pk_targets', 'id=eq.' + ex.id, { amount: v, updated_at: new Date().toISOString() }); n++; } }
             else if (v) { await db.insert('pk_targets', { unit_code: l.code, month: mon, amount: v, status: 'usulan', proposed_by: me }); n++; }
-            else if (ex && ex.status === 'usulan') { await db.remove('pk_targets', 'id=eq.' + ex.id); n++; } }
+            else if (ex && (ex.status === 'usulan' || isCeo())) { await db.remove('pk_targets', 'id=eq.' + ex.id); n++; } }
+          const old = tgt(code, mon); if (old && isCeo() && ls.some(l => num(f['t_' + l.code]))) { await db.remove('pk_targets', 'id=eq.' + old.id); n++; }
           if (!n) throw new Error('Belum ada target yang diisi atau diubah');
           if (isCeo()) { const fresh = await db.get('pk_targets', `select=id,status&month=eq.${mon}&unit_code=in.(${ls.map(l => l.code).join(',')})`);
             for (const t of fresh.filter(x => x.status !== 'sah')) await db.rpc('pk_target_status', { p_id: t.id, p_status: 'sah' }); } } });
@@ -149,7 +150,7 @@ export default async function unit(el, params, reload) {
         else await db.insert('pk_targets', { unit_code: code, month: nm, amount: v, status: 'usulan', proposed_by: me });
         toast('Target ' + fmonth(nm) + ' diusulkan'); return reload(); }
       const td = e.target.closest('[data-tdel]');
-      if (td) { if (!await confirmBox('Hapus usulan target ini?', 'Ya, hapus')) return; await db.remove('pk_targets', 'id=eq.' + td.dataset.tdel); toast('Usulan target dihapus'); return reload(); }
+      if (td) { if (!await confirmBox('Hapus target ini? Kartu unit kembali "Belum diisi" dan target bisa diisi ulang.', 'Ya, hapus')) return; await db.remove('pk_targets', 'id=eq.' + td.dataset.tdel); toast('Usulan target dihapus'); return reload(); }
       const om = e.target.closest('[data-om]');
       if (om) { if (!await confirmBox('Hapus laporan omzet ini? Setelah itu bisa lapor ulang dengan angka yang benar.', 'Ya, hapus')) return; await db.remove('pk_omzet', 'id=eq.' + om.dataset.om); toast('Laporan omzet dihapus'); return reload(); }
       const ts = e.target.closest('[data-ts]'); if (ts) { for (const id of ts.dataset.ts.split(',')) { const t0 = targets.find(x => x.id === id); if (t0 && t0.status === ts.dataset.s) continue; await db.rpc('pk_target_status', { p_id: id, p_status: ts.dataset.s }); } toast('Tersimpan'); reload(); }

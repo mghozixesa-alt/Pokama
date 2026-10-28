@@ -228,3 +228,7 @@ button.chipdel{border:0;cursor:pointer;font:inherit;font-size:11px;font-weight:8
 .tlines{display:grid;grid-template-columns:1fr 1fr;gap:2px 14px;font-size:13px;margin:6px 0}.tlines>div{display:flex;justify-content:space-between;gap:6px}.tlines span{color:var(--mut)}
 @media (max-width:640px){.bulk-r .pre{width:150px}.tlines{grid-template-columns:1fr}}
 .mini b{white-space:nowrap}
+.uhead{display:flex;align-items:center;gap:12px}.uname{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}.uname>b{font-size:20px;font-weight:900;color:var(--navy);line-height:1.15;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.uname>small{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--mut)}.uname>small .av{flex:none}.upts{text-align:right;display:flex;flex-direction:column;line-height:1.1}.upts b{font-size:28px;font-weight:900;color:var(--navy)}.upts small{font-size:12px}
+.mini>div{grid-template-columns:minmax(0,1fr) 64px 110px}.mini>div>span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mini b{display:flex;flex-direction:column;align-items:flex-end;line-height:1.15}.mini b small{font-size:11px;font-weight:600;color:var(--mut)}.mini b.red small{color:var(--red)}
