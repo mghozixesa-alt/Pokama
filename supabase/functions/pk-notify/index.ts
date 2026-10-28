@@ -15,7 +15,8 @@ const FROM_NAME = Deno.env.get("PK_MAIL_NAME") || "Sistem Kerja Pokama";
 const FROM_EMAIL = Deno.env.get("PK_MAIL_FROM") || "notifikasi@pokama.org";
 const APP = "https://pokama.org/";
 const db = createClient(URL, SERVICE, { auth: { persistSession: false } });
-const json = (b: unknown, s = 200) => new Response(JSON.stringify(b), { status: s, headers: { "Content-Type": "application/json" } });
+const CORS: Record<string, string> = { "Access-Control-Allow-Origin": "https://pokama.org", "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type", "Access-Control-Allow-Methods": "POST, OPTIONS" };
+const json = (b: unknown, s = 200) => new Response(JSON.stringify(b), { status: s, headers: { "Content-Type": "application/json", ...CORS } });
 const esc = (s: unknown) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]!));
 const KIND: Record<string, string> = { tugas: "Tugas", review: "Review", rab: "Belanja", kkh: "KKH", cuti: "Kehadiran", permintaan: "Permintaan" };
 const wibToday = () => new Date(Date.now() + 7 * 3600e3).toISOString().slice(0, 10);
@@ -157,6 +158,7 @@ async function digest(force = false) {
 }
 
 Deno.serve(async (req) => {
+  if (req.method === "OPTIONS") return new Response("ok", { headers: CORS });
   if (req.method !== "POST") return json({ error: "POST saja" }, 405);
   let body: any = {}; try { body = await req.json(); } catch { /* kosong */ }
   try {
