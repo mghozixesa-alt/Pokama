@@ -1,0 +1,348 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WA Leads — Pokama</title>
+<link rel="icon" href="logo-pokama.png">
+
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F3F5F8}
+a{color:#1D3149}a:hover{color:#0F1D2E}
+</style>
+
+<link rel="stylesheet" href="mobile.css">
+<link rel="stylesheet" href="fun.css">
+<script src="gate.js"></script>
+<script src="dc-lite.js"></script>
+<script src="fun.js"></script>
+<script src="mobile.js"></script>
+</head>
+<body>
+<div class="mbar"><button type="button" class="mbar-btn" aria-label="Buka menu"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button><img src="logo-pokama.png" alt="Pokama"><span class="mbar-title">WA Leads</span></div>
+<div class="mscrim"></div>
+<template id="dc-tpl">
+
+<div style="min-height: 2400px; display: flex; flex-wrap: wrap; background: #F3F5F8; color: #1F2933; font-family: 'Nunito', system-ui, sans-serif; font-size: 14px; line-height: 1.45;">
+
+<nav aria-label="Menu utama" style="flex: 1 1 232px; box-sizing: border-box; background: #FFFFFF; border-right: 1px solid #E3E6EB; padding: 24px 16px; display: flex; flex-direction: column; gap: 20px;">
+<div style="display: flex; flex-direction: column; gap: 8px; padding: 0 8px;">
+<img src="logo-pokama.png" alt="Pokama" style="width: 140px; height: auto;">
+<span style="font-size: 12px; color: #5B6573; font-weight: 600;">Divisi Marketing</span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 2px;">
+<span style="font-size: 11px; font-weight: 800; letter-spacing: 0.08em; color: #5B6573; padding: 0 12px 4px;">MARKETING</span>
+<a href="Main.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250;"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"></rect><rect x="14" y="3" width="7" height="5" rx="1.5"></rect><rect x="14" y="12" width="7" height="9" rx="1.5"></rect><rect x="3" y="16" width="7" height="5" rx="1.5"></rect></svg><span style="flex-grow: 1;">Ringkasan</span></a>
+<a href="Instagram.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250;"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"></rect><circle cx="12" cy="12" r="4"></circle><circle cx="17.5" cy="6.5" r="0.6"></circle></svg><span style="flex-grow: 1;">Sosial Media</span></a>
+<a href="KOL.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250;"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.4l-5.2 2.7 1-5.8L3.5 9.2l5.9-.9z"></path></svg><span style="flex-grow: 1;">KOL</span><span style="min-width: 22px; height: 22px; border-radius: 11px; background: #C2410C; color: #FFFFFF; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; padding: 0 6px; box-sizing: border-box;">2</span></a>
+<a href="Ads.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250;"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11v2a1 1 0 001 1h3l6 4V6L7 10H4a1 1 0 00-1 1z"></path><path d="M17 9a4 4 0 010 6"></path></svg><span style="flex-grow: 1;">Ads</span></a>
+<a href="Maps.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250;"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0114 0C19 14.8 12 21 12 21z"></path><circle cx="12" cy="9.5" r="2.5"></circle></svg><span style="flex-grow: 1;">Google Maps</span><span style="min-width: 22px; height: 22px; border-radius: 11px; background: #C2410C; color: #FFFFFF; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; padding: 0 6px; box-sizing: border-box;">9</span></a>
+<a href="WALeads.dc.html" aria-current="page" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 700; color: #1D3149; background: #DDF5F2;"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 01-11.6 7.1L4 20l1-4.6A8 8 0 1121 12z"></path><path d="M9 10.5h6M9 13.5h4"></path></svg><span style="flex-grow: 1;">WA Leads</span><span style="min-width: 22px; height: 22px; border-radius: 11px; background: #C2410C; color: #FFFFFF; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; padding: 0 6px; box-sizing: border-box;">6</span></a>
+<a href="WAStory.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250;"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5" stroke-dasharray="3.2 2.4"></circle><circle cx="12" cy="12" r="3.5"></circle></svg><span style="flex-grow: 1;">WA Story &amp; Broadcast</span></a>
+<a href="Konten.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250;"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M3 10h18M8 3v4M16 3v4M8 14h3M8 17h6"></path></svg><span style="flex-grow: 1;">Kalender Konten</span><span style="min-width: 22px; height: 22px; border-radius: 11px; background: #C2410C; color: #FFFFFF; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; padding: 0 6px; box-sizing: border-box;">4</span></a>
+<a href="TV.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250;"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="2"></rect><path d="M8 20h8M12 16v4"></path></svg><span style="flex-grow: 1;">Mode layar TV</span></a>
+</div>
+<div style="display: flex; flex-direction: column; gap: 2px;">
+<span style="font-size: 11px; font-weight: 800; letter-spacing: 0.08em; color: #5B6573; padding: 0 12px 4px;">SISTEM</span>
+<a href="Integrasi.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250;"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 7H7a5 5 0 000 10h2M15 7h2a5 5 0 010 10h-2M8 12h8"></path></svg><span style="flex-grow: 1;">Integrasi &amp; Sinkron</span></a>
+<a href="DataInput.dc.html" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: #3B4250;"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="6" rx="7" ry="3"></ellipse><path d="M5 6v6c0 1.7 3.1 3 7 3s7-1.3 7-3V6M5 12v6c0 1.7 3.1 3 7 3s7-1.3 7-3v-6"></path></svg><span style="flex-grow: 1;">Input &amp; Kualitas Data</span></a>
+</div>
+<div style="display: flex; flex-direction: column; gap: 2px;">
+<span style="font-size: 11px; font-weight: 800; letter-spacing: 0.08em; color: #5B6573; padding: 0 12px 4px;">TAUTAN CEPAT</span>
+<a href="https://claude.ai/artifact/DLcZe37XpMrYqTjz4brsot" target="_blank" rel="noopener" style="display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; text-decoration: none; color: #067A70; font-weight: 700;"><span style="flex-grow: 1;">Sistem Kerja Pokama</span><span aria-hidden="true">↗</span></a>
+</div>
+<div style="margin-top: auto; display: flex; align-items: center; gap: 10px; padding: 14px 12px 0; border-top: 1px solid #E3E6EB;">
+<div aria-hidden="true" style="width: 36px; height: 36px; border-radius: 18px; background: #DDF5F2; color: #1D3149; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px;">GZ</div>
+<div style="display: flex; flex-direction: column;"><span style="font-weight: 600;">Ghozy</span><span style="font-size: 12px; color: #5B6573;">CEO · Holding</span></div>
+</div>
+</nav>
+
+<main style="flex: 999 1 560px; min-width: 0; box-sizing: border-box; padding: 28px 36px 48px; display: flex; flex-direction: column; gap: 22px;">
+
+<header style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px;">
+<div style="display: flex; flex-direction: column; gap: 4px;">
+<span style="font-size: 13px; color: #5B6573; font-weight: 600;">Oktober 2026 · data 1–27 Oktober · semua nomor CS</span>
+<h1 style="margin: 0; font-size: 30px; font-weight: 900; letter-spacing: -0.01em;">WA Leads</h1>
+</div>
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px;">
+<span style="font-size: 12px; font-weight: 700; color: #5B6573; border: 1px dashed #A9B4C2; border-radius: 18px; padding: 8px 12px;">Data contoh</span>
+<button type="button" style="height: 44px; padding: 0 16px; border-radius: 10px; border: 1px solid #E3E6EB; background: #FFFFFF; color: #1D3149; font-family: inherit; font-size: 14px; font-weight: 700; cursor: pointer;">Buat tautan WA berkode</button>
+<button type="button" style="height: 44px; padding: 0 18px; border-radius: 10px; border: 0; background: #09BEAF; color: #1D3149; font-family: inherit; font-size: 14px; font-weight: 800; cursor: pointer;">Isi rekap CS hari ini</button>
+</div>
+</header>
+
+<section aria-label="Cara data masuk" style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px 24px; background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 16px; padding: 14px 18px; font-size: 13px; color: #3B4250;">
+<span style="font-weight: 800; color: #1D3149;">Cara data masuk:</span>
+<span>① Sumber dari kode di pesan pertama, misalnya <strong>[ADS-MTR]</strong>, <strong>[IG-BIO]</strong>, <strong>[KOL-ANDI]</strong></span>
+<span>② CS memberi label di WA Business: Baru · Penawaran · Closing · Gagal + alasan</span>
+<span>③ Rekap otomatis dari klik tautan + rekap CS harian sebelum 21.00</span>
+</section>
+
+<div role="group" aria-label="Filter unit bisnis" style="display: flex; flex-wrap: wrap; gap: 8px;">
+<template data-sc="for" list="{{filters}}" as="f" hint-placeholder-count="4">
+<button type="button" onClick="{{f.pick}}" aria-pressed="{{f.pressed}}" style="display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 18px; border-radius: 22px; border: 1px solid {{f.border}}; background: {{f.bg}}; color: {{f.fg}}; font-family: inherit; font-size: 14px; font-weight: 700; cursor: pointer;"><span style="width: 10px; height: 10px; border-radius: 5px; background: {{f.dot}};"></span>{{f.label}}</button>
+</template>
+</div>
+
+<section aria-label="Metrik WA" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 14px;">
+<template data-sc="for" list="{{tiles}}" as="t" hint-placeholder-count="8">
+<div style="background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 20px; padding: 16px 18px; display: flex; flex-direction: column; gap: 4px;">
+<span style="font-size: 13px; font-weight: 700; color: #3B4250;">{{t.label}}</span>
+<span style="font-size: 26px; font-weight: 900; letter-spacing: -0.02em; color: #1D3149;">{{t.value}}</span>
+<span style="font-size: 12px; font-weight: 700; color: {{t.color}};">{{t.note}}</span>
+</div>
+</template>
+</section>
+
+<div style="display: flex; flex-wrap: wrap; gap: 22px; align-items: stretch;">
+<section aria-labelledby="q-h" style="flex: 2 1 420px; min-width: 0; background: #FFFFFF; border: 2px solid #F2B8A0; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 10px;">
+<div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 8px; flex-wrap: wrap;"><div style="display: flex; flex-direction: column;"><h2 id="q-h" style="margin: 0; font-size: 18px; font-weight: 800;">Perlu dibalas sekarang</h2><span style="font-size: 13px; color: #5B6573;">Chat yang menunggu lebih dari 1 jam · per 13.15</span></div><span style="font-size: 12px; font-weight: 800; border-radius: 10px; padding: 3px 10px; background: #FCEBDD; color: #9A3F0A;">{{queueCount}} chat</span></div>
+<template data-sc="for" list="{{queue}}" as="q" hint-placeholder-count="6">
+<div style="display: grid; grid-template-columns: 74px minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 10px 12px; border-radius: 12px; background: #F3F5F8;">
+<span style="font-size: 12px; font-weight: 900; color: #9A3F0A;">{{q.wait}}</span>
+<div style="display: flex; flex-direction: column; min-width: 0;"><span style="font-size: 13px; font-weight: 800;">{{q.msg}}</span><span style="font-size: 12px; color: #5B6573;">{{q.code}} · {{q.cs}}</span></div>
+<span style="font-size: 11px; font-weight: 800; border-radius: 6px; padding: 2px 8px; background: #FFFFFF; color: #1D3149;">{{q.unit}}</span>
+</div>
+</template>
+</section>
+
+<section aria-labelledby="fn-h" style="flex: 3 1 520px; min-width: 0; background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+<div style="display: flex; flex-direction: column;"><h2 id="fn-h" style="margin: 0; font-size: 18px; font-weight: 800;">Corong percakapan</h2><span style="font-size: 13px; color: #5B6573;">Dari chat masuk sampai DP diterima. Persen = lanjut dari tahap sebelumnya.</span></div>
+<template data-sc="for" list="{{funnel}}" as="s" hint-placeholder-count="6">
+<div style="display: grid; grid-template-columns: 170px minmax(0, 1fr) 56px; align-items: center; gap: 12px;">
+<span style="font-size: 13px; font-weight: 700;">{{s.label}}</span>
+<div style="height: 28px; background: #F3F5F8; border-radius: 8px; overflow: hidden;"><div style="height: 100%; width: {{s.w}}; background: {{s.c}}; border-radius: 8px; display: flex; align-items: center; padding-left: 10px; box-sizing: border-box; color: {{s.ink}}; font-size: 13px; font-weight: 800;">{{s.v}}</div></div>
+<span style="font-size: 13px; font-weight: 800; text-align: right; color: {{s.convColor}};">{{s.conv}}</span>
+</div>
+</template>
+<span style="font-size: 12px; color: #5B6573;">Kebocoran terbesar ada di tahap dengan persen merah — di situ CS paling perlu dibantu.</span>
+</section>
+</div>
+
+<section aria-labelledby="src-h" style="background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 8px;">
+<div style="display: flex; flex-direction: column;"><h2 id="src-h" style="margin: 0; font-size: 18px; font-weight: 800;">Per sumber chat</h2><span style="font-size: 13px; color: #5B6573;">Sumber yang closing-nya tinggi layak ditambah budget atau kontennya.</span></div>
+<span style="font-size: 12px; color: #5B6573;">Batang = jumlah chat · angka kanan = chat jadi closing</span>
+</div>
+<div style="overflow-x: auto;">
+<table style="width: 100%; min-width: 980px; border-collapse: collapse; font-size: 13px;">
+<thead><tr style="text-align: right; color: #5B6573; font-size: 12px;">
+<th scope="col" style="text-align: left; padding: 8px; border-bottom: 1px solid #E3E6EB; font-weight: 800;">Sumber</th>
+<th scope="col" style="text-align: left; padding: 8px; border-bottom: 1px solid #E3E6EB; font-weight: 800; width: 26%;">Chat masuk</th>
+<th scope="col" style="padding: 8px; border-bottom: 1px solid #E3E6EB; font-weight: 800;">Porsi</th>
+<th scope="col" style="padding: 8px; border-bottom: 1px solid #E3E6EB; font-weight: 800;">Balas pertama</th>
+<th scope="col" style="padding: 8px; border-bottom: 1px solid #E3E6EB; font-weight: 800;">Closing</th>
+<th scope="col" style="padding: 8px; border-bottom: 1px solid #E3E6EB; font-weight: 800;">Chat → closing</th>
+<th scope="col" style="padding: 8px; border-bottom: 1px solid #E3E6EB; font-weight: 800;">Omzet</th>
+<th scope="col" style="padding: 8px; border-bottom: 1px solid #E3E6EB; font-weight: 800;">Nilai / closing</th>
+</tr></thead>
+<tbody>
+<template data-sc="for" list="{{sources}}" as="r" hint-placeholder-count="8">
+<tr style="text-align: right;">
+<th scope="row" style="text-align: left; padding: 10px 8px; border-bottom: 1px solid #EEF0F3;"><span style="font-weight: 800;">{{r.name}}</span><br><span style="font-size: 12px; font-weight: 600; color: #5B6573;">{{r.code}}</span></th>
+<td style="text-align: left; padding: 10px 8px; border-bottom: 1px solid #EEF0F3;"><div style="display: flex; align-items: center; gap: 8px;"><div style="flex: 1; height: 10px; background: #F3F5F8; border-radius: 5px; overflow: hidden;"><div style="height: 100%; width: {{r.w}}; background: {{r.bar}}; border-radius: 5px;"></div></div><span style="font-weight: 800; min-width: 36px; text-align: right;">{{r.chat}}</span></div></td>
+<td style="padding: 10px 8px; border-bottom: 1px solid #EEF0F3;">{{r.share}}</td>
+<td style="padding: 10px 8px; border-bottom: 1px solid #EEF0F3;">{{r.resp}}</td>
+<td style="padding: 10px 8px; border-bottom: 1px solid #EEF0F3;">{{r.close}}</td>
+<td style="padding: 10px 8px; border-bottom: 1px solid #EEF0F3;"><span style="display: inline-block; min-width: 52px; text-align: center; border-radius: 6px; padding: 2px 6px; font-weight: 800; background: {{r.convBg}}; color: {{r.convFg}};">{{r.conv}}</span></td>
+<td style="padding: 10px 8px; border-bottom: 1px solid #EEF0F3; font-weight: 800;">{{r.omzet}}</td>
+<td style="padding: 10px 8px; border-bottom: 1px solid #EEF0F3;">{{r.aov}}</td>
+</tr>
+</template>
+</tbody>
+</table>
+</div>
+</section>
+
+<section aria-labelledby="cs-h" style="background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+<div style="display: flex; flex-direction: column;"><h2 id="cs-h" style="margin: 0; font-size: 18px; font-weight: 800;">Per nomor CS</h2><span style="font-size: 13px; color: #5B6573;">Target balas pertama ≤ 5 menit di jam kerja · chat tanpa tindak lanjut 48 jam = harus di-follow-up.</span></div>
+<div style="overflow-x: auto;">
+<table style="width: 100%; min-width: 900px; border-collapse: collapse; font-size: 13px;">
+<thead><tr style="text-align: right; color: #5B6573; font-size: 12px;">
+<th scope="col" style="text-align: left; padding: 8px; border-bottom: 1px solid #E3E6EB; font-weight: 800;">Nomor CS</th>
+<th scope="col" style="padding: 8px; border-bottom: 1px solid #E3E6EB; font-weight: 800;">Chat ditangani</th>
+<th scope="col" style="padding: 8px; border-bottom: 1px solid #E3E6EB; font-weight: 800;">Balas pertama (median)</th>
+<th scope="col" style="padding: 8px; border-bottom: 1px solid #E3E6EB; font-weight: 800;">Telat &gt; 1 jam</th>
+<th scope="col" style="padding: 8px; border-bottom: 1px solid #E3E6EB; font-weight: 800;">Closing</th>
+<th scope="col" style="padding: 8px; border-bottom: 1px solid #E3E6EB; font-weight: 800;">Chat → closing</th>
+<th scope="col" style="padding: 8px; border-bottom: 1px solid #E3E6EB; font-weight: 800;">Belum di-follow-up</th>
+<th scope="col" style="padding: 8px; border-bottom: 1px solid #E3E6EB; font-weight: 800;">Label lengkap</th>
+</tr></thead>
+<tbody>
+<template data-sc="for" list="{{cs}}" as="c" hint-placeholder-count="5">
+<tr style="text-align: right;">
+<th scope="row" style="text-align: left; padding: 10px 8px; border-bottom: 1px solid #EEF0F3;"><span style="font-weight: 800;">{{c.name}}</span><br><span style="font-size: 12px; font-weight: 600; color: #5B6573;"><span style="display: inline-block; width: 8px; height: 8px; border-radius: 4px; background: {{c.dot}}; margin-right: 4px;"></span>{{c.unit}}</span></th>
+<td style="padding: 10px 8px; border-bottom: 1px solid #EEF0F3;">{{c.chat}}</td>
+<td style="padding: 10px 8px; border-bottom: 1px solid #EEF0F3; font-weight: 800; color: {{c.respColor}};">{{c.resp}}</td>
+<td style="padding: 10px 8px; border-bottom: 1px solid #EEF0F3; color: {{c.lateColor}}; font-weight: 800;">{{c.late}}</td>
+<td style="padding: 10px 8px; border-bottom: 1px solid #EEF0F3;">{{c.close}}</td>
+<td style="padding: 10px 8px; border-bottom: 1px solid #EEF0F3; font-weight: 800;">{{c.conv}}</td>
+<td style="padding: 10px 8px; border-bottom: 1px solid #EEF0F3; color: {{c.idleColor}}; font-weight: 800;">{{c.idle}}</td>
+<td style="padding: 10px 8px; border-bottom: 1px solid #EEF0F3;">{{c.label}}</td>
+</tr>
+</template>
+</tbody>
+</table>
+</div>
+</section>
+
+<div style="display: flex; flex-wrap: wrap; gap: 22px; align-items: stretch;">
+<section aria-labelledby="lost-h" style="flex: 1 1 380px; min-width: 0; background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+<div style="display: flex; flex-direction: column;"><h2 id="lost-h" style="margin: 0; font-size: 18px; font-weight: 800;">Kenapa tidak jadi</h2><span style="font-size: 13px; color: #5B6573;">Dari label "Gagal" yang diisi CS.</span></div>
+<template data-sc="for" list="{{lost}}" as="l" hint-placeholder-count="6">
+<div style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 44px; align-items: center; gap: 10px;">
+<span style="font-size: 13px; font-weight: 700;">{{l.name}}</span>
+<div style="height: 14px; background: #F3F5F8; border-radius: 4px; overflow: hidden;"><div style="height: 100%; width: {{l.w}}; background: #5B6573; border-radius: 4px;"></div></div>
+<span style="font-size: 12px; font-weight: 800; text-align: right;">{{l.n}}</span>
+</div>
+</template>
+<span style="font-size: 12px; color: #3B4250;">"Tidak membalas lagi" terbesar: kirim pesan follow-up otomatis 24 jam setelah penawaran.</span>
+</section>
+
+<section aria-labelledby="rt-h" style="flex: 1 1 340px; min-width: 0; background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+<div style="display: flex; flex-direction: column;"><h2 id="rt-h" style="margin: 0; font-size: 18px; font-weight: 800;">Kecepatan balas vs closing</h2><span style="font-size: 13px; color: #5B6573;">Makin lama dibalas, makin kecil peluang closing.</span></div>
+<template data-sc="for" list="{{speed}}" as="s" hint-placeholder-count="5">
+<div style="display: grid; grid-template-columns: 96px minmax(0, 1fr) 96px; align-items: center; gap: 10px;">
+<span style="font-size: 13px; font-weight: 700;">{{s.name}}</span>
+<div style="height: 14px; background: #F3F5F8; border-radius: 4px; overflow: hidden;"><div style="height: 100%; width: {{s.w}}; background: {{s.c}}; border-radius: 4px;"></div></div>
+<span style="font-size: 12px; text-align: right;"><strong>{{s.conv}}</strong> · {{s.share}} chat</span>
+</div>
+</template>
+</section>
+
+<section aria-labelledby="hr-h" style="flex: 2 1 460px; min-width: 0; background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 8px;"><div style="display: flex; flex-direction: column;"><h2 id="hr-h" style="margin: 0; font-size: 18px; font-weight: 800;">Jam chat paling ramai</h2><span style="font-size: 13px; color: #5B6573;">Rata-rata chat masuk per jam. Atur piket CS dari sini.</span></div><span style="font-size: 13px; font-weight: 800; color: #067A70; background: #DDF5F2; border-radius: 12px; padding: 4px 12px;">Puncak: {{peak}}</span></div>
+<div style="overflow-x: auto;">
+<div style="display: grid; grid-template-columns: 70px repeat(7, minmax(46px, 1fr)); gap: 4px; min-width: 440px;">
+<span></span>
+<template data-sc="for" list="{{days}}" as="d" hint-placeholder-count="7"><span style="font-size: 12px; font-weight: 800; color: #5B6573; text-align: center;">{{d}}</span></template>
+<template data-sc="for" list="{{heat}}" as="row" hint-placeholder-count="6">
+<span style="font-size: 12px; font-weight: 700; color: #3B4250; display: flex; align-items: center;">{{row.label}}</span>
+<template data-sc="for" list="{{row.cells}}" as="c" hint-placeholder-count="7"><span title="{{c.tip}}" style="height: 32px; border-radius: 6px; background: {{c.bg}}; color: {{c.ink}}; font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center;">{{c.v}}</span></template>
+</template>
+</div>
+</div>
+<span style="font-size: 12px; color: #3B4250;">Di luar jam piket (21.00–07.30) chat menunggu rata-rata 38 menit. Pasang balasan otomatis + daftar syarat.</span>
+</section>
+</div>
+
+</main>
+</div>
+</template>
+<div id="dc-root"></div>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2400}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { unit: 'Semua' };
+  }
+  renderVals() {
+    var self = this;
+    var unit = this.state.unit;
+    var UNITS = ['Rentalaja', 'TripinAja', 'Niagaaja'];
+    var COLOR = { Rentalaja: '#2F6FD0', TripinAja: '#0FA394', Niagaaja: '#D08A1E' };
+    var dec = function (n, d) { return n.toFixed(d).replace('.', ','); };
+    var num = function (n) { return Math.round(n).toLocaleString('id-ID'); };
+    var rp = function (n) { return n >= 1000000 ? 'Rp ' + dec(n / 1000000, 1) + ' jt' : 'Rp ' + num(n / 1000) + ' rb'; };
+    var GOOD = '#067A70', BAD = '#9A3F0A';
+    var pick = unit === 'Semua' ? UNITS : [unit];
+
+    var SRC = [
+      { name: 'Meta Ads', code: '[ADS-…]', resp: 4, chat: [182, 84, 46], close: [48, 12, 9], omzet: [38.3, 34.0, 9.3] },
+      { name: 'Instagram bio & DM', code: '[IG-BIO] · [IG-DM]', resp: 6, chat: [52, 30, 14], close: [21, 11, 6], omzet: [5.2, 3.4, 1.2] },
+      { name: 'KOL', code: '[KOL-nama]', resp: 5, chat: [16, 14, 4], close: [6, 4, 2], omzet: [2.9, 9.6, 2.3] },
+      { name: 'Website', code: '[WEB]', resp: 9, chat: [24, 14, 6], close: [7, 4, 1], omzet: [2.1, 1.6, 0.5] },
+      { name: 'Google Maps', code: '[MAPS-cabang]', resp: 7, chat: [132, 38, 18], close: [41, 12, 5], omzet: [18.6, 7.9, 2.9] },
+      { name: 'WA Story & broadcast', code: '[STORY] · [BC]', resp: 8, chat: [96, 32, 14], close: [28, 9, 4], omzet: [9.4, 6.2, 2.2] },
+      { name: 'Pelanggan lama & referral', code: 'nomor tersimpan', resp: 5, chat: [118, 58, 31], close: [36, 16, 9], omzet: [10.8, 5.6, 3.1] },
+      { name: 'Tanpa kode', code: 'sumber tidak diketahui', resp: 12, chat: [60, 20, 17], close: [5, 1, 1], omzet: [2.8, 0.7, 0.5] }
+    ];
+    var ix = function (u) { return UNITS.indexOf(u); };
+    var sumArr = function (arr) { return pick.reduce(function (a, u) { return a + arr[ix(u)]; }, 0); };
+    var src = SRC.map(function (s) { return { name: s.name, code: s.code, resp: s.resp, chat: sumArr(s.chat), close: sumArr(s.close), omzet: sumArr(s.omzet) * 1000000 }; });
+    var totChat = src.reduce(function (a, s) { return a + s.chat; }, 0);
+    var totClose = src.reduce(function (a, s) { return a + s.close; }, 0);
+    var totOmzet = src.reduce(function (a, s) { return a + s.omzet; }, 0);
+    var maxChat = Math.max.apply(null, src.map(function (s) { return s.chat; }));
+    var avgConv = totClose / totChat;
+    var sources = src.map(function (s) {
+      var c = s.close / s.chat;
+      var good = c >= avgConv;
+      return { name: s.name, code: s.code, chat: num(s.chat), w: (s.chat / maxChat * 100) + '%', bar: s.name === 'Tanpa kode' ? '#A9B4C2' : '#1D3149', share: dec(s.chat / totChat * 100, 1) + '%', resp: s.resp + ' mnt', close: num(s.close), conv: dec(c * 100, 1) + '%', convBg: good ? '#DDF5F2' : '#FCEBDD', convFg: good ? GOOD : BAD, omzet: rp(s.omzet), aov: s.close ? rp(s.omzet / s.close) : '—' };
+    });
+
+    var CS = [
+      { name: 'CS Garut Kota', unit: 'Rentalaja', chat: 412, resp: 4, late: 3, close: 138, idle: 18, label: 96 },
+      { name: 'CS Bandung', unit: 'Rentalaja', chat: 196, resp: 9, late: 7, close: 41, idle: 22, label: 81 },
+      { name: 'CS Wanaraja', unit: 'Rentalaja', chat: 72, resp: 14, late: 4, close: 13, idle: 9, label: 74 },
+      { name: 'CS TripinAja', unit: 'TripinAja', chat: 290, resp: 5, late: 2, close: 69, idle: 11, label: 92 },
+      { name: 'CS Niagaaja', unit: 'Niagaaja', chat: 150, resp: 7, late: 1, close: 37, idle: 6, label: 88 }
+    ].filter(function (c) { return unit === 'Semua' || c.unit === unit; });
+    var cs = CS.map(function (c) { return { name: c.name, unit: c.unit, dot: COLOR[c.unit], chat: num(c.chat), resp: c.resp + ' mnt', respColor: c.resp <= 5 ? GOOD : BAD, late: c.late, lateColor: c.late > 3 ? BAD : '#1F2933', close: num(c.close), conv: dec(c.close / c.chat * 100, 1) + '%', idle: c.idle, idleColor: c.idle > 10 ? BAD : '#1F2933', label: c.label + '%' }; });
+    var idle = CS.reduce(function (a, c) { return a + c.idle; }, 0);
+    var lateN = CS.reduce(function (a, c) { return a + c.late; }, 0);
+    var respMed = unit === 'Semua' ? 6 : (CS.length ? Math.round(CS.reduce(function (a, c) { return a + c.resp * c.chat; }, 0) / CS.reduce(function (a, c) { return a + c.chat; }, 0)) : 0);
+    var noCode = src[src.length - 1].chat / totChat * 100;
+    var newShare = 0.66;
+
+    var tiles = [
+      { label: 'Chat masuk', value: num(totChat), note: '▲ 9% vs September', color: GOOD },
+      { label: 'Nomor baru', value: num(totChat * newShare), note: Math.round(newShare * 100) + '% belum pernah chat', color: '#5B6573' },
+      { label: 'Balas pertama (median)', value: respMed + ' mnt', note: 'Target ≤ 5 menit di jam kerja', color: respMed <= 5 ? GOOD : BAD },
+      { label: 'Telat > 1 jam', value: num(lateN), note: 'Bulan ini · ' + (unit === 'Semua' ? 6 : 2) + ' sedang menunggu', color: BAD },
+      { label: 'Jadi closing', value: num(totClose), note: dec(avgConv * 100, 1) + '% dari chat masuk', color: '#5B6573' },
+      { label: 'Omzet dari chat', value: rp(totOmzet), note: 'Nilai rata-rata ' + rp(totOmzet / totClose), color: '#5B6573' },
+      { label: 'Belum di-follow-up', value: num(idle), note: 'Penawaran tanpa kabar > 48 jam', color: idle > 30 ? BAD : '#7A5200' },
+      { label: 'Chat tanpa kode', value: dec(noCode, 1) + '%', note: 'Target < 5% supaya sumber terbaca', color: noCode < 5 ? GOOD : BAD }
+    ];
+
+    var F = [['Chat masuk', 1.0], ['Dibalas < 15 menit', 0.9], ['Tanya harga / ketersediaan', 0.725], ['Dikirim syarat & penawaran', 0.54], ['DP / booking', 0.305]];
+    var funnel = F.map(function (f, i) {
+      var v = Math.round(totChat * f[1]);
+      var prev = i ? Math.round(totChat * F[i - 1][1]) : v;
+      var conv = i ? v / prev : 1;
+      return { label: f[0], v: num(v), w: (f[1] * 100) + '%', c: '#1D3149', ink: '#FFFFFF', conv: i ? dec(conv * 100, 0) + '%' : '', convColor: conv < 0.7 ? BAD : '#3B4250' };
+    });
+    var cl = totClose;
+    funnel.push({ label: 'Closing (unit diambil)', v: num(cl), w: (cl / totChat * 100) + '%', c: '#09BEAF', ink: '#1D3149', conv: dec(cl / Math.round(totChat * 0.305) * 100, 0) + '%', convColor: '#3B4250' });
+
+    var Q = [
+      { wait: '2j 40m', msg: 'Kak motor Vario besok pagi masih ada?', code: '[ADS-MTR]', cs: 'CS Bandung', unit: 'Rentalaja' },
+      { wait: '2j 05m', msg: 'Sewa iPhone 13 buat 3 hari berapa?', code: '[IG-BIO]', cs: 'CS Wanaraja', unit: 'Rentalaja' },
+      { wait: '1j 50m', msg: 'Trip Papandayan tgl 9 masih bisa 12 orang?', code: '[ADS-TRIP]', cs: 'CS TripinAja', unit: 'TripinAja' },
+      { wait: '1j 32m', msg: 'Bisa antar ke hotel daerah Cipanas?', code: '[MAPS-GRT]', cs: 'CS Bandung', unit: 'Rentalaja' },
+      { wait: '1j 20m', msg: 'Laptop buat desain budget 6 jt ada?', code: '[KOL-TECH]', cs: 'CS Niagaaja', unit: 'Niagaaja' },
+      { wait: '1j 08m', msg: 'Ruma Metua weekend depan kosong?', code: '[STORY]', cs: 'CS Garut Kota', unit: 'Rentalaja' }
+    ].filter(function (q) { return unit === 'Semua' || q.unit === unit; });
+
+    var L = [['Tidak membalas lagi', 214], ['Harga', 168], ['Unit / tanggal penuh', 121], ['Syarat dokumen', 96], ['Pilih tempat lain', 58], ['Lokasi / ongkir antar', 41]];
+    var lost = L.map(function (l) { return { name: l[0], n: num(l[1] * totChat / 1120), w: (l[1] / 214 * 100) + '%' }; });
+    var SP = [['< 5 menit', 0.52, 0.33], ['5–15 menit', 0.24, 0.27], ['15–60 menit', 0.14, 0.19], ['1–3 jam', 0.07, 0.11], ['> 3 jam', 0.03, 0.05]];
+    var speed = SP.map(function (s) { return { name: s[0], share: Math.round(s[1] * 100) + '%', conv: Math.round(s[2] * 100) + '% closing', w: (s[2] / 0.33 * 100) + '%', c: s[2] >= 0.25 ? '#09BEAF' : '#F2A33A' }; });
+
+    var days = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'];
+    var BL = ['07–10', '10–13', '13–16', '16–19', '19–22', '22–07'];
+    var bf = [0.55, 0.8, 0.65, 0.75, 1.0, 0.3];
+    var df = [0.78, 0.74, 0.76, 0.82, 1.0, 0.96, 0.85];
+    var scale = totChat / 1120;
+    var RAMP = ['#E6F7F5', '#B9EAE4', '#7DD8CE', '#2FBCAD', '#067A70'];
+    var best = 0, peak = '';
+    var heat = BL.map(function (b, bi) { return { label: b, cells: days.map(function (d, di) {
+      var v = Math.max(0, Math.round(bf[bi] * df[di] * 9 * scale * 10) / 10);
+      if (v > best) { best = v; peak = d + ' ' + b; }
+      var step = Math.min(4, Math.floor(bf[bi] * df[di] * 5));
+      return { v: dec(v, 1), tip: d + ' ' + b + ': rata-rata ' + dec(v, 1) + ' chat per jam', bg: RAMP[step], ink: step >= 3 ? '#FFFFFF' : '#1D3149' };
+    }) }; });
+
+    var filters = ['Semua'].concat(UNITS).map(function (label) {
+      var on = label === unit;
+      return { label: label, pressed: on ? 'true' : 'false', bg: on ? '#1D3149' : '#FFFFFF', fg: on ? '#FFFFFF' : '#1D3149', border: on ? '#1D3149' : '#E3E6EB', dot: label === 'Semua' ? '#09BEAF' : COLOR[label], pick: function () { self.setState({ unit: label }); } };
+    });
+
+    return { filters: filters, tiles: tiles, queue: Q, queueCount: Q.length, funnel: funnel, sources: sources, cs: cs, lost: lost, speed: speed, days: days, heat: heat, peak: peak };
+  }
+}
+</script>
+</body>
+</html>

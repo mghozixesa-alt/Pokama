@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Layar TV Marketing — Pokama</title>
+<link rel="icon" href="logo-pokama.png">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="fun.css">
+<script src="gate.js"></script>
+<script src="fun.js"></script>
+<style>
+:root { --bg: #0F1D2E; --card: #172A40; --line: #24405E; --ink: #FFFFFF; --mute: #9FB3C8; --teal: #09BEAF; }
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; background: var(--bg); color: var(--ink); font-family: 'Nunito', system-ui, sans-serif; }
+body { display: flex; flex-direction: column; min-height: 100vh; overflow-x: hidden; }
+.tv-top { display: flex; align-items: center; gap: 16px; padding: 18px 32px; }
+.tv-logo { background: #FFF; border-radius: 12px; padding: 6px 12px; display: flex; }
+.tv-logo img { height: 26px; }
+.tv-title { font-size: 20px; font-weight: 900; }
+.tv-title span { display: block; font-size: 13px; font-weight: 700; color: var(--mute); }
+.tv-clock { margin-left: auto; font-size: 34px; font-weight: 900; font-variant-numeric: tabular-nums; }
+.tv-btn { height: 40px; padding: 0 16px; border-radius: 20px; border: 1px solid var(--line); background: transparent; color: #FFF; font: 800 13px 'Nunito'; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; }
+.tv-btn:hover { background: var(--card); color: #FFF; }
+.tv-stage { flex: 1; position: relative; padding: 8px 32px 24px; min-height: 0; }
+.tv-panel { position: absolute; inset: 8px 32px 24px; display: flex; flex-direction: column; gap: 20px; opacity: 0; transform: translateY(20px); transition: opacity .6s ease, transform .6s ease; pointer-events: none; }
+.tv-panel.on { opacity: 1; transform: none; pointer-events: auto; }
+.tv-h { font-size: 15px; font-weight: 900; letter-spacing: .12em; color: #86DCD3; text-transform: uppercase; }
+.tv-h2 { font-size: 40px; font-weight: 900; margin: 0; line-height: 1.1; }
+.tv-row { display: flex; gap: 20px; flex: 0 1 auto; min-height: 0; align-items: stretch; }
+.tv-panel { justify-content: center; }
+.tv-card { background: var(--card); border: 1px solid var(--line); border-radius: 24px; padding: 24px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.tv-score { font-size: 140px; font-weight: 900; line-height: .9; }
+.tv-score small { font-size: 40px; color: var(--mute); }
+.tv-rings { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; flex: 1; }
+.tv-rings .r { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; text-align: center; }
+.tv-rings .r .w { position: relative; width: 160px; height: 160px; }
+.tv-rings .r .w svg circle:first-child { stroke: #24405E; }
+.tv-rings .r .w b { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 34px; }
+.tv-rings .r strong { font-size: 20px; } .tv-rings .r span { color: var(--mute); font-size: 16px; }
+.tv-thumb { border-radius: 20px; overflow: hidden; aspect-ratio: 4/5; }
+.tv-thumb svg { width: 100%; height: 100%; display: block; }
+.tv-feed { display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; }
+.tv-feed .it { display: flex; flex-direction: column; gap: 8px; }
+.tv-feed .it strong { font-size: 17px; line-height: 1.25; }
+.tv-feed .it span { color: var(--mute); font-size: 15px; }
+.tv-big { font-size: 56px; white-space: nowrap; font-weight: 900; line-height: 1; }
+.tv-mute { color: var(--mute); font-size: 18px; }
+.tv-lb { display: flex; flex-direction: column; gap: 16px; }
+.tv-lb .p { display: flex; align-items: center; gap: 20px; background: var(--card); border: 1px solid var(--line); border-radius: 22px; padding: 18px 24px; }
+.tv-lb .p:first-child { border-color: #FFC24B; background: linear-gradient(90deg, rgba(255,194,75,.16), var(--card)); }
+.tv-lb .m { font-size: 46px; width: 60px; text-align: center; }
+.tv-lb .n { flex: 1; } .tv-lb .n strong { font-size: 28px; display: block; } .tv-lb .n span { color: var(--mute); font-size: 17px; }
+.tv-lb .bar { height: 12px; background: #24405E; border-radius: 6px; overflow: hidden; margin-top: 8px; } .tv-lb .bar i { display: block; height: 100%; border-radius: 6px; }
+.tv-lb .pts { font-size: 44px; font-weight: 900; }
+.tv-lb .fl { font-size: 18px; font-weight: 800; color: #FFB46B; }
+.tv-fun { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+.tv-fun .s { background: var(--card); border: 1px solid var(--line); border-radius: 24px; padding: 28px; display: flex; flex-direction: column; gap: 8px; position: relative; }
+.tv-fun .s:not(:last-child)::after { content: '→'; position: absolute; right: -18px; top: 50%; transform: translateY(-50%); font-size: 28px; color: var(--teal); }
+.tv-dots { display: flex; gap: 8px; }
+.tv-dots i { width: 34px; height: 6px; border-radius: 3px; background: var(--line); overflow: hidden; cursor: pointer; }
+.tv-dots i.on b { display: block; height: 100%; background: var(--teal); animation: tvbar 12s linear forwards; }
+.tv-dots i.done { background: var(--teal); }
+.paused .tv-dots i.on b { animation-play-state: paused; }
+@keyframes tvbar { from { width: 0; } to { width: 100%; } }
+.tv-foot { display: flex; align-items: center; gap: 16px; padding: 0 32px 20px; color: var(--mute); font-size: 14px; }
+.tv-foot .tv-dots { margin-right: auto; }
+@media (max-width: 900px) {
+  .tv-top { padding: 14px 16px; flex-wrap: wrap; } .tv-clock { font-size: 24px; }
+  .tv-stage { padding: 8px 16px; } .tv-panel { position: static; display: none; }
+  .tv-panel.on { display: flex; }
+  .tv-row { flex-direction: column; } .tv-rings { grid-template-columns: repeat(2, 1fr); }
+  .tv-rings .r .w { width: 110px; height: 110px; } .tv-rings .r .w svg { width: 110px; height: 110px; }
+  .tv-feed { grid-template-columns: repeat(2, 1fr); } .tv-fun { grid-template-columns: 1fr 1fr; } .tv-fun .s::after { display: none; }
+  .tv-h2 { font-size: 28px; } .tv-score { font-size: 96px; } .tv-big { font-size: 44px; }
+  .tv-lb .pts { font-size: 28px; } .tv-lb .m { font-size: 30px; width: 36px; } .tv-lb .n strong { font-size: 20px; }
+  .tv-foot { padding: 0 16px 16px; flex-wrap: wrap; }
+}
+</style>
+</head>
+<body>
+<header class="tv-top">
+<span class="tv-logo"><img src="logo-pokama.png" alt="Pokama"></span>
+<div class="tv-title">Marketing · Oktober 2026<span>Semua unit · data contoh · berganti tiap 12 detik</span></div>
+<div class="tv-clock" id="clock">--.--</div>
+<button type="button" class="tv-btn" id="fs">⛶ Layar penuh</button>
+<a class="tv-btn" href="Main.dc.html">Keluar</a>
+</header>
+<main class="tv-stage" id="stage"></main>
+<footer class="tv-foot"><div class="tv-dots" id="dots"></div><span>← → ganti panel · spasi jeda</span></footer>
+<script>
+(function () {
+  var F = window.PKFun, esc = F.esc, UC = { Rentalaja: '#2F6FD0', TripinAja: '#0FA394', Niagaaja: '#D08A1E' };
+  var a = F.agg('Semua');
+  function ringBlock(label, v, t, fmt) {
+    var p = Math.round(v / t * 100), col = p >= 100 ? '#FFC24B' : p >= 90 ? '#09BEAF' : '#F2A33A';
+    return '<div class="r"><div class="w">' + F.ring(p, col, 160).replace('stroke="#EEF0F3"', 'stroke="#24405E"').replace('class="fx-ring-v"', 'class="fx-ring-v anim"') + '<b>' + p + '%</b></div><strong>' + label + '</strong><span>' + fmt(v) + ' / ' + fmt(t) + '</span></div>';
+  }
+  var plus = function (n) { return '+' + F.num(n); };
+  var t0 = F.TOP[0];
+  var P = [
+    '<div class="tv-row"><div class="tv-card" style="flex:0 0 340px;justify-content:center"><span class="tv-h">Skor marketing</span><div class="tv-score"><span data-count="72">72</span><small>/100</small></div><span class="tv-mute">Rata-rata capaian target 4 kanal. Di bawah 70: KOL.</span></div>' +
+      '<div class="tv-card" style="flex:1"><span class="tv-h">Menuju target · sisa 4 hari</span><div class="tv-rings">' + ringBlock('Reach', a.reach, a.reachT, F.rb) + ringBlock('Followers', a.fol, a.folT, plus) + ringBlock('Chat WA', a.chat, a.chatT, F.num) + ringBlock('Konten', a.post, a.postT, F.num) + ringBlock('Ulasan Maps', a.rev, a.revT, plus) + '</div></div></div>',
+    '<span class="tv-h">Cerita minggu ini · 22–27 Okt</span><div class="tv-row"><div class="tv-card" style="flex:0 0 min(360px,100%)"><div class="tv-thumb">' + F.thumb(t0.cap, t0.unit, t0.type) + '</div></div><div style="flex:1;display:flex;flex-direction:column;gap:20px;min-width:0">' +
+      '<div class="tv-card"><span class="tv-h">🏆 Konten juara</span><h2 class="tv-h2">' + esc(t0.cap) + '</h2><span class="tv-mute">' + t0.unit + ' · ' + t0.type + ' · ER ' + F.dec(t0.er, 1) + '% · disimpan ' + t0.saves + ' kali</span></div>' +
+      '<div class="tv-row" style="flex:0 0 auto"><div class="tv-card" style="flex:1"><span class="tv-h">Iklan paling boros</span><div class="tv-big" style="font-size:44px;color:#FFB46B">Rp 20,5 rb</div><span class="tv-mute">per chat · Study tour sekolah</span></div><div class="tv-card" style="flex:1"><span class="tv-h">Langkah minggu ini</span><div style="font-size:26px;font-weight:900;line-height:1.2">Potong ulang 6 Reels terbaik jadi TikTok</div></div></div></div></div>',
+    '<span class="tv-h">Feed terbaik minggu ini</span><div class="tv-feed">' + F.TOP.slice().sort(function (x, y) { return y.er - x.er; }).map(function (t, i) {
+      return '<div class="it"><div class="tv-thumb">' + F.thumb(t.cap, t.unit, t.type) + '</div><strong>' + (i < 3 ? ['🥇 ', '🥈 ', '🥉 '][i] : '') + esc(t.cap) + '</strong><span>' + t.unit + ' · ER ' + F.dec(t.er, 1) + '% · ' + t.reach + '</span></div>';
+    }).join('') + '</div>',
+    '<span class="tv-h">Papan juara tim · Oktober</span><div class="tv-lb">' + F.TEAM.map(function (t, i) {
+      return '<div class="p"><span class="m">' + ['🥇', '🥈', '🥉'][i] + '</span>' + F.avatar(t.name, t.unit, 72) + '<div class="n"><strong>' + t.name + ' <span class="fl">🔥 ' + t.streak + ' hari</span></strong><span>' + t.role + ' · tepat waktu ' + t.ontime + '% · ' + t.badges.join(' · ') + '</span><div class="bar"><i style="width:' + (t.pts / 14) + '%;background:' + UC[t.unit] + '"></i></div></div><span class="pts" data-count="' + t.pts + '">' + F.num(t.pts) + '</span></div>';
+    }).join('') + '</div>',
+    '<span class="tv-h">Dari dilihat sampai bayar · Oktober</span><div class="tv-fun">' + [['Reach', 412800, 'rb', 'akun dijangkau'], ['Chat WA', 486, 'num', 'dari tautan marketing'], ['Closing', 131, 'num', '27% dari chat'], ['Omzet terlacak', 96400000, 'jt', 'ROAS 13,6x dari Rp 7,1 jt']].map(function (s) {
+      return '<div class="s"><span class="tv-h">' + s[0] + '</span><div class="tv-big" data-count="' + s[1] + '" data-fmt="' + s[2] + '">0</div><span class="tv-mute">' + s[3] + '</span></div>';
+    }).join('') + '</div><div class="tv-card" style="flex-direction:row;align-items:center;gap:24px"><div style="width:120px">' + F.spot('rocket') + '</div><div><span class="tv-h">Tinggal 4 hari</span><div style="font-size:28px;font-weight:900">Butuh 34 chat lagi untuk target 520. Sekitar 9 per hari.</div></div></div>'
+  ];
+  var stage = document.getElementById('stage'), dots = document.getElementById('dots'), i = 0, timer, paused = false;
+  stage.innerHTML = P.map(function (h) { return '<section class="tv-panel">' + h + '</section>'; }).join('');
+  dots.innerHTML = P.map(function () { return '<i><b></b></i>'; }).join('');
+  var panels = stage.children, ds = dots.children;
+  function show(k) {
+    i = (k + P.length) % P.length;
+    [].forEach.call(panels, function (p, j) { p.classList.toggle('on', j === i); });
+    [].forEach.call(ds, function (d, j) { d.className = j < i ? 'done' : j === i ? 'on' : ''; });
+    var p = panels[i];
+    p.querySelectorAll('.fx-ring-v').forEach(function (c) { c.classList.remove('anim'); void c.getBoundingClientRect(); c.classList.add('anim'); });
+    F.countUp(p);
+    clearTimeout(timer); if (!paused) timer = setTimeout(function () { show(i + 1); }, 12000);
+  }
+  [].forEach.call(ds, function (d, j) { d.onclick = function () { show(j); }; });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowRight') show(i + 1); else if (e.key === 'ArrowLeft') show(i - 1);
+    else if (e.key === ' ') { e.preventDefault(); paused = !paused; document.body.classList.toggle('paused', paused); if (!paused) show(i); else clearTimeout(timer); }
+  });
+  document.getElementById('fs').onclick = function () { if (document.fullscreenElement) document.exitFullscreen(); else if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen(); };
+  function tick() { var d = new Date(); document.getElementById('clock').textContent = String(d.getHours()).padStart(2, '0') + '.' + String(d.getMinutes()).padStart(2, '0'); }
+  tick(); setInterval(tick, 10000);
+  show(0);
+})();
+</script>
+</body>
+</html>
