@@ -9,12 +9,12 @@ async function tim(el, params, reload) {
   el.innerHTML = `
   <header class="ph"><div><span class="muted small">Siapa di unit mana, perannya apa, atasannya siapa, dan sudah punya akun atau belum</span><h1>Tim & Peran</h1></div>
     ${admin ? '<div class="row gap"><button class="btn" data-a="units">Kelola unit</button><button class="btn" data-a="unit">+ Lini / unit</button><button class="btn pri" data-a="add">+ Tambah orang</button></div>' : ''}</header>
-  <div class="tiles"><div class="tile"><span>Orang aktif</span><b>${active().length}</b></div><div class="tile"><span>Sudah punya akun</span><b>${active().filter(p => p.user_id || p.email).length}</b></div>
+  <div class="tiles"><div class="tile"><span>Orang aktif</span><b>${active().length}</b></div><div class="tile"><span>Sudah pernah masuk</span><b>${active().filter(p => p.user_id).length} / ${active().length}</b><small>${active().filter(p => !p.email).length} orang belum ada email</small></div>
     <div class="tile"><span>Unit & lini</span><b>${ctx.units.filter(u => u.is_active).length}</b></div><div class="tile"><span>Leader</span><b>${active().filter(p => p.role === 'leader').length}</b></div></div>
   ${groups.map(g => `<section class="grp"><div class="grp-h">${logo(g.u.code, 30)}<b>${esc(g.u.name)}</b><span class="muted">${g.rows.length} orang</span></div>
     <div class="pgrid">${g.rows.map(p => `<button type="button" class="card person${p.is_active ? '' : ' off'}" data-p="${p.id}">${avatar(p.id, 52)}<span><b>${esc(p.nickname || p.name)}</b><small>${esc(p.title || ROLE[p.role])}</small>
       <small class="muted">${esc(unitName(p.unit_code))} · atasan ${esc(nick(p.boss_id))}</small>
-      <span class="row gap6">${chip(ROLE[p.role], p.role === 'leader' ? 'green' : ['ceo', 'kepala_staf', 'keuangan'].includes(p.role) ? 'blue' : 'gray')}${p.user_id || p.email ? chip('Akun aktif', 'green') : chip('Belum ada akun', 'red')}</span></span></button>`).join('')}</div></section>`).join('')}
+      <span class="row gap6">${chip(ROLE[p.role], p.role === 'leader' ? 'green' : ['ceo', 'kepala_staf', 'keuangan'].includes(p.role) ? 'blue' : 'gray')}${p.user_id ? chip('Sudah pernah masuk', 'green') : p.email ? chip('Bisa masuk via Google', 'blue') : chip('Belum ada email', 'red')}</span></span></button>`).join('')}</div></section>`).join('')}
   ${admin ? `<p><a href="#/tim?off=${showOff ? 0 : 1}" class="small">${showOff ? 'Sembunyikan' : 'Tampilkan'} orang nonaktif</a></p>` : ''}`;
 
   el.onclick = async (e) => {
