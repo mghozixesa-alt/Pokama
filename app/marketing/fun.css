@@ -319,3 +319,19 @@ body.fx-lock { overflow: hidden; }
   .fx-wrap-t { font-size: 24px; }
   .fx-wrap-big { font-size: 56px; }
 }
+
+/* Gerbang login */
+html.mk-locked #dc-root, html.mk-locked .mbar, html.mk-locked .tv-top, html.mk-locked .tv-stage, html.mk-locked .tv-foot { visibility: hidden; }
+#mk-gate { position: fixed; inset: 0; z-index: 500; background: #F3F5F8; display: flex; align-items: center; justify-content: center; padding: 16px; font-family: 'Nunito', system-ui, sans-serif; }
+.mk-gate-card { width: min(380px, 100%); background: #FFF; border: 1px solid #E3E6EB; border-radius: 22px; padding: 28px; display: flex; flex-direction: column; gap: 12px; box-shadow: 0 18px 40px rgba(29,49,73,.1); color: #1F2933; }
+.mk-gate-card img { width: 130px; }
+.mk-gate-card h1 { margin: 4px 0 0; font-size: 22px; font-weight: 900; color: #1D3149; }
+.mk-gate-card p { margin: 0; font-size: 14px; color: #5B6573; }
+.mk-gate-card label { display: flex; flex-direction: column; gap: 4px; font-size: 13px; font-weight: 800; color: #3B4250; }
+.mk-gate-card input { height: 44px; border: 1px solid #E3E6EB; border-radius: 10px; padding: 0 12px; font: 600 15px 'Nunito', sans-serif; }
+.mk-gate-card input:focus { outline: 2px solid #09BEAF; border-color: #09BEAF; }
+.mk-gate-btn, .mk-gate-g { height: 46px; border-radius: 12px; font: 800 15px 'Nunito', sans-serif; cursor: pointer; }
+.mk-gate-btn { border: 0; background: #09BEAF; color: #1D3149; }
+.mk-gate-g { border: 1px solid #E3E6EB; background: #FFF; color: #1D3149; }
+.mk-gate-card a { text-align: center; font-size: 13px; font-weight: 700; color: #067A70; }
+.mk-gate-err { background: #FCEBDD; color: #9A3F0A; font-size: 13px; font-weight: 700; padding: 10px 12px; border-radius: 10px; }
