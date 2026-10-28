@@ -39,8 +39,8 @@ async function library(el, params, reload) {
 // ================= Pengaturan =================
 const GROUPS = [
   ['Pengajuan Belanja', ['rab_limit_atasan', 'rab_limit_kepala_staf', 'lpj_days', 'cair_days', 'cair_time']],
-  ['KKH', ['kkh_start', 'kkh_end', 'kkh_validate_by']],
-  ['Kehadiran', ['leave_days_per_week', 'leave_pick_deadline']],
+  ['KKH & absen', ['kkh_start', 'kkh_end', 'kkh_break', 'kkh_daily_hours', 'kkh_validate_by', 'work_start', 'late_grace_min', 'late_penalty_pct', 'late_warn_count']],
+  ['Kehadiran', ['leave_days_per_week', 'leave_pick_deadline', 'wfa_max_month']],
   ['Review', ['review_revise_days']],
   ['Performa & Liga', ['weights', 'liga_weights']],
 ];

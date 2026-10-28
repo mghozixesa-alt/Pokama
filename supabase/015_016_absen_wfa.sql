@@ -1,0 +1,5 @@
+-- 015: setelan KKH (08–21, istirahat 12, wajib 8 jam), telat (masuk 08.00, toleransi 5 mnt, potong 2%/telat, peringatan 3x),
+--      pk_kkh.cont (slot 2 jam) + mode 'wfa', guard jam istirahat, pk_wfa + pk_wfa_request/decide/cancel (maks 4/bulan, H-1),
+--      pk_attendance + pk_checkin (lokasi/foto, telat dihitung server, notifikasi atasan), bucket privat pk-absen
+-- 016: pk_disc (disiplin = rata-rata jam valid/8 per hari aktif − potongan telat), pk_month_progress memakai pk_disc
+-- Definisi lengkap: migrasi Supabase pk_015_absen_wfa, pk_016_progress_disc.

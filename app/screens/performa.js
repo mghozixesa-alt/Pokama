@@ -9,17 +9,27 @@ const BULAN3 = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', '
 export function cat(s) { return s === null ? ['Belum ada skor', 'gray'] : s >= 85 ? ['Sangat baik', 'green'] : s >= 70 ? ['Baik', 'green'] : s >= 55 ? ['Perlu perbaikan', 'yellow'] : ['Pembinaan', 'red']; }
 
 // rumus yang sama dengan halaman Performa
-export function calc(os, kkh, pf, notes) {
+// Disiplin KKH = rata-rata (jam tervalidasi ÷ 8) per hari kerja aktif (hari ada absen/KKH, sebelum hari ini), dikurangi potongan telat
+export function discOf(kkh, att = []) {
+  const need = +ctx.settings.kkh_daily_hours || 8, pen = (+ctx.settings.late_penalty_pct || 0) / 100, t = today();
+  const days = [...new Set(kkh.map(k => k.day).concat(att.map(a => a.day)))].filter(d => d && d < t);
+  const late = att.filter(a => a.late_min > 0).length;
+  if (!days.length) return { disc: null, late, days: 0, avg: null };
+  const per = days.map(d => Math.min(need, kkh.filter(k => k.day === d && k.status === 'valid').length));
+  const base = per.reduce((s, v) => s + v / need, 0) / days.length;
+  return { disc: Math.max(0, base - late * pen), base, late, days: days.length, avg: per.reduce((s, v) => s + v, 0) / days.length };
+}
+export function calc(os, kkh, pf, notes, att = []) {
   const W = ctx.settings.weights || { output: 60, kkh: 25, valuer: 15 };
   const wsum = os.reduce((s, o) => s + (+o.weight), 0) || 1;
   const cap = os.length ? os.reduce((s, o) => s + o.weight * Math.min(1.2, (+o.actual) / (+o.target)), 0) / wsum : null;
-  const disc = kkh.length ? kkh.filter(x => x.status === 'valid').length / kkh.length : null;
+  const dd = discOf(kkh, att); const disc = dd.disc;
   const ns = notes.filter(n => n.score); const vs = ns.length ? ns.reduce((s, n) => s + (+n.score), 0) / ns.length : (pf && pf.valuer_score ? +pf.valuer_score : null);
   const val = vs ? (vs - 1) / 4 : null;
   const parts = [cap === null ? 0 : Math.min(1, cap) * W.output, (disc ?? 0) * W.kkh, (val ?? 0) * W.valuer];
   const score = cap === null ? null : Math.round(parts[0] + parts[1] + parts[2]);
   const fac = cap === null ? 0 : cap < .7 ? 0 : cap < .9 ? cap : cap <= 1 ? 1 : Math.min(1.2, cap);
-  return { W, cap, disc, vs, val, parts, score, fac, eligible: disc !== null && disc >= .8 };
+  return { W, cap, disc, dd, vs, val, parts, score, fac, eligible: disc !== null && disc >= .8 };
 }
 
 export async function detail(el, params, reload, pid) {
@@ -28,7 +38,7 @@ export async function detail(el, params, reload, pid) {
   const m = params.get('m') || monthStart(today()); const end = monthEnd(m); const m0 = addMonths(m, -5);
   const canSee = pid === me || isFin() || isAdmin() || p.boss_id === me || p.valuer1_id === me || p.valuer2_id === me;
   if (!canSee) { el.innerHTML = '<div class="card"><p class="muted">Anda tidak punya akses ke performa orang ini.</p></div>'; return; }
-  const [outputs, perf, notes, kkh, tasks, leave, asks] = await Promise.all([
+  const [outputs, perf, notes, kkh, tasks, leave, asks, att] = await Promise.all([
     db.get('pk_outputs', `select=*&person_id=eq.${pid}&month=gte.${m0}&month=lte.${m}&order=created_at`),
     db.get('pk_perf', `select=*&person_id=eq.${pid}&month=gte.${m0}&month=lte.${m}`),
     db.get('pk_perf_notes', `select=*&person_id=eq.${pid}&month=gte.${m0}&month=lte.${m}`),
@@ -36,9 +46,11 @@ export async function detail(el, params, reload, pid) {
     db.get('pk_tasks', `select=id,title,status,due,done_at,round,version,revise_due&pic_id=eq.${pid}&order=updated_at.desc&limit=200`),
     db.get('pk_leave', `select=kind,day,end_day,status&person_id=eq.${pid}&status=eq.disetujui&day=lte.${end}`),
     db.get('pk_feedback_asks', `select=*&person_id=eq.${pid}&order=created_at.desc&limit=10`),
+    db.get('pk_attendance', `select=day,at,late_min,mode&person_id=eq.${pid}&day=gte.${m0}&day=lte.${end}`),
   ]);
   const inMonth = (d, mm) => d && d.slice(0, 7) === mm.slice(0, 7);
-  const forMonth = (mm) => calc(outputs.filter(o => o.month === mm), kkh.filter(k => inMonth(k.day, mm)), perf.find(x => x.month === mm), notes.filter(n => n.month === mm));
+  const forMonth = (mm) => calc(outputs.filter(o => o.month === mm), kkh.filter(k => inMonth(k.day, mm)), perf.find(x => x.month === mm), notes.filter(n => n.month === mm), att.filter(a => inMonth(a.day, mm)));
+  const monthAtt = att.filter(a => inMonth(a.day, m));
   const c = forMonth(m); const prev = forMonth(addMonths(m, -1));
   const os = outputs.filter(o => o.month === m); const pf = perf.find(x => x.month === m) || {}; const ns = notes.filter(n => n.month === m);
   const trend = [...Array(6)].map((_, i) => { const mm = addMonths(m0, i); return { mm, s: forMonth(mm).score }; });
@@ -74,8 +86,9 @@ export async function detail(el, params, reload, pid) {
     let cls = 'empty', t = 'kosong';
     if (d > today()) { cls = 'future'; t = 'akan datang'; }
     else if (lv) { cls = lv === 'cuti' ? 'cuti' : 'off'; t = lv; }
-    else if (ks.length) { const r = ks.filter(k => k.status === 'valid').length / ks.length; cls = r >= 1 ? 'v100' : r >= .8 ? 'v80' : 'vlow'; t = Math.round(r * 100) + '% divalidasi dari ' + ks.length + ' slot'; }
-    cal += `<span class="cd ${cls}${d === today() ? ' now' : ''}" title="${i} ${fmonth(m)} · ${t}">${i}</span>`;
+    else if (ks.length || monthAtt.some(a => a.day === d)) { const need = +ctx.settings.kkh_daily_hours || 8; const v = ks.filter(k => k.status === 'valid').length; const r = Math.min(1, v / need); cls = r >= 1 ? 'v100' : r >= .8 ? 'v80' : 'vlow'; t = v + ' dari ' + need + ' jam valid'; }
+    const la = monthAtt.find(a => a.day === d && a.late_min > 0); if (la) t += ' · telat ' + la.late_min + ' menit';
+    cal += `<span class="cd ${cls}${d === today() ? ' now' : ''}${la ? ' late' : ''}" title="${i} ${fmonth(m)} · ${t}">${i}</span>`;
   }
 
   // ---- tren ----
@@ -95,6 +108,7 @@ export async function detail(el, params, reload, pid) {
     if (c.cap !== null && c.cap < .9) notesAuto.push(['warn', `Capaian output ${pct(c.cap)}. Target capaian minimal 90%.`]);
   } else notesAuto.push(['warn', 'Output bulan ini belum disepakati dengan atasan.']);
   if (c.disc !== null && c.disc < .8) notesAuto.push(['bad', `Disiplin KKH ${pct(c.disc)}, di bawah standar 80%.`]);
+  if (c.dd.late) notesAuto.push([c.dd.late >= (+ctx.settings.late_warn_count || 3) ? 'bad' : 'warn', `Telat ${c.dd.late}× bulan ini, memotong disiplin ${c.dd.late * (+ctx.settings.late_penalty_pct || 0)}%.`]);
   if (isSelf && valuers.length && !ns.length) notesAuto.push(['warn', `Valuer Anda belum memberi masukan bulan ini. Minta masukan supaya tahu apa yang perlu ditingkatkan.`]);
   const lateRev = running.filter(t => t.status === 'revisi' && t.revise_due && t.revise_due < today());
   if (lateRev.length) notesAuto.push(['bad', `${lateRev.length} revisi lewat tenggat: ${esc(lateRev.slice(0, 2).map(t => t.title).join(', '))}.`]);
@@ -116,7 +130,7 @@ export async function detail(el, params, reload, pid) {
       <section style="order:3" class="card"><div class="row between"><h2>Skor ${fmonth(m)}</h2>${chip(cat(c.score)[0], cat(c.score)[1])}</div>
         <div class="pf-score">${donut}<div class="pf-parts">
           ${[['Output', c.cap === null ? '—' : pct(c.cap), c.W.output, c.parts[0], os.length ? os.length + ' output tertimbang' : 'belum disepakati'],
-             ['Disiplin KKH', pct(c.disc), c.W.kkh, c.parts[1], monthKkh.length ? monthKkh.filter(k => k.status === 'valid').length + ' dari ' + monthKkh.length + ' slot divalidasi' : 'belum ada slot'],
+             ['Disiplin KKH', pct(c.disc), c.W.kkh, c.parts[1], c.dd.days ? 'rata-rata ' + c.dd.avg.toLocaleString('id-ID', { maximumFractionDigits: 1 }) + ' dari ' + (+ctx.settings.kkh_daily_hours || 8) + ' jam valid/hari' + (c.dd.late ? ' · telat ' + c.dd.late + '× (−' + (c.dd.late * (+ctx.settings.late_penalty_pct || 0)) + '%)' : '') : 'belum ada slot'],
              ['Nilai valuer', c.vs ? c.vs.toLocaleString('id-ID', { maximumFractionDigits: 1 }) + ' / 5' : '—', c.W.valuer, c.parts[2], ns.filter(n => n.score).map(n => nick(n.valuer_id) + ' ' + (+n.score).toLocaleString('id-ID')).join(' · ') || 'belum dinilai']]
             .map(([n, v, w, pt, sub], i) => `<div class="pf-part"><span class="row gap6"><i style="background:${cols[i]}"></i><b>${n}</b><span class="muted small" style="margin-left:auto">bobot ${w}%</span></span><span class="row gap6"><b class="big">${v}</b><small class="muted">+${pt.toFixed(1)} poin</small></span><small class="muted">${esc(sub)}</small></div>`).join('')}
         </div></div>
@@ -143,7 +157,8 @@ export async function detail(el, params, reload, pid) {
       <section style="order:7" class="card"><h2>Catatan otomatis</h2><ul class="pf-auto">${notesAuto.map(([t, s]) => `<li class="${t}"><i>${t === 'up' ? '↑' : '!'}</i><span>${s}</span></li>`).join('') || '<li class="up"><i>✓</i><span>Semua berjalan sesuai rencana.</span></li>'}</ul></section>
       <section style="order:5" class="card"><div class="row between"><h2>Disiplin KKH</h2><b class="big">${pct(c.disc)}</b></div>
         <div class="pf-cal">${cal}</div>
-        <div class="pf-leg"><span><i class="v100"></i>100%</span><span><i class="v80"></i>80–99%</span><span><i class="vlow"></i>&lt; 80%</span><span><i class="empty"></i>kosong</span><span><i class="cuti"></i>cuti</span><span><i class="off"></i>libur</span></div></section>
+        <div class="pf-leg"><span><i class="v100"></i>100%</span><span><i class="v80"></i>80–99%</span><span><i class="vlow"></i>&lt; 80%</span><span><i class="empty"></i>kosong</span><span><i class="cuti"></i>cuti</span><span><i class="off"></i>libur</span><span><i class="late"></i>telat</span></div>
+        <p class="small muted" style="margin:0">Wajib ${+ctx.settings.kkh_daily_hours || 8} jam tervalidasi per hari kerja. Absen lewat ${String(+ctx.settings.work_start || 8).padStart(2, '0')}.${String(+ctx.settings.late_grace_min || 5).padStart(2, '0')} dihitung telat dan memotong ${+ctx.settings.late_penalty_pct || 0}% disiplin per kejadian.</p></section>
       <section style="order:2" class="card"><h2>Masukan dari valuer</h2>
         ${ns.length ? ns.map(n => `<div class="pf-note">${avatar(n.valuer_id, 34)}<div class="grow"><div class="bub"><small class="muted b">${L(n.valuer_id)}${n.score ? ' · nilai ' + (+n.score).toLocaleString('id-ID') : ''}</small><span>${esc(n.note || '—')}</span></div>
           ${n.reply ? `<div class="bub rp"><small class="muted b">Tanggapan ${esc(p.nickname || p.name)}</small><span>${esc(n.reply)}</span></div>` : isSelf ? `<button class="link" data-reply="${n.id}">Tanggapi</button>` : ''}</div></div>`).join('') : `<p class="muted">Belum ada masukan valuer untuk ${fmonth(m)}.</p>`}

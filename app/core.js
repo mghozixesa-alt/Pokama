@@ -224,3 +224,25 @@ export async function waReport(title, text) {
       toast('Teks laporan disalin'); } });
 }
 document.addEventListener('input', (e) => { if (!e.target.classList || !e.target.classList.contains('wa-prev')) return; const a = document.getElementById('wa-open'); if (a) a.href = 'https://wa.me/?text=' + encodeURIComponent(e.target.value); });
+
+// ---------- foto absen (Supabase Storage, bucket privat) ----------
+export async function shrinkImage(file, max = 1280, q = .78) {
+  const img = await new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = URL.createObjectURL(file); });
+  const s = Math.min(1, max / Math.max(img.width, img.height)); const c = document.createElement('canvas');
+  c.width = Math.round(img.width * s); c.height = Math.round(img.height * s); c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+  return new Promise((res) => c.toBlob(res, 'image/jpeg', q));
+}
+export async function uploadPhoto(bucket, path, blob) {
+  const r = await fetch(`${SB_URL}/storage/v1/object/${bucket}/${path}`, { method: 'POST', headers: { apikey: SB_KEY, Authorization: 'Bearer ' + await token(), 'Content-Type': 'image/jpeg', 'x-upsert': 'true' }, body: blob });
+  if (!r.ok) { const j = await r.json().catch(() => ({})); throw new Error('Foto gagal diunggah: ' + (j.message || r.status)); } return path;
+}
+export async function signedPhoto(bucket, path) {
+  const r = await fetch(`${SB_URL}/storage/v1/object/sign/${bucket}/${path}`, { method: 'POST', headers: { apikey: SB_KEY, Authorization: 'Bearer ' + await token(), 'Content-Type': 'application/json' }, body: JSON.stringify({ expiresIn: 600 }) });
+  const j = await r.json().catch(() => ({})); if (!r.ok || !j.signedURL) throw new Error('Foto tidak bisa dibuka'); return SB_URL + '/storage/v1' + j.signedURL;
+}
+export function getLocation() {
+  return new Promise((res, rej) => { if (!navigator.geolocation) return rej(new Error('Perangkat tidak mendukung lokasi'));
+    navigator.geolocation.getCurrentPosition((p) => res({ lat: p.coords.latitude, lng: p.coords.longitude, acc: p.coords.accuracy }),
+      (e) => rej(new Error(e.code === 1 ? 'Izin lokasi ditolak. Aktifkan lokasi untuk pokama.org di pengaturan browser, atau absen dengan foto.' : 'Lokasi tidak terbaca. Coba lagi di tempat terbuka, atau absen dengan foto.')),
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 60000 }); });
+}

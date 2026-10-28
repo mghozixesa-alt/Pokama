@@ -94,10 +94,11 @@ async function performa(el, params, reload) {
   const me = ctx.me.id; const m = params.get('m') || monthStart(today());
   const onlySelf = !(isFin() || isAdmin()) && !active().some(p => p.boss_id === me || p.valuer1_id === me || p.valuer2_id === me);
   if (onlySelf) return detail(el, params, reload, me); const end = new Date(Date.UTC(+m.slice(0, 4), +m.slice(5, 7), 0)).toISOString().slice(0, 10);
-  const [outputs, perf, kkh, pnotes] = await Promise.all([
+  const [outputs, perf, kkh, att, pnotes] = await Promise.all([
     db.get('pk_outputs', `select=*&month=eq.${m}&order=created_at`),
     db.get('pk_perf', `select=*&month=eq.${m}`),
-    db.get('pk_kkh', `select=person_id,status&day=gte.${m}&day=lte.${end}`),
+    db.get('pk_kkh', `select=person_id,day,status&day=gte.${m}&day=lte.${end}&limit=20000`),
+    db.get('pk_attendance', `select=person_id,day,late_min&day=gte.${m}&day=lte.${end}`),
     db.get('pk_perf_notes', `select=person_id,valuer_id,score&month=eq.${m}`),
   ]);
   const W = ctx.settings.weights || { output: 60, kkh: 25, valuer: 15 };
@@ -105,7 +106,7 @@ async function performa(el, params, reload) {
   const rows = visible.map(p => {
     const os = outputs.filter(o => o.person_id === p.id);
     const pf = perf.find(x => x.person_id === p.id) || {};
-    const cc = calc(os, kkh.filter(x => x.person_id === p.id), pf, pnotes.filter(n => n.person_id === p.id));
+    const cc = calc(os, kkh.filter(x => x.person_id === p.id), pf, pnotes.filter(n => n.person_id === p.id), att.filter(x => x.person_id === p.id));
     const { cap, disc, score, fac } = cc; const valShow = cc.vs ? cc.vs.toLocaleString('id-ID', { maximumFractionDigits: 1 }) : null;
     return { p, os, cap, disc, val: pf.valuer_score, valShow, score, fac, pf };
   });

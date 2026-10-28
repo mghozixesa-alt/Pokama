@@ -113,7 +113,7 @@ function progress(m: any) {
 
   h += head(recap ? `REKAP BULAN ${bln.toUpperCase()}` : `PROGRES ${bln.toUpperCase()} · SISA ${m.days_left} HARI`);
   const stat = (v: string, l: string) => `<td width="33%" style="padding:10px 6px;text-align:center;background:#F7F8FA;border-radius:10px"><div style="font-size:20px;font-weight:900;color:#1D3149">${v}</div><div style="font-size:11px;color:#5B6573">${l}</div></td>`;
-  h += `<table role="presentation" width="100%" cellpadding="0" cellspacing="4" style="margin-top:4px"><tr>${stat(m.cap == null ? "–" : m.cap + "%", "capaian target")}${stat(m.kkh == null ? "–" : m.kkh + "%", `KKH valid (${m.valid}/${m.slots})`)}${stat(String(m.done), "tugas selesai")}</tr></table>`;
+  h += `<table role="presentation" width="100%" cellpadding="0" cellspacing="4" style="margin-top:4px"><tr>${stat(m.cap == null ? "–" : m.cap + "%", "capaian target")}${stat(m.kkh == null ? "–" : m.kkh + "%", `disiplin KKH${m.late ? ` · telat ${m.late}×` : ""}`)}${stat(String(m.done), "tugas selesai")}</tr></table>`;
   if ((m.outputs || []).length) h += (m.outputs as any[]).map((o) => `<div style="margin-top:10px;font-size:13px;color:#1F2933"><b>${esc(o.name)}</b> <span style="float:right;color:#5B6573">${(+o.actual).toLocaleString("id-ID")} / ${(+o.target).toLocaleString("id-ID")} · <b style="color:#1D3149">${o.pct ?? 0}%</b></span></div>${bar(o.pct, tone(o.pct))}`).join("");
   else h += `<div style="font-size:13px;color:#5B6573;margin-top:8px">Target output bulan ini belum ditetapkan.</div>`;
   if (m.score != null) h += `<div style="font-size:13px;color:#5B6573;margin-top:10px">Skor performa sementara <b style="color:#1D3149">${m.score}</b>${m.kkh != null && m.kkh < 80 ? " · KKH valid masih di bawah 80%" : ""}.</div>`;
@@ -123,7 +123,7 @@ function progress(m: any) {
     h += head("JEJAK HARIAN BULAN INI");
     h += `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:4px">` + days.slice().reverse().map((d) => {
       const txt = d.off ? `<span style="color:#5B6573">${esc(d.off === "cuti" ? "Cuti" : d.off === "izin" ? "Izin" : "Libur")}</span>`
-        : `${d.slots} jam tercatat${d.valid ? `, ${d.valid} valid` : ""}${(d.done || []).length ? ` · <b>selesai:</b> ${(d.done as string[]).map(esc).join(", ")}` : ""}`;
+        : `${d.slots} jam tercatat${d.valid ? `, ${d.valid} valid` : ""}${d.late ? ` · <b style="color:#C2410C">telat ${d.late} mnt</b>` : ""}${(d.done || []).length ? ` · <b>selesai:</b> ${(d.done as string[]).map(esc).join(", ")}` : ""}`;
       return `<tr><td style="padding:5px 10px 5px 0;border-top:1px solid #F0F2F5;font-size:12px;font-weight:800;color:#1D3149;white-space:nowrap;vertical-align:top">${tgl(d.day)}</td><td style="padding:5px 0;border-top:1px solid #F0F2F5;font-size:13px;color:#3B4250">${txt}</td></tr>`;
     }).join("") + `</table>`;
   }
