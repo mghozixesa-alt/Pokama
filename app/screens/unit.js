@@ -47,13 +47,13 @@ export default async function unit(el, params, reload) {
         <div class="row between"><b class="big">${jt(c.a)}</b><span class="muted small">${c.t ? 'dari ' + jt(c.t) + ' · <b>' + Math.round(p * 100) + '%</b>' : 'target belum disahkan'}</span></div>
         <span class="bar lg"><i style="width:${p ? Math.min(100, p * 100) : 0}%;background:${s ? s[2] : '#C9CED6'}"></i></span></div>
       ${c.lines.length ? `<div class="mini">${c.lines.map(x => { const q = x.t ? x.a / x.t : null; const ss = q !== null ? stOf(q) : null;
-        return `<div><span>${esc(x.l.name)}</span><span class="bar"><i style="width:${q ? Math.min(100, q * 100) : 0}%;background:${ss ? ss[2] : '#C9CED6'}"></i></span><b class="${q !== null && q < .75 ? 'red' : ''}">${jt(x.a)}${q !== null ? ` <small class="muted">${Math.round(q * 100)}%</small>` : ''}</b></div>`; }).join('')}</div>` : ''}
+        return `<div><span>${esc(x.l.name)}</span><span class="bar"><i style="width:${q ? Math.min(100, q * 100) : 0}%;background:${ss ? ss[2] : '#C9CED6'}"></i></span><b class="${q !== null && q < .75 ? 'red' : ''}">${jt(x.a)}${x.t ? ` <small class="muted">/ ${jt(x.t)}</small>` : ` <small class="muted">/ target —</small>`}</b></div>`; }).join('')}</div>` : ''}
       <div><span class="lab">KPI UTAMA</span><b>${esc(c.u.kpi || '—')}</b></div>
       <div class="tbox"><div class="row between small"><span class="lab">TARGET ${fmonth(nm).toUpperCase()}</span><span class="${tn ? 'green-t' : 'red'}">${tn ? ST[tn.status] : 'Belum diisi'}</span></div>
         ${tn ? `<div class="row between"><b>${rp(tn.amount)}</b><span class="row gap6">${isFin() && tn.status === 'usulan' ? `<button class="btn sm" data-ts="${tn.ids.join(',')}" data-s="dicek">Tandai dicek</button>` : ''}${isCeo() && tn.status !== 'sah' ? `<button class="btn sm pri" data-ts="${tn.ids.join(',')}" data-s="sah">Sahkan</button>` : ''}${!tn.lined && tn.status === 'usulan' && (tn.proposed_by === me || isFin() || isAdmin()) ? `<button class="btn sm danger" data-tdel="${tn.id}">Hapus usulan</button>` : ''}</span></div>` : ''}
         ${tn && tn.lined ? `<div class="tlines">${c.lines.map(x => { const r = tn.rows.find(y => y.unit_code === x.l.code); return `<div><span>${esc(x.l.name)}</span><b>${r ? jt(r.amount) : '—'}</b></div>`; }).join('')}</div>` : ''}
-        ${canProp(c.u.code) && (!tn || tn.status === 'usulan') ? (c.lines.length
-          ? `<button class="btn sm pri" data-tl="${c.u.code}">${tn && tn.lined ? 'Ubah target per lini' : 'Isi target per lini'}</button>`
+        ${canProp(c.u.code) && (c.lines.length || !tn || tn.status === 'usulan') ? (c.lines.length
+          ? `<button class="btn sm pri" data-tl="${c.u.code}">Atur target tiap cabang / lini</button>`
           : `<div class="row gap"><span class="pre grow"><b>Rp</b><input class="inp-n" data-tin="${c.u.code}" inputmode="numeric" placeholder="${c.a ? Math.round(c.a * 1.05).toLocaleString('id-ID') + ' (usulan +5%)' : 'isi target'}"></span><button class="btn sm pri" data-tp="${c.u.code}">${tn ? 'Ubah' : 'Usulkan'}</button></div>`) : ''}</div>
     </section>`; }).join('')}</div>
   <div class="g2w">
@@ -104,23 +104,34 @@ export default async function unit(el, params, reload) {
       }
       const tl = e.target.closest('[data-tl]');
       if (tl) { const code = tl.dataset.tl; const u = ctx.unit[code]; const ls = lines(code);
-        const body = `<p class="muted small" style="margin-top:0">Target ${fmonth(nm)} untuk tiap lini ${esc(u.name)}. Total unit dihitung otomatis dari jumlah semua lini.${tgt(code, nm) ? ` Target unit ${jt(tgt(code, nm).amount)} yang sudah ada akan digantikan total per lini ini.` : ''}</p>
-          ${ls.map(l => { const ex = tgt(l.code, nm), cur = sumOm([l.code]);
-            return `<label class="bulk-r"><span>${esc(l.name)}<small class="muted">${cur ? ' · ' + fmonth(m) + ' ' + jt(cur) : ''}</small></span><span class="pre"><b>Rp</b><input name="t_${l.code}" class="inp-n" inputmode="numeric" value="${ex ? (+ex.amount).toLocaleString('id-ID') : ''}" placeholder="${cur ? Math.round(cur * 1.05).toLocaleString('id-ID') : '0'}" ${ex && ex.status !== 'usulan' ? 'disabled' : ''}></span></label>`; }).join('')}
+        const allT = await db.get('pk_targets', `select=*&month=in.(${m},${nm})&unit_code=in.(${ls.map(l => l.code).join(',')})`);
+        const body = field('Bulan', `<select name="mon" class="inp">${opts([[nm, fmonth(nm)], [m, fmonth(m)]], nm)}</select>`) +
+          `<p class="muted small" style="margin-top:0">Target masing-masing cabang / lini ${esc(u.name)}. Isi satu per satu.</p>
+          ${ls.map(l => { const cur = sumOm([l.code]);
+            return `<label class="bulk-r"><span>${esc(l.name)}<small class="muted" data-st="${l.code}"></small><small class="muted">${cur ? ' · omzet ' + fmonth(m) + ' ' + jt(cur) : ''}</small></span><span class="pre"><b>Rp</b><input name="t_${l.code}" class="inp-n" inputmode="numeric" placeholder="${cur ? Math.round(cur * 1.05).toLocaleString('id-ID') : '0'}"></span></label>`; }).join('')}
           <div class="row between bulk-sum"><span class="lab">TOTAL ${esc(u.name.toUpperCase())}</span><b id="ttot">Rp0</b></div>
-          <p class="note">Lini yang dikosongkan tidak diberi target. Target yang sudah dicek Keuangan atau disahkan CEO terkunci.</p>`;
+          <p class="note">Lini yang dikosongkan tidak diberi target. Yang sudah dicek Keuangan atau disahkan CEO terkunci${isCeo() ? ', kecuali untuk Anda (CEO)' : ''}.${tgt(code, nm) ? ` Target unit ${jt(tgt(code, nm).amount)} yang lama digantikan oleh target per lini.` : ''}</p>`;
+        const T0 = (lc, mon) => allT.find(t => t.unit_code === lc && t.month === mon);
         const onOpen = (ev) => { document.removeEventListener('modal:open', onOpen); const form = ev.detail;
           const total = () => { let t = 0; form.querySelectorAll('[name^="t_"]').forEach(i => t += num(i.value) || 0); form.querySelector('#ttot').textContent = rp(t); };
-          form.addEventListener('input', total); total(); };
+          const fill = () => { const mon = form.querySelector('[name=mon]').value;
+            for (const l of ls) { const ex = T0(l.code, mon), inp = form.querySelector(`[name="t_${l.code}"]`);
+              inp.value = ex ? (+ex.amount).toLocaleString('id-ID') : ''; inp.disabled = !!(ex && ex.status !== 'usulan' && !isCeo());
+              form.querySelector(`[data-st="${l.code}"]`).textContent = ex ? ' · ' + ({ usulan: 'diusulkan', dicek: 'dicek Keuangan', sah: 'disahkan' }[ex.status]) : ''; }
+            total(); };
+          form.addEventListener('input', total); form.querySelector('[name=mon]').addEventListener('change', fill); fill(); };
         document.addEventListener('modal:open', onOpen);
-        const r = await modal('Target per lini · ' + u.name, body, { submit: 'Usulkan target', onSubmit: async (f) => {
-          let n = 0;
-          for (const l of ls) { const ex = tgt(l.code, nm); if (ex && ex.status !== 'usulan') continue; const v = num(f['t_' + l.code]);
+        let monSaved = nm;
+        const r = await modal('Target cabang / lini · ' + u.name, body, { submit: 'Simpan target', onSubmit: async (f) => {
+          const mon = f.mon; monSaved = mon; let n = 0;
+          for (const l of ls) { const ex = T0(l.code, mon); if (ex && ex.status !== 'usulan' && !isCeo()) continue; const v = num(f['t_' + l.code]);
             if (v && ex) { if (+ex.amount !== v) { await db.update('pk_targets', 'id=eq.' + ex.id, { amount: v, updated_at: new Date().toISOString() }); n++; } }
-            else if (v) { await db.insert('pk_targets', { unit_code: l.code, month: nm, amount: v, status: 'usulan', proposed_by: me }); n++; }
-            else if (ex) { await db.remove('pk_targets', 'id=eq.' + ex.id); n++; } }
-          if (!n) throw new Error('Belum ada target yang diisi atau diubah'); } });
-        if (r) { toast('Target ' + fmonth(nm) + ' per lini diusulkan'); reload(); } return;
+            else if (v) { await db.insert('pk_targets', { unit_code: l.code, month: mon, amount: v, status: 'usulan', proposed_by: me }); n++; }
+            else if (ex && ex.status === 'usulan') { await db.remove('pk_targets', 'id=eq.' + ex.id); n++; } }
+          if (!n) throw new Error('Belum ada target yang diisi atau diubah');
+          if (isCeo()) { const fresh = await db.get('pk_targets', `select=id,status&month=eq.${mon}&unit_code=in.(${ls.map(l => l.code).join(',')})`);
+            for (const t of fresh.filter(x => x.status !== 'sah')) await db.rpc('pk_target_status', { p_id: t.id, p_status: 'sah' }); } } });
+        if (r) { toast('Target ' + fmonth(monSaved) + ' tersimpan'); reload(); } return;
       }
       if (a && a.dataset.a === 'liga') {
         const w = weekStart(today());
