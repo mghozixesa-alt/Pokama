@@ -114,7 +114,7 @@ export default async function belanja(el, params, reload) {
       else if (a.dataset.a === 'lpj') ok = await modal('Upload nota · ' + r.code, `<p class="muted small" style="margin-top:0">Realisasi terisi sesuai anggaran. Ubah hanya yang berbeda. Kalau semua nota ada di satu folder/foto, isi tautan bersama saja.</p>` +
         field('Tautan nota bersama (folder Drive / album foto)', '<input name="all" class="inp" placeholder="https://drive.google.com/…">') +
         `<div class="scroll-x"><table class="tbl compact"><thead><tr><th>Barang</th><th class="r">Anggaran</th><th class="r">Realisasi</th><th>Tautan nota khusus</th></tr></thead><tbody>` +
-        I(r.id).map(i => `<tr><td>${esc(i.name)}<small class="muted"> · ${(+i.qty).toLocaleString('id-ID')} ${esc(i.uom || '')}</small></td><td class="r muted">${rp(i.qty * i.price)}</td><td><input name="r_${i.id}" class="inp r w-price" inputmode="numeric" value="${(i.qty * i.price).toLocaleString('id-ID')}"></td><td><input name="n_${i.id}" class="inp" placeholder="opsional"></td></tr>`).join('') + `</tbody></table></div>`,
+        I(r.id).map(i => `<tr><td>${esc(i.name)}<small class="muted"> · ${(+i.qty).toLocaleString('id-ID')} ${esc(i.uom || '')}</small></td><td data-l="Anggaran" class="r muted">${rp(i.qty * i.price)}</td><td data-l="Realisasi"><input name="r_${i.id}" class="inp r w-price" inputmode="numeric" value="${(i.qty * i.price).toLocaleString('id-ID')}"></td><td data-l="Nota khusus"><input name="n_${i.id}" class="inp" placeholder="opsional"></td></tr>`).join('') + `</tbody></table></div>`,
         { wide: true, submit: 'Kirim nota', onSubmit: (f) => { const all = (f.all || '').trim();
           const list = I(r.id).map(i => ({ id: i.id, real_amount: num(f['r_' + i.id]), nota_link: (f['n_' + i.id] || '').trim() || all || null }));
           if (!list.some(x => x.nota_link)) throw new Error('Isi tautan nota, minimal tautan bersama');
@@ -157,11 +157,11 @@ export default async function belanja(el, params, reload) {
 const CATS = ['Bahan & perlengkapan', 'Sparepart & perawatan', 'Konsumsi', 'Transport & ongkir', 'Marketing & cetak', 'Jasa & tenaga', 'ATK & kantor', 'Lain-lain'];
 const fmtN = (v) => v === '' || v == null || isNaN(v) ? '' : (+v).toLocaleString('id-ID');
 function edRow(x = {}) {
-  return `<tr><td class="muted n"></td><td><input class="inp" data-k="name" value="${esc(x.name || '')}" placeholder="Nama barang"></td>
-    <td><input class="inp r w-qty" data-k="qty" inputmode="decimal" value="${x.qty != null ? fmtN(+x.qty) : ''}"></td><td><input class="inp w-uom" data-k="uom" value="${esc(x.uom || '')}" placeholder="pcs"></td>
-    <td><input class="inp r w-price" data-k="price" inputmode="numeric" value="${x.price != null && x.price !== '' ? fmtN(+x.price) : ''}"></td><td class="r b sub">—</td>
-    <td><input class="inp w-cat" data-k="category" list="rab-cats" value="${esc(x.category || '')}" placeholder="kategori"></td><td><input class="inp w-ven" data-k="vendor" value="${esc(x.vendor || '')}" placeholder="toko"></td>
-    <td><button type="button" class="x" data-del title="Hapus baris">×</button></td></tr>`;
+  return `<tr><td class="muted n"></td><td data-l="Barang"><input class="inp" data-k="name" value="${esc(x.name || '')}" placeholder="Nama barang"></td>
+    <td data-l="Qty"><input class="inp r w-qty" data-k="qty" inputmode="decimal" value="${x.qty != null ? fmtN(+x.qty) : ''}"></td><td data-l="Satuan"><input class="inp w-uom" data-k="uom" value="${esc(x.uom || '')}" placeholder="pcs"></td>
+    <td data-l="Harga satuan"><input class="inp r w-price" data-k="price" inputmode="numeric" value="${x.price != null && x.price !== '' ? fmtN(+x.price) : ''}"></td><td data-l="Subtotal" class="r b sub">—</td>
+    <td data-l="Kategori"><input class="inp w-cat" data-k="category" list="rab-cats" value="${esc(x.category || '')}" placeholder="kategori"></td><td data-l="Toko"><input class="inp w-ven" data-k="vendor" value="${esc(x.vendor || '')}" placeholder="toko"></td>
+    <td class="dl"><button type="button" class="x" data-del title="Hapus baris">×</button></td></tr>`;
 }
 function edRead(form) {
   return [...form.querySelectorAll('#rab-body tr')].map(tr => { const g = (k) => (tr.querySelector(`[data-k="${k}"]`).value || '').trim();

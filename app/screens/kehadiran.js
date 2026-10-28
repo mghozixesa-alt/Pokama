@@ -41,7 +41,7 @@ export default async function kehadiran(el, params, reload) {
     <div class="days">${days.map(d => { const r = myLibur.find(x => x.day === d); const low = duty.find(x => x.d === d).hq < holdMin && bizOf(meP.unit_code) === 'HQ';
       return `<button class="day${r ? ' on' : ''}${low && !r ? ' warn' : ''}" data-day="${d}" ${r && r.status === 'disetujui' ? 'title="Sudah disetujui"' : ''}><b>${dayName(d)}</b><span>${fdate(d, false)}</span><small>${r ? (r.status === 'disetujui' ? '✓ libur' : 'diajukan') : low ? 'kurang orang' : ''}</small></button>`; }).join('')}</div>
     <div class="row gap wrap"><button class="btn" data-a="cuti">Ajukan cuti</button><button class="btn" data-a="izin">Ajukan izin</button><button class="btn" data-a="wfa">Ajukan WFA</button></div></section>
-  <details class="card rules"><summary><h2>Aturan WFA (kerja dari mana saja)</h2></summary><ul class="small">
+  <details class="card rules"><summary><h2>Aturan WFA</h2></summary><ul class="small">
     <li>Maksimal <b>${wfaMax} hari per bulan</b>, diajukan ke atasan paling lambat <b>H-1</b>.</li>
     <li>Hari WFA tetap <b>absen</b>, wajib <b>lokasi dan foto</b>.</li>
     <li>KKH tetap <b>${+ctx.settings.kkh_daily_hours || 8} jam</b> dan wajib divalidasi valuer.</li>

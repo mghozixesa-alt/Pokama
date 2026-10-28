@@ -66,7 +66,7 @@ async function board(el, params, reload) {
         ${rows.length ? table(rows, false) : `<p class="muted small" style="margin:4px 0">${all.length ? 'Semua tugas proyek ini sudah selesai.' : 'Belum ada tugas. Pecah proyek ini jadi langkah-langkah kerja.'}</p>`}
         <div class="row gap"><button class="btn sm pri" data-np="${p.id}">+ Tugas di proyek ini</button>${can ? `<button class="btn sm" data-pe="${p.id}">Ubah proyek</button>` : ''}</div></section>`; }).join('');
     const loose = list.filter(t => !t.project_id || !proj[t.project_id] || !ps.includes(proj[t.project_id]));
-    const looseHtml = loose.length ? `<section class="grp"><div class="grp-h"><b>Tugas lepas</b><span class="muted">${loose.length} tugas tanpa proyek · klik tugas lalu "Ubah detail" untuk memasukkannya ke proyek</span></div>${table(loose, true)}</section>` : '';
+    const looseHtml = loose.length ? `<section class="grp"><div class="grp-h"><b>Tugas lepas</b><span class="muted">${loose.length} tugas</span></div><p class="small muted" style="margin:-4px 0 0">Belum masuk proyek. Klik tugas → "Ubah detail" untuk memasukkannya ke proyek.</p>${table(loose, true)}</section>` : '';
     return blocks || looseHtml ? blocks + looseHtml : empty; };
   el.innerHTML = `
   <header class="ph"><div><span class="muted small">Proyek = tujuan besar · Tugas = langkah kerja di dalamnya · selesai setelah disetujui reviewer</span><h1>Proyek & Tugas</h1></div>

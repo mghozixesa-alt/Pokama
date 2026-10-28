@@ -254,3 +254,25 @@ button.chipdel{border:0;cursor:pointer;font:inherit;font-size:11px;font-weight:8
 table.kkh tr.brk td{background:repeating-linear-gradient(135deg,#F6F7F9 0 8px,#EFF1F4 8px 16px);text-align:center;font-size:12px;color:var(--mut);font-weight:700}
 table.kkh th .att{display:flex;align-items:center;gap:4px;justify-content:center;margin-top:4px}.att .chip{font-size:10px;padding:2px 6px}.att a,.att .link{font-size:14px;text-decoration:none;background:none;border:0;cursor:pointer;padding:0}
 .pf-cal .cd.late{box-shadow:inset 0 -3px 0 #C2410C}.pf-leg i.late{background:#fff;box-shadow:inset 0 -3px 0 #C2410C}
+/* perbaikan HP */
+.absen-t{display:flex;flex-direction:column;gap:2px}.chk.ntf{align-items:flex-start}.chk.ntf>span{display:flex;flex-direction:column;gap:2px}
+@media (max-width:760px){
+  .card .chips{flex-wrap:wrap;overflow:visible}
+  .grp-h{font-size:16px}.grp-h .muted{font-size:13px}
+  .proj-h{flex-wrap:wrap}.proj-p{margin-left:auto}
+  .absen .row.between{flex-direction:column;align-items:stretch}.absen .btn{width:100%}
+  .rab-ed{max-height:none}.modal .rab-tools{flex-direction:column;align-items:stretch}.modal .rab-tools .inp.sm{width:100%}
+  .bulk-r{flex-wrap:wrap}.bulk-r .pre{width:100%}
+  .uhead .uname>b{font-size:18px}.upts b{font-size:24px}
+  .li .row.gap{flex-wrap:wrap}
+}
+@media (max-width:760px){
+  .rab-ed{border:0;overflow:visible}.rab-ed table{min-width:0!important}
+  .rab-ed tr{position:relative;border:1px solid var(--line);border-radius:12px;margin-bottom:8px;padding:10px 12px!important;counter-increment:rabrow}
+  .rab-ed td.n{display:none!important}.rab-ed td:nth-child(2){min-width:0;padding-right:34px!important}
+  .rab-ed td:nth-child(2)::before{content:'Barang ' counter(rabrow)!important;display:block;margin-bottom:4px}
+  .rab-ed td:nth-child(2){display:block!important}
+  .rab-ed td .inp{width:58%!important;flex:0 0 58%}.rab-ed td:nth-child(2) .inp{width:100%!important}
+  .rab-ed td.dl{position:absolute;top:6px;right:6px;padding:0!important;min-height:0}.rab-ed td.dl::before{display:none}
+  .rab-ed tbody{counter-reset:rabrow}
+}
