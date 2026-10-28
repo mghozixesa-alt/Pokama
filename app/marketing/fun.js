@@ -98,7 +98,14 @@
     });
     return s;
   }
-  function thumb(text, unit) { return scene(sceneKind(text), unit, hash(text)); }
+  function thumb(text, unit, fmt) {
+    var c = UC[unit] || TEAL, f = String(fmt || '').toLowerCase(), ic;
+    if (/reels|tiktok|video|story/.test(f)) ic = '<rect x="58" y="78" width="44" height="44" rx="12" fill="none" stroke="' + c + '" stroke-width="4"/><path d="M74 90 L90 100 L74 110Z" fill="' + c + '"/>';
+    else if (/carousel/.test(f)) ic = '<rect x="66" y="80" width="36" height="36" rx="7" fill="none" stroke="' + c + '" stroke-width="4" opacity=".45"/><rect x="58" y="88" width="36" height="36" rx="7" fill="#fff" stroke="' + c + '" stroke-width="4"/>';
+    else if (/iklan|ads/.test(f)) ic = '<path d="M60 96 v12 h10 l20 12 V84 L70 96Z" fill="none" stroke="' + c + '" stroke-width="4" stroke-linejoin="round"/><path d="M98 92 a10 10 0 0 1 0 20" fill="none" stroke="' + c + '" stroke-width="4" stroke-linecap="round"/>';
+    else ic = '<rect x="58" y="80" width="44" height="40" rx="8" fill="none" stroke="' + c + '" stroke-width="4"/><circle cx="70" cy="92" r="4" fill="' + c + '"/><path d="M60 116 L74 102 L84 110 L92 104 L100 112" fill="none" stroke="' + c + '" stroke-width="4" stroke-linejoin="round"/>';
+    return '<svg viewBox="0 0 160 200" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect width="160" height="200" fill="#F3F5F8"/><rect width="160" height="200" fill="' + c + '" opacity=".08"/>' + ic + '</svg>';
+  }
 
   function spot(kind) {
     var s = '<svg viewBox="0 0 140 100" aria-hidden="true">';
@@ -217,7 +224,7 @@
       head('Cerita minggu ini', '22–27 Oktober · disusun otomatis dari semua kanal' + (u !== 'Semua' ? ' · ' + u : ''),
         '<div class="fx-row"><a class="fx-btn ghost" href="TV.html">▣ Mode layar TV</a><button type="button" class="fx-btn" data-act="wrap">▶ Putar rekap Oktober</button></div>') +
       '<div class="fx-story-grid">' +
-      '<a class="fx-tile fx-tile-top" href="Instagram.dc.html"><div class="fx-thumb">' + thumb(t.cap, t.unit) + '<span class="fx-medal">🏆 Konten juara</span></div><div class="fx-tile-b"><span class="fx-k">' + t.unit + ' · ' + t.type + ' · ' + t.date + '</span><strong>' + esc(t.cap) + '</strong><span class="fx-stats"><b>' + dec(t.er, 1) + '%</b> ER · <b>' + t.saves + '</b> disimpan · <b>' + t.reach + '</b> reach</span></div></a>' +
+      '<a class="fx-tile fx-tile-top" href="Instagram.dc.html"><div class="fx-thumb">' + thumb(t.cap, t.unit, t.type) + '<span class="fx-medal">🏆 Konten juara</span></div><div class="fx-tile-b"><span class="fx-k">' + t.unit + ' · ' + t.type + ' · ' + t.date + '</span><strong>' + esc(t.cap) + '</strong><span class="fx-stats"><b>' + dec(t.er, 1) + '%</b> ER · <b>' + t.saves + '</b> disimpan · <b>' + t.reach + '</b> reach</span></div></a>' +
       '<a class="fx-tile" href="Ads.dc.html"><div class="fx-spot">' + spot('leak') + '</div><span class="fx-k">Iklan paling boros</span><strong>' + esc(S.leak[0]) + '</strong><span class="fx-big bad">' + S.leak[2] + ' <small>per chat</small></span><span class="fx-note">' + S.leak[3] + '</span></a>' +
       '<a class="fx-tile" href="Maps.dc.html"><div class="fx-spot">' + spot('star') + '</div><span class="fx-k">Suara pelanggan</span><strong>' + S.voice[0] + '</strong><span class="fx-note">' + S.voice[1] + '</span></a>' +
       '<div class="fx-tile fx-tile-act"><span class="fx-k light">Satu langkah minggu ini</span><strong>' + esc(S.act[0]) + '</strong><span class="fx-note light">' + S.act[1] + '</span><button type="button" class="fx-btn mint" data-act="kkh">＋ Jadikan tugas KKH · ' + S.act[2] + '</button></div>' +
@@ -229,8 +236,8 @@
   var WR = [
     { bg: 'linear-gradient(160deg,#1D3149,#0F6F72)', k: 'REKAP MARKETING POKAMA', t: 'Oktober 2026', b: 'Sebulan kerja tim marketing tiga unit. Ketuk untuk lanjut.', art: spot('rocket') },
     { bg: 'linear-gradient(160deg,#0FA394,#1D3149)', k: 'Orang yang melihat kita', big: 412800, fmt: 'rb', t: 'akun dijangkau', b: '▲ 18% dari September. Rata-rata ±15 rb akun baru melihat kita setiap hari.' },
-    { bg: 'linear-gradient(160deg,#2F6FD0,#1D3149)', k: 'Konten yang paling banyak ditonton', t: 'Syarat sewa iPhone cuma KTP + KK', b: '11,5 rb reach · Reels Rentalaja, 8 Okt', art: thumb('Syarat sewa iPhone cuma KTP + KK', 'Rentalaja'), photo: true },
-    { bg: 'linear-gradient(160deg,#D08A1E,#7A3E0A)', k: 'Paling sering disimpan', t: 'Estimasi biaya liburan Garut 3 hari', b: 'Disimpan 94 kali. Orang menyimpan konten yang membantu mereka memutuskan.', art: thumb('Estimasi biaya liburan Garut 3 hari', 'TripinAja'), photo: true },
+    { bg: 'linear-gradient(160deg,#2F6FD0,#1D3149)', k: 'Konten yang paling banyak ditonton', t: 'Syarat sewa iPhone cuma KTP + KK', b: '11,5 rb reach · Reels Rentalaja, 8 Okt', art: thumb('Syarat sewa iPhone cuma KTP + KK', 'Rentalaja', 'Reels'), photo: true },
+    { bg: 'linear-gradient(160deg,#D08A1E,#7A3E0A)', k: 'Paling sering disimpan', t: 'Estimasi biaya liburan Garut 3 hari', b: 'Disimpan 94 kali. Orang menyimpan konten yang membantu mereka memutuskan.', art: thumb('Estimasi biaya liburan Garut 3 hari', 'TripinAja', 'Carousel'), photo: true },
     { bg: 'linear-gradient(160deg,#1D3149,#2F6FD0)', k: 'Dari dilihat sampai bayar', big: 486, fmt: 'num', t: 'chat WA dari marketing', b: '131 jadi closing · omzet terlacak Rp 96,4 jt · biaya Rp 7,1 jt' },
     { bg: 'linear-gradient(160deg,#067A70,#1D3149)', k: 'Kanal paling efisien', big: 17.4, fmt: 'x', t: 'ROAS Meta Ads', b: 'Kampanye "Open trip November" juara: Rp 950 rb jadi Rp 21,6 jt.' },
     { bg: 'linear-gradient(160deg,#FFB46B,#C2410C)', k: 'Juara tim bulan ini', t: 'Mugni · Konten TripinAja', b: '1.240 poin · 12 hari beruntun posting tepat waktu · ER rata-rata tertinggi', art: avatar('Mugni', 'TripinAja', 120), av: true },
@@ -343,8 +350,8 @@
       '<ol class="fx-lb">' + team.map(function (t, i) {
         return '<li><span class="fx-rank">' + (u === 'Semua' ? medals[i] : '⭐') + '</span>' + avatar(t.name, t.unit, 46) + '<div class="fx-lb-b"><div class="fx-lb-top"><strong>' + t.name + '</strong><span class="fx-flame" title="Hari beruntun posting tepat waktu">🔥 ' + t.streak + ' hari</span></div><span class="fx-note">' + t.role + ' · tepat waktu ' + t.ontime + '%</span><div class="fx-pbar"><i style="width:' + (t.pts / maxP * 100) + '%;background:' + UC[t.unit] + '"></i></div><div class="fx-badges">' + t.badges.map(function (b) { return '<span>' + b + '</span>'; }).join('') + '</div></div><strong class="fx-pts" data-count="' + t.pts + '">' + num(t.pts) + '</strong></li>';
       }).join('') + '</ol></section>' +
-      '<section class="fx-card">' + head('Konten terbaik minggu ini', 'Urut ER · 22–27 Okt') + '<div class="fx-podium">' + top.map(function (t, i) {
-        return '<a class="fx-pod" href="Instagram.dc.html"><div class="fx-thumb sm">' + thumb(t.cap, t.unit) + '<span class="fx-medal">' + medals[i] + '</span></div><strong>' + esc(t.cap) + '</strong><span class="fx-note"><b>' + dec(t.er, 1) + '%</b> ER · ' + t.saves + ' simpan · ' + t.pic + '</span></a>';
+      '<section class="fx-card">' + head('Konten terbaik minggu ini', 'Urut ER · 22–27 Okt · foto asli muncul setelah Instagram tersambung') + '<div class="fx-podium">' + top.map(function (t, i) {
+        return '<a class="fx-pod" href="Instagram.dc.html"><div class="fx-thumb sm">' + thumb(t.cap, t.unit, t.type) + '<span class="fx-medal">' + medals[i] + '</span></div><strong>' + esc(t.cap) + '</strong><span class="fx-note"><b>' + dec(t.er, 1) + '%</b> ER · ' + t.saves + ' simpan · ' + t.pic + '</span></a>';
       }).join('') + '</div></section></div>';
     if (!store.lbAnim) { store.lbAnim = 1; save(); countUp(el); }
   }
@@ -361,8 +368,9 @@
     var mn = Math.min.apply(null, vals), mx = Math.max.apply(null, vals);
     grid.setAttribute('data-lens', lens);
     tiles.forEach(function (t, i) {
-      var art = t.querySelector('.ig-art'); if (art && !art.firstChild) art.innerHTML = thumb(get(t, 'cap'), acc);
+      var art = t.querySelector('.ig-art'); if (art && !art.firstChild) art.innerHTML = thumb(get(t, 'cap'), acc, get(t, 'type'));
       var heat = t.querySelector('.ig-heat');
+      if (art && heat && heat.parentNode !== art) art.appendChild(heat);
       if (key) { var k = mx > mn ? (vals[i] - mn) / (mx - mn) : 0.5; heat.style.background = 'rgba(' + (k > 0.5 ? '9,190,175' : '242,163,58') + ',' + (0.25 + Math.abs(k - 0.5) * 1.1).toFixed(2) + ')'; t.querySelector('.ig-heat-v').textContent = get(t, key) + (key === 'saves' ? ' simpan' : key === 'reach' ? ' reach' : ' ER'); }
       t.onclick = function () { igDetail(t, acc); };
       t.onkeydown = function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); igDetail(t, acc); } };
@@ -371,7 +379,7 @@
   function igDetail(t, acc) {
     var g = function (k) { return esc(t.getAttribute('data-' + k)); };
     var good = t.getAttribute('data-good') === '1';
-    modal('<div class="fx-ig-d"><div class="fx-ig-d-art">' + thumb(t.getAttribute('data-cap'), acc) + '<span class="fx-ig-type">' + g('type') + '</span></div><div class="fx-ig-d-b"><span class="fx-k">' + acc + ' · ' + g('pillar') + ' · ' + g('date') + '</span><h3>' + g('cap') + '</h3>' +
+    modal('<div class="fx-ig-d"><div class="fx-ig-d-art">' + thumb(t.getAttribute('data-cap'), acc, t.getAttribute('data-type')) + '<span class="fx-ig-type">' + g('type') + '</span></div><div class="fx-ig-d-b"><span class="fx-k">' + acc + ' · ' + g('pillar') + ' · ' + g('date') + '</span><h3>' + g('cap') + '</h3>' +
       '<span class="fx-verdict ' + (good ? 'good' : 'bad') + '">' + (good ? 'Di atas median ER akun. Layak diulang formatnya.' : 'Di bawah median ER akun. Coba hook 3 detik pertama yang lebih kuat.') + '</span>' +
       '<div class="fx-ig-stats">' + [['Reach', 'reach'], ['Views', 'views'], ['ER', 'er'], ['Suka', 'likes'], ['Komentar', 'comments'], ['Simpan', 'saves'], ['Bagikan', 'shares'], ['Kunjungan profil', 'visits'], ['Follow dari post', 'follows'], ['Rata-rata tonton', 'watch']].map(function (x) { return '<div><span>' + x[0] + '</span><strong>' + g(x[1]) + '</strong></div>'; }).join('') + '</div>' +
       '<div class="fx-row"><button type="button" class="fx-btn" data-act="redo">↻ Buat versi TikTok</button><button type="button" class="fx-btn ghost" data-act="brief">Salin jadi brief</button></div></div></div>', 'fx-modal-ig');
@@ -388,12 +396,12 @@
   function islKol(el) {
     var v = window.dcComp ? dcComp.renderVals() : null; if (!v) return;
     var NICHE = { travel: 'mountain', otomotif: 'motor', teknologi: 'laptop', keluarga: 'house', outdoor: 'tent' };
-    el.innerHTML = '<section class="fx-card">' + head('Kreator yang sedang jalan', 'Kartu per KOL: cuplikan konten, hasil, dan langkah berikutnya. Geser ke samping.') +
+    el.innerHTML = '<section class="fx-card">' + head('Kreator yang sedang jalan', 'Kartu per KOL: cuplikan konten Collab (ditarik dari Instagram), hasil, dan langkah berikutnya. Geser ke samping.') +
       '<div class="fx-hscroll">' + v.rows.map(function (k) {
         var live = k.reach !== '—', kind = NICHE[k.niche] || 'people';
-        return '<article class="fx-kol" style="--c:' + k.dot + '"><div class="fx-kol-ban">' + scene(kind, k.unit, hash(k.name)) + '</div><div class="fx-kol-id">' + avatar(k.name, k.unit, 56) + '<div><strong>' + esc(k.name) + '</strong><span>' + k.fol + ' followers · ER ' + k.er + '</span></div></div>' +
+        return '<article class="fx-kol" style="--c:' + k.dot + '"><div class="fx-kol-ban" style="background:linear-gradient(120deg,' + k.dot + ',' + NAVY + ')"></div><div class="fx-kol-id">' + avatar(k.name, k.unit, 56) + '<div><strong>' + esc(k.name) + '</strong><span>' + k.fol + ' followers · ER ' + k.er + '</span></div></div>' +
           '<div class="fx-row wrap"><span class="fx-tag" style="background:' + k.stBg + ';color:' + k.stFg + '">' + k.status + '</span><span class="fx-tag soft">' + esc(k.niche) + '</span><span class="fx-tag soft">' + esc(k.unit) + '</span></div>' +
-          '<div class="fx-kol-posts">' + (live ? [0, 1, 2].map(function (j) { return '<div class="fx-thumb xs">' + scene(j === 1 ? 'people' : kind, k.unit, hash(k.name) + j) + '</div>'; }).join('') : '<div class="fx-kol-empty">' + spot('calendar') + '<span>' + (k.status.indexOf('Telat') === 0 ? 'Konten belum tayang. ' + k.status + '.' : 'Belum tayang') + '</span></div>') + '</div>' +
+          '<div class="fx-kol-posts">' + (live ? [0, 1, 2].map(function (j) { return '<div class="fx-thumb xs">' + thumb('', k.unit, j === 1 ? 'Foto' : 'Reels') + '</div>'; }).join('') : '<div class="fx-kol-empty">' + spot('calendar') + '<span>' + (k.status.indexOf('Telat') === 0 ? 'Konten belum tayang. ' + k.status + '.' : 'Belum tayang') + '</span></div>') + '</div>' +
           '<div class="fx-kol-m"><div><span>Reach</span><b>' + k.reach + '</b></div><div><span>Klik</span><b>' + k.clicks + '</b></div><div><span>Closing</span><b>' + k.closing + '</b></div><div><span>ROAS</span><b style="color:' + (live ? k.roasColor : '#5B6573') + '">' + k.roas + '</b></div></div>' +
           '<div class="fx-kol-f"><span class="fx-note">' + esc(k.deal) + '</span><span class="fx-tag" style="background:' + k.vBg + ';color:' + k.vFg + '">' + k.verdict + '</span></div></article>';
       }).join('') + '</div></section>';
@@ -405,9 +413,9 @@
     var sort = store.adSort || 'roas';
     var pv = function (s) { return parseFloat(String(s).replace(/Rp|jt|rb|x|\s/g, '').replace(',', '.')) * (/jt/.test(s) ? 1e6 : /rb/.test(s) ? 1000 : 1); };
     var cs = v.camps.slice().sort(function (a, b) { return sort === 'cpl' ? pv(a.cpl) - pv(b.cpl) : pv(b.roas) - pv(a.roas); });
-    el.innerHTML = '<section class="fx-card">' + head('Materi iklan yang sedang tayang', 'Materi di samping angkanya, supaya kelihatan visual mana yang bekerja.', chips([['roas', 'ROAS tertinggi'], ['cpl', 'Termurah per chat']], sort, 'sort')) +
+    el.innerHTML = '<section class="fx-card">' + head('Materi iklan yang sedang tayang', 'Gambar/video iklan asli ditarik dari Meta Ads setelah tersambung, ditaruh di samping angkanya.', chips([['roas', 'ROAS tertinggi'], ['cpl', 'Termurah per chat']], sort, 'sort')) +
       '<div class="fx-adgrid">' + cs.map(function (c) {
-        return '<article class="fx-ad' + (c.status !== 'Aktif' ? ' paused' : '') + '"><div class="fx-ad-h">' + avatar(c.unit, c.unit, 28) + '<div><strong>' + c.unit + '</strong><span>Bersponsor · ' + c.status + '</span></div></div><div class="fx-ad-art">' + thumb(c.name, c.unit) + '<span class="fx-ad-cap">' + esc(c.name) + '</span></div><div class="fx-ad-cta"><span>WhatsApp</span><b>Kirim pesan</b></div>' +
+        return '<article class="fx-ad' + (c.status !== 'Aktif' ? ' paused' : '') + '"><div class="fx-ad-h">' + avatar(c.unit, c.unit, 28) + '<div><strong>' + c.unit + '</strong><span>Bersponsor · ' + c.status + '</span></div></div><div class="fx-ad-art">' + thumb(c.name, c.unit, 'iklan') + '<span class="fx-ad-cap">' + esc(c.name) + '</span></div><div class="fx-ad-cta"><span>WhatsApp</span><b>Kirim pesan</b></div>' +
           '<div class="fx-ad-m"><div><span>CTR</span><b>' + c.ctr + '</b></div><div><span>Per chat</span><b style="color:' + c.cplColor + '">' + c.cpl + '</b></div><div><span>ROAS</span><b>' + c.roas + '</b></div></div>' +
           '<div class="fx-ad-f"><span class="fx-tag" style="background:' + c.vBg + ';color:' + c.vFg + '">' + c.verdict + '</span>' + (parseFloat(c.freq.replace(',', '.')) > 2.5 ? '<span class="fx-note bad">Frekuensi ' + c.freq + ': audiens mulai bosan</span>' : '<span class="fx-note">' + c.chat + ' chat · ' + c.closing + ' closing</span>') + '</div></article>';
       }).join('') + '</div></section>';
@@ -433,7 +441,7 @@
     var sel = store.boardSel;
     var card = function (x) {
       var s = STG[x.stage];
-      return '<div class="fx-kc' + (sel === x.id ? ' sel' : '') + '" draggable="true" data-id="' + x.id + '" tabindex="0" role="button" aria-label="' + esc(x.title) + ', ' + x.stage + '. Pilih lalu ketuk hari tujuan."><div class="fx-thumb kc">' + thumb(x.title, x.unit) + '<span class="fx-kc-fmt">' + x.fmt + '</span></div><strong>' + esc(x.title) + '</strong><div class="fx-kc-f"><span class="fx-tag" style="background:' + s[0] + ';color:' + s[1] + '">' + x.stage + '</span>' + avatar(x.pic, x.unit, 22) + '</div><i class="fx-kc-dot" style="background:' + UC[x.unit] + '"></i></div>';
+      return '<div class="fx-kc' + (sel === x.id ? ' sel' : '') + '" style="border-left-color:' + UC[x.unit] + '" draggable="true" data-id="' + x.id + '" tabindex="0" role="button" aria-label="' + esc(x.title) + ', ' + x.stage + '. Pilih lalu ketuk hari tujuan."><div class="fx-kc-top"><i class="fx-kc-dot" style="background:' + UC[x.unit] + '"></i><span>' + x.unit + '</span><span class="fx-kc-fmt">' + x.fmt + '</span></div><strong>' + esc(x.title) + '</strong><div class="fx-kc-f"><span class="fx-tag" style="background:' + s[0] + ';color:' + s[1] + '">' + x.stage + '</span>' + avatar(x.pic, x.unit, 22) + '</div></div>';
     };
     var ready = items.filter(function (x) { return x.day && x.stage === 'Terjadwal'; }).length, sched = items.filter(function (x) { return x.day; }).length;
     el.innerHTML = '<section class="fx-card">' + head('Minggu depan · 1–7 November', 'Seret kartu ke hari lain. Di HP: ketuk kartu, lalu ketuk hari tujuan. ' + ready + ' dari ' + sched + ' konten sudah terjadwal.', '<button type="button" class="fx-btn ghost" data-act="reset">Kembalikan susunan</button>') +
@@ -485,7 +493,7 @@
     el.innerHTML = '<section class="fx-card">' + head('Status WA · CS ' + esc(acc), 'Ketuk lingkaran untuk memutar story seperti yang dilihat pelanggan. Cincin tebal = paling banyak memancing chat.') +
       '<div class="fx-stories">' + list.map(function (s, i) {
         var k = (s.replies + s.chats * 3) / mx;
-        return '<button type="button" class="fx-st" data-i="' + i + '"><span class="fx-st-ring" style="--w:' + (2 + k * 4).toFixed(1) + 'px;--c:' + (k > 0.6 ? TEAL : k > 0.3 ? WARM : '#C9CFD8') + '"><span class="fx-st-in">' + thumb(s.text, UNITS.indexOf(acc) >= 0 ? acc : 'Rentalaja') + '</span></span><b>' + esc(s.views) + ' viewer</b><span>' + esc(s.type) + ' · ' + esc(s.when.replace(' Okt', '')) + '</span></button>';
+        return '<button type="button" class="fx-st" data-i="' + i + '"><span class="fx-st-ring" style="--w:' + (2 + k * 4).toFixed(1) + 'px;--c:' + (k > 0.6 ? TEAL : k > 0.3 ? WARM : '#C9CFD8') + '"><span class="fx-st-in">' + thumb(s.text, UNITS.indexOf(acc) >= 0 ? acc : 'Rentalaja', 'story') + '</span></span><b>' + esc(s.views) + ' viewer</b><span>' + esc(s.type) + ' · ' + esc(s.when.replace(' Okt', '')) + '</span></button>';
       }).join('') + '</div></section>';
     el.querySelectorAll('.fx-st').forEach(function (b) { b.onclick = function () { storyPlay(list, +b.getAttribute('data-i'), acc); }; });
   }
