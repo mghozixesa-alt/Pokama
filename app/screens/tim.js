@@ -88,56 +88,49 @@ async function unitForm() {
       const { loadContext } = await import('../core.js'); await loadContext(); } });
 }
 
-// ================= Performa & Insentif =================
+// ================= Performa =================
 async function performa(el, params, reload) {
   if (params.get('p')) return detail(el, params, reload, params.get('p'));
   const me = ctx.me.id; const m = params.get('m') || monthStart(today());
   const onlySelf = !(isFin() || isAdmin()) && !active().some(p => p.boss_id === me || p.valuer1_id === me || p.valuer2_id === me);
   if (onlySelf) return detail(el, params, reload, me); const end = new Date(Date.UTC(+m.slice(0, 4), +m.slice(5, 7), 0)).toISOString().slice(0, 10);
-  const [outputs, perf, salary, kkh, pnotes] = await Promise.all([
+  const [outputs, perf, kkh, pnotes] = await Promise.all([
     db.get('pk_outputs', `select=*&month=eq.${m}&order=created_at`),
     db.get('pk_perf', `select=*&month=eq.${m}`),
-    isFin() ? db.get('pk_salary', 'select=*') : Promise.resolve([]),
     db.get('pk_kkh', `select=person_id,status&day=gte.${m}&day=lte.${end}`),
     db.get('pk_perf_notes', `select=person_id,valuer_id,score&month=eq.${m}`),
   ]);
-  const W = ctx.settings.weights || { output: 60, kkh: 25, valuer: 15 }; const pct = +ctx.settings.incentive_pct || 15;
+  const W = ctx.settings.weights || { output: 60, kkh: 25, valuer: 15 };
   const visible = active().filter(p => p.role !== 'ceo' && (isFin() || isAdmin() || p.id === me || p.boss_id === me || p.valuer1_id === me));
   const rows = visible.map(p => {
     const os = outputs.filter(o => o.person_id === p.id);
     const pf = perf.find(x => x.person_id === p.id) || {};
     const cc = calc(os, kkh.filter(x => x.person_id === p.id), pf, pnotes.filter(n => n.person_id === p.id));
     const { cap, disc, score, fac } = cc; const valShow = cc.vs ? cc.vs.toLocaleString('id-ID', { maximumFractionDigits: 1 }) : null;
-    const sal = salary.find(s => s.person_id === p.id); const base = sal ? +sal.base_salary : null;
-    const eligible = disc !== null && disc >= .8;
-    return { p, os, cap, disc, val: pf.valuer_score, valShow, score, fac, base, ins: base && eligible ? Math.round(base * pct / 100 * fac) : 0, eligible, pf };
+    return { p, os, cap, disc, val: pf.valuer_score, valShow, score, fac, pf };
   });
   const cat = perfCat;
   el.innerHTML = `
-  <header class="ph"><div><span class="muted small">${fmonth(m)} · ${isFin() ? 'angka gaji hanya terlihat CEO dan Keuangan' : 'Anda melihat performa sendiri dan tim langsung'}</span><h1>Performa & Insentif</h1></div>
+  <header class="ph"><div><span class="muted small">${fmonth(m)} · ${isFin() || isAdmin() ? 'performa seluruh tim' : 'Anda melihat performa sendiri dan tim langsung'}</span><h1>Performa</h1></div>
     <input type="month" class="inp" id="mpick" value="${m.slice(0, 7)}"></header>
-  <div class="note">Skor = ${W.output}% capaian output + ${W.kkh}% disiplin KKH + ${W.valuer}% nilai valuer. Insentif = ${pct}% gaji pokok × faktor capaian (di bawah 70% nol, 70–89% sebesar capaian, 90–100% penuh, maks 120%). Syarat: disiplin KKH minimal 80%.</div>
-  ${isFin() ? `<div class="tiles"><div class="tile"><span>Total insentif ${fmonth(m)}</span><b>${rp(rows.reduce((s, r) => s + r.ins, 0))}</b></div><div class="tile"><span>Gaji pokok terisi</span><b>${salary.length} / ${rows.length}</b></div>
+  <div class="note">Skor = ${W.output}% capaian output + ${W.kkh}% disiplin KKH + ${W.valuer}% nilai valuer.</div>
+  ${isFin() || isAdmin() ? `<div class="tiles"><div class="tile"><span>Orang dinilai</span><b>${rows.length}</b></div><div class="tile"><span>Sudah dinilai valuer</span><b>${rows.filter(r => r.valShow).length} / ${rows.length}</b></div>
     <div class="tile"><span>Output disepakati</span><b>${rows.filter(r => r.os.length).length} orang</b></div><div class="tile"><span>Disetujui CEO</span><b>${perf.filter(x => x.approved_at).length}</b></div></div>` : ''}
-  <section class="card pad0 scroll-x"><table class="tbl"><thead><tr><th>Orang</th><th>Output disepakati</th><th class="r">Capaian</th><th class="r">Disiplin KKH</th><th class="r">Valuer</th><th class="r">Skor</th>${isFin() ? '<th class="r">Gaji pokok</th><th class="r">Insentif</th>' : ''}<th></th></tr></thead><tbody>
+  <section class="card pad0 scroll-x"><table class="tbl"><thead><tr><th>Orang</th><th>Output disepakati</th><th class="r">Capaian</th><th class="r">Disiplin KKH</th><th class="r">Valuer</th><th class="r">Skor</th><th></th></tr></thead><tbody>
   ${rows.map(r => `<tr><td><span class="row gap6">${avatar(r.p.id, 28)}<span><a class="b" href="#/performa?p=${r.p.id}&m=${m}">${esc(r.p.nickname || r.p.name)}</a><br><small class="muted">${esc(r.p.title || ROLE[r.p.role])}</small></span></span></td>
     <td>${r.os.map(o => `<div class="small">${esc(o.name)} <span class="muted">(${o.weight}%) ${(+o.actual).toLocaleString('id-ID')}/${(+o.target).toLocaleString('id-ID')}</span></div>`).join('') || '<span class="muted small">belum disepakati</span>'}</td>
     <td class="r">${r.cap === null ? '—' : Math.round(r.cap * 100) + '%'}</td><td class="r ${r.disc !== null && r.disc < .8 ? 'red' : ''}">${r.disc === null ? '—' : Math.round(r.disc * 100) + '%'}</td><td class="r">${r.valShow || '—'}</td>
     <td class="r">${r.score ?? '—'} ${r.score !== null ? chip(cat(r.score)[0], cat(r.score)[1]) : ''}</td>
-    ${isFin() ? `<td class="r">${r.base ? rp(r.base) : '<span class="red small">belum</span>'}</td><td class="r b">${r.ins ? rp(r.ins) : r.cap !== null && !r.eligible ? '<small class="red">KKH &lt;80%</small>' : '—'}</td>` : ''}
     <td>${(isFin() || isAdmin() || r.p.boss_id === me || r.p.valuer1_id === me) ? `<button class="btn sm" data-p="${r.p.id}">Atur</button>` : ''}</td></tr>`).join('')}</tbody></table></section>`;
   el.querySelector('#mpick').onchange = (e) => { location.hash = '#/performa?m=' + e.target.value + '-01'; };
   if (params.get('edit')) setTimeout(() => { history.replaceState(null, '', '#/performa?m=' + m); const b = el.querySelector(`[data-p="${params.get('edit')}"]`); if (b) b.click(); }, 0);
   el.onclick = async (e) => {
     const b = e.target.closest('[data-p]'); if (!b) return; const r = rows.find(x => x.p.id === b.dataset.p);
-    const sal = salary.find(s => s.person_id === r.p.id);
     const lines = r.os.map(o => `${o.name}; ${o.weight}; ${+o.target}; ${+o.actual}; ${o.source || ''}`).join('\n');
     const res = await modal('Performa · ' + (r.p.nickname || r.p.name) + ' · ' + fmonth(m),
       field('Output disepakati · satu baris: nama; bobot %; target; realisasi; sumber', `<textarea name="out" class="inp mono" rows="5" placeholder="Trip terjual; 50; 8; 7; Unit Bisnis\nLaporan omzet tepat waktu (hari); 50; 26; 25; KKH">${esc(lines)}</textarea>`, 'Total bobot sebaiknya 100%. Disusun Leader bersama orangnya, disahkan CEO setiap tanggal 1.') +
       field('Nilai valuer (1–5)', `<select name="val" class="inp">${opts([['', '— belum —'], ['1', '1'], ['2', '2'], ['3', '3'], ['4', '4'], ['5', '5']], r.val || '')}</select>`) +
-      (isFin() ? field('Gaji pokok (pribadi, hanya CEO & Keuangan)', `<span class="pre"><b>Rp</b><input name="sal" class="inp-n" inputmode="numeric" value="${sal ? (+sal.base_salary).toLocaleString('id-ID') : ''}"></span>`) : '') +
-      (ctx.me.role === 'ceo' ? `<label class="chk"><input type="checkbox" name="appr" ${r.pf.approved_at ? 'checked' : ''}> Disetujui CEO</label>` : '') +
-      (isFin() ? `<label class="chk"><input type="checkbox" name="paid" ${r.pf.paid_at ? 'checked' : ''}> Insentif sudah dibayar</label>` : ''),
+      (ctx.me.role === 'ceo' ? `<label class="chk"><input type="checkbox" name="appr" ${r.pf.approved_at ? 'checked' : ''}> Disetujui CEO</label>` : ''),
       { wide: true, onSubmit: async (f) => {
         const parsed = f.out.split('\n').map(l => l.split(';').map(s => s.trim())).filter(x => x[0]);
         for (const x of parsed) if (!(+x[1] > 0) || !(+x[2] > 0)) throw new Error('Baris "' + x[0] + '": bobot dan target harus angka');
@@ -145,9 +138,7 @@ async function performa(el, params, reload) {
         if (parsed.length) await db.insert('pk_outputs', parsed.map(x => ({ person_id: r.p.id, month: m, name: x[0], weight: +x[1], target: +x[2], actual: +(x[3] || 0), source: x[4] || null, created_by: me })));
         const pf = { person_id: r.p.id, month: m, valuer_score: f.val ? +f.val : null };
         if (ctx.me.role === 'ceo') { pf.approved_by = f.appr ? me : null; pf.approved_at = f.appr ? (r.pf.approved_at || new Date().toISOString()) : null; }
-        if (isFin()) { pf.paid_at = f.paid ? (r.pf.paid_at || new Date().toISOString()) : null; pf.incentive = r.ins || null; }
         await db.upsert('pk_perf', pf, 'person_id,month');
-        if (isFin() && f.sal !== undefined) { const v = num(f.sal); if (v) await db.upsert('pk_salary', { person_id: r.p.id, base_salary: v, updated_by: me, updated_at: new Date().toISOString() }, 'person_id'); }
       } });
     if (res) { toast('Tersimpan'); reload(); }
   };

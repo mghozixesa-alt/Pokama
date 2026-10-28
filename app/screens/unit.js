@@ -63,7 +63,7 @@ export default async function unit(el, params, reload) {
       <p class="small muted">Salah input? Klik laporan bertanda ✕ untuk menghapusnya, lalu lapor ulang.</p>
       <p class="small muted">Total grup ${fmonth(m)}: <b>${jt(grpA)}</b>${grpT ? ' dari target ' + jt(grpT) + ' (' + Math.round(grpA / grpT * 100) + '%)' : ''}. Target bulan depan diusulkan Leader di 3 hari kerja terakhir, dicek Keuangan, disahkan CEO.</p></section>
     <section class="card"><h2>Cara poin dihitung</h2><div class="chips">${Object.entries(lw).map(([k, v]) => `<span class="chip gray"><b>${v}</b> ${{ kas: 'Kas aman', profit: 'Laba', kapasitas: 'Rapi: KKH & aset', growth: 'Tumbuh' }[k]}</span>`).join('')}</div>
-      <p class="small muted">Poin = seberapa dekat unit dengan targetnya sendiri, maksimal 100. Diisi Keuangan setiap minggu. Juara kuartal dapat faktor bonus 100%.</p></section></div>`;
+      <p class="small muted">Poin = seberapa dekat unit dengan targetnya sendiri, maksimal 100. Diisi Keuangan setiap minggu.</p></section></div>`;
 
   el.querySelector('#mpick').onchange = (e) => { location.hash = '#/unit?m=' + e.target.value + '-01'; };
   el.onclick = async (e) => {

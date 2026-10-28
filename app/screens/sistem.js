@@ -42,7 +42,7 @@ const GROUPS = [
   ['KKH', ['kkh_start', 'kkh_end', 'kkh_validate_by']],
   ['Kehadiran', ['leave_days_per_week', 'leave_pick_deadline']],
   ['Review', ['review_revise_days']],
-  ['Performa & Liga', ['weights', 'incentive_pct', 'liga_weights']],
+  ['Performa & Liga', ['weights', 'liga_weights']],
 ];
 async function pengaturan(el, params, reload) {
   const me = ctx.byId[ctx.me.id]; const admin = isAdmin();

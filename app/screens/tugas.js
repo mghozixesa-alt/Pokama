@@ -39,35 +39,48 @@ export async function taskForm(t = {}, projects = []) {
 // ================= Proyek & Tugas =================
 async function board(el, params, reload) {
   const { tasks, projects, proj } = await load();
-  const scope = params.get('u') || 'ALL'; const onlyMe = params.get('me') === '1'; const attention = params.get('a') === '1'; const showDone = params.get('done') === '1';
+  const scope = params.get('u') || 'ALL'; const onlyMe = params.get('me') === '1'; const attention = params.get('a') === '1'; const showDone = params.get('done') === '1'; const view = params.get('v') || 'proyek';
   const me = ctx.me.id; const sel = params.get('t');
   const biz = ctx.units.filter(u => u.kind !== 'lini');
   const flag = (t) => (t.status === 'revisi') || (t.due && daysTo(t.due) <= 2 && t.status !== 'done');
   let list = tasks.filter(t => (showDone || t.status !== 'done') && (scope === 'ALL' || bizOf(t.unit_code) === scope) && (!onlyMe || [t.pic_id, t.reviewer_id].includes(me)) && (!attention || flag(t)));
   const groups = biz.map(u => ({ u, rows: list.filter(t => bizOf(t.unit_code) === u.code) })).filter(g => g.rows.length);
-  const q = (o) => { const p = new URLSearchParams({ u: scope, ...(onlyMe ? { me: 1 } : {}), ...(attention ? { a: 1 } : {}), ...(showDone ? { done: 1 } : {}), ...o }); [...p].forEach(([k, v]) => { if (v === '' || v === '0') p.delete(k); }); return '#/tugas?' + p; };
+  const q = (o) => { const p = new URLSearchParams({ u: scope, ...(view !== 'proyek' ? { v: view } : {}), ...(onlyMe ? { me: 1 } : {}), ...(attention ? { a: 1 } : {}), ...(showDone ? { done: 1 } : {}), ...o }); [...p].forEach(([k, v]) => { if (v === '' || v === '0') p.delete(k); }); return '#/tugas?' + p; };
   const act = tasks.filter(t => t.status !== 'done');
-  el.innerHTML = `
-  <header class="ph"><div><span class="muted small">Siapa mengerjakan apa, sampai kapan · selesai hanya setelah disetujui reviewer</span><h1>Proyek & Tugas</h1></div>
-    <div class="row gap"><button class="btn" data-a="proj">+ Proyek</button><button class="btn pri" data-a="new">+ Tugas baru</button></div></header>
-  <div class="chips">${[['ALL', 'Semua']].concat(biz.map(u => [u.code, u.name])).map(([k, l]) => `<a class="chipbtn${scope === k ? ' on' : ''}" href="${q({ u: k })}">${k !== 'ALL' ? logo(k, 18) : ''}${esc(l)}</a>`).join('')}
-    <span style="flex:1"></span><a class="chipbtn${onlyMe ? ' on' : ''}" href="${q({ me: onlyMe ? '' : 1 })}">Pekerjaan saya</a><a class="chipbtn${attention ? ' on' : ''}" href="${q({ a: attention ? '' : 1 })}">Perlu perhatian</a><a class="chipbtn${showDone ? ' on' : ''}" href="${q({ done: showDone ? '' : 1 })}">Tampilkan selesai</a></div>
-  <div class="tiles"><div class="tile"><span>Tugas aktif</span><b>${act.length}</b></div><div class="tile"><span>Perlu revisi</span><b class="red">${act.filter(t => t.status === 'revisi').length}</b></div>
-    <div class="tile"><span>Menunggu review</span><b>${act.filter(t => t.status === 'review').length}</b></div><div class="tile"><span>Lewat / ≤2 hari tenggat</span><b class="red">${act.filter(t => t.due && daysTo(t.due) <= 2).length}</b></div></div>
-  ${groups.length ? groups.map(g => `<section class="grp"><div class="grp-h">${logo(g.u.code, 30)}<b>${esc(g.u.name)}</b><span class="muted">${g.rows.length} tugas</span></div>
-    <div class="card pad0 scroll-x"><table class="tbl"><thead><tr><th>Tugas</th><th>PIC</th><th>Status</th><th>Tenggat</th><th>Progres</th></tr></thead><tbody>
-    ${g.rows.map(t => { const d = daysTo(t.due); return `<tr class="click" data-t="${t.id}"><td><b>${esc(t.title)}</b>${t.project_id ? `<small class="muted"> · ${esc((proj[t.project_id] || {}).name || '')}</small>` : ''}${t.source === 'permintaan' ? ' ' + chip('Dari permintaan', 'blue') : ''}</td>
+  const row = (t, showProj) => { const d = daysTo(t.due); return `<tr class="click" data-t="${t.id}"><td><b>${esc(t.title)}</b>${showProj && t.project_id ? `<small class="muted"> · ${esc((proj[t.project_id] || {}).name || '')}</small>` : ''}</td>
       <td><span class="row gap6">${avatar(t.pic_id, 26)}${esc(nick(t.pic_id))}</span></td><td>${stCell(t.status)}</td>
       <td class="${d !== null && d < 0 && t.status !== 'done' ? 'red' : ''}">${t.due ? fdate(t.due) : '—'}${d !== null && d < 0 && t.status !== 'done' ? '<small> · lewat ' + (-d) + ' hari</small>' : ''}</td>
-      <td><span class="bar"><i style="width:${t.progress}%"></i></span> ${t.progress}%</td></tr>`; }).join('')}</tbody></table></div></section>`).join('')
-    : `<div class="empty-state card"><h2>Belum ada tugas di sini</h2><p class="muted">Buat tugas baru, atau terima Permintaan Bantuan supaya otomatis jadi tugas.</p><button class="btn pri" data-a="new">+ Tugas baru</button></div>`}
-  ${projects.length ? `<section class="card"><h2>Proyek</h2><div class="list">${projects.map(p => { const ts = tasks.filter(t => t.project_id === p.id); const dn = ts.filter(t => t.status === 'done').length;
-    return `<div class="li row gap">${logo(p.unit_code, 22)}<b style="flex:1">${esc(p.name)}</b><span class="muted small">${dn}/${ts.length} selesai · ${p.due ? 'tenggat ' + fdate(p.due) : ''} · PJ ${esc(nick(p.owner_id))}</span>${p.is_closed ? chip('Ditutup') : ''}${p.owner_id === me || isAdmin() ? `<button class="btn sm" data-pe="${p.id}">Ubah</button>` : ''}</div>`; }).join('')}</div></section>` : ''}`;
-
+      <td><span class="bar"><i style="width:${t.progress}%"></i></span> ${t.progress}%</td></tr>`; };
+  const table = (rows, showProj) => `<div class="card pad0 scroll-x"><table class="tbl"><thead><tr><th>Tugas</th><th>PIC</th><th>Status</th><th>Tenggat</th><th>Progres</th></tr></thead><tbody>${rows.map(t => row(t, showProj)).join('')}</tbody></table></div>`;
+  const empty = `<div class="empty-state card"><h2>Belum ada tugas di sini</h2><p class="muted">Mulai dari proyek (tujuan besarnya), lalu pecah jadi tugas-tugas kecil.</p><div class="row gap"><button class="btn" data-a="proj">+ Proyek</button><button class="btn pri" data-a="new">+ Tugas baru</button></div></div>`;
+  const unitView = () => groups.length ? groups.map(g => `<section class="grp"><div class="grp-h">${logo(g.u.code, 30)}<b>${esc(g.u.name)}</b><span class="muted">${g.rows.length} tugas</span></div>${table(g.rows, true)}</section>`).join('') : empty;
+  const projView = () => {
+    const ps = projects.filter(p => (showDone || !p.is_closed) && (scope === 'ALL' || bizOf(p.unit_code) === scope));
+    const blocks = ps.map(p => { const all = tasks.filter(t => t.project_id === p.id); const rows = list.filter(t => t.project_id === p.id);
+      if (onlyMe || attention) { if (!rows.length) return ''; }
+      const dn = all.filter(t => t.status === 'done').length; const pct = all.length ? Math.round(all.reduce((s, t) => s + (t.status === 'done' ? 100 : +t.progress || 0), 0) / all.length) : 0;
+      const dd = daysTo(p.due); const can = p.owner_id === me || isAdmin();
+      return `<section class="card proj${p.is_closed ? ' off' : ''}"><div class="proj-h">${logo(p.unit_code, 34)}<span class="proj-t"><b>${esc(p.name)}</b><small class="muted">${esc(unitName(p.unit_code))} · PJ ${esc(nick(p.owner_id))}${p.due ? ` · tenggat <span class="${dd !== null && dd < 0 && !p.is_closed ? 'red' : ''}">${fdate(p.due)}</span>` : ''}${p.is_closed ? ' · ditutup' : ''}</small></span>
+        <span class="proj-p"><b>${pct}%</b><small class="muted">${dn}/${all.length} tugas selesai</small></span></div>
+        <span class="bar lg"><i style="width:${pct}%"></i></span>
+        ${rows.length ? table(rows, false) : `<p class="muted small" style="margin:4px 0">${all.length ? 'Semua tugas proyek ini sudah selesai.' : 'Belum ada tugas. Pecah proyek ini jadi langkah-langkah kerja.'}</p>`}
+        <div class="row gap"><button class="btn sm pri" data-np="${p.id}">+ Tugas di proyek ini</button>${can ? `<button class="btn sm" data-pe="${p.id}">Ubah proyek</button>` : ''}</div></section>`; }).join('');
+    const loose = list.filter(t => !t.project_id || !proj[t.project_id] || !ps.includes(proj[t.project_id]));
+    const looseHtml = loose.length ? `<section class="grp"><div class="grp-h"><b>Tugas lepas</b><span class="muted">${loose.length} tugas tanpa proyek · klik tugas lalu "Ubah detail" untuk memasukkannya ke proyek</span></div>${table(loose, true)}</section>` : '';
+    return blocks || looseHtml ? blocks + looseHtml : empty; };
+  el.innerHTML = `
+  <header class="ph"><div><span class="muted small">Proyek = tujuan besar · Tugas = langkah kerja di dalamnya · selesai setelah disetujui reviewer</span><h1>Proyek & Tugas</h1></div>
+    <div class="row gap"><button class="btn" data-a="proj">+ Proyek</button><button class="btn pri" data-a="new">+ Tugas baru</button></div></header>
+  <div class="chips">${[['ALL', 'Semua']].concat(biz.map(u => [u.code, u.name])).map(([k, l]) => `<a class="chipbtn${scope === k ? ' on' : ''}" href="${q({ u: k })}">${k !== 'ALL' ? logo(k, 18) : ''}${esc(l)}</a>`).join('')}
+    <span style="flex:1"></span><span class="seg"><a class="${view === 'proyek' ? 'on' : ''}" href="${q({ v: '' })}">Per proyek</a><a class="${view === 'unit' ? 'on' : ''}" href="${q({ v: 'unit' })}">Per unit</a></span><a class="chipbtn${onlyMe ? ' on' : ''}" href="${q({ me: onlyMe ? '' : 1 })}">Pekerjaan saya</a><a class="chipbtn${attention ? ' on' : ''}" href="${q({ a: attention ? '' : 1 })}">Perlu perhatian</a><a class="chipbtn${showDone ? ' on' : ''}" href="${q({ done: showDone ? '' : 1 })}">Tampilkan selesai</a></div>
+  <div class="tiles"><div class="tile"><span>Tugas aktif</span><b>${act.length}</b></div><div class="tile"><span>Perlu revisi</span><b class="red">${act.filter(t => t.status === 'revisi').length}</b></div>
+    <div class="tile"><span>Menunggu review</span><b>${act.filter(t => t.status === 'review').length}</b></div><div class="tile"><span>Lewat / ≤2 hari tenggat</span><b class="red">${act.filter(t => t.due && daysTo(t.due) <= 2).length}</b></div></div>
+  ${view === 'proyek' ? projView() : unitView()}`;
   el.onclick = async (e) => {
     const a = e.target.closest('[data-a]');
     if (a && a.dataset.a === 'new') { if (await taskForm({}, projects)) { toast('Tugas dibuat'); reload(); } return; }
     if (a && a.dataset.a === 'proj') { if (await projForm()) reload(); return; }
+    const np = e.target.closest('[data-np]'); if (np) { const p0 = proj[np.dataset.np]; if (await taskForm({ project_id: p0.id, unit_code: p0.unit_code }, projects)) { toast('Tugas ditambahkan ke ' + p0.name); reload(); } return; }
     const pe = e.target.closest('[data-pe]'); if (pe) { if (await projForm(proj[pe.dataset.pe])) reload(); return; }
     const tr = e.target.closest('[data-t]'); if (tr) { const r = await detail(tasks.find(t => t.id === tr.dataset.t), projects); if (r) reload(); }
   };

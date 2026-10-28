@@ -88,8 +88,6 @@ const LINES: [string, string, string][] = [
   ["nota_telat", "nota RAB terlambat — RAB berikutnya ditahan", "#/belanja?tab=saya"],
   ["validasi", "slot KKH tim menunggu validasi", "#/kkh"],
   ["cuti", "pengajuan cuti/izin/libur perlu disetujui", "#/kehadiran"],
-  ["pilah", "permintaan perlu dipilah", "#/permintaan?tab=pilah"],
-  ["permintaan", "permintaan diberikan ke Anda, belum diterima", "#/permintaan?tab=untuk"],
 ];
 
 const BULAN = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
@@ -118,7 +116,7 @@ function progress(m: any) {
   h += `<table role="presentation" width="100%" cellpadding="0" cellspacing="4" style="margin-top:4px"><tr>${stat(m.cap == null ? "–" : m.cap + "%", "capaian target")}${stat(m.kkh == null ? "–" : m.kkh + "%", `KKH valid (${m.valid}/${m.slots})`)}${stat(String(m.done), "tugas selesai")}</tr></table>`;
   if ((m.outputs || []).length) h += (m.outputs as any[]).map((o) => `<div style="margin-top:10px;font-size:13px;color:#1F2933"><b>${esc(o.name)}</b> <span style="float:right;color:#5B6573">${(+o.actual).toLocaleString("id-ID")} / ${(+o.target).toLocaleString("id-ID")} · <b style="color:#1D3149">${o.pct ?? 0}%</b></span></div>${bar(o.pct, tone(o.pct))}`).join("");
   else h += `<div style="font-size:13px;color:#5B6573;margin-top:8px">Target output bulan ini belum ditetapkan.</div>`;
-  if (m.score != null) h += `<div style="font-size:13px;color:#5B6573;margin-top:10px">Skor performa sementara <b style="color:#1D3149">${m.score}</b>${m.eligible ? "" : " · KKH valid masih di bawah 80%, insentif belum memenuhi syarat"}.</div>`;
+  if (m.score != null) h += `<div style="font-size:13px;color:#5B6573;margin-top:10px">Skor performa sementara <b style="color:#1D3149">${m.score}</b>${m.kkh != null && m.kkh < 80 ? " · KKH valid masih di bawah 80%" : ""}.</div>`;
 
   const days = (m.days || []) as any[];
   if (days.length) {

@@ -232,3 +232,10 @@ button.chipdel{border:0;cursor:pointer;font:inherit;font-size:11px;font-weight:8
 .uname>small{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--mut)}.uname>small .av{flex:none}.upts{text-align:right;display:flex;flex-direction:column;line-height:1.1}.upts b{font-size:28px;font-weight:900;color:var(--navy)}.upts small{font-size:12px}
 .mini>div{grid-template-columns:minmax(0,1fr) 64px 110px}.mini>div>span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .mini b{display:flex;flex-direction:column;align-items:flex-end;line-height:1.15}.mini b small{font-size:11px;font-weight:600;color:var(--mut)}.mini b.red small{color:var(--red)}
+.reject-note{margin:6px 0 0;padding:8px 10px;border-radius:10px;background:var(--redbg);color:var(--red);font-size:13px}.reject-note.ok{background:var(--mint);color:var(--teal-d)}
+/* proyek & tugas */
+.seg{display:inline-flex;background:#fff;border:1px solid var(--line);border-radius:10px;padding:3px;gap:2px}.seg a{padding:6px 12px;border-radius:8px;font-size:13px;font-weight:700;color:var(--mut);text-decoration:none}.seg a.on{background:var(--navy);color:#fff}
+.proj{display:flex;flex-direction:column;gap:10px}.proj.off{opacity:.6}.proj-h{display:flex;align-items:center;gap:12px}.proj-t{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}.proj-t b{font-size:17px;color:var(--navy)}
+.proj-p{text-align:right;display:flex;flex-direction:column;line-height:1.1}.proj-p b{font-size:22px;color:var(--navy)}.proj .card.pad0{box-shadow:none;border:1px solid var(--line2)}
+/* valuer */
+.pf-valuer{border:1.5px solid var(--teal);background:linear-gradient(180deg,#F1FBFA,#fff 60%)}.pf-vlist{display:flex;flex-direction:column;gap:10px}.pf-v{display:flex;align-items:center;gap:12px}.pf-v .grow{display:flex;flex-direction:column;gap:1px}.pf-v b{font-size:16px;color:var(--navy)}

@@ -1,7 +1,6 @@
 import { ctx, hasSession, takeSessionFromUrl, signInPassword, signInGoogle, loadContext, signOut, esc, avatar, ROLE, toast } from './core.js';
 import kerja from './screens/kerja.js';
 import tugas from './screens/tugas.js';
-import permintaan from './screens/permintaan.js';
 import belanja from './screens/belanja.js';
 import kehadiran from './screens/kehadiran.js';
 import unit from './screens/unit.js';
@@ -28,13 +27,13 @@ const svg = (k, s = 18) => `<svg aria-hidden="true" width="${s}" height="${s}" v
 const ROUTES = [
   ['KERJA HARIAN', [
     ['kkh', 'KKH Saya', 'sun', kerja.saya], ['kkh-tim', 'KKH Tim', 'grid', kerja.tim], ['tugas', 'Proyek & Tugas', 'layers', tugas.board],
-    ['review', 'Review & Revisi', 'check', tugas.review], ['permintaan', 'Permintaan Bantuan', 'inbox', permintaan], ['belanja', 'Pengajuan Belanja', 'wallet', belanja],
+    ['review', 'Review & Revisi', 'check', tugas.review], ['belanja', 'Pengajuan Belanja', 'wallet', belanja],
     ['kehadiran', 'Kehadiran & Cuti', 'clock', kehadiran], ['unit', 'Unit Bisnis', 'trophy', unit]]],
-  ['ORANG', [['tim', 'Tim & Peran', 'users', tim.tim], ['performa', 'Performa & Insentif', 'coin', tim.performa]]],
+  ['ORANG', [['tim', 'Tim & Peran', 'users', tim.tim], ['performa', 'Performa', 'coin', tim.performa]]],
   ['SISTEM', [['library', 'Library Dokumen', 'book', sistem.library], ['pengaturan', 'Pengaturan', 'cog', sistem.pengaturan]]],
 ];
 const FLAT = ROUTES.flatMap(([, r]) => r);
-const MOBILE = ['kkh', 'review', 'permintaan', 'belanja'];
+const MOBILE = ['kkh', 'tugas', 'review', 'belanja'];
 const HIDDEN = { performa: (r) => !['ceo', 'keuangan'].includes(r) && false };
 
 const root = document.getElementById('app');
@@ -122,14 +121,13 @@ async function badges() {
   try {
     const { db } = await import('./core.js');
     const me = ctx.me.id;
-    const [rv, rq, rb] = await Promise.all([
+    const [rv, rb] = await Promise.all([
       db.get('pk_tasks', `select=id&reviewer_id=eq.${me}&status=eq.review`),
-      db.get('pk_requests', ctx.me.role === 'ceo' || ctx.me.role === 'kepala_staf' ? 'select=id&status=eq.baru' : `select=id&pic_id=eq.${me}&status=eq.diterima`),
       db.get('pk_rab', 'select=id,chain,step&status=eq.diajukan'),
     ]);
     const nb = rb.filter(r => r.chain[r.step] === me).length;
     const set = (k, n) => document.querySelectorAll(`[data-badge="${k}"]`).forEach(b => { b.hidden = !n; b.textContent = n; });
-    set('review', rv.length); set('permintaan', rq.length); set('belanja', nb);
+    set('review', rv.length); set('belanja', nb);
   } catch (e) {}
 }
 

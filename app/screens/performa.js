@@ -1,5 +1,5 @@
 // Ringkasan performa individu (desain 10b) · satu orang, satu bulan
-import { ctx, db, esc, today, fmonth, monthStart, addDays, fdate, avatar, nick, modal, field, opts, toast, unitName, isAdmin, isFin, isCeo, chip, logo, ROLE, rp, bizOf } from '../core.js';
+import { ctx, db, esc, today, fmonth, monthStart, addDays, fdate, avatar, nick, modal, field, opts, toast, unitName, isAdmin, isFin, isCeo, chip, logo, ROLE, bizOf } from '../core.js';
 
 const monthEnd = (m) => new Date(Date.UTC(+m.slice(0, 4), +m.slice(5, 7), 0)).toISOString().slice(0, 10);
 const addMonths = (m, n) => { const d = new Date(m + 'T00:00:00Z'); d.setUTCMonth(d.getUTCMonth() + n); return d.toISOString().slice(0, 8) + '01'; };
@@ -8,7 +8,7 @@ const BULAN3 = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', '
 
 export function cat(s) { return s === null ? ['Belum ada skor', 'gray'] : s >= 85 ? ['Sangat baik', 'green'] : s >= 70 ? ['Baik', 'green'] : s >= 55 ? ['Perlu perbaikan', 'yellow'] : ['Pembinaan', 'red']; }
 
-// rumus yang sama dengan halaman Performa & Insentif
+// rumus yang sama dengan halaman Performa
 export function calc(os, kkh, pf, notes) {
   const W = ctx.settings.weights || { output: 60, kkh: 25, valuer: 15 };
   const wsum = os.reduce((s, o) => s + (+o.weight), 0) || 1;
@@ -28,23 +28,20 @@ export async function detail(el, params, reload, pid) {
   const m = params.get('m') || monthStart(today()); const end = monthEnd(m); const m0 = addMonths(m, -5);
   const canSee = pid === me || isFin() || isAdmin() || p.boss_id === me || p.valuer1_id === me || p.valuer2_id === me;
   if (!canSee) { el.innerHTML = '<div class="card"><p class="muted">Anda tidak punya akses ke performa orang ini.</p></div>'; return; }
-  const [outputs, perf, notes, kkh, tasks, leave, salary] = await Promise.all([
+  const [outputs, perf, notes, kkh, tasks, leave, asks] = await Promise.all([
     db.get('pk_outputs', `select=*&person_id=eq.${pid}&month=gte.${m0}&month=lte.${m}&order=created_at`),
     db.get('pk_perf', `select=*&person_id=eq.${pid}&month=gte.${m0}&month=lte.${m}`),
     db.get('pk_perf_notes', `select=*&person_id=eq.${pid}&month=gte.${m0}&month=lte.${m}`),
     Promise.all([...Array(6)].map((_, i) => { const mm = addMonths(m0, i); return db.get('pk_kkh', `select=day,status&person_id=eq.${pid}&day=gte.${mm}&day=lte.${monthEnd(mm)}&limit=1000`); })).then(a => a.flat()),
     db.get('pk_tasks', `select=id,title,status,due,done_at,round,version,revise_due&pic_id=eq.${pid}&order=updated_at.desc&limit=200`),
     db.get('pk_leave', `select=kind,day,end_day,status&person_id=eq.${pid}&status=eq.disetujui&day=lte.${end}`),
-    isFin() ? db.get('pk_salary', `select=base_salary&person_id=eq.${pid}`) : Promise.resolve([]),
+    db.get('pk_feedback_asks', `select=*&person_id=eq.${pid}&order=created_at.desc&limit=10`),
   ]);
   const inMonth = (d, mm) => d && d.slice(0, 7) === mm.slice(0, 7);
   const forMonth = (mm) => calc(outputs.filter(o => o.month === mm), kkh.filter(k => inMonth(k.day, mm)), perf.find(x => x.month === mm), notes.filter(n => n.month === mm));
   const c = forMonth(m); const prev = forMonth(addMonths(m, -1));
   const os = outputs.filter(o => o.month === m); const pf = perf.find(x => x.month === m) || {}; const ns = notes.filter(n => n.month === m);
   const trend = [...Array(6)].map((_, i) => { const mm = addMonths(m0, i); return { mm, s: forMonth(mm).score }; });
-  const base = salary[0] ? +salary[0].base_salary : null; const ipct = +ctx.settings.incentive_pct || 15;
-  const hold = c.disc !== null && !c.eligible; const effFac = hold ? 0 : c.fac;
-  const ins = base && c.eligible ? Math.round(base * ipct / 100 * c.fac) : 0;
   const monthKkh = kkh.filter(k => inMonth(k.day, m));
   const doneM = tasks.filter(t => t.status === 'done' && inMonth(t.done_at, m));
   const onTime = doneM.filter(t => !t.due || t.done_at.slice(0, 10) <= t.due).length;
@@ -58,8 +55,8 @@ export async function detail(el, params, reload, pid) {
   // ---- alur penilaian ----
   const steps = [['Output disepakati', os.length > 0, os.length ? os.length + ' output' : 'belum'],
     ['Dinilai valuer', ns.some(n => n.score) || !!pf.valuer_score, ns.length ? ns.filter(n => n.score).map(n => nick(n.valuer_id)).join(' & ') : 'belum'],
-    ['Disetujui CEO', !!pf.approved_at, pf.approved_at ? fdate(pf.approved_at.slice(0, 10), false) : 'belum'],
-    ['Insentif dibayar', !!pf.paid_at, pf.paid_at ? fdate(pf.paid_at.slice(0, 10), false) : 'belum']];
+    ['Ditanggapi', ns.some(n => n.reply), ns.some(n => n.reply) ? 'sudah' : 'belum'],
+    ['Disetujui CEO', !!pf.approved_at, pf.approved_at ? fdate(pf.approved_at.slice(0, 10), false) : 'belum']];
   const cur = steps.findIndex(s => !s[1]);
 
   // ---- donut skor ----
@@ -95,13 +92,14 @@ export async function detail(el, params, reload, pid) {
   if (os.length) {
     const low = os.map(o => ({ o, r: (+o.actual) / (+o.target) })).sort((a, b) => a.r - b.r)[0];
     if (low.r < 1) notesAuto.push([low.r < .7 ? 'bad' : 'warn', `Output terendah: <b>${esc(low.o.name)}</b> ${(+low.o.actual).toLocaleString('id-ID')} dari ${(+low.o.target).toLocaleString('id-ID')}. Kurang ${Math.ceil((+low.o.target) - (+low.o.actual)).toLocaleString('id-ID')} lagi untuk penuh.`]);
-    if (c.cap !== null && c.cap < .9) notesAuto.push(['warn', `Capaian output ${pct(c.cap)}. Mulai 90% insentif dihitung penuh.`]);
+    if (c.cap !== null && c.cap < .9) notesAuto.push(['warn', `Capaian output ${pct(c.cap)}. Target capaian minimal 90%.`]);
   } else notesAuto.push(['warn', 'Output bulan ini belum disepakati dengan atasan.']);
-  if (c.disc !== null && c.disc < .8) notesAuto.push(['bad', `Disiplin KKH ${pct(c.disc)}, di bawah syarat 80%. Insentif tidak cair sampai syarat terpenuhi.`]);
+  if (c.disc !== null && c.disc < .8) notesAuto.push(['bad', `Disiplin KKH ${pct(c.disc)}, di bawah standar 80%.`]);
+  if (isSelf && valuers.length && !ns.length) notesAuto.push(['warn', `Valuer Anda belum memberi masukan bulan ini. Minta masukan supaya tahu apa yang perlu ditingkatkan.`]);
   const lateRev = running.filter(t => t.status === 'revisi' && t.revise_due && t.revise_due < today());
   if (lateRev.length) notesAuto.push(['bad', `${lateRev.length} revisi lewat tenggat: ${esc(lateRev.slice(0, 2).map(t => t.title).join(', '))}.`]);
 
-  const back = isSelf && !(isAdmin() || isFin() || ctx.people.some(x => x.boss_id === me)) ? '' : `<a class="back" href="#/performa?m=${m}">‹ Performa & Insentif</a>`;
+  const back = isSelf && !(isAdmin() || isFin() || ctx.people.some(x => x.boss_id === me)) ? '' : `<a class="back" href="#/performa?m=${m}">‹ Performa tim</a>`;
   el.innerHTML = `
   ${back}
   <header class="card pf-head">
@@ -135,20 +133,20 @@ export async function detail(el, params, reload, pid) {
       <section style="order:8" class="card"><div class="row between"><h2>Tren 6 bulan</h2><span class="small muted">garis putus = batas Sangat baik (85)</span></div>${spark}</section>
     </div>
     <div class="stack pf-col">
-      ${isFin() ? `<section style="order:1" class="card pf-ins"><div class="row between"><h2>Insentif ${fmonth(m)}</h2><span class="chip">hanya CEO & Keuangan</span></div>
-        <b class="pf-big">${base ? rp(ins) : '—'}</b><span class="small">${base ? `${ipct}% × gaji pokok ${rp(base)} × faktor ${pct(c.fac)}` : 'Gaji pokok belum diisi.'}${!c.eligible && c.disc !== null ? ' · <b>tertahan: disiplin KKH &lt; 80%</b>' : ''}</span>
-        ${canSet ? `<a class="btn pri sm" style="align-self:flex-start" href="#/performa?m=${m}&edit=${pid}">${isCeo() ? 'Setujui / atur' : 'Atur & tandai dibayar'}</a>` : ''}</section>`
-      : `<section style="order:1" class="card pf-ins"><h2>${isSelf ? 'Insentif Anda' : 'Insentif ' + esc(p.nickname || p.name)} bulan ini</h2>
-        <div class="row gap6"><b class="pf-big">${c.cap === null ? '—' : pct(effFac)}</b><span class="small">dari insentif penuh${hold ? ' · tertahan' : ''}</span></div>
-        <span class="bar lg"><i style="width:${Math.min(100, effFac * 100)}%;background:#09BEAF"></i></span>
-        <span class="small">Capaian output 90% ke atas = insentif penuh. Syarat disiplin KKH ≥ 80% ${c.disc === null ? 'belum ada data' : c.eligible ? '<b>terpenuhi (' + pct(c.disc) + ')</b>' : '<b>belum terpenuhi (' + pct(c.disc) + ')</b>'}.</span></section>`}
-      <section style="order:2" class="card"><h2>Catatan otomatis</h2><ul class="pf-auto">${notesAuto.map(([t, s]) => `<li class="${t}"><i>${t === 'up' ? '↑' : '!'}</i><span>${s}</span></li>`).join('') || '<li class="up"><i>✓</i><span>Semua berjalan sesuai rencana.</span></li>'}</ul></section>
+      <section style="order:1" class="card pf-valuer"><div class="row between"><h2>${isSelf ? 'Valuer Anda' : 'Valuer ' + esc(p.nickname || p.name)}</h2><span class="chip green">pembimbing · ${c.W.valuer}% skor</span></div>
+        ${valuers.length ? `<div class="pf-vlist">${valuers.map(v => { const vp = ctx.byId[v] || {}; const n = ns.find(x => x.valuer_id === v);
+          return `<div class="pf-v">${avatar(v, 52)}<span class="grow"><b>${L(v)}</b><small class="muted">${esc(vp.title || ROLE[vp.role] || '')}</small><small class="${n ? 'green-t' : 'muted'}">${n ? '✓ sudah memberi masukan' + (n.score ? ' · nilai ' + (+n.score).toLocaleString('id-ID') : '') : 'belum memberi masukan bulan ini'}</small></span></div>`; }).join('')}</div>
+          <p class="small" style="margin:0">${isSelf ? 'Valuer adalah orang yang paling memperhatikan perkembangan Anda: melihat hasil kerja, memberi nilai, dan menyarankan langkah berikutnya. Masukannya menentukan ' + c.W.valuer + '% skor Anda, dan bisa Anda tanggapi.' : 'Valuer mendampingi perkembangan ' + esc(p.nickname || p.name) + ': memberi nilai, masukan, dan arah perbaikan setiap bulan.'}</p>
+          ${isSelf ? (asks.find(x => !x.answered_at) ? `<span class="chip yellow" style="align-self:flex-start">Menunggu masukan sejak ${fdate(asks.find(x => !x.answered_at).created_at.slice(0, 10), false)}</span>` : `<button class="btn pri" style="align-self:flex-start" data-a="ask">Minta masukan valuer</button>`) : ''}
+          ${!isSelf && valuers.includes(me) && asks.find(x => x.valuer_id === me && !x.answered_at) ? `<p class="reject-note" style="margin:0"><b>${esc(p.nickname || p.name)} meminta masukan Anda</b>${asks.find(x => x.valuer_id === me && !x.answered_at).topic ? ': ' + esc(asks.find(x => x.valuer_id === me && !x.answered_at).topic) : ''}</p>` : ''}`
+          : `<p class="muted">Belum ada valuer. Kepala Staf mengaturnya di Tim & Peran.</p>`}</section>
+      <section style="order:7" class="card"><h2>Catatan otomatis</h2><ul class="pf-auto">${notesAuto.map(([t, s]) => `<li class="${t}"><i>${t === 'up' ? '↑' : '!'}</i><span>${s}</span></li>`).join('') || '<li class="up"><i>✓</i><span>Semua berjalan sesuai rencana.</span></li>'}</ul></section>
       <section style="order:5" class="card"><div class="row between"><h2>Disiplin KKH</h2><b class="big">${pct(c.disc)}</b></div>
         <div class="pf-cal">${cal}</div>
         <div class="pf-leg"><span><i class="v100"></i>100%</span><span><i class="v80"></i>80–99%</span><span><i class="vlow"></i>&lt; 80%</span><span><i class="empty"></i>kosong</span><span><i class="cuti"></i>cuti</span><span><i class="off"></i>libur</span></div></section>
-      <section style="order:7" class="card"><h2>Catatan valuer</h2>
+      <section style="order:2" class="card"><h2>Masukan dari valuer</h2>
         ${ns.length ? ns.map(n => `<div class="pf-note">${avatar(n.valuer_id, 34)}<div class="grow"><div class="bub"><small class="muted b">${L(n.valuer_id)}${n.score ? ' · nilai ' + (+n.score).toLocaleString('id-ID') : ''}</small><span>${esc(n.note || '—')}</span></div>
-          ${n.reply ? `<div class="bub rp"><small class="muted b">Tanggapan ${esc(p.nickname || p.name)}</small><span>${esc(n.reply)}</span></div>` : isSelf ? `<button class="link" data-reply="${n.id}">Tanggapi</button>` : ''}</div></div>`).join('') : '<p class="muted">Belum ada catatan valuer bulan ini.</p>'}
+          ${n.reply ? `<div class="bub rp"><small class="muted b">Tanggapan ${esc(p.nickname || p.name)}</small><span>${esc(n.reply)}</span></div>` : isSelf ? `<button class="link" data-reply="${n.id}">Tanggapi</button>` : ''}</div></div>`).join('') : `<p class="muted">Belum ada masukan valuer untuk ${fmonth(m)}.</p>`}
         ${canValue ? `<button class="btn pri" style="align-self:flex-start" data-a="nilai">${ns.some(n => n.valuer_id === me) ? 'Ubah nilai & catatan saya' : 'Beri nilai & catatan'}</button>` : ''}</section>
     </div>
   </div>`;
@@ -159,6 +157,11 @@ export async function detail(el, params, reload, pid) {
       const ok = await modal('Tanggapi catatan ' + nick(n.valuer_id), `<p class="note">${esc(n.note || '')}</p>` + field('Tanggapan Anda', '<textarea name="r" class="inp" rows="3" required></textarea>'),
         { onSubmit: (f) => db.update('pk_perf_notes', 'id=eq.' + n.id, { reply: f.r.trim() }) });
       if (ok) { toast('Tanggapan terkirim'); reload(); } return; }
+    if (e.target.closest('[data-a="ask"]')) {
+      const ok = await modal('Minta masukan valuer', `<p class="muted small" style="margin-top:0">Pesan dikirim ke ${valuers.map(L).join(' & ')} lewat notifikasi dan email.</p>` +
+        field('Hal yang ingin dibahas (opsional)', '<textarea name="t" class="inp" rows="3" placeholder="Contoh: cara saya mempresentasikan laporan mingguan sudah cukup jelas belum?"></textarea>'),
+        { submit: 'Kirim permintaan', onSubmit: (f) => db.rpc('pk_ask_valuer', { p_topic: (f.t || '').trim() || null }) });
+      if (ok) { toast('Permintaan masukan terkirim'); reload(); } return; }
     const a = e.target.closest('[data-a="nilai"]'); if (!a) return;
     const mine = ns.find(n => n.valuer_id === me) || {};
     const ok = await modal('Nilai ' + (p.nickname || p.name) + ' · ' + fmonth(m),

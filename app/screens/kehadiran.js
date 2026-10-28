@@ -15,6 +15,7 @@ export default async function kehadiran(el, params, reload) {
   const used = (pid) => cutiYear.filter(r => r.person_id === pid).reduce((s, r) => s + span(r).filter(d => !['Min'].includes(dayName(d))).length, 0);
   const allPending = await db.get('pk_leave', 'select=*&status=eq.diajukan&order=day');
   const myPending = allPending.filter(r => r.person_id === me && r.kind !== 'libur');
+  const myDecided = await db.get('pk_leave', `select=*&person_id=eq.${me}&status=in.(disetujui,ditolak)&decided_at=gte.${addDays(today(), -30)}&order=decided_at.desc&limit=15`).then(rs => rs.filter(r => r.kind !== 'libur' || r.status === 'ditolak').slice(0, 8));
   const toDecide = allPending.filter(r => r.person_id !== me && (isAdmin() || (ctx.byId[r.person_id] || {}).boss_id === me));
   const holdMin = 3;
   const duty = days.map(d => ({ d, hq: ppl.filter(p => bizOf(p.unit_code) === 'HQ' && !on(p.id, d)).length }));
@@ -30,7 +31,9 @@ export default async function kehadiran(el, params, reload) {
     <div class="days">${days.map(d => { const r = myLibur.find(x => x.day === d); const low = duty.find(x => x.d === d).hq < holdMin && bizOf(meP.unit_code) === 'HQ';
       return `<button class="day${r ? ' on' : ''}${low && !r ? ' warn' : ''}" data-day="${d}" ${r && r.status === 'disetujui' ? 'title="Sudah disetujui"' : ''}><b>${dayName(d)}</b><span>${fdate(d, false)}</span><small>${r ? (r.status === 'disetujui' ? '✓ libur' : 'diajukan') : low ? 'kurang orang' : ''}</small></button>`; }).join('')}</div>
     <div class="row gap"><button class="btn" data-a="cuti">Ajukan cuti</button><button class="btn" data-a="izin">Ajukan izin</button></div></section>
-  ${myPending.length ? `<section class="card"><h2>Pengajuan saya</h2><div class="list">${myPending.map(r => `<div class="li row gap"><span style="flex:1"><b>${r.kind === 'cuti' ? 'Cuti' : 'Izin'}</b> ${fdate(r.day)}${r.end_day && r.end_day !== r.day ? ' – ' + fdate(r.end_day) : ''} ${chip('menunggu atasan', 'yellow')}</span><button class="btn sm danger" data-cancel="${r.id}">Batalkan</button></div>`).join('')}</div></section>` : ''}
+  ${myPending.length || myDecided.length ? `<section class="card"><h2>Pengajuan saya</h2><div class="list">${myPending.map(r => `<div class="li row gap"><span style="flex:1"><b>${r.kind === 'cuti' ? 'Cuti' : 'Izin'}</b> ${fdate(r.day)}${r.end_day && r.end_day !== r.day ? ' – ' + fdate(r.end_day) : ''} ${chip('menunggu atasan', 'yellow')}</span><button class="btn sm danger" data-cancel="${r.id}">Batalkan</button></div>`).join('')}
+    ${myDecided.map(r => `<div class="li"><div class="row gap"><span style="flex:1"><b>${{ cuti: 'Cuti', izin: 'Izin', libur: 'Libur' }[r.kind]}</b> ${fdate(r.day)}${r.end_day && r.end_day !== r.day ? ' – ' + fdate(r.end_day) : ''} ${chip(r.status === 'disetujui' ? 'disetujui' : 'ditolak', r.status === 'disetujui' ? 'green' : 'red')} <small class="muted">oleh ${esc(nick(r.decided_by))}</small></span></div>
+      ${r.decide_note ? `<p class="reject-note${r.status === 'ditolak' ? '' : ' ok'}"><b>${r.status === 'ditolak' ? 'Alasan ditolak' : 'Catatan'}:</b> ${esc(r.decide_note)}</p>` : ''}</div>`).join('')}</div></section>` : ''}
   ${toDecide.length ? `<section class="card"><h2>Perlu saya setujui</h2><div class="list">${toDecide.map(r => `<div class="li row gap">${avatar(r.person_id, 28)}<span style="flex:1"><b>${esc(nick(r.person_id))}</b> · ${r.kind} ${fdate(r.day)}${r.end_day && r.end_day !== r.day ? ' – ' + fdate(r.end_day) : ''}${r.replacement_id ? ' · pengganti ' + esc(nick(r.replacement_id)) : ''}${r.reason ? ' · ' + esc(r.reason) : ''}</span>
     <button class="btn sm pri" data-ok="${r.id}">Setujui</button><button class="btn sm" data-no="${r.id}">Tolak</button></div>`).join('')}</div></section>` : ''}
   <section class="card pad0 scroll-x"><table class="tbl cal"><thead><tr><th>Orang</th>${days.map(d => `<th>${dayName(d)}<br><small>${fdate(d, false)}</small></th>`).join('')}<th>Saldo cuti</th></tr></thead><tbody>
@@ -49,7 +52,12 @@ export default async function kehadiran(el, params, reload) {
       const cb = e.target.closest('[data-cancel]');
       if (cb) { if (!await confirmBox('Batalkan pengajuan ini?', 'Ya, batalkan')) return; await db.rpc('pk_leave_cancel', { p_id: cb.dataset.cancel }); toast('Pengajuan dibatalkan'); return reload(); }
       const ok = e.target.closest('[data-ok]'), no = e.target.closest('[data-no]');
-      if (ok || no) { await db.rpc('pk_leave_decide', { p_id: (ok || no).dataset[ok ? 'ok' : 'no'], p_approve: !!ok }); toast(ok ? 'Disetujui' : 'Ditolak'); return reload(); }
+      if (ok) { await db.rpc('pk_leave_decision', { p_id: ok.dataset.ok, p_approve: true }); toast('Disetujui'); return reload(); }
+      if (no) { const r0 = toDecide.find(x => x.id === no.dataset.no);
+        const r = await modal('Tolak ' + r0.kind + ' ' + nick(r0.person_id), `<p class="muted small" style="margin-top:0">${esc(r0.kind)} ${fdate(r0.day)}${r0.end_day && r0.end_day !== r0.day ? ' – ' + fdate(r0.end_day) : ''}${r0.reason ? ' · alasan pengaju: ' + esc(r0.reason) : ''}</p>` +
+          field('Alasan penolakan', '<textarea name="note" class="inp" rows="3" placeholder="Contoh: tanggal itu ada event TripinAja, bisa digeser ke minggu depan?"></textarea>', 'Alasan ini dikirim ke ' + esc(nick(r0.person_id)) + ' lewat notifikasi dan email.'),
+          { submit: 'Tolak pengajuan', onSubmit: async (f) => { need((f.note || '').trim(), 'Tulis alasan penolakan'); await db.rpc('pk_leave_decision', { p_id: r0.id, p_approve: false, p_note: f.note.trim() }); } });
+        if (r) { toast('Ditolak · alasan dikirim ke ' + nick(r0.person_id)); reload(); } return; }
       const a = e.target.closest('[data-a]');
       if (a) { const kind = a.dataset.a;
         const r = await modal(kind === 'cuti' ? 'Ajukan cuti' : 'Ajukan izin',
