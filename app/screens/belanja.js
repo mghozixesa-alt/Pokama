@@ -1,7 +1,7 @@
 import { safeUrl, ctx, db, esc, today, addDays, fdate, ftime, avatar, nick, modal, field, opts, toast, unitName, unitOpts, isFin, isCeo, need, chip, logo, rp, jt, num, bizOf } from '../core.js';
 
 const ST = { diajukan: ['Menunggu persetujuan', 'yellow', '#D99A00'], revisi: ['Diminta revisi', 'gray', '#8A94A3'], ditolak: ['Ditolak', 'gray', '#8A94A3'],
-  siap_cair: ['Siap dicairkan', 'blue', '#2F6FDB'], cair: ['Dana cair · tunggu nota', 'red', '#C2410C'], lpj: ['Nota masuk · dicek Keuangan', 'blue', '#2F6FDB'], selesai: ['Selesai', 'green', '#09BEAF'] };
+  siap_cair: ['Siap dicairkan', 'blue', '#2F6FDB'], cair: ['Dana cair · tunggu nota', 'red', '#C2410C'], lpj: ['Nota masuk · dicek Keuangan', 'blue', '#2F6FDB'], selesai: ['Selesai', 'green', '#09BEAF'], batal: ['Dibatalkan', 'gray', '#A9B4C2'] };
 const KIND = { op: 'Kebutuhan operasional', mt: 'Maintenance produk/aset' };
 
 export default async function belanja(el, params, reload) {
@@ -56,7 +56,7 @@ export default async function belanja(el, params, reload) {
     const its = I(r.id); const lg = L(r.id).slice().reverse();
     const steps = [['Diajukan ' + nick(r.created_by), true, ftime(r.created_at)]].concat(r.chain.map((p, i) => ['Disetujui ' + nick(p), r.step > i || ['siap_cair', 'cair', 'lpj', 'selesai'].includes(r.status), '']))
       .concat([['Dana dicairkan Keuangan', ['cair', 'lpj', 'selesai'].includes(r.status), r.cair_at ? ftime(r.cair_at) : ''], ['Nota diupload (LPJ)', ['lpj', 'selesai'].includes(r.status), r.lpj_at ? ftime(r.lpj_at) : ''], ['Dicek Keuangan · selesai', r.status === 'selesai', r.done_at ? ftime(r.done_at) : '']]);
-    const stopped = ['revisi', 'ditolak'].includes(r.status);
+    const stopped = ['revisi', 'ditolak', 'batal'].includes(r.status);
     const curIdx = steps.findIndex(s => !s[1]);
     const ai = [];
     if (r.total > l2) ai.push('Di atas ' + jt(l2) + ': perlu persetujuan CEO.');
@@ -78,6 +78,7 @@ export default async function belanja(el, params, reload) {
         ${myTurn(r) || (isCeo() && r.status === 'diajukan' && r.created_by !== me) ? `<button class="btn pri" data-a="approve">${myTurn(r) ? 'Setujui' : 'Setujui langsung (CEO)'}</button><button class="btn" data-a="revise">Minta revisi</button><button class="btn danger" data-a="reject">Tolak</button>` : ''}
         ${r.status === 'revisi' && r.created_by === me ? `<button class="btn pri" data-a="resubmit">Revisi & ajukan ulang</button>` : ''}
         ${r.status === 'siap_cair' && isFin() ? `<button class="btn pri" data-a="cair">Tandai dana sudah dicairkan</button>` : ''}
+        ${['diajukan', 'revisi', 'siap_cair'].includes(r.status) && (r.created_by === me || isCeo()) ? `<button class="btn danger" data-a="cancel">Batalkan RAB</button>` : ''}
         ${r.status === 'cair' && (r.created_by === me || isFin()) ? `<button class="btn pri" data-a="lpj">Upload nota (LPJ)</button>` : ''}
         ${r.status === 'lpj' && isFin() ? `<button class="btn pri" data-a="close">Nota sesuai · selesai</button>` : ''}
       </div>
@@ -94,6 +95,8 @@ export default async function belanja(el, params, reload) {
       else if (a.dataset.a === 'revise' || a.dataset.a === 'reject') ok = await modal(a.dataset.a === 'revise' ? 'Minta revisi' : 'Tolak RAB', field(a.dataset.a === 'revise' ? 'Apa yang perlu direvisi' : 'Alasan penolakan', '<textarea name="n" class="inp" rows="3"></textarea>'),
         { submit: 'Kirim', onSubmit: (f) => db.rpc('pk_rab_decide', { p_id: r.id, p_action: a.dataset.a, p_note: f.n }) });
       else if (a.dataset.a === 'resubmit') ok = await rabForm(r, I(r.id));
+      else if (a.dataset.a === 'cancel') ok = await modal('Batalkan ' + r.code, `<p>Batalkan RAB "<b>${esc(r.title)}</b>" ${rp(r.total)}? RAB tetap tercatat dengan status Dibatalkan.</p>` + field('Alasan (opsional)', '<input name="n" class="inp">'),
+        { submit: 'Ya, batalkan', onSubmit: (f) => db.rpc('pk_rab_cancel', { p_id: r.id, p_note: f.n || null }) });
       else if (a.dataset.a === 'cair') ok = await modal('Cairkan ' + r.code, `<p>Transfer <b>${rp(r.total)}</b> ke ${esc(nick(r.created_by))} untuk "${esc(r.title)}".</p>` + field('Catatan (mis. nomor transfer)', '<input name="n" class="inp">'),
         { submit: 'Sudah dicairkan', onSubmit: (f) => db.rpc('pk_rab_cair', { p_id: r.id, p_note: f.n || null }) });
       else if (a.dataset.a === 'lpj') ok = await modal('Upload nota · ' + r.code, `<p class="muted small">Isi realisasi per barang dan tautan foto nota (Google Drive/Foto).</p>` +

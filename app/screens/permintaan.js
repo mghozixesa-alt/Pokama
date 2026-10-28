@@ -1,7 +1,7 @@
 import { safeUrl, ctx, db, esc, today, addDays, fdate, ftime, avatar, nick, modal, field, opts, toast, unitName, peopleOpts, isAdmin, need, chip, logo } from '../core.js';
 
 const TEAMS = ['Rentalaja', 'TripinAja', 'Niagaaja', 'Marketing', 'Keuangan', 'Purchasing & Aset', 'Kepala Staf', 'Data & BizDev'];
-const ST = { baru: ['Menunggu dipilah', 'yellow'], ditunda: ['Ditunda', 'gray'], diterima: ['Diberikan ke PIC', 'blue'], ditolak: ['Ditolak', 'gray'], diperjelas: ['Perlu diperjelas', 'blue'], jadi_tugas: ['Jadi tugas', 'green'], selesai: ['Selesai', 'green'] };
+const ST = { baru: ['Menunggu dipilah', 'yellow'], ditunda: ['Ditunda', 'gray'], diterima: ['Diberikan ke PIC', 'blue'], ditolak: ['Ditolak', 'gray'], diperjelas: ['Perlu diperjelas', 'blue'], jadi_tugas: ['Jadi tugas', 'green'], selesai: ['Selesai', 'green'], batal: ['Dibatalkan', 'gray'] };
 const PR = { tinggi: ['Tinggi', 'red'], sedang: ['Sedang', 'yellow'], rendah: ['Rendah', 'gray'] };
 
 export default async function permintaan(el, params, reload) {
@@ -46,6 +46,7 @@ export default async function permintaan(el, params, reload) {
         ${canTriage ? `<button class="btn pri" data-a="give">Berikan ke PIC</button><button class="btn" data-a="tunda">Tunda</button><button class="btn" data-a="perjelas">Minta diperjelas</button><button class="btn danger" data-a="tolak">Tolak</button>` : ''}
         ${canAccept ? `<button class="btn pri" data-a="accept">Terima · jadikan tugas</button>` : ''}
         ${r.from_id === me && ['diperjelas'].includes(r.status) ? `<button class="btn" data-a="clarify">Perjelas & kirim ulang</button>` : ''}
+        ${(r.from_id === me || admin) && ['baru', 'diperjelas', 'ditunda', 'diterima'].includes(r.status) ? `<button class="btn danger" data-a="cancel">Batalkan permintaan</button>` : ''}
       </div></section>`;
   }
 
@@ -54,6 +55,8 @@ export default async function permintaan(el, params, reload) {
     try {
       let ok = null;
       if (a.dataset.a === 'new') ok = await form();
+      else if (a.dataset.a === 'cancel') ok = await modal('Batalkan permintaan', `<p>Batalkan "<b>${esc(r.title)}</b>"? Permintaan tetap tercatat dengan status Dibatalkan.</p>` + field('Alasan (opsional)', '<input name="why" class="inp">'),
+        { submit: 'Ya, batalkan', onSubmit: (f) => db.rpc('pk_request_cancel', { p_id: r.id, p_reason: f.why || null }) });
       else if (a.dataset.a === 'give') ok = await modal('Berikan ke PIC',
         field('Dikerjakan oleh', `<select name="pic" class="inp">${peopleOpts('', '— pilih —')}</select>`) +
         field('Bagian dari proyek', `<select name="proj" class="inp">${opts(projects.map(p => [p.id, p.name]), '', '— tanpa proyek —')}</select>`) +

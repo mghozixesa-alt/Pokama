@@ -1,4 +1,4 @@
-import { ctx, db, esc, today, addDays, fdate, fmonth, monthStart, weekStart, avatar, nick, modal, field, opts, toast, unitName, isFin, isAdmin, isCeo, need, chip, logo, rp, jt, num, bizOf } from '../core.js';
+import { ctx, db, esc, today, addDays, fdate, fmonth, monthStart, weekStart, avatar, nick, modal, field, opts, toast, unitName, isFin, isAdmin, isCeo, need, chip, logo, rp, jt, num, bizOf, confirmBox } from '../core.js';
 
 const stOf = (p) => p >= 1 ? ['Tercapai', 'green', '#09BEAF'] : p >= .9 ? ['Aman', 'green', '#09BEAF'] : p >= .75 ? ['Diawasi', 'yellow', '#D99A00'] : ['Perlu evaluasi', 'red', '#C2410C'];
 const nextMonth = (m) => { const d = new Date(m + 'T00:00:00Z'); d.setUTCMonth(d.getUTCMonth() + 1); return d.toISOString().slice(0, 10); };
@@ -44,12 +44,14 @@ export default async function unit(el, params, reload) {
         return `<div><span>${esc(x.l.name)}</span><span class="bar"><i style="width:${q ? Math.min(100, q * 100) : 0}%;background:${ss ? ss[2] : '#C9CED6'}"></i></span><b class="${q !== null && q < .75 ? 'red' : ''}">${q !== null ? Math.round(q * 100) + '%' : jt(x.a)}</b></div>`; }).join('')}</div>` : ''}
       <div><span class="lab">KPI UTAMA</span><b>${esc(c.u.kpi || '—')}</b></div>
       <div class="tbox"><div class="row between small"><span class="lab">TARGET ${fmonth(nm).toUpperCase()}</span><span class="${tn ? 'green-t' : 'red'}">${tn ? { usulan: 'Diusulkan', dicek: 'Dicek Keuangan', sah: 'Disahkan CEO' }[tn.status] : 'Belum diisi'}</span></div>
-        ${tn ? `<div class="row between"><b>${rp(tn.amount)}</b>${isFin() && tn.status === 'usulan' ? `<button class="btn sm" data-ts="${tn.id}" data-s="dicek">Tandai dicek</button>` : ''}${isCeo() && tn.status !== 'sah' ? `<button class="btn sm pri" data-ts="${tn.id}" data-s="sah">Sahkan</button>` : ''}</div>` : ''}
+        ${tn ? `<div class="row between"><b>${rp(tn.amount)}</b>${isFin() && tn.status === 'usulan' ? `<button class="btn sm" data-ts="${tn.id}" data-s="dicek">Tandai dicek</button>` : ''}${isCeo() && tn.status !== 'sah' ? `<button class="btn sm pri" data-ts="${tn.id}" data-s="sah">Sahkan</button>` : ''}${tn.status === 'usulan' && (tn.proposed_by === me || isFin() || isAdmin()) ? `<button class="btn sm danger" data-tdel="${tn.id}">Hapus usulan</button>` : ''}</div>` : ''}
         ${(!tn || tn.status === 'usulan') && canProp(c.u.code) ? `<div class="row gap"><span class="pre grow"><b>Rp</b><input class="inp-n" data-tin="${c.u.code}" inputmode="numeric" placeholder="${c.a ? Math.round(c.a * 1.05).toLocaleString('id-ID') + ' (usulan AI +5%)' : 'isi target'}"></span><button class="btn sm pri" data-tp="${c.u.code}">${tn ? 'Ubah' : 'Usulkan'}</button></div>` : ''}</div>
     </section>`; }).join('')}</div>
   <div class="g2w">
     <section class="card"><div class="row between"><h2>Laporan omzet hari ini</h2><span class="muted small">ditutup 21.00</span></div>
-      <div class="chips">${reporters.map(u => { const r = todayRows.find(x => x.unit_code === u.code); return `<span class="chip ${r ? 'green' : 'red'}">${esc(u.name)} · ${r ? jt(r.amount) : 'belum'}</span>`; }).join('')}</div>
+      <div class="chips">${reporters.map(u => { const r = todayRows.find(x => x.unit_code === u.code); const canDel = r && r.source === 'manual' && (r.reported_by === me || isFin());
+        return canDel ? `<button type="button" class="chip green chipdel" data-om="${r.id}" title="Klik untuk menghapus laporan yang salah">${esc(u.name)} · ${jt(r.amount)} ✕</button>` : `<span class="chip ${r ? 'green' : 'red'}">${esc(u.name)} · ${r ? jt(r.amount) : 'belum'}</span>`; }).join('')}</div>
+      <p class="small muted">Salah input? Klik laporan bertanda ✕ untuk menghapusnya, lalu lapor ulang.</p>
       <p class="small muted">Total grup ${fmonth(m)}: <b>${jt(grpA)}</b>${grpT ? ' dari target ' + jt(grpT) + ' (' + Math.round(grpA / grpT * 100) + '%)' : ''}. Target bulan depan diusulkan Leader di 3 hari kerja terakhir, dicek Keuangan, disahkan CEO.</p></section>
     <section class="card"><h2>Cara poin dihitung</h2><div class="chips">${Object.entries(lw).map(([k, v]) => `<span class="chip gray"><b>${v}</b> ${{ kas: 'Kas aman', profit: 'Laba', kapasitas: 'Rapi: KKH & aset', growth: 'Tumbuh' }[k]}</span>`).join('')}</div>
       <p class="small muted">Poin = seberapa dekat unit dengan targetnya sendiri, maksimal 100. Diisi Keuangan setiap minggu. Juara kuartal dapat faktor bonus 100%.</p></section></div>`;
@@ -81,6 +83,10 @@ export default async function unit(el, params, reload) {
         if (ex) await db.update('pk_targets', 'id=eq.' + ex.id, { amount: v, updated_at: new Date().toISOString() });
         else await db.insert('pk_targets', { unit_code: code, month: nm, amount: v, status: 'usulan', proposed_by: me });
         toast('Target ' + fmonth(nm) + ' diusulkan'); return reload(); }
+      const td = e.target.closest('[data-tdel]');
+      if (td) { if (!await confirmBox('Hapus usulan target ini?', 'Ya, hapus')) return; await db.remove('pk_targets', 'id=eq.' + td.dataset.tdel); toast('Usulan target dihapus'); return reload(); }
+      const om = e.target.closest('[data-om]');
+      if (om) { if (!await confirmBox('Hapus laporan omzet ini? Setelah itu bisa lapor ulang dengan angka yang benar.', 'Ya, hapus')) return; await db.remove('pk_omzet', 'id=eq.' + om.dataset.om); toast('Laporan omzet dihapus'); return reload(); }
       const ts = e.target.closest('[data-ts]'); if (ts) { await db.rpc('pk_target_status', { p_id: ts.dataset.ts, p_status: ts.dataset.s }); toast('Tersimpan'); reload(); }
     } catch (er) { toast(er.message, 'err'); }
   };

@@ -8,7 +8,7 @@ async function tim(el, params, reload) {
   const groups = ctx.units.filter(u => u.kind !== 'lini').map(u => ({ u, rows: ppl.filter(p => bizOf(p.unit_code) === u.code) })).filter(g => g.rows.length);
   el.innerHTML = `
   <header class="ph"><div><span class="muted small">Siapa di unit mana, perannya apa, atasannya siapa, dan sudah punya akun atau belum</span><h1>Tim & Peran</h1></div>
-    ${admin ? '<div class="row gap"><button class="btn" data-a="unit">+ Lini / unit</button><button class="btn pri" data-a="add">+ Tambah orang</button></div>' : ''}</header>
+    ${admin ? '<div class="row gap"><button class="btn" data-a="units">Kelola unit</button><button class="btn" data-a="unit">+ Lini / unit</button><button class="btn pri" data-a="add">+ Tambah orang</button></div>' : ''}</header>
   <div class="tiles"><div class="tile"><span>Orang aktif</span><b>${active().length}</b></div><div class="tile"><span>Sudah punya akun</span><b>${active().filter(p => p.user_id || p.email).length}</b></div>
     <div class="tile"><span>Unit & lini</span><b>${ctx.units.filter(u => u.is_active).length}</b></div><div class="tile"><span>Leader</span><b>${active().filter(p => p.role === 'leader').length}</b></div></div>
   ${groups.map(g => `<section class="grp"><div class="grp-h">${logo(g.u.code, 30)}<b>${esc(g.u.name)}</b><span class="muted">${g.rows.length} orang</span></div>
@@ -22,6 +22,7 @@ async function tim(el, params, reload) {
     try {
       if (a && a.dataset.a === 'add') { if (await personForm()) reload(); }
       else if (a && a.dataset.a === 'unit') { if (await unitForm()) reload(); }
+      else if (a && a.dataset.a === 'units') { if (await unitsForm()) reload(); }
       else if (pb) { const p = ctx.byId[pb.dataset.p]; if (admin) { const r = await personForm(p); if (r) reload(); } else await view(p); }
     } catch (er) { toast(er.message, 'err'); }
   };
@@ -68,6 +69,15 @@ document.addEventListener('click', async (e) => {
   } catch (er) { out.textContent = ' ' + er.message; }
   e.target.disabled = false;
 });
+
+async function unitsForm() {
+  const us = (ctx.allUnits || ctx.units).filter(u => u.code !== 'HQ');
+  return modal('Kelola unit & lini', `<p class="muted small">Hilangkan centang untuk menonaktifkan unit atau lini yang sudah tidak dipakai. Datanya tetap tersimpan, hanya tidak muncul lagi di pilihan.</p>
+    <div class="list">${us.map(u => `<label class="li row gap chk">${u.kind !== 'lini' ? logo(u.code, 20) : '<span style="width:20px"></span>'}<span style="flex:1"><b>${esc(u.name)}</b> <small class="muted">${u.code}${u.kind === 'lini' ? ' · lini ' + esc(unitName(u.parent)) : ' · unit bisnis'}</small></span><input type="checkbox" name="u_${u.code}" ${u.is_active !== false ? 'checked' : ''}> Aktif</label>`).join('')}</div>`,
+    { onSubmit: async (f) => {
+      for (const u of us) { const on = !!f['u_' + u.code]; if (on !== (u.is_active !== false)) await db.update('pk_units', 'code=eq.' + u.code, { is_active: on }); }
+      const { loadContext } = await import('../core.js'); await loadContext(); } });
+}
 
 async function unitForm() {
   return modal('Tambah lini / unit', `<div class="g2">` + field('Kode (2–3 huruf)', '<input name="code" class="inp" maxlength="3">') + field('Nama', '<input name="name" class="inp">') +

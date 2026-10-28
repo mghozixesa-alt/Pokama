@@ -81,7 +81,8 @@ async function projForm(p = {}) {
     field('Penanggung jawab', `<select name="owner_id" class="inp">${peopleOpts(p.owner_id || ctx.me.id)}</select>`) +
     field('Tenggat', `<input type="date" name="due" class="inp" value="${esc(p.due || '')}">`) + `</div>` +
     (p.id ? `<label class="chk"><input type="checkbox" name="is_closed" ${p.is_closed ? 'checked' : ''}> Proyek sudah ditutup</label>` : ''),
-    { onSubmit: async (f) => { need(f.name, 'Isi nama proyek'); const row = { name: f.name.trim(), unit_code: f.unit_code, owner_id: f.owner_id || null, due: f.due || null, is_closed: !!f.is_closed };
+    { danger: p.id && (isAdmin() || p.owner_id === ctx.me.id) ? { label: 'Hapus proyek', onClick: async () => { await db.remove('pk_projects', 'id=eq.' + p.id); toast('Proyek dihapus. Tugasnya tetap ada, tanpa proyek.'); return 'del'; } } : null,
+      onSubmit: async (f) => { need(f.name, 'Isi nama proyek'); const row = { name: f.name.trim(), unit_code: f.unit_code, owner_id: f.owner_id || null, due: f.due || null, is_closed: !!f.is_closed };
       if (p.id) await db.update('pk_projects', 'id=eq.' + p.id, row); else await db.insert('pk_projects', row); } });
 }
 
@@ -102,7 +103,7 @@ async function detail(t, projects) {
   let mode = 'save';
   const res = await modal(t.title, body, {
     wide: true, submit: canEdit ? 'Simpan' : null,
-    danger: canEdit ? { label: 'Ubah detail', onClick: async () => { mode = 'edit'; return 'edit'; } } : null,
+    danger: canEdit ? { label: 'Ubah detail', confirm: false, onClick: async () => { mode = 'edit'; return 'edit'; } } : null,
     onSubmit: async (f) => {
       if (isPic && ['todo', 'doing', 'revisi', 'hold'].includes(t.status) && (f.link || '').trim()) {
         await db.rpc('pk_task_submit', { p_task: t.id, p_link: f.link.trim(), p_note: null }); toast('Diajukan ke ' + nick(t.reviewer_id)); return;

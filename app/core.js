@@ -102,7 +102,7 @@ export async function loadContext() {
     db.get('pk_units', 'select=*&order=sort'),
     db.get('pk_settings', 'select=key,value,note'),
   ]);
-  ctx.people = people; ctx.units = units;
+  ctx.people = people; ctx.allUnits = units; ctx.units = units.filter(u => u.is_active !== false);
   ctx.byId = Object.fromEntries(people.map(p => [p.id, p]));
   ctx.unit = Object.fromEntries(units.map(u => [u.code, u]));
   ctx.settings = Object.fromEntries(settings.map(s => [s.key, s.value]));
@@ -180,7 +180,12 @@ export function modal(title, bodyHtml, { submit = 'Simpan', onSubmit, wide = fal
       catch (e2) { err.textContent = e2.message; err.hidden = false; btns.forEach(b => b.disabled = false); }
     };
     form.addEventListener('submit', (e) => { e.preventDefault(); run(onSubmit || (() => true)); });
-    if (danger) wrap.querySelector('[data-danger]').addEventListener('click', () => run(danger.onClick));
+    if (danger) { const db0 = wrap.querySelector('[data-danger]'); let armed = 0;
+      db0.addEventListener('click', () => {
+        if (danger.confirm === false || Date.now() - armed < 5000) return run(danger.onClick);
+        armed = Date.now(); db0.textContent = 'Yakin? Klik lagi untuk ' + danger.label.toLowerCase(); db0.classList.add('armed');
+        setTimeout(() => { if (wrap.isConnected) { db0.textContent = danger.label; db0.classList.remove('armed'); } }, 5000);
+      }); }
     wrap.dispatchEvent(new CustomEvent('modal:open', { bubbles: true, detail: form }));
     setTimeout(() => { const f = form.querySelector('input:not([type=hidden]),select,textarea'); f && f.focus(); }, 30);
   });

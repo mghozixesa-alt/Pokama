@@ -1,4 +1,4 @@
-import { ctx, db, esc, today, addDays, fdate, weekStart, dayName, avatar, nick, modal, field, opts, toast, active, unitName, isAdmin, need, chip, peopleOpts, bizOf, logo } from '../core.js';
+import { ctx, db, esc, today, addDays, fdate, weekStart, dayName, avatar, nick, modal, field, opts, toast, active, unitName, isAdmin, need, chip, peopleOpts, bizOf, logo, confirmBox } from '../core.js';
 
 export default async function kehadiran(el, params, reload) {
   const me = ctx.me.id; const ws = params.get('w') || weekStart(today());
@@ -9,11 +9,12 @@ export default async function kehadiran(el, params, reload) {
     db.get('pk_leave', `select=person_id,day,end_day,status&kind=eq.cuti&status=eq.disetujui&day=gte.${yearStart}`),
   ]);
   const span = (r) => { const out = []; let d = r.day; const e = r.end_day || r.day; while (d <= e) { out.push(d); d = addDays(d, 1); } return out; };
-  const on = (pid, d) => rows.find(r => r.person_id === pid && r.status !== 'ditolak' && span(r).includes(d));
+  const on = (pid, d) => rows.find(r => r.person_id === pid && !['ditolak', 'batal'].includes(r.status) && span(r).includes(d));
   const ppl = active().filter(p => p.role !== 'ceo');
-  const myLibur = rows.filter(r => r.person_id === me && r.kind === 'libur' && r.status !== 'ditolak');
+  const myLibur = rows.filter(r => r.person_id === me && r.kind === 'libur' && !['ditolak', 'batal'].includes(r.status));
   const used = (pid) => cutiYear.filter(r => r.person_id === pid).reduce((s, r) => s + span(r).filter(d => !['Min'].includes(dayName(d))).length, 0);
   const allPending = await db.get('pk_leave', 'select=*&status=eq.diajukan&order=day');
+  const myPending = allPending.filter(r => r.person_id === me && r.kind !== 'libur');
   const toDecide = allPending.filter(r => r.person_id !== me && (isAdmin() || (ctx.byId[r.person_id] || {}).boss_id === me));
   const holdMin = 3;
   const duty = days.map(d => ({ d, hq: ppl.filter(p => bizOf(p.unit_code) === 'HQ' && !on(p.id, d)).length }));
@@ -29,6 +30,7 @@ export default async function kehadiran(el, params, reload) {
     <div class="days">${days.map(d => { const r = myLibur.find(x => x.day === d); const low = duty.find(x => x.d === d).hq < holdMin && bizOf(meP.unit_code) === 'HQ';
       return `<button class="day${r ? ' on' : ''}${low && !r ? ' warn' : ''}" data-day="${d}" ${r && r.status === 'disetujui' ? 'title="Sudah disetujui"' : ''}><b>${dayName(d)}</b><span>${fdate(d, false)}</span><small>${r ? (r.status === 'disetujui' ? '✓ libur' : 'diajukan') : low ? 'kurang orang' : ''}</small></button>`; }).join('')}</div>
     <div class="row gap"><button class="btn" data-a="cuti">Ajukan cuti</button><button class="btn" data-a="izin">Ajukan izin</button></div></section>
+  ${myPending.length ? `<section class="card"><h2>Pengajuan saya</h2><div class="list">${myPending.map(r => `<div class="li row gap"><span style="flex:1"><b>${r.kind === 'cuti' ? 'Cuti' : 'Izin'}</b> ${fdate(r.day)}${r.end_day && r.end_day !== r.day ? ' – ' + fdate(r.end_day) : ''} ${chip('menunggu atasan', 'yellow')}</span><button class="btn sm danger" data-cancel="${r.id}">Batalkan</button></div>`).join('')}</div></section>` : ''}
   ${toDecide.length ? `<section class="card"><h2>Perlu saya setujui</h2><div class="list">${toDecide.map(r => `<div class="li row gap">${avatar(r.person_id, 28)}<span style="flex:1"><b>${esc(nick(r.person_id))}</b> · ${r.kind} ${fdate(r.day)}${r.end_day && r.end_day !== r.day ? ' – ' + fdate(r.end_day) : ''}${r.replacement_id ? ' · pengganti ' + esc(nick(r.replacement_id)) : ''}${r.reason ? ' · ' + esc(r.reason) : ''}</span>
     <button class="btn sm pri" data-ok="${r.id}">Setujui</button><button class="btn sm" data-no="${r.id}">Tolak</button></div>`).join('')}</div></section>` : ''}
   <section class="card pad0 scroll-x"><table class="tbl cal"><thead><tr><th>Orang</th>${days.map(d => `<th>${dayName(d)}<br><small>${fdate(d, false)}</small></th>`).join('')}<th>Saldo cuti</th></tr></thead><tbody>
@@ -44,6 +46,8 @@ export default async function kehadiran(el, params, reload) {
         else { if (myLibur.length >= (+ctx.settings.leave_days_per_week || 2)) return toast('Sudah memilih ' + myLibur.length + ' hari libur minggu ini', 'err');
           await db.insert('pk_leave', { person_id: me, kind: 'libur', day, status: 'diajukan' }); }
         return reload(); }
+      const cb = e.target.closest('[data-cancel]');
+      if (cb) { if (!await confirmBox('Batalkan pengajuan ini?', 'Ya, batalkan')) return; await db.rpc('pk_leave_cancel', { p_id: cb.dataset.cancel }); toast('Pengajuan dibatalkan'); return reload(); }
       const ok = e.target.closest('[data-ok]'), no = e.target.closest('[data-no]');
       if (ok || no) { await db.rpc('pk_leave_decide', { p_id: (ok || no).dataset[ok ? 'ok' : 'no'], p_approve: !!ok }); toast(ok ? 'Disetujui' : 'Ditolak'); return reload(); }
       const a = e.target.closest('[data-a]');

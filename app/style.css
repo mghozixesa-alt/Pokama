@@ -218,3 +218,5 @@ a.back{font-weight:800;color:var(--teal-d);text-decoration:none;align-self:flex-
 @media (max-width:1100px){.pf-grid{grid-template-columns:minmax(0,1fr)}}
 @media (max-width:760px){.pf-head{gap:12px}.pf-month{align-items:flex-start;width:100%}.pf-tiles{grid-template-columns:repeat(2,minmax(0,1fr))}.pf-out{flex-wrap:wrap}.pf-out .grow{flex:1 1 100%}.pf-steps li{flex:1 1 40%}}
 @media (max-width:760px){.pf-grid{display:flex;flex-direction:column;gap:14px}.pf-col{display:contents}}
+.btn.danger.armed{background:var(--red);color:#fff;border-color:var(--red)}
+button.chipdel{border:0;cursor:pointer;font:inherit;font-size:11px;font-weight:800}
