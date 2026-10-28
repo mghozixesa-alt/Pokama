@@ -53,7 +53,7 @@ async function personForm(p = null) {
       const ks = ctx.people.find(x => x.role === 'kepala_staf');
       const row = { name: f.name.trim(), nickname: f.nickname.trim() || null, code: f.code.trim().toUpperCase(), role: f.role, title: f.title.trim() || null, unit_code: f.unit_code,
         boss_id: f.boss_id || null, valuer1_id: f.boss_id || null, valuer2_id: f.valuer2_id || (ks && ks.id !== f.boss_id && ks.id !== p.id ? ks.id : null),
-        email: f.email.trim().toLowerCase() || null, phone: f.phone.replace(/\D/g, '').replace(/^0/, '62') || null, joined_on: f.joined_on || null, leave_quota: +f.leave_quota || 12, photo: f.photo.trim() || null };
+        email: f.email.trim().toLowerCase() || null, phone: f.phone.replace(/\D/g, '').replace(/^0/, '62') || null, joined_on: f.joined_on || null, leave_quota: f.leave_quota === '' ? 12 : Math.max(0, +f.leave_quota || 0), photo: f.photo.trim() || null };
       if (isNew) await db.insert('pk_people', row); else await db.update('pk_people', 'id=eq.' + p.id, { ...row, is_active: !!f.is_active });
       const { loadContext } = await import('../core.js'); await loadContext();
     } });

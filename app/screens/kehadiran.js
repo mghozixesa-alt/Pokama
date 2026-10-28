@@ -28,7 +28,7 @@ export default async function kehadiran(el, params, reload) {
   const toDecide = allPending.filter(r => r.person_id !== me && (isAdmin() || (ctx.byId[r.person_id] || {}).boss_id === me));
   const holdMin = 3;
   const duty = days.map(d => ({ d, hq: ppl.filter(p => bizOf(p.unit_code) === 'HQ' && !on(p.id, d)).length }));
-  const meP = ctx.byId[me]; const quota = meP.leave_quota || 12;
+  const meP = ctx.byId[me]; const quota = meP.leave_quota ?? 12;
   el.innerHTML = `
   <header class="ph"><div><span class="muted small">2 hari libur per minggu, pilih paling lambat ${esc(ctx.settings.leave_pick_deadline || 'Jumat 17.00')} · cuti ${quota} hari/tahun</span><h1>Kehadiran, Cuti & Libur</h1></div>
     <div class="row gap"><a class="btn" href="#/kehadiran?w=${addDays(ws, -7)}">‹</a><b>Minggu ${fdate(days[0], false)} – ${fdate(days[6], false)}</b><a class="btn" href="#/kehadiran?w=${addDays(ws, 7)}">›</a></div></header>
@@ -55,7 +55,7 @@ export default async function kehadiran(el, params, reload) {
     <button class="btn sm pri" data-ok="${r.id}">Setujui</button><button class="btn sm" data-no="${r.id}">Tolak</button></div>`).join('')}</div></section>` : ''}
   <section class="card pad0 scroll-x"><table class="tbl cal"><thead><tr><th>Orang</th>${days.map(d => `<th>${dayName(d)}<br><small>${fdate(d, false)}</small></th>`).join('')}<th>Saldo cuti</th></tr></thead><tbody>
     ${ppl.map(p => `<tr><td><span class="row gap6">${avatar(p.id, 24)}<b>${esc(p.nickname || p.name)}</b><small class="muted">${esc(unitName(p.unit_code))}</small></span></td>${days.map(d => { const r = on(p.id, d);
-      return `<td>${r ? `<span class="chip ${r.kind === 'cuti' ? 'yellow' : r.kind === 'izin' ? 'red' : 'blue'}">${r.kind}${r.status === 'diajukan' ? '?' : ''}</span>` : wfaOn(p.id, d) ? '<span class="chip green">WFA</span>' : ''}</td>`; }).join('')}<td>${(p.leave_quota || 12) - used(p.id)}</td></tr>`).join('')}
+      return `<td>${r ? `<span class="chip ${r.kind === 'cuti' ? 'yellow' : r.kind === 'izin' ? 'red' : 'blue'}">${r.kind}${r.status === 'diajukan' ? '?' : ''}</span>` : wfaOn(p.id, d) ? '<span class="chip green">WFA</span>' : ''}</td>`; }).join('')}<td>${(p.leave_quota ?? 12) - used(p.id)}</td></tr>`).join('')}
     <tr class="tot"><td>Holding jaga</td>${duty.map(x => `<td class="${x.hq < holdMin ? 'red b' : ''}">${x.hq}</td>`).join('')}<td></td></tr></tbody></table></section>`;
 
   el.onclick = async (e) => {
