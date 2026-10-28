@@ -95,6 +95,8 @@
     renderList(tplRoot.content.childNodes, vals, frag);
     mount.innerHTML = '';
     mount.appendChild(frag);
+    window.dcComp = comp;
+    try { window.dispatchEvent(new CustomEvent('dc:render')); } catch (e) {}
     if (id) {
       var again = document.getElementById(id);
       if (again) { again.focus(); try { if (sel) again.setSelectionRange(sel[0], sel[1]); } catch (e) {} }
