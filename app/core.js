@@ -102,9 +102,8 @@ export async function loadContext() {
     db.get('pk_units', 'select=*&order=sort'),
     db.get('pk_settings', 'select=key,value,note'),
   ]);
-  people = orgOrder(people, units);
-  ctx.people = people; ctx.allUnits = units; ctx.units = units.filter(u => u.is_active !== false);
-  ctx.byId = Object.fromEntries(people.map(p => [p.id, p]));
+  ctx.people = orgOrder(people, units); ctx.allUnits = units; ctx.units = units.filter(u => u.is_active !== false);
+  ctx.byId = Object.fromEntries(ctx.people.map(p => [p.id, p]));
   ctx.unit = Object.fromEntries(units.map(u => [u.code, u]));
   ctx.settings = Object.fromEntries(settings.map(s => [s.key, s.value]));
   ctx.notes = Object.fromEntries(settings.map(s => [s.key, s.note]));
