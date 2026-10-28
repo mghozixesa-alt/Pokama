@@ -102,12 +102,28 @@ export async function loadContext() {
     db.get('pk_units', 'select=*&order=sort'),
     db.get('pk_settings', 'select=key,value,note'),
   ]);
+  people = orgOrder(people, units);
   ctx.people = people; ctx.allUnits = units; ctx.units = units.filter(u => u.is_active !== false);
   ctx.byId = Object.fromEntries(people.map(p => [p.id, p]));
   ctx.unit = Object.fromEntries(units.map(u => [u.code, u]));
   ctx.settings = Object.fromEntries(settings.map(s => [s.key, s.value]));
   ctx.notes = Object.fromEntries(settings.map(s => [s.key, s.note]));
   return true;
+}
+// urutan orang mengikuti struktur: CEO, Kepala Staf, Keuangan, lalu tiap Leader diikuti timnya (urut unit), lalu staf lain per atasan
+export function orgOrder(people, units) {
+  const rank = { ceo: 0, kepala_staf: 1, keuangan: 2, leader: 3, staf: 4 };
+  const usort = Object.fromEntries((units || []).map(u => [u.code, u.sort ?? 99]));
+  const uOf = (p) => { const u = (units || []).find(x => x.code === p.unit_code); return u && u.kind === 'lini' ? (usort[u.parent] ?? 99) + (u.sort ?? 0) / 1000 : (usort[p.unit_code] ?? 99); };
+  const byName = (a, b) => (a.nickname || a.name).localeCompare(b.nickname || b.name);
+  const top = people.filter(p => rank[p.role] <= 2).sort((a, b) => rank[a.role] - rank[b.role] || byName(a, b));
+  const leaders = people.filter(p => p.role === 'leader').sort((a, b) => uOf(a) - uOf(b) || byName(a, b));
+  const out = [...top]; const seen = new Set(out.map(p => p.id));
+  const team = (bossId) => people.filter(p => p.boss_id === bossId && !seen.has(p.id) && p.role === 'staf').sort((a, b) => uOf(a) - uOf(b) || byName(a, b));
+  for (const l of leaders) { out.push(l); seen.add(l.id); for (const s of team(l.id)) { out.push(s); seen.add(s.id); } }
+  for (const t of top) for (const s of team(t.id)) { out.push(s); seen.add(s.id); }
+  for (const p of people.filter(x => !seen.has(x.id)).sort(byName)) { const i = out.findIndex(x => x.id === p.boss_id); let j = i + 1; while (i >= 0 && j < out.length && out[j].boss_id === p.boss_id) j++; out.splice(i >= 0 ? j : out.length, 0, p); seen.add(p.id); }
+  return out;
 }
 export const isAdmin = () => ['ceo', 'kepala_staf'].includes(ctx.me && ctx.me.role);
 export const isFin = () => ['ceo', 'keuangan'].includes(ctx.me && ctx.me.role);
