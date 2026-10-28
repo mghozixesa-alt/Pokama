@@ -1,0 +1,1 @@
+-- 017: divisi Holding (lini di bawah HQ): KEU Keuangan, BIZ BizDev, MKT Marketing, AST Aset; orang Holding dipindah sesuai jabatan

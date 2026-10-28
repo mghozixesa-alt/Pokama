@@ -175,6 +175,8 @@ async function saya(el, params, reload) {
 async function tim(el, params, reload) {
   const day = params.get('d') || today(); const scope = params.get('u') || 'ALL';
   const biz = ctx.units.filter(u => u.kind !== 'lini');
+  const top = scope === 'ALL' ? null : (ctx.unit[scope] && ctx.unit[scope].kind === 'lini' ? ctx.unit[scope].parent : scope);
+  const subs = top ? ctx.units.filter(u => u.parent === top && u.is_active) : [];
   const ppl = active().filter(p => scope === 'ALL' || p.unit_code === scope || (ctx.unit[p.unit_code] && ctx.unit[p.unit_code].parent === scope));
   const ids = ppl.map(p => p.id);
   const [rows, leave, atts] = await Promise.all([db.get('pk_kkh', `select=*&day=eq.${day}`), dayLeave(day), db.get('pk_attendance', `select=*&day=eq.${day}`)]);
@@ -187,10 +189,12 @@ async function tim(el, params, reload) {
   el.innerHTML = `
   <header class="ph"><div><span class="muted small">Agenda per jam tim management · klik slot berwarna biru untuk memvalidasi</span><h1>KKH Tim</h1></div>
     <div class="row gap"><a class="btn" href="#/kkh-tim?u=${scope}&d=${addDays(day, -1)}">‹</a><input type="date" class="inp" id="dpick" value="${day}"><a class="btn" href="#/kkh-tim?u=${scope}&d=${addDays(day, 1)}">›</a><button class="btn" data-a="wa">Laporan WA</button></div></header>
-  <div class="chips">${[['ALL', 'Semua']].concat(biz.map(u => [u.code, u.name])).map(([k, l]) => `<a class="chipbtn${scope === k ? ' on' : ''}" href="#/kkh-tim?u=${k}&d=${day}">${k !== 'ALL' ? logo(k, 18) : ''}${esc(l)}</a>`).join('')}</div>
+  <div class="chips">${[['ALL', 'Semua']].concat(biz.map(u => [u.code, u.name])).map(([k, l]) => `<a class="chipbtn${(scope === k || (k === top && scope !== top)) ? ' on' : ''}" href="#/kkh-tim?u=${k}&d=${day}">${k !== 'ALL' ? logo(k, 18) : ''}${esc(l)}</a>`).join('')}</div>
+  ${subs.length ? `<div class="chips sub">${[[top, 'Semua ' + unitName(top)]].concat(subs.map(u => [u.code, u.name])).map(([k, l]) => `<a class="chipbtn sm${scope === k ? ' on' : ''}" href="#/kkh-tim?u=${k}&d=${day}">${esc(l)}<small class="muted"> ${active().filter(p => k === top ? (p.unit_code === k || (ctx.unit[p.unit_code] || {}).parent === k) : p.unit_code === k).length}</small></a>`).join('')}</div>` : ''}
   <div class="tiles"><div class="tile"><span>Sudah absen</span><b>${ppl.filter(p => attOf[p.id]).length} / ${onDuty}</b><small class="${ppl.some(p => attOf[p.id] && attOf[p.id].late_min > 0) ? 'red' : 'muted'}">${ppl.filter(p => attOf[p.id] && attOf[p.id].late_min > 0).length} telat</small></div><div class="tile"><span>Slot terisi</span><b>${rows.filter(r => ids.includes(r.person_id)).length}</b></div>
     <div class="tile"><span>Menunggu validasi</span><b>${rows.filter(r => ids.includes(r.person_id) && r.status === 'siap').length}</b></div><div class="tile"><span>Tervalidasi</span><b>${rows.filter(r => ids.includes(r.person_id) && r.status === 'valid').length}</b></div></div>
   <div class="legend"><span><i style="background:#DDF5F2"></i>Kantor</span><span><i style="background:#E5EEF9"></i>WFA</span><span><i style="background:#FDF3D7"></i>WFE</span><span><i style="background:#FCEBDD"></i>Izin</span><span><i class="dark"></i>✓ divalidasi</span></div>
+  <p class="swipe-hint">Geser tabel ke kiri/kanan untuk melihat seluruh tim →</p>
   <section class="card pad0 scroll-x"><table class="kkh"><thead><tr><th class="sticky">Jam</th>${ppl.map(p => `<th>${avatar(p.id, 28)}<b>${esc(p.nickname || p.name)}</b><small>${esc(unitName(p.unit_code))}${leave[p.id] ? ' · ' + leave[p.id] : ''}</small>${attOf[p.id] ? `<span class="att">${attChip(attOf[p.id])}${canSeeAtt(p.id) && attOf[p.id].lat ? `<a href="https://maps.google.com/?q=${attOf[p.id].lat},${attOf[p.id].lng}" target="_blank" rel="noopener" title="Lokasi absen">📍</a>` : ''}${canSeeAtt(p.id) && attOf[p.id].photo ? `<button type="button" class="link" data-photo="${esc(attOf[p.id].photo)}" title="Foto absen">📷</button>` : ''}</span>` : !leave[p.id] && day <= today() ? '<span class="chip gray">belum absen</span>' : ''}</th>`).join('')}</tr></thead>
   <tbody>${H.map(h => !work(h) ? `<tr class="brk"><th class="sticky">${hh(h)}</th><td colspan="${ppl.length}">Istirahat</td></tr>` : `<tr><th class="sticky">${String(h).padStart(2, '0')}.00</th>${ppl.map(p => { const r = by[p.id + '|' + h];
     if (leave[p.id]) return '<td class="off"></td>';
