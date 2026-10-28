@@ -220,3 +220,11 @@ a.back{font-weight:800;color:var(--teal-d);text-decoration:none;align-self:flex-
 @media (max-width:760px){.pf-grid{display:flex;flex-direction:column;gap:14px}.pf-col{display:contents}}
 .btn.danger.armed{background:var(--red);color:#fff;border-color:var(--red)}
 button.chipdel{border:0;cursor:pointer;font:inherit;font-size:11px;font-weight:800}
+/* lapor omzet massal & target per lini */
+.bulk-tot{margin-left:auto;text-align:right;display:flex;flex-direction:column;justify-content:flex-end;padding-bottom:6px}.bulk-tot b{font-size:20px;color:var(--navy)}
+.bulk-g{border-top:1px solid var(--line);padding:10px 0 4px}.bulk-g .lab{margin-bottom:6px}
+.bulk-r{display:flex;align-items:center;gap:12px;padding:5px 0}.bulk-r>span:first-child{flex:1;min-width:0;font-weight:700}.bulk-r small{font-weight:400}.bulk-r .pre{width:200px;flex:none}
+.bulk-sum{border-top:1px solid var(--line);margin-top:8px;padding-top:10px}.bulk-sum b{font-size:18px;color:var(--navy)}
+.tlines{display:grid;grid-template-columns:1fr 1fr;gap:2px 14px;font-size:13px;margin:6px 0}.tlines>div{display:flex;justify-content:space-between;gap:6px}.tlines span{color:var(--mut)}
+@media (max-width:640px){.bulk-r .pre{width:150px}.tlines{grid-template-columns:1fr}}
+.mini b{white-space:nowrap}
