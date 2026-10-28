@@ -108,7 +108,7 @@ details summary{cursor:pointer}
 .tbox{background:var(--bg);border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:6px}
 /* tim */
 .pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
-.person{flex-direction:row;align-items:flex-start;gap:12px;text-align:left;font:inherit;color:var(--ink);cursor:pointer;padding:14px}.person>span{display:flex;flex-direction:column;gap:3px;min-width:0}.person small{font-size:12px}.person.off{opacity:.5}
+.person{flex-direction:row;align-items:flex-start;gap:12px;text-align:left;font:inherit;color:var(--ink);cursor:pointer;padding:14px}.person>span{display:flex;flex-direction:column;gap:3px;min-width:0}.person small{font-size:12px}.person.off{opacity:.5}.person>span{flex:1}.person .row{flex-wrap:wrap;row-gap:6px}
 /* kehadiran */
 .days{display:grid;grid-template-columns:repeat(7,1fr);gap:8px}
 .day{border:1px solid var(--line);background:#fff;border-radius:12px;padding:10px 6px;font:inherit;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px}

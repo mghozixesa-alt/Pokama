@@ -21,7 +21,6 @@ async function library(el, params, reload) {
     <td>${isAdmin() || d.owner_id === me ? `<button class="btn sm" data-e="${d.id}">Ubah</button>` : ''}</td></tr>`).join('') || `<tr><td colspan="7" class="muted">Belum ada dokumen. Tambahkan tautan Google Drive, Canva, atau Docs.</td></tr>`}</tbody></table></section>`;
   const go = () => { location.hash = link({ q: el.querySelector('#q').value, c: el.querySelector('#c').value, s: el.querySelector('#s').value }); };
   el.querySelector('#c').onchange = go; el.querySelector('#s').onchange = go; el.querySelector('#q').onkeydown = (e) => { if (e.key === 'Enter') go(); };
-  el.querySelector('#ntf').onchange = async (e) => { try { await db.rpc('pk_set_notify', { p_on: e.target.checked }); toast(e.target.checked ? 'Notifikasi email aktif' : 'Notifikasi email dimatikan'); } catch (er) { toast(er.message, 'err'); e.target.checked = !e.target.checked; } };
   el.onclick = async (e) => {
     const a = e.target.closest('[data-a]'), ed = e.target.closest('[data-e]'); if (!a && !ed) return;
     const d = ed ? docs.find(x => x.id === ed.dataset.e) : {};
@@ -57,6 +56,7 @@ async function pengaturan(el, params, reload) {
     <div class="row gap"><button class="btn" data-a="pw">Ganti password</button>${admin ? '<button class="btn" data-a="mailtest">Kirim email uji</button>' : ''}</div></section>
   ${GROUPS.map(([g, keys]) => `<section class="card"><h2>${g}</h2><div class="list">${keys.filter(k => k in ctx.settings).map(k => `<div class="li row gap"><span style="flex:1"><b>${esc(ctx.notes[k] || k)}</b></span><span class="b">${esc(show(ctx.settings[k]))}</span>${admin ? `<button class="btn sm" data-k="${k}">Ubah</button>` : ''}</div>`).join('')}</div></section>`).join('')}
   ${!admin ? '<p class="muted small">Aturan diubah oleh Kepala Staf atau CEO.</p>' : ''}`;
+  el.querySelector('#ntf').onchange = async (e) => { try { await db.rpc('pk_set_notify', { p_on: e.target.checked }); toast(e.target.checked ? 'Notifikasi email aktif' : 'Notifikasi email dimatikan'); } catch (er) { toast(er.message, 'err'); e.target.checked = !e.target.checked; } };
   el.onclick = async (e) => {
     const a = e.target.closest('[data-a]'); const k = e.target.closest('[data-k]');
     try {
