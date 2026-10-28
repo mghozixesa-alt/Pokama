@@ -1,0 +1,5 @@
+-- 009d: pk_month_progress(p, p_month) -> jsonb untuk ringkasan pagi:
+--   yesterday : capaian kemarin (slot KKH bercatatan, tugas selesai, tugas diajukan, review yang dikerjakan)
+--   days      : jejak per hari bulan berjalan (jam tercatat, valid, tugas selesai, cuti/izin/libur)
+--   outputs/cap/kkh/score : posisi terhadap target bulanan
+-- Definisi lengkap: lihat migrasi pk_009d_month_journal di Supabase (service_role saja).

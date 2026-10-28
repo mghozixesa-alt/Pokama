@@ -91,6 +91,46 @@ const LINES: [string, string, string][] = [
   ["permintaan", "permintaan diberikan ke Anda, belum diterima", "#/permintaan?tab=untuk"],
 ];
 
+const BULAN = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
+const HARI = ["Min","Sen","Sel","Rab","Kam","Jum","Sab"];
+const tgl = (d: string, long = false) => { const x = new Date(d + "T00:00:00Z"); return long ? `${["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"][x.getUTCDay()]}, ${x.getUTCDate()} ${BULAN[x.getUTCMonth()]}` : `${HARI[x.getUTCDay()]} ${x.getUTCDate()}`; };
+const head = (t: string) => `<div style="font-size:12px;font-weight:800;color:#5B6573;margin-top:18px;letter-spacing:.03em">${esc(t)}</div>`;
+const bar = (pct: number, color = "#09BEAF") => `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:4px"><tr><td style="background:#EEF0F3;border-radius:6px;height:8px;font-size:0;line-height:0"><div style="width:${Math.max(2, Math.min(100, pct || 0))}%;background:${color};height:8px;border-radius:6px"></div></td></tr></table>`;
+const tone = (pct: number) => pct >= 90 ? "#09BEAF" : pct >= 70 ? "#E8A33D" : "#D9534F";
+
+// capaian kemarin + progres bulan + jejak per hari
+function progress(m: any) {
+  if (!m) return "";
+  const y = m.yesterday || {}; const mon = new Date(m.month + "T00:00:00Z"); const bln = BULAN[mon.getUTCMonth()];
+  const recap = m.days_left === 0 || wibToday().slice(0, 7) !== String(m.month).slice(0, 7);
+  let h = head(`CAPAIAN KEMARIN · ${tgl(y.day, true).toUpperCase()}`);
+  const rows: string[] = [];
+  for (const w of y.work || []) rows.push(`<tr><td style="padding:6px 8px 6px 0;font-size:12px;color:#8A94A3;white-space:nowrap;vertical-align:top">${String(w.hour).padStart(2, "0")}.00</td><td style="padding:6px 0;font-size:14px;color:#1F2933"><b style="color:#1D3149">${esc(w.code)}</b> · ${esc(w.note)}${w.valid ? ` <span style="color:#067A70;font-weight:800">✓</span>` : ""}</td></tr>`);
+  for (const t of y.done || []) rows.push(`<tr><td style="padding:6px 8px 6px 0;font-size:12px;color:#067A70;font-weight:800;vertical-align:top">SELESAI</td><td style="padding:6px 0;font-size:14px;color:#1F2933">${esc(t)}</td></tr>`);
+  for (const t of (y.submitted || []).filter((x: string) => !(y.done || []).includes(x))) rows.push(`<tr><td style="padding:6px 8px 6px 0;font-size:12px;color:#5B6573;font-weight:800;vertical-align:top">DIAJUKAN</td><td style="padding:6px 0;font-size:14px;color:#1F2933">${esc(t)}</td></tr>`);
+  if (+y.reviewed > 0) rows.push(`<tr><td style="padding:6px 8px 6px 0;font-size:12px;color:#5B6573;font-weight:800;vertical-align:top">REVIEW</td><td style="padding:6px 0;font-size:14px;color:#1F2933">${y.reviewed} pekerjaan tim dicek</td></tr>`);
+  h += rows.length ? `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-top:1px solid #EEF0F3;margin-top:4px">${rows.join("")}</table>`
+    : `<div style="font-size:14px;color:#5B6573;padding:8px 0">Belum ada catatan kerja kemarin. Isi catatan di KKH supaya capaian Anda tercatat.</div>`;
+
+  h += head(recap ? `REKAP BULAN ${bln.toUpperCase()}` : `PROGRES ${bln.toUpperCase()} · SISA ${m.days_left} HARI`);
+  const stat = (v: string, l: string) => `<td width="33%" style="padding:10px 6px;text-align:center;background:#F7F8FA;border-radius:10px"><div style="font-size:20px;font-weight:900;color:#1D3149">${v}</div><div style="font-size:11px;color:#5B6573">${l}</div></td>`;
+  h += `<table role="presentation" width="100%" cellpadding="0" cellspacing="4" style="margin-top:4px"><tr>${stat(m.cap == null ? "–" : m.cap + "%", "capaian target")}${stat(m.kkh == null ? "–" : m.kkh + "%", `KKH valid (${m.valid}/${m.slots})`)}${stat(String(m.done), "tugas selesai")}</tr></table>`;
+  if ((m.outputs || []).length) h += (m.outputs as any[]).map((o) => `<div style="margin-top:10px;font-size:13px;color:#1F2933"><b>${esc(o.name)}</b> <span style="float:right;color:#5B6573">${(+o.actual).toLocaleString("id-ID")} / ${(+o.target).toLocaleString("id-ID")} · <b style="color:#1D3149">${o.pct ?? 0}%</b></span></div>${bar(o.pct, tone(o.pct))}`).join("");
+  else h += `<div style="font-size:13px;color:#5B6573;margin-top:8px">Target output bulan ini belum ditetapkan.</div>`;
+  if (m.score != null) h += `<div style="font-size:13px;color:#5B6573;margin-top:10px">Skor performa sementara <b style="color:#1D3149">${m.score}</b>${m.eligible ? "" : " · KKH valid masih di bawah 80%, insentif belum memenuhi syarat"}.</div>`;
+
+  const days = (m.days || []) as any[];
+  if (days.length) {
+    h += head("JEJAK HARIAN BULAN INI");
+    h += `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:4px">` + days.slice().reverse().map((d) => {
+      const txt = d.off ? `<span style="color:#5B6573">${esc(d.off === "cuti" ? "Cuti" : d.off === "izin" ? "Izin" : "Libur")}</span>`
+        : `${d.slots} jam tercatat${d.valid ? `, ${d.valid} valid` : ""}${(d.done || []).length ? ` · <b>selesai:</b> ${(d.done as string[]).map(esc).join(", ")}` : ""}`;
+      return `<tr><td style="padding:5px 10px 5px 0;border-top:1px solid #F0F2F5;font-size:12px;font-weight:800;color:#1D3149;white-space:nowrap;vertical-align:top">${tgl(d.day)}</td><td style="padding:5px 0;border-top:1px solid #F0F2F5;font-size:13px;color:#3B4250">${txt}</td></tr>`;
+    }).join("") + `</table>`;
+  }
+  return h + `<div style="margin-top:8px"><a href="${APP}#/performa" style="font-size:13px;font-weight:800;color:#067A70">Lihat performa lengkap →</a></div>`;
+}
+
 async function digest(force = false) {
   if (!force && wibHour() < 7) return { skipped: "belum jam 07.00 WIB" };
   const today = wibToday(); const ppl = await people(); let sent = 0; const errors: unknown[] = [];
@@ -99,15 +139,16 @@ async function digest(force = false) {
     if (!force && p.last_digest && p.last_digest >= today) continue;
     if ((off || []).some((l: any) => l.person_id === p.id && today >= l.day && today <= (l.end_day || l.day))) { await db.from("pk_people").update({ last_digest: today }).eq("id", p.id); continue; }
     const { data: it } = await db.rpc("pk_digest_items", { p: p.id });
+    const { data: mp } = await db.rpc("pk_month_progress", { p: p.id });
     const { data: fyi } = await db.from("pk_notifications").select("*").eq("person_id", p.id).eq("urgent", false).is("emailed_at", null).order("created_at").limit(30);
     const lines = LINES.filter(([k]) => it && (k === "kkh_kosong" ? it[k] === true : +it[k] > 0))
       .map(([k, txt, lk]) => `<tr><td style="padding:9px 0;border-top:1px solid #EEF0F3;font-size:14px">${k === "kkh_kosong" ? "" : `<b style="color:#1D3149;font-size:16px">${it[k]}</b> `}<a href="${APP + lk}" style="color:#1F2933;text-decoration:none">${esc(txt)}</a> <a href="${APP + lk}" style="color:#067A70;font-weight:800;text-decoration:none">→</a></td></tr>`);
-    if (!lines.length && !(fyi || []).length) { await db.from("pk_people").update({ last_digest: today }).eq("id", p.id); continue; }
     const nm = p.nickname || p.name;
     const inner = (lines.length ? `<div style="font-size:12px;font-weight:800;color:#5B6573;margin-top:4px">PERLU DIKERJAKAN HARI INI</div><table role="presentation" width="100%" cellpadding="0" cellspacing="0">${lines.join("")}</table>` : "")
-      + ((fyi || []).length ? `<div style="font-size:12px;font-weight:800;color:#5B6573;margin-top:16px">KABAR SEJAK KEMARIN</div><table role="presentation" width="100%" cellpadding="0" cellspacing="0">${(fyi || []).map(item).join("")}</table>` : "")
+      + progress(mp)
+      + ((fyi || []).length ? `<div style="font-size:12px;font-weight:800;color:#5B6573;margin-top:18px">KABAR SEJAK KEMARIN</div><table role="presentation" width="100%" cellpadding="0" cellspacing="0">${(fyi || []).map(item).join("")}</table>` : "")
       + `<div style="margin-top:16px">${btn(APP, "Buka Sistem Kerja")}</div>`;
-    const r = await send(p.email, `Ringkasan pagi · ${lines.length} hal perlu dikerjakan`, shell(nm, "Ringkasan pagi Anda", inner));
+    const r = await send(p.email, lines.length ? `Ringkasan pagi · ${lines.length} hal perlu dikerjakan` : `Ringkasan pagi · capaian kemarin & progres bulan ini`, shell(nm, "Ringkasan pagi Anda", inner));
     if (r.ok) { sent++; await db.from("pk_people").update({ last_digest: today }).eq("id", p.id);
       if ((fyi || []).length) await db.from("pk_notifications").update({ emailed_at: new Date().toISOString() }).in("id", (fyi || []).map((x: any) => x.id)); }
     else { errors.push({ to: p.email, ...r }); if (!KEY) break; }
@@ -127,8 +168,9 @@ Deno.serve(async (req) => {
       const { data: p } = await db.from("pk_people").select("name,nickname,email").eq("id", me).maybeSingle();
       if (!p?.email) return json({ error: "Email Anda belum terdaftar" }, 400);
       if (!KEY) return json({ error: "Layanan email belum disambungkan (BREVO_API_KEY belum diisi)" }, 400);
+      const { data: mp } = await db.rpc("pk_month_progress", { p: me });
       const r = await send(p.email, "Uji email notifikasi Pokama", shell(p.nickname || p.name, "Email notifikasi sudah tersambung",
-        `<p style="font-size:14px;color:#3B4250">Mulai sekarang hal yang perlu tindakan dikirim langsung, sisanya dirangkum setiap pagi jam 07.00.</p>${btn(APP, "Buka Sistem Kerja")}`));
+        `<p style="font-size:14px;color:#3B4250">Mulai sekarang hal yang perlu tindakan dikirim langsung, sisanya dirangkum setiap pagi jam 07.00. Contoh bagian progres di ringkasan pagi Anda:</p>${progress(mp)}<div style="margin-top:16px">${btn(APP, "Buka Sistem Kerja")}</div>`));
       return json({ to: p.email, ...r }, r.ok ? 200 : 400);
     }
     return json(await instant());
