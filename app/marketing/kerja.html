@@ -442,9 +442,9 @@ function vCampaign() {
   ]);
   var flow = '<div class="flow"><span>1 · Head of Marketing tulis brief</span><span style="background:none">→</span><span>2 · Aktifkan, jadi Persiapan / Jalan</span><span style="background:none">→</span><span>3 · PIC isi konten di Content plan</span><span style="background:none">→</span><span>4 · Tutup + tulis pelajaran</span></div>';
   var list = cs.length ? '<div class="list">' + cs.map(campRow).join('') + '</div>' : empty('Belum ada campaign. ' + (S.me === LEAD ? 'Klik <b>+ Campaign baru</b> di atas.' : 'Head of Marketing yang membuat campaign; nanti muncul di sini.'));
+  h += sec('Daftar campaign', 'flag', 'Klik untuk melihat brief, konten yang terhubung, dan progresnya.', '', list);
   h += budgetBox();
   h += sec('Cara kerja campaign', 'time', '', '', flow);
-  h += sec('Daftar campaign', 'flag', 'Klik untuk melihat brief, konten yang terhubung, dan progresnya.', '', list);
   return h;
 }
 function rpS(n) { n = +n || 0; return n >= 1e6 ? 'Rp ' + (Math.round(n / 1e5) / 10).toString().replace('.', ',') + ' jt' : n ? 'Rp ' + Math.round(n / 1000) + ' rb' : 'Rp 0'; }
@@ -713,7 +713,7 @@ function vTim() {
     var doneW = S.items.filter(function (it) { return inWeek(it) && (it.log || []).some(function (l) { return l.who === x.p.n && /tayang|review|disetujui/.test(l.text); }); }).length;
     return '<div class="box" style="gap:8px"><div style="display:flex;align-items:center;gap:10px"><span class="ib" style="width:38px;height:38px;border-radius:19px;background:#1D3149;color:#FFFFFF;font-weight:900">' + esc(x.p.who.charAt(0)) + '</span><div style="display:flex;flex-direction:column"><b style="color:#1D3149">' + esc(x.p.n) + (x.p.n !== x.p.who ? ' · ' + esc(x.p.who) : '') + '</b><span class="sub">' + esc(x.p.r) + (acc.length ? ' · ' + esc(acc.join(', ')) : '') + '</span></div></div>' +
       '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;text-align:center"><div><b style="font-size:20px;color:#1D3149">' + x.t.length + '</b><div class="sub">tugas</div></div><div><b style="font-size:20px;color:' + (lt ? BAD : '#1D3149') + '">' + lt + '</b><div class="sub">berisiko</div></div><div><b style="font-size:20px;color:' + GOOD + '">' + doneW + '</b><div class="sub">beres minggu ini</div></div></div>' +
-      (x.t.length ? '<div class="list" style="gap:4px">' + x.t.slice(0, 4).map(function (y) { return '<span class="sub" style="border-top:1px dashed #E3E6EB;padding-top:4px">• ' + esc(y.do) + ': <b style="color:#1D3149">' + esc(y.it.title) + '</b></span>'; }).join('') + (x.t.length > 4 ? '<span class="sub">+' + (x.t.length - 4) + ' lagi</span>' : '') + '</div>' : '<span class="sub">Tidak ada tugas terbuka.</span>') + '</div>';
+      (x.t.length ? '<div class="list" style="gap:4px">' + x.t.slice(0, 4).map(function (y) { return '<span class="sub" style="border-top:1px dashed #E3E6EB;padding-top:4px">• ' + esc(y.do) + (y.do.indexOf(y.it.title) >= 0 ? '' : ': <b style="color:#1D3149">' + esc(y.it.title) + '</b>') + '</span>'; }).join('') + (x.t.length > 4 ? '<span class="sub">+' + (x.t.length - 4) + ' lagi</span>' : '') + '</div>' : '<span class="sub">Tidak ada tugas terbuka.</span>') + '</div>';
   }).join('') + '</div>';
   h += sec('Per orang', 'users', 'Diambil otomatis dari status konten, campaign, KOL, dan laporan admin WA.', '', cards);
   var dis = head ? '' : ' disabled';
@@ -828,7 +828,7 @@ function vDash() {
   var kolFee = kols().filter(function (x) { return KST.indexOf(x.st) >= 2 && monthKey(x.date) === k; }).reduce(function (a, x) { return a + (+x.fee || 0); }, 0);
   var cost = adsSp + kolFee + subTotal(), bud = +((S.budget || {})[k]) || 0;
   var target = BRANDS.reduce(function (a, b) { return a + b.slot; }, 0), posted = count(function (i) { return inWeek(i) && i.status === 'Tayang'; });
-  var h = header(longDate(TODAY) + ' · ' + monthName(k), 'Dashboard utama', 'Gambaran seluruh marketing, dihitung dari isian tim di halaman Kerja dan Analitik.', '');
+  var h = header(longDate(TODAY), 'Dashboard utama', 'Gambaran seluruh marketing, dihitung dari isian tim di halaman Kerja dan Analitik.', '');
   h += kpis([
     { label: 'Leads WA bulan ini', ic: 'chat', val: lead, note: 'Dari Laporan admin WA', bar: TEAL },
     { label: 'Closing', ic: 'check', val: cl, note: (lead ? Math.round(cl / lead * 100) : 0) + '% closing rate', bar: TEAL },
