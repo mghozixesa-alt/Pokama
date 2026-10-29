@@ -28,12 +28,11 @@ export default async function belanja(el, params, reload) {
   const sel = params.get('r') ? rabs.find(r => r.id === params.get('r')) : list[0];
   const month = today().slice(0, 7);
   const spent = rabs.filter(r => ['cair', 'lpj', 'selesai'].includes(r.status) && (r.cair_at || '').slice(0, 7) === month).reduce((s, r) => s + (r.realisasi || r.total), 0);
-  const l1 = +ctx.settings.rab_limit_atasan || 1e6, l2 = +ctx.settings.rab_limit_kepala_staf || 5e6;
   const biz = ctx.units.filter(u => u.kind !== 'lini');
   el.innerHTML = `
   <header class="ph"><div><span class="muted small">Belanja pakai uang perusahaan: ajukan RAB, belanja, lalu upload nota (LPJ)</span><h1>Pengajuan Belanja</h1></div>
     <button class="btn pri" data-a="new">+ Ajukan RAB</button></header>
-  <ol class="steps"><li><b>1</b><span><strong>Ajukan RAB</strong><small>tabel barang, bisa tempel dari Excel</small></span></li><li><b>2</b><span><strong>Disetujui</strong><small>berjenjang sesuai nominal</small></span></li><li><b>3</b><span><strong>Dana cair</strong><small>Keuangan, ${esc((ctx.settings.cair_days || []).join(' & '))} ${esc(ctx.settings.cair_time || '')}</small></span></li><li><b>4</b><span><strong>Upload nota</strong><small>≤ ${lpjDays} hari setelah belanja</small></span></li><li><b class="t">5</b><span><strong>Selesai</strong><small>sisa dana kembali ke unit</small></span></li></ol>
+  <ol class="steps"><li><b>1</b><span><strong>Ajukan RAB</strong><small>tabel barang, bisa tempel dari Excel</small></span></li><li><b>2</b><span><strong>Valuer 1 → Valuer 2</strong><small>berapa pun nominalnya</small></span></li><li><b>3</b><span><strong>Dana cair</strong><small>Keuangan, ${esc((ctx.settings.cair_days || []).join(' & '))} ${esc(ctx.settings.cair_time || '')}</small></span></li><li><b>4</b><span><strong>Upload nota</strong><small>≤ ${lpjDays} hari setelah belanja</small></span></li><li><b class="t">5</b><span><strong>Selesai</strong><small>sisa dana kembali ke unit</small></span></li></ol>
   <div class="tiles"><div class="tile"><span>Menunggu persetujuan</span><b>${rabs.filter(r => r.status === 'diajukan').length}</b><small>${rp(rabs.filter(r => r.status === 'diajukan').reduce((s, r) => s + r.total, 0))}</small></div>
     <div class="tile"><span>Siap dicairkan</span><b>${rabs.filter(r => r.status === 'siap_cair').length}</b><small>${rp(rabs.filter(r => r.status === 'siap_cair').reduce((s, r) => s + r.total, 0))}</small></div>
     <div class="tile"><span>Nota terlambat</span><b class="red">${rabs.filter(lateLpj).length}</b><small>RAB berikutnya unit itu ditahan</small></div>
@@ -48,8 +47,8 @@ export default async function belanja(el, params, reload) {
     <div>${sel ? `<a class="m-only back" href="#/belanja?tab=${tab}&u=${scope}">‹ Kembali ke daftar</a>` + detail(sel) : ''}</div>
   </div>
   <details class="card rules"><summary><h2>Aturan belanja</h2></summary><div class="kv">
-    <div><span>Sampai ${jt(l1)}</span><b>Atasan langsung</b></div><div><span>${jt(l1)}–${jt(l2)}</span><b>+ Kepala Staf</b></div><div><span>Di atas ${jt(l2)}</span><b>+ CEO</b></div>
-    <div><span>RAB dari Leader</span><b>Kepala Staf (+ CEO di atas ${jt(l2)})</b></div><div><span>Dana cair</span><b>${esc((ctx.settings.cair_days || []).join(' & '))} ${esc(ctx.settings.cair_time || '')}</b></div><div><span>Nota</span><b>≤ ${lpjDays} hari; telat = RAB berikutnya ditahan</b></div>
+    <div><span>Semua nominal</span><b>Valuer 1 → Valuer 2 → Keuangan</b></div><div><span>Tanpa valuer</span><b>Atasan langsung, lalu Keuangan</b></div><div><span>Valuer saya</span><b>${esc(myChain().join(' → ') || 'langsung ke Keuangan')}</b></div>
+    <div><span>Dana cair</span><b>${esc((ctx.settings.cair_days || []).join(' & '))} ${esc(ctx.settings.cair_time || '')}</b></div><div><span>Nota</span><b>≤ ${lpjDays} hari; telat = RAB berikutnya ditahan</b></div>
     <div><span>Crew cabang</span><b>Ajukan lewat Leader / Rentalaja App</b></div><div><span>Barang ≥ Rp500 rb</span><b>Masuk daftar aset unit</b></div></div></details>`;
 
   function detail(r) {
@@ -60,7 +59,6 @@ export default async function belanja(el, params, reload) {
     const stopped = ['revisi', 'ditolak', 'batal'].includes(r.status);
     const curIdx = steps.findIndex(s => !s[1]);
     const ai = [];
-    if (r.total > l2) ai.push('Di atas ' + jt(l2) + ': perlu persetujuan CEO.');
     const same = rabs.filter(x => x.id !== r.id && x.unit_code === r.unit_code && x.status === 'selesai').slice(0, 1);
     if (same.length) ai.push('RAB terakhir unit ini: ' + same[0].code + ' ' + rp(same[0].total) + (same[0].realisasi ? ', realisasi ' + rp(same[0].realisasi) : '') + '.');
     if (lateLpj(r)) ai.push('Nota sudah lewat ' + lpjDays + ' hari. RAB baru unit ini ditahan sampai nota masuk.');
@@ -155,6 +153,12 @@ export default async function belanja(el, params, reload) {
       } });
   }
 }
+// alur persetujuan: Valuer 1 → Valuer 2 (tanpa valuer: atasan langsung), lalu Keuangan mencairkan
+function myChain() {
+  const p = ctx.byId[ctx.me.id] || {}; let c = [p.valuer1_id, p.valuer2_id].filter((x, i, a) => x && x !== p.id && a.indexOf(x) === i && ctx.byId[x]);
+  if (!c.length && p.role !== 'ceo') { const ks = (ctx.people.find(x => x.role === 'kepala_staf') || {}).id, ceo = (ctx.people.find(x => x.role === 'ceo') || {}).id; const f = [p.boss_id, ks, ceo].find(x => x && x !== p.id); if (f) c = [f]; }
+  return c.map(nick);
+}
 const CATS = ['Bahan & perlengkapan', 'Sparepart & perawatan', 'Konsumsi', 'Transport & ongkir', 'Marketing & cetak', 'Jasa & tenaga', 'ATK & kantor', 'Lain-lain'];
 const fmtN = (v) => v === '' || v == null || isNaN(v) ? '' : (+v).toLocaleString('id-ID');
 function edRow(x = {}) {
@@ -176,9 +180,7 @@ function edInit(form, its, itemsOf) {
     [...body.querySelectorAll('tr')].forEach((tr, i) => { tr.querySelector('.n').textContent = i + 1; const q = +(tr.querySelector('[data-k=qty]').value || '').replace(/\./g, '').replace(',', '.') || 0; const p = num(tr.querySelector('[data-k=price]').value) || 0; tr.querySelector('.sub').textContent = q && p ? rp(q * p) : '—'; });
     const list = edRead(form); const tot = list.reduce((s, x) => s + x.qty * x.price, 0);
     const byCat = {}; list.forEach(x => { const k = x.category || 'Tanpa kategori'; byCat[k] = (byCat[k] || 0) + x.qty * x.price; });
-    const l1 = +ctx.settings.rab_limit_atasan || 1e6, l2 = +ctx.settings.rab_limit_kepala_staf || 5e6; const role = ctx.me.role;
-    const chain = role === 'ceo' ? [] : ['leader', 'keuangan'].includes(role) ? ['Kepala Staf'] : role === 'kepala_staf' ? ['CEO'] : [nick(ctx.me.boss_id)].concat(tot > l1 ? ['Kepala Staf'] : []);
-    if (tot > l2 && role !== 'kepala_staf' && role !== 'ceo') chain.push('CEO');
+    const chain = myChain();
     form.querySelector('#rab-sum').innerHTML = list.length ? `<div class="row between"><span><b>${list.length}</b> barang · disetujui: ${esc(chain.join(' → ') || 'langsung ke Keuangan')}</span><b class="big">${rp(tot)}</b></div>
       ${Object.keys(byCat).length > 1 ? `<div class="rab-cats">${Object.entries(byCat).sort((a, b) => b[1] - a[1]).map(([k, v]) => `<span><span class="muted">${esc(k)}</span> <b>${jt(v)}</b></span>`).join('')}</div>` : ''}` : '<span class="muted">Isi rincian, total dan jalur persetujuan dihitung otomatis.</span>';
   };

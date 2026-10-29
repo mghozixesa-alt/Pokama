@@ -1,0 +1,3 @@
+-- 020: pk_rab_chain = [valuer1, valuer2] (aktif, bukan pengaju, tanpa duplikat), semua nominal sama.
+--      Tanpa valuer: atasan langsung → Kepala Staf → CEO (yang pertama tersedia). Setelah itu Keuangan mencairkan.
+--      RAB yang sedang berjalan disesuaikan bila persetujuan yang sudah ada tetap cocok.
