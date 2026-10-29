@@ -36,6 +36,8 @@
     return fresh(s).then(function (v) { return me(v).catch(function (e) { if (e.message !== 'expired') throw e; return auth('token?grant_type=refresh_token', { refresh_token: v.refresh_token }).then(save).then(me); }); });
   }
   function open(person) {
+    // Kepala Staf tidak punya akses ke modul Marketing.
+    if (person && person.role === 'kepala_staf') { showGate('Akun ini tidak punya akses ke Dashboard Marketing.'); return; }
     root.classList.remove('mk-locked');
     var g = document.getElementById('mk-gate'); if (g) g.remove();
     window.mkPerson = person;
@@ -43,7 +45,7 @@
     if (name) {
       var ROLE = { ceo: 'CEO', kepala_staf: 'Kepala Staf', keuangan: 'Keuangan', leader: 'Leader', staf: 'Staf' };
       var sub = (person.title || ROLE[person.role] || '') + (person.unit_code ? ' · ' + person.unit_code : '');
-      var put = function () { document.querySelectorAll('nav[aria-label="Menu utama"] > div:last-child > div:last-child').forEach(function (box) { var sp = box.querySelectorAll('span'); if (sp[0] && sp[0].textContent !== name) sp[0].textContent = name; if (sp[1] && sub && sp[1].textContent !== sub) sp[1].textContent = sub; }); document.querySelectorAll('nav[aria-label="Menu utama"] > div:last-child > div[aria-hidden]').forEach(function (a) { a.textContent = name.charAt(0).toUpperCase(); }); };
+      var put = function () { document.querySelectorAll('nav[aria-label="Menu utama"] > div:last-child > div:last-child').forEach(function (box) { var sp = box.querySelectorAll('span'); if (sp[0] && sp[0].textContent !== name) sp[0].textContent = name; if (sp[1] && sub && sp[1].textContent !== sub) sp[1].textContent = sub; }); document.querySelectorAll('nav[aria-label="Menu utama"] > div:last-child > div[aria-hidden]').forEach(function (a) { a.textContent = name.charAt(0).toUpperCase(); }); if (!/^kevin/i.test(name)) document.querySelectorAll('nav[aria-label="Menu utama"] > div:last-child > img').forEach(function (img) { var d = document.createElement('div'); d.setAttribute('aria-hidden', 'true'); d.textContent = name.charAt(0).toUpperCase(); d.style.cssText = 'width:38px;height:38px;border-radius:19px;background:#1D3149;color:#FFFFFF;display:flex;align-items:center;justify-content:center;font-weight:900;flex:none;'; img.replaceWith(d); }); };
       window.addEventListener('dc:render', put); setTimeout(put, 0);
     }
   }

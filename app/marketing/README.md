@@ -1,11 +1,10 @@
-# Dashboard Marketing — prototipe
+# Dashboard Marketing
 
-Dashboard Marketing Pokama di `pokama.org/marketing`, masih dengan **data contoh**. Belum tersambung ke database.
+Modul Marketing Pokama di `pokama.org/marketing`, masih dengan **data contoh**. Menunya terpisah dari Sistem Kerja (KKH), tetapi nanti memakai database yang sama.
 
-- Masuk memakai akun dan sesi yang sama dengan Sistem Kerja (`gate.js`, kunci `pokama.session`). Tidak ada file KKH yang diubah.
-- `index.html` mengalihkan ke `Main.dc.html`. `TV.html` = mode layar TV.
-- `dc-lite.js` menjalankan halaman (templat `{{…}}`, perulangan, kondisi, event).
-- `fun.js` / `fun.css` = lapisan visual: cerita minggu ini, rekap bulanan, cincin target, simulasi budget, papan juara, feed, galeri iklan, papan konten, story WA.
-- `mobile.css` / `mobile.js` = tampilan HP.
-- Sumber rancangan ada di `design/marketing/` (format kanvas `.dc.html`).
-- Rancangan data: dokumen "Arsitektur Data Marketing Pokama". Tabel database: `supabase/019_mk_marketing.sql` (**belum diterapkan**; pembatal di `019_mk_marketing_down.sql`).
+- Masuk memakai akun dan sesi Sistem Kerja (`gate.js`, kunci `pokama.session`). Akun Kepala Staf tidak punya akses. Tidak ada file KKH yang diubah.
+- `index.html` mengalihkan ke `Dashboard.dc.html`. Nama halaman lama (Instagram, Konten, WALeads, WAStory, DataInput, Integrasi, TV) dialihkan ke halaman barunya.
+- `dc-lite.js` menjalankan halaman (templat `{{…}}`, perulangan, kondisi, event). Tampilan HP ada di CSS tiap halaman.
+- Halaman: Dashboard utama, Hari ini (`Main`), Campaign, Content plan (`MingguDepan`), Content bank (`BankIde`), Analytics IG & TikTok (`Sosial`), Paid ads, KOL, SEO (`Maps`), WA & CS, Halaman CS (HP), Review mingguan (`Hasil`), Laporan & WA, Tim & workload, Input & patokan (`Data`), Brand & positioning.
+- Sumber rancangan ada di `design/marketing/` (format kanvas `.dc.html`). Halaman di sini dibuat dari sumber itu.
+- Tabel database: `supabase/019_mk_marketing.sql` (**belum diterapkan**; pembatal di `019_mk_marketing_down.sql`).

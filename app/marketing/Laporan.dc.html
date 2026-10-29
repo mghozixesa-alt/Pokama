@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Laporan &amp; WA — Marketing Pokama</title>
+<link rel="icon" href="logo-pokama.png">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F3F5F8}
+a{color:#1D3149}a:hover{color:#0F1D2E}
+table{font-variant-numeric:tabular-nums}
+main > header{background:radial-gradient(circle at 92% -30%, rgba(9,190,175,.45), transparent 42%),linear-gradient(135deg,#1D3149 0%,#28507A 100%);border-radius:22px;padding:22px 26px;align-items:center !important;box-shadow:0 10px 30px rgba(29,49,73,.18)}
+main > header h1{color:#FFFFFF !important}
+main > header span{color:#D3E0EC !important}
+main > header b{color:#7FF0E2 !important}
+main > header span[style*="dashed"]{border-color:rgba(255,255,255,.45) !important}
+main > header button{border-color:rgba(255,255,255,.35) !important}
+main > header button[aria-pressed="true"]{background:#09BEAF !important;color:#1D3149 !important;border-color:#09BEAF !important}
+main > header button[aria-pressed="false"]{background:rgba(255,255,255,.08) !important;color:#FFFFFF !important}
+main > header a{color:#1D3149}
+main section{transition:box-shadow .2s ease, transform .2s ease}
+main section:hover{box-shadow:0 8px 24px rgba(29,49,73,.07)}
+main > header span[aria-hidden="true"]{flex:none}
+@media (max-width: 760px){article[style*="grid-template-columns: 36px minmax(0, 1fr) auto"]{grid-template-columns:32px minmax(0,1fr) !important}
+article[style*="grid-template-columns: 36px minmax(0, 1fr) auto"] > div:last-child{grid-column:2;flex-direction:row !important;justify-content:space-between;align-items:center !important}}
+@media (max-width: 760px){main > header{padding:16px !important;border-radius:16px}}
+@media (max-width: 760px){table:not(:has(th:nth-child(5))){min-width:0 !important;width:100% !important}}
+td[style*="text-align: right"]{white-space:nowrap}
+tbody tr:hover td{background:#F9FAFB}
+thead th{position:sticky;top:0;background:#FFFFFF}
+button:focus-visible,a:focus-visible{outline:2px solid #09BEAF;outline-offset:2px;border-radius:8px}
+button{transition:filter .15s}button:hover{filter:brightness(0.97)}
+@media (max-width: 760px){
+nav[aria-label="Menu utama"]{flex:1 1 100% !important;flex-direction:row !important;align-items:center !important;overflow-x:auto;gap:4px !important;padding:8px 12px !important;border-right:0 !important;border-bottom:1px solid #E3E6EB;position:sticky;top:0;z-index:20;scrollbar-width:none}
+nav[aria-label="Menu utama"] > div{flex-direction:row !important;gap:4px !important;padding:0 !important;flex:none !important}
+nav[aria-label="Menu utama"] > div > span:first-child{display:none !important}
+nav[aria-label="Menu utama"] > div:first-child img{width:84px !important}
+nav[aria-label="Menu utama"] > div:first-child span{display:none !important}
+nav[aria-label="Menu utama"] a{white-space:nowrap;min-height:36px !important;padding:0 10px !important}
+nav[aria-label="Menu utama"] > div[style*="margin-top: auto"]{display:none !important}
+main{padding:18px 16px 40px !important}
+h1{font-size:24px !important}
+}
+</style>
+<link rel="stylesheet" href="gate.css">
+<script src="gate.js"></script>
+<script src="dc-lite.js"></script>
+</head>
+<body>
+<template id="dc-tpl">
+
+<div style="min-height: 2200px; display: flex; flex-wrap: wrap; background: #F3F5F8; color: #1F2933; font-family: 'Nunito', system-ui, sans-serif; font-size: 14px; line-height: 1.45;">
+
+<nav aria-label="Menu utama" style="flex: 1 1 240px; box-sizing: border-box; background: #FFFFFF; border-right: 1px solid #E3E6EB; padding: 24px 16px; display: flex; flex-direction: column; gap: 18px;">
+<div style="display: flex; flex-direction: column; gap: 6px; padding: 0 8px;">
+<img src="logo-pokama.png" alt="Pokama" style="width: 132px; height: auto;">
+<span style="font-size: 12px; color: #5B6573; font-weight: 700;">Marketing</span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 2px;">
+<span style="font-size: 11px; font-weight: 800; letter-spacing: 0.08em; color: #5B6573; padding: 0 12px 4px;">UTAMA</span>
+<a href="Dashboard.dc.html" style="display: flex; align-items: center; gap: 10px; min-height: 38px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 600; color: #3B4250;"><span style="display: inline-flex; color: #5B6573;"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h7v9H3zM14 3h7v5h-7zM14 12h7v9h-7zM3 16h7v5H3z"></path></svg></span><span style="flex-grow: 1;">Dashboard utama</span></a>
+<a href="Main.dc.html" style="display: flex; align-items: center; gap: 10px; min-height: 38px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 600; color: #3B4250;"><span style="display: inline-flex; color: #5B6573;"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18zM12 7v5l3 2"></path></svg></span><span style="flex-grow: 1;">Hari ini</span><span style="min-width: 22px; height: 22px; border-radius: 11px; background: #C2410C; color: #FFFFFF; font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center; padding: 0 6px; box-sizing: border-box;">7</span></a>
+<a href="Campaign.dc.html" style="display: flex; align-items: center; gap: 10px; min-height: 38px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 600; color: #3B4250;"><span style="display: inline-flex; color: #5B6573;"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21V4M5 4h12l-2 4 2 4H5"></path></svg></span><span style="flex-grow: 1;">Campaign</span><span style="font-size: 12px; font-weight: 800; color: #067A70; white-space: nowrap;">4 jalan</span></a>
+</div>
+<div style="display: flex; flex-direction: column; gap: 2px;">
+<span style="font-size: 11px; font-weight: 800; letter-spacing: 0.08em; color: #5B6573; padding: 0 12px 4px;">KONTEN ORGANIK</span>
+<a href="MingguDepan.dc.html" style="display: flex; align-items: center; gap: 10px; min-height: 38px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 600; color: #3B4250;"><span style="display: inline-flex; color: #5B6573;"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h18v16H3zM3 10h18M8 3v4M16 3v4"></path></svg></span><span style="flex-grow: 1;">Content plan</span><span style="font-size: 12px; font-weight: 800; color: #9A3F0A; white-space: nowrap;">8 kosong</span></a>
+<a href="BankIde.dc.html" style="display: flex; align-items: center; gap: 10px; min-height: 38px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 600; color: #3B4250;"><span style="display: inline-flex; color: #5B6573;"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10.5c.8.8 1 1.5 1 2.5h6c0-1 .2-1.7 1-2.5A6 6 0 0 0 12 3z"></path></svg></span><span style="flex-grow: 1;">Content bank</span><span style="font-size: 12px; font-weight: 800; color: #067A70; white-space: nowrap;">+6</span></a>
+<a href="Sosial.dc.html" style="display: flex; align-items: center; gap: 10px; min-height: 38px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 600; color: #3B4250;"><span style="display: inline-flex; color: #5B6573;"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4zM12 8.5a3.5 3.5 0 1 0 0 7a3.5 3.5 0 1 0 0-7zM17 7h.01"></path></svg></span><span style="flex-grow: 1;">Analytics IG &amp; TikTok</span></a>
+</div>
+<div style="display: flex; flex-direction: column; gap: 2px;">
+<span style="font-size: 11px; font-weight: 800; letter-spacing: 0.08em; color: #5B6573; padding: 0 12px 4px;">CHANNEL</span>
+<a href="Ads.dc.html" style="display: flex; align-items: center; gap: 10px; min-height: 38px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 600; color: #3B4250;"><span style="display: inline-flex; color: #5B6573;"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11v2a1 1 0 0 0 1 1h3l5 4V6L7 10H4a1 1 0 0 0-1 1zM16 8a5 5 0 0 1 0 8"></path></svg></span><span style="flex-grow: 1;">Paid ads</span></a>
+<a href="KOL.dc.html" style="display: flex; align-items: center; gap: 10px; min-height: 38px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 600; color: #3B4250;"><span style="display: inline-flex; color: #5B6573;"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.5 6.7 19.4l1.2-6L3.4 9.3l6-.7z"></path></svg></span><span style="flex-grow: 1;">KOL</span><span style="font-size: 12px; font-weight: 800; color: #9A3F0A; white-space: nowrap;">2 telat</span></a>
+<a href="Maps.dc.html" style="display: flex; align-items: center; gap: 10px; min-height: 38px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 600; color: #3B4250;"><span style="display: inline-flex; color: #5B6573;"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4a7 7 0 1 0 0 14a7 7 0 1 0 0-14zM21 21l-5-5"></path></svg></span><span style="flex-grow: 1;">SEO</span></a>
+<a href="WA.dc.html" style="display: flex; align-items: center; gap: 10px; min-height: 38px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 600; color: #3B4250;"><span style="display: inline-flex; color: #5B6573;"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H8l-4 4z"></path></svg></span><span style="flex-grow: 1;">WA &amp; CS</span></a>
+</div>
+<div style="display: flex; flex-direction: column; gap: 2px;">
+<span style="font-size: 11px; font-weight: 800; letter-spacing: 0.08em; color: #5B6573; padding: 0 12px 4px;">REVIEW</span>
+<a href="Hasil.dc.html" style="display: flex; align-items: center; gap: 10px; min-height: 38px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 600; color: #3B4250;"><span style="display: inline-flex; color: #5B6573;"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4h6v3H9zM6 6h12v15H6zM9 12h6M9 16h4"></path></svg></span><span style="flex-grow: 1;">Review mingguan</span></a>
+<a href="Laporan.dc.html" aria-current="page" style="display: flex; align-items: center; gap: 10px; min-height: 38px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 800; color: #1D3149; background: #DDF5F2;"><span style="display: inline-flex; color: #067A70;"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 16v-5a6 6 0 0 1 12 0v5l2 2H4zM10 20a2 2 0 0 0 4 0"></path></svg></span><span style="flex-grow: 1;">Laporan &amp; WA</span><span style="font-size: 12px; font-weight: 800; color: #9A3F0A; white-space: nowrap;">2 menunggu</span></a>
+<a href="Tim.dc.html" style="display: flex; align-items: center; gap: 10px; min-height: 38px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 600; color: #3B4250;"><span style="display: inline-flex; color: #5B6573;"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11a3.5 3.5 0 1 0 0-7a3.5 3.5 0 1 0 0 7zM2.5 20c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5M17 11a2.5 2.5 0 1 0 0-5M17 14.5c2.3 0 4 1.5 4.5 4"></path></svg></span><span style="flex-grow: 1;">Tim &amp; workload</span></a>
+</div>
+<div style="display: flex; flex-direction: column; gap: 2px;">
+<span style="font-size: 11px; font-weight: 800; letter-spacing: 0.08em; color: #5B6573; padding: 0 12px 4px;">PENGATURAN</span>
+<a href="Data.dc.html" style="display: flex; align-items: center; gap: 10px; min-height: 38px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 600; color: #3B4250;"><span style="display: inline-flex; color: #5B6573;"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6c0-1.7 3.6-3 8-3s8 1.3 8 3-3.6 3-8 3-8-1.3-8-3zM4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"></path></svg></span><span style="flex-grow: 1;">Input &amp; patokan</span><span style="font-size: 12px; font-weight: 800; color: #9A3F0A; white-space: nowrap;">2 telat</span></a>
+<a href="Brand.dc.html" style="display: flex; align-items: center; gap: 10px; min-height: 38px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 600; color: #3B4250;"><span style="display: inline-flex; color: #5B6573;"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12V4h8l10 10-8 8zM7.5 7.5h.01"></path></svg></span><span style="flex-grow: 1;">Brand &amp; positioning</span></a>
+</div>
+<div style="margin-top: auto; display: flex; align-items: center; gap: 10px; padding: 14px 12px 0; border-top: 1px solid #E3E6EB;">
+<img src="kevin.jpg" alt="" style="width: 38px; height: 38px; border-radius: 19px; object-fit: cover;">
+<div style="display: flex; flex-direction: column;"><span style="font-weight: 800;">Kevin</span><span style="font-size: 12px; color: #5B6573;">Leader Marketing</span></div>
+</div>
+</nav>
+
+<main style="flex: 999 1 560px; min-width: 0; box-sizing: border-box; padding: 28px 36px 48px; display: flex; flex-direction: column; gap: 22px;">
+
+<header style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px;">
+<div style="display: flex; flex-direction: column; gap: 4px; max-width: 960px;">
+<span style="font-size: 13px; color: #5B6573; font-weight: 700;">Dikirim lewat jalur WA yang sama dengan KKH</span>
+<h1 style="margin: 0; font-size: 28px; font-weight: 900; color: #1D3149;">Laporan &amp; WA</h1>
+<span style="font-size: 14px; color: #3B4250;">Ringkasan rutin ke CEO dan leader unit, laporan masalah dan masukan ke unit bisnis, serta pengaturan kapan WA dikirim dan ke siapa.</span>
+</div>
+<span style="font-size: 12px; font-weight: 700; color: #5B6573; border: 1px dashed #A9B4C2; border-radius: 18px; padding: 8px 12px;">Data contoh</span>
+</header>
+
+<section aria-labelledby="rep-h" style="background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 20px; padding: 18px 20px; display: flex; flex-direction: column; gap: 14px;">
+<div style="display: flex; flex-direction: column;"><h2 id="rep-h" data-icon-done="1" style="display: flex; align-items: center; gap: 10px; margin: 0; font-size: 18px; font-weight: 900; color: #1D3149;"><span aria-hidden="true" style="width: 28px; height: 28px; flex: none; border-radius: 8px; background: #FDF3D7; color: #7A5200; display: inline-flex; align-items: center; justify-content: center;"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 16v-5a6 6 0 0 1 12 0v5l2 2H4zM10 20a2 2 0 0 0 4 0"></path></svg></span>1 · Laporan rutin</h2><span style="font-size: 12.5px; color: #5B6573;">Dibuat otomatis dari data dashboard. Klik satu laporan untuk melihat contoh pesan WA-nya.</span></div>
+<div style="display: flex; flex-wrap: wrap; gap: 18px; align-items: flex-start;">
+<div style="flex: 3 1 520px; min-width: 0; display: flex; flex-direction: column; gap: 8px;">
+<template data-sc="for" list="{{reports}}" as="r" hint-placeholder-count="5">
+<button type="button" onClick="{{r.pick}}" aria-pressed="{{r.pressed}}" style="text-align: left; font-family: inherit; cursor: pointer; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 12px 14px; border-radius: 14px; border: {{r.bw}} solid {{r.border}}; background: #FFFFFF;">
+<span style="display: flex; flex-direction: column; gap: 2px; min-width: 0;"><strong style="font-size: 14.5px; color: #1D3149;">{{r.name}}</strong><span style="font-size: 12.5px; color: #3B4250;">Ke {{r.to}} · {{r.when}}</span><span style="font-size: 12px; color: #5B6573;">{{r.what}}</span></span>
+<span style="font-size: 11.5px; font-weight: 900; color: {{r.stFg}}; background: {{r.stBg}}; border-radius: 8px; padding: 3px 9px; white-space: nowrap;">{{r.status}}</span>
+</button>
+</template>
+</div>
+<div style="flex: 2 1 340px; min-width: 0; display: flex; flex-direction: column; gap: 8px; align-items: center;">
+<span style="font-size: 12px; font-weight: 800; color: #5B6573;">Contoh pesan WA: {{pv.name}}</span>
+<div style="width: 100%; max-width: 380px; background: #ECE5DD; border-radius: 18px; padding: 14px; box-sizing: border-box;">
+<div style="background: #DCF8C6; border-radius: 12px 12px 2px 12px; padding: 10px 12px; font-size: 13px; color: #1F2933; line-height: 1.5; box-shadow: 0 1px 1px rgba(0,0,0,0.08);">
+<template data-sc="for" list="{{pv.lines}}" as="l" hint-placeholder-count="8"><div style="font-weight: {{l.w}}; margin-top: {{l.mt}};">{{l.t}}</div></template>
+<div style="text-align: right; font-size: 11px; color: #5B6573; margin-top: 4px;">{{pv.time}} ✓✓</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<section aria-labelledby="esc-h" style="background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 20px; padding: 18px 20px; display: flex; flex-direction: column; gap: 14px;">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 10px;"><div style="display: flex; flex-direction: column;"><h2 id="esc-h" data-icon-done="1" style="display: flex; align-items: center; gap: 10px; margin: 0; font-size: 18px; font-weight: 900; color: #1D3149;"><span aria-hidden="true" style="width: 28px; height: 28px; flex: none; border-radius: 8px; background: #FCEBDD; color: #9A3F0A; display: inline-flex; align-items: center; justify-content: center;"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l10 18H2zM12 10v5M12 18h.01"></path></svg></span>2 · Masalah dan masukan untuk unit bisnis</h2><span style="font-size: 12.5px; color: #5B6573;">Yang ditemukan marketing tapi bukan pekerjaan konten: harga, stok, layanan, operasional, ide produk. Dikirim ke leader unit lewat WA dan jadi tugas di KKH.</span></div><button type="button" onClick="{{toggleForm}}" style="height: 40px; padding: 0 16px; border-radius: 10px; border: 0; background: #09BEAF; color: #1D3149; font-family: inherit; font-size: 13.5px; font-weight: 900; cursor: pointer;">+ Laporkan masalah / masukan</button></div>
+<template data-sc="if" value="{{showForm}}" hint-placeholder-val="{{ false }}">
+<div style="border: 1px solid #BFE9E3; background: #F0FBF9; border-radius: 14px; padding: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px;">
+<template data-sc="for" list="{{formFields}}" as="f" hint-placeholder-count="6"><label style="display: flex; flex-direction: column; gap: 4px; font-size: 12.5px; font-weight: 800; color: #3B4250;">{{f.k}}<span style="min-height: 40px; box-sizing: border-box; border: 1px solid #D5DAE1; border-radius: 10px; padding: 8px 12px; background: #FFFFFF; font-weight: 600; color: #1F2933;">{{f.v}}</span></label></template>
+<div style="grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 10px; align-items: center;"><button type="button" onClick="{{sendForm}}" style="height: 40px; padding: 0 16px; border-radius: 10px; border: 0; background: {{sendBg}}; color: #1D3149; font-family: inherit; font-size: 13.5px; font-weight: 900; cursor: pointer;">{{sendLabel}}</button><span style="font-size: 12px; color: #3B4250;">Terkirim ke WA leader unit, jadi tugas di KKH-nya, dan tembusan ke CEO kalau prioritas tinggi.</span></div>
+</div>
+</template>
+<div style="overflow-x: auto;">
+<table style="width: 100%; min-width: 900px; border-collapse: collapse; font-size: 13px;">
+<thead><tr style="color: #5B6573; font-size: 12px; text-align: left;"><th scope="col" style="padding: 8px; border-bottom: 1px solid #E3E6EB;">Masalah / masukan</th><th scope="col" style="padding: 8px; border-bottom: 1px solid #E3E6EB;">Bukti</th><th scope="col" style="padding: 8px; border-bottom: 1px solid #E3E6EB;">Ke</th><th scope="col" style="padding: 8px; border-bottom: 1px solid #E3E6EB;">Prioritas</th><th scope="col" style="padding: 8px; border-bottom: 1px solid #E3E6EB;">Status</th><th scope="col" style="padding: 8px; border-bottom: 1px solid #E3E6EB;">Umur</th></tr></thead>
+<tbody>
+<template data-sc="for" list="{{issues}}" as="i" hint-placeholder-count="6">
+<tr><td style="padding: 10px 8px; border-bottom: 1px solid #EEF0F3;"><span style="font-size: 11.5px; font-weight: 900; color: {{i.catFg}}; background: {{i.catBg}}; border-radius: 6px; padding: 1px 6px;">{{i.cat}}</span><br><strong style="color: #1D3149;">{{i.title}}</strong></td><td style="padding: 10px 8px; border-bottom: 1px solid #EEF0F3; color: #3B4250; max-width: 280px;">{{i.proof}}</td><td style="padding: 10px 8px; border-bottom: 1px solid #EEF0F3; font-weight: 700;">{{i.to}}</td><td style="padding: 10px 8px; border-bottom: 1px solid #EEF0F3; font-weight: 800; color: {{i.prColor}};">{{i.pr}}</td><td style="padding: 10px 8px; border-bottom: 1px solid #EEF0F3;"><span style="font-size: 11.5px; font-weight: 900; color: {{i.stFg}}; background: {{i.stBg}}; border-radius: 8px; padding: 2px 8px; white-space: nowrap;">{{i.status}}</span></td><td style="padding: 10px 8px; border-bottom: 1px solid #EEF0F3; font-weight: 700; color: {{i.ageColor}};">{{i.age}}</td></tr>
+</template>
+</tbody>
+</table>
+</div>
+<span style="font-size: 12px; color: #5B6573;">Belum ditindaklanjuti lebih dari 2 hari → otomatis naik ke CEO lewat WA.</span>
+</section>
+
+<section aria-labelledby="wa-h" style="background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 20px; padding: 18px 20px; display: flex; flex-direction: column; gap: 12px;">
+<div style="display: flex; flex-direction: column;"><h2 id="wa-h" data-icon-done="1" style="display: flex; align-items: center; gap: 10px; margin: 0; font-size: 18px; font-weight: 900; color: #1D3149;"><span aria-hidden="true" style="width: 28px; height: 28px; flex: none; border-radius: 8px; background: #FDF3D7; color: #7A5200; display: inline-flex; align-items: center; justify-content: center;"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 16v-5a6 6 0 0 1 12 0v5l2 2H4zM10 20a2 2 0 0 0 4 0"></path></svg></span>3 · Notifikasi WA per fitur</h2><span style="font-size: 12.5px; color: #5B6573;">Hanya kejadian yang butuh tindakan yang dikirim lewat WA. Sisanya cukup muncul di Hari ini. Klik saklar untuk menyalakan atau mematikan.</span></div>
+<div style="overflow-x: auto;">
+<table style="width: 100%; min-width: 980px; border-collapse: collapse; font-size: 13px;">
+<thead><tr style="color: #5B6573; font-size: 12px; text-align: left;"><th scope="col" style="padding: 8px; border-bottom: 1px solid #E3E6EB;">Fitur</th><th scope="col" style="padding: 8px; border-bottom: 1px solid #E3E6EB;">Kejadian</th><th scope="col" style="padding: 8px; border-bottom: 1px solid #E3E6EB;">Ke siapa</th><th scope="col" style="padding: 8px; border-bottom: 1px solid #E3E6EB;">Kapan</th><th scope="col" style="padding: 8px; border-bottom: 1px solid #E3E6EB;">WA</th></tr></thead>
+<tbody>
+<template data-sc="for" list="{{rules}}" as="r" hint-placeholder-count="12">
+<tr style="opacity: {{r.op}};"><td style="padding: 9px 8px; border-bottom: 1px solid #EEF0F3; font-weight: 800; color: #1D3149;">{{r.f}}</td><td style="padding: 9px 8px; border-bottom: 1px solid #EEF0F3; color: #1F2933;">{{r.e}}</td><td style="padding: 9px 8px; border-bottom: 1px solid #EEF0F3; font-weight: 700;">{{r.to}}</td><td style="padding: 9px 8px; border-bottom: 1px solid #EEF0F3; color: #3B4250;">{{r.when}}</td><td style="padding: 9px 8px; border-bottom: 1px solid #EEF0F3;"><button type="button" role="switch" aria-checked="{{r.on}}" onClick="{{r.toggle}}" aria-label="WA {{r.e}}" style="width: 44px; height: 24px; border-radius: 12px; border: 0; background: {{r.track}}; position: relative; cursor: pointer;"><span style="position: absolute; top: 3px; left: {{r.knob}}; width: 18px; height: 18px; border-radius: 9px; background: #FFFFFF;"></span></button></td></tr>
+</template>
+</tbody>
+</table>
+</div>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 10px;">
+<div style="background: #F7F8FA; border-radius: 12px; padding: 10px 12px; font-size: 12.5px; color: #3B4250;"><b style="color: #1D3149;">Jam tenang 21.00–07.00.</b> WA yang tidak darurat ditahan sampai pagi.</div>
+<div style="background: #F7F8FA; border-radius: 12px; padding: 10px 12px; font-size: 12.5px; color: #3B4250;"><b style="color: #1D3149;">Digabung, bukan satu-satu.</b> Lebih dari 3 notifikasi dalam sejam dikirim sebagai satu pesan ringkas.</div>
+<div style="background: #F7F8FA; border-radius: 12px; padding: 10px 12px; font-size: 12.5px; color: #3B4250;"><b style="color: #1D3149;">Setiap pesan punya tautan.</b> Langsung membuka halaman yang dimaksud, seperti notifikasi KKH.</div>
+</div>
+</section>
+
+</main>
+
+</div>
+</template>
+<div id="dc-root"></div>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2200}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { rep: 'harian', form: false, sent: false, off: {} }; }
+  renderVals() {
+    var self = this, st = this.state;
+    var GOOD = '#067A70', BAD = '#9A3F0A', AMB = '#7A5200';
+    var ST = { Aktif: ['#DDF5F2', GOOD], 'Dikirim tiap tgl 28': ['#E5EEF9', '#1E5AA8'] };
+    var L = function (t, w, mt) { return { t: t, w: w ? '800' : '500', mt: mt ? '8px' : '0' }; };
+    var R = {
+      harian: { name: 'Ringkasan harian', to: 'CEO', when: 'tiap hari 20.00', what: 'Leads, closing, omzet hari ini, yang telat, dan keputusan yang menunggu', status: 'Aktif', time: '20.00',
+        lines: [L('📊 Marketing Pokama · Kamis 29 Okt', true), L('Leads 21 · closing 6 · omzet Rp 4,2 jt', false, true), L('Bulan ini: leads 93%, closing 87% dari target'), L('⚠️ Perlu perhatian', true, true), L('• Motor Musim Hujan ROAS 6,8x (di bawah 8x)'), L('• 2 KOL telat tayang'), L('🟡 4 keputusan menunggu', true, true), L('Buka: pokama.org/marketing (Butuh keputusan)')] },
+      mingguan: { name: 'Ringkasan mingguan', to: 'CEO dan Kevin', when: 'Jumat 16.00', what: 'Per campaign dan per akun: target vs aktual, verdict konten, budget terpakai', status: 'Aktif', time: '16.00',
+        lines: [L('📈 Mingguan · 23–29 Okt', true), L('4 campaign jalan · ROAS 16,1x', false, true), L('Terbaik: Open Trip November (24/40 closing)'), L('Terlemah: Sewa Motor Musim Hujan'), L('Akun', true, true), L('• Wisata Garut ER 6,4%, tertinggi'), L('• ATVaja belum posting'), L('Lengkap: pokama.org/marketing/review')] },
+      unit: { name: 'Laporan untuk leader unit', to: 'Wiranata, Adrian, Yusril', when: 'Senin pagi, per unit', what: 'Leads dan closing unitnya, keluhan pelanggan, pertanyaan yang sering muncul, alasan lost', status: 'Aktif', time: '08.00',
+        lines: [L('🏕️ TripinAja · minggu lalu', true), L('Leads 32 · booking 7', false, true), L('Keluhan: guide datang telat (Darajat, 26 Okt)'), L('Sering ditanya: trip private untuk keluarga (5x)'), L('Alasan tidak jadi: harga (4), jadwal (3)'), L('2 masalah menunggu tindak lanjut Anda', true, true), L('Buka: pokama.org/marketing/laporan')] },
+      bulanan: { name: 'Monthly report', to: 'CEO', when: 'tanggal 28', what: 'Learning, target, dan strategi bulan depan per akun setelah di-approve Kevin', status: 'Dikirim tiap tgl 28', time: '17.00',
+        lines: [L('🗓️ Monthly report Oktober', true), L('8 akun · 5 sudah di-approve Kevin', false, true), L('Target November: leads 560, closing 160'), L('Campaign November: Libur Akhir Tahun'), L('Lengkap: pokama.org/marketing/review')] }
+    };
+    var reports = Object.keys(R).map(function (k) { var r = R[k], on = k === st.rep, s = ST[r.status]; return { name: r.name, to: r.to, when: r.when, what: r.what, status: r.status, stBg: s[0], stFg: s[1], pressed: on ? 'true' : 'false', border: on ? '#1D3149' : '#E3E6EB', bw: on ? '2px' : '1px', pick: function () { self.setState({ rep: k }); } }; });
+    var pv = R[st.rep];
+    var CAT = { Harga: ['#FDF3D7', AMB], Stok: ['#FCEBDD', BAD], Layanan: ['#FCEBDD', BAD], Operasional: ['#FCEBDD', BAD], 'Ide produk': ['#DDF5F2', GOOD] };
+    var SS = { Terkirim: ['#EEF0F3', '#3B4250'], Dibaca: ['#E5EEF9', '#1E5AA8'], Ditindaklanjuti: ['#FDF3D7', AMB], Selesai: ['#DDF5F2', GOOD], 'Naik ke CEO': ['#FCEBDD', BAD] };
+    var is = function (cat, title, proof, to, pr, status, age) { var c = CAT[cat], s = SS[status]; return { cat: cat, catBg: c[0], catFg: c[1], title: title, proof: proof, to: to, pr: pr, prColor: pr === 'Tinggi' ? BAD : '#3B4250', status: status, stBg: s[0], stFg: s[1], age: age, ageColor: /3 hari|4 hari/.test(age) ? BAD : '#3B4250' }; };
+    var issues = [
+      is('Layanan', 'Guide datang telat di trip Darajat', 'Ulasan bintang 3 Google Maps, 26 Okt', 'Wiranata · TripinAja', 'Tinggi', 'Dibaca', '2 hari'),
+      is('Stok', '18% chat lost karena unit habis, terbanyak motor akhir pekan', 'Alasan lost di WA, Oktober', 'Adrian · Rentalaja', 'Tinggi', 'Naik ke CEO', '4 hari'),
+      is('Operasional', 'Pengantaran telat dan helm bau di Garut Kota', '2 ulasan Google Maps minggu ini', 'Adrian · Rentalaja', 'Sedang', 'Terkirim', '1 hari'),
+      is('Ide produk', 'Banyak yang tanya boleh bawa hewan peliharaan', 'Ditanyakan 4 kali di WA', 'Adrian · Rentalaja Exp.', 'Sedang', 'Ditindaklanjuti', '3 hari'),
+      is('Harga', 'Laptop: sering ditanya garansi dan nego harga', '14 chat, 4 closing', 'Yusril · Niagaaja', 'Sedang', 'Selesai', '6 hari'),
+      is('Ide produk', 'Permintaan trip private untuk keluarga', 'Ditanyakan 5 kali, 3 dari iklan', 'Wiranata · TripinAja', 'Rendah', 'Terkirim', 'hari ini')
+    ];
+    var formFields = [{ k: 'Kategori', v: 'Stok' }, { k: 'Unit tujuan', v: 'Adrian · operasional Rentalaja' }, { k: 'Judul', v: 'Kamera mirrorless sering habis di akhir pekan' }, { k: 'Bukti', v: 'Tautan 3 chat WA lost "unit habis"' }, { k: 'Prioritas', v: 'Sedang' }, { k: 'Dilaporkan oleh', v: 'Dita' }];
+    var RU = [
+      ['Hari ini', 'Ringkasan tugas yang tenggatnya hari ini', 'Pemilik tugas', '07.30'],
+      ['Review', 'Konten dikirim untuk review', 'Kevin', 'langsung'],
+      ['Review', 'Revisi diminta', 'Pembuat konten', 'langsung'],
+      ['Review', 'Review lewat 1 hari', 'Kevin, tembusan CEO', '09.00'],
+      ['Content plan', 'Slot kosong H-3 sebelum tayang', 'PIC akun', '09.00'],
+      ['Campaign', 'Campaign baru perlu approve', 'CEO', 'langsung'],
+      ['Campaign', 'ROAS di bawah 8x selama 3 hari', 'Kevin', '09.00'],
+      ['Paid ads', 'Budget harian habis atau CPL di atas batas', 'Kevin', 'langsung'],
+      ['KOL', 'Tayang telat atau laporan H+7 belum masuk', 'Kevin', '09.00'],
+      ['KOL', 'Deal disepakati, perlu pembayaran', 'Keuangan (Pengajuan Belanja KKH)', 'langsung'],
+      ['SEO', 'Ulasan bintang 3 ke bawah', 'PIC akun dan leader unit', 'langsung'],
+      ['WA & CS', 'Chat belum dibalas lebih dari 1 jam', 'CS nomor itu', 'langsung'],
+      ['WA & CS', 'Masih ada chat belum ditandai', 'Ica, El, Nayla, Arie; tembusan Kevin', '20.45'],
+      ['Input data', 'Input data lewat jadwal', 'Pengisi', '09.00'],
+      ['Keputusan', 'Usulan baru masuk daftar keputusan', 'CEO dan Kevin', 'digabung 12.00'],
+      ['Masalah unit', 'Masalah baru dilaporkan', 'Leader unit tujuan', 'langsung'],
+      ['Masalah unit', 'Belum ditindaklanjuti lebih dari 2 hari', 'CEO', '09.00']
+    ];
+    var rules = RU.map(function (r, i) { var on = !st.off[i]; return { f: r[0], e: r[1], to: r[2], when: r[3], on: on ? 'true' : 'false', track: on ? '#09BEAF' : '#C9D1DB', knob: on ? '23px' : '3px', op: on ? '1' : '0.55', toggle: function () { var o = Object.assign({}, st.off); o[i] = !o[i]; self.setState({ off: o }); } }; });
+    return { reports: reports, pv: pv, issues: issues, showForm: st.form, toggleForm: function () { self.setState({ form: !st.form, sent: false }); }, formFields: formFields, sendForm: function () { self.setState({ sent: true }); }, sendLabel: st.sent ? '✓ Terkirim ke leader unit' : 'Kirim', sendBg: st.sent ? '#DDF5F2' : '#09BEAF', rules: rules };
+  }
+}
+</script>
+</body>
+</html>

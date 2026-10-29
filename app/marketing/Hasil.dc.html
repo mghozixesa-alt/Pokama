@@ -1,0 +1,337 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Review mingguan — Marketing Pokama</title>
+<link rel="icon" href="logo-pokama.png">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F3F5F8}
+a{color:#1D3149}a:hover{color:#0F1D2E}
+table{font-variant-numeric:tabular-nums}
+main > header{background:radial-gradient(circle at 92% -30%, rgba(9,190,175,.45), transparent 42%),linear-gradient(135deg,#1D3149 0%,#28507A 100%);border-radius:22px;padding:22px 26px;align-items:center !important;box-shadow:0 10px 30px rgba(29,49,73,.18)}
+main > header h1{color:#FFFFFF !important}
+main > header span{color:#D3E0EC !important}
+main > header b{color:#7FF0E2 !important}
+main > header span[style*="dashed"]{border-color:rgba(255,255,255,.45) !important}
+main > header button{border-color:rgba(255,255,255,.35) !important}
+main > header button[aria-pressed="true"]{background:#09BEAF !important;color:#1D3149 !important;border-color:#09BEAF !important}
+main > header button[aria-pressed="false"]{background:rgba(255,255,255,.08) !important;color:#FFFFFF !important}
+main > header a{color:#1D3149}
+main section{transition:box-shadow .2s ease, transform .2s ease}
+main section:hover{box-shadow:0 8px 24px rgba(29,49,73,.07)}
+main > header span[aria-hidden="true"]{flex:none}
+@media (max-width: 760px){article[style*="grid-template-columns: 36px minmax(0, 1fr) auto"]{grid-template-columns:32px minmax(0,1fr) !important}
+article[style*="grid-template-columns: 36px minmax(0, 1fr) auto"] > div:last-child{grid-column:2;flex-direction:row !important;justify-content:space-between;align-items:center !important}}
+@media (max-width: 760px){main > header{padding:16px !important;border-radius:16px}}
+@media (max-width: 760px){table:not(:has(th:nth-child(5))){min-width:0 !important;width:100% !important}}
+td[style*="text-align: right"]{white-space:nowrap}
+tbody tr:hover td{background:#F9FAFB}
+thead th{position:sticky;top:0;background:#FFFFFF}
+button:focus-visible,a:focus-visible{outline:2px solid #09BEAF;outline-offset:2px;border-radius:8px}
+button{transition:filter .15s}button:hover{filter:brightness(0.97)}
+@media (max-width: 760px){
+nav[aria-label="Menu utama"]{flex:1 1 100% !important;flex-direction:row !important;align-items:center !important;overflow-x:auto;gap:4px !important;padding:8px 12px !important;border-right:0 !important;border-bottom:1px solid #E3E6EB;position:sticky;top:0;z-index:20;scrollbar-width:none}
+nav[aria-label="Menu utama"] > div{flex-direction:row !important;gap:4px !important;padding:0 !important;flex:none !important}
+nav[aria-label="Menu utama"] > div > span:first-child{display:none !important}
+nav[aria-label="Menu utama"] > div:first-child img{width:84px !important}
+nav[aria-label="Menu utama"] > div:first-child span{display:none !important}
+nav[aria-label="Menu utama"] a{white-space:nowrap;min-height:36px !important;padding:0 10px !important}
+nav[aria-label="Menu utama"] > div[style*="margin-top: auto"]{display:none !important}
+main{padding:18px 16px 40px !important}
+h1{font-size:24px !important}
+}
+</style>
+<link rel="stylesheet" href="gate.css">
+<script src="gate.js"></script>
+<script src="dc-lite.js"></script>
+</head>
+<body>
+<template id="dc-tpl">
+
+<div style="min-height: 1360px; display: flex; flex-wrap: wrap; background: #F3F5F8; color: #1F2933; font-family: 'Nunito', system-ui, sans-serif; font-size: 14px; line-height: 1.45;">
+
+<nav aria-label="Menu utama" style="flex: 1 1 240px; box-sizing: border-box; background: #FFFFFF; border-right: 1px solid #E3E6EB; padding: 24px 16px; display: flex; flex-direction: column; gap: 18px;">
+<div style="display: flex; flex-direction: column; gap: 6px; padding: 0 8px;">
+<img src="logo-pokama.png" alt="Pokama" style="width: 132px; height: auto;">
+<span style="font-size: 12px; color: #5B6573; font-weight: 700;">Marketing</span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 2px;">
+<span style="font-size: 11px; font-weight: 800; letter-spacing: 0.08em; color: #5B6573; padding: 0 12px 4px;">UTAMA</span>
+<a href="Dashboard.dc.html" style="display: flex; align-items: center; gap: 10px; min-height: 38px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 600; color: #3B4250;"><span style="display: inline-flex; color: #5B6573;"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h7v9H3zM14 3h7v5h-7zM14 12h7v9h-7zM3 16h7v5H3z"></path></svg></span><span style="flex-grow: 1;">Dashboard utama</span></a>
+<a href="Main.dc.html" style="display: flex; align-items: center; gap: 10px; min-height: 38px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 600; color: #3B4250;"><span style="display: inline-flex; color: #5B6573;"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18zM12 7v5l3 2"></path></svg></span><span style="flex-grow: 1;">Hari ini</span><span style="min-width: 22px; height: 22px; border-radius: 11px; background: #C2410C; color: #FFFFFF; font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center; padding: 0 6px; box-sizing: border-box;">7</span></a>
+<a href="Campaign.dc.html" style="display: flex; align-items: center; gap: 10px; min-height: 38px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 600; color: #3B4250;"><span style="display: inline-flex; color: #5B6573;"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21V4M5 4h12l-2 4 2 4H5"></path></svg></span><span style="flex-grow: 1;">Campaign</span><span style="font-size: 12px; font-weight: 800; color: #067A70; white-space: nowrap;">4 jalan</span></a>
+</div>
+<div style="display: flex; flex-direction: column; gap: 2px;">
+<span style="font-size: 11px; font-weight: 800; letter-spacing: 0.08em; color: #5B6573; padding: 0 12px 4px;">KONTEN ORGANIK</span>
+<a href="MingguDepan.dc.html" style="display: flex; align-items: center; gap: 10px; min-height: 38px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 600; color: #3B4250;"><span style="display: inline-flex; color: #5B6573;"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h18v16H3zM3 10h18M8 3v4M16 3v4"></path></svg></span><span style="flex-grow: 1;">Content plan</span><span style="font-size: 12px; font-weight: 800; color: #9A3F0A; white-space: nowrap;">8 kosong</span></a>
+<a href="BankIde.dc.html" style="display: flex; align-items: center; gap: 10px; min-height: 38px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 600; color: #3B4250;"><span style="display: inline-flex; color: #5B6573;"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10.5c.8.8 1 1.5 1 2.5h6c0-1 .2-1.7 1-2.5A6 6 0 0 0 12 3z"></path></svg></span><span style="flex-grow: 1;">Content bank</span><span style="font-size: 12px; font-weight: 800; color: #067A70; white-space: nowrap;">+6</span></a>
+<a href="Sosial.dc.html" style="display: flex; align-items: center; gap: 10px; min-height: 38px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 600; color: #3B4250;"><span style="display: inline-flex; color: #5B6573;"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4zM12 8.5a3.5 3.5 0 1 0 0 7a3.5 3.5 0 1 0 0-7zM17 7h.01"></path></svg></span><span style="flex-grow: 1;">Analytics IG &amp; TikTok</span></a>
+</div>
+<div style="display: flex; flex-direction: column; gap: 2px;">
+<span style="font-size: 11px; font-weight: 800; letter-spacing: 0.08em; color: #5B6573; padding: 0 12px 4px;">CHANNEL</span>
+<a href="Ads.dc.html" style="display: flex; align-items: center; gap: 10px; min-height: 38px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 600; color: #3B4250;"><span style="display: inline-flex; color: #5B6573;"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11v2a1 1 0 0 0 1 1h3l5 4V6L7 10H4a1 1 0 0 0-1 1zM16 8a5 5 0 0 1 0 8"></path></svg></span><span style="flex-grow: 1;">Paid ads</span></a>
+<a href="KOL.dc.html" style="display: flex; align-items: center; gap: 10px; min-height: 38px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 600; color: #3B4250;"><span style="display: inline-flex; color: #5B6573;"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.5 6.7 19.4l1.2-6L3.4 9.3l6-.7z"></path></svg></span><span style="flex-grow: 1;">KOL</span><span style="font-size: 12px; font-weight: 800; color: #9A3F0A; white-space: nowrap;">2 telat</span></a>
+<a href="Maps.dc.html" style="display: flex; align-items: center; gap: 10px; min-height: 38px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 600; color: #3B4250;"><span style="display: inline-flex; color: #5B6573;"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4a7 7 0 1 0 0 14a7 7 0 1 0 0-14zM21 21l-5-5"></path></svg></span><span style="flex-grow: 1;">SEO</span></a>
+<a href="WA.dc.html" style="display: flex; align-items: center; gap: 10px; min-height: 38px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 600; color: #3B4250;"><span style="display: inline-flex; color: #5B6573;"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H8l-4 4z"></path></svg></span><span style="flex-grow: 1;">WA &amp; CS</span></a>
+</div>
+<div style="display: flex; flex-direction: column; gap: 2px;">
+<span style="font-size: 11px; font-weight: 800; letter-spacing: 0.08em; color: #5B6573; padding: 0 12px 4px;">REVIEW</span>
+<a href="Hasil.dc.html" aria-current="page" style="display: flex; align-items: center; gap: 10px; min-height: 38px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 800; color: #1D3149; background: #DDF5F2;"><span style="display: inline-flex; color: #067A70;"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4h6v3H9zM6 6h12v15H6zM9 12h6M9 16h4"></path></svg></span><span style="flex-grow: 1;">Review mingguan</span></a>
+<a href="Laporan.dc.html" style="display: flex; align-items: center; gap: 10px; min-height: 38px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 600; color: #3B4250;"><span style="display: inline-flex; color: #5B6573;"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 16v-5a6 6 0 0 1 12 0v5l2 2H4zM10 20a2 2 0 0 0 4 0"></path></svg></span><span style="flex-grow: 1;">Laporan &amp; WA</span><span style="font-size: 12px; font-weight: 800; color: #9A3F0A; white-space: nowrap;">2 menunggu</span></a>
+<a href="Tim.dc.html" style="display: flex; align-items: center; gap: 10px; min-height: 38px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 600; color: #3B4250;"><span style="display: inline-flex; color: #5B6573;"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11a3.5 3.5 0 1 0 0-7a3.5 3.5 0 1 0 0 7zM2.5 20c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5M17 11a2.5 2.5 0 1 0 0-5M17 14.5c2.3 0 4 1.5 4.5 4"></path></svg></span><span style="flex-grow: 1;">Tim &amp; workload</span></a>
+</div>
+<div style="display: flex; flex-direction: column; gap: 2px;">
+<span style="font-size: 11px; font-weight: 800; letter-spacing: 0.08em; color: #5B6573; padding: 0 12px 4px;">PENGATURAN</span>
+<a href="Data.dc.html" style="display: flex; align-items: center; gap: 10px; min-height: 38px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 600; color: #3B4250;"><span style="display: inline-flex; color: #5B6573;"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6c0-1.7 3.6-3 8-3s8 1.3 8 3-3.6 3-8 3-8-1.3-8-3zM4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"></path></svg></span><span style="flex-grow: 1;">Input &amp; patokan</span><span style="font-size: 12px; font-weight: 800; color: #9A3F0A; white-space: nowrap;">2 telat</span></a>
+<a href="Brand.dc.html" style="display: flex; align-items: center; gap: 10px; min-height: 38px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 600; color: #3B4250;"><span style="display: inline-flex; color: #5B6573;"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12V4h8l10 10-8 8zM7.5 7.5h.01"></path></svg></span><span style="flex-grow: 1;">Brand &amp; positioning</span></a>
+</div>
+<div style="margin-top: auto; display: flex; align-items: center; gap: 10px; padding: 14px 12px 0; border-top: 1px solid #E3E6EB;">
+<span aria-hidden="true" style="width: 38px; height: 38px; border-radius: 19px; background: #1D3149; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-weight: 900;">G</span>
+<div style="display: flex; flex-direction: column;"><span style="font-weight: 800;">Ghozy</span><span style="font-size: 12px; color: #5B6573;">CEO</span></div>
+</div>
+</nav>
+
+<main style="flex: 999 1 560px; min-width: 0; box-sizing: border-box; padding: 28px 36px 48px; display: flex; flex-direction: column; gap: 22px;">
+
+<header style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px;">
+<div style="display: flex; flex-direction: column; gap: 4px;">
+<span style="font-size: 13px; color: #5B6573; font-weight: 700;">Oktober 1–27 · diperbarui setiap minggu</span>
+<h1 style="margin: 0; font-size: 28px; font-weight: 900; color: #1D3149;">Review mingguan</h1>
+<span style="font-size: 14px; color: #3B4250; max-width: 960px;"><b style="color: #067A70;">Ringkasan otomatis:</b> Rp 7,1 jt biaya marketing jadi 131 closing dan Rp 114,6 jt omzet</span>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center;">
+<span style="font-size: 12px; font-weight: 700; color: #5B6573; border: 1px dashed #A9B4C2; border-radius: 18px; padding: 8px 12px;">Data contoh</span>
+<label for="periode" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">Periode</label>
+<select id="periode" style="height: 42px; padding: 0 12px; border-radius: 10px; border: 1px solid #E3E6EB; background: #FFFFFF; font-family: inherit; font-size: 14px; font-weight: 700; color: #1D3149;"><option>Oktober 2026</option><option>Minggu 22–27 Okt</option></select>
+</div>
+</header>
+
+<section aria-label="Sumber data dan patokan" style="background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 16px; padding: 12px 16px; display: flex; flex-direction: column; gap: 10px;">
+<div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center;"><span style="font-size: 11.5px; font-weight: 900; letter-spacing: 0.08em; color: #5B6573; margin-right: 4px;">DATA DARI</span><span style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; color: #1F2933; background: #F7F8FA; border: 1px solid #E3E6EB; border-radius: 10px; padding: 5px 10px;"><b style="font-size: 11.5px; font-weight: 900; background: #DDF5F2; color: #067A70; border-radius: 6px; padding: 1px 6px;">Otomatis</b>Instagram & Meta Ads API</span><span style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; color: #1F2933; background: #F7F8FA; border: 1px solid #E3E6EB; border-radius: 10px; padding: 5px 10px;"><b style="font-size: 11.5px; font-weight: 900; background: #DDF5F2; color: #067A70; border-radius: 6px; padding: 1px 6px;">Otomatis</b>Leads & closing Rentalaja dari WA KKH</span><span style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; color: #1F2933; background: #F7F8FA; border: 1px solid #E3E6EB; border-radius: 10px; padding: 5px 10px;"><b style="font-size: 11.5px; font-weight: 900; background: #FDF3D7; color: #7A5200; border-radius: 6px; padding: 1px 6px;">Isi manual</b>Closing TripinAja & Laptopaja · Nayla, Dita</span><span style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; color: #1F2933; background: #F7F8FA; border: 1px solid #E3E6EB; border-radius: 10px; padding: 5px 10px;"><b style="font-size: 11.5px; font-weight: 900; background: #FDF3D7; color: #7A5200; border-radius: 6px; padding: 1px 6px;">Isi manual</b>TikTok · Senin</span><span style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; color: #1F2933; background: #F7F8FA; border: 1px solid #E3E6EB; border-radius: 10px; padding: 5px 10px;"><b style="font-size: 11.5px; font-weight: 900; background: #FCEBDD; color: #9A3F0A; border-radius: 6px; padding: 1px 6px;">Telat</b>2 input telat</span><a href="Data.dc.html" style="margin-left: auto; font-size: 12.5px; font-weight: 800; color: #067A70;">Input &amp; patokan →</a></div>
+<div style="display: flex; flex-direction: column; gap: 6px;"><span style="font-size: 11.5px; font-weight: 900; letter-spacing: 0.08em; color: #5B6573;">PATOKAN BAGUS</span><div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 8px;"><div style="display: flex; flex-direction: column; gap: 2px; padding: 8px 10px; border-radius: 10px; background: #F7F8FA; min-width: 0;"><span style="font-size: 11.5px; font-weight: 800; color: #5B6573;">Verdict Repeat <b style="font-size: 10px; font-weight: 900; background: #EEF0F3; color: #3B4250; border-radius: 6px; padding: 1px 6px; margin-left: 4px;">Internal</b></span><strong style="font-size: 13.5px; color: #1D3149;">Bagus: ≥ median ER dan leads akunnya</strong><span style="font-size: 12px; font-weight: 800; color: #067A70;">Sekarang 2 konten</span></div><div style="display: flex; flex-direction: column; gap: 2px; padding: 8px 10px; border-radius: 10px; background: #F7F8FA; min-width: 0;"><span style="font-size: 11.5px; font-weight: 800; color: #5B6573;">Biaya per closing <b style="font-size: 10px; font-weight: 900; background: #DDF5F2; color: #067A70; border-radius: 6px; padding: 1px 6px; margin-left: 4px;">Target Kevin</b></span><strong style="font-size: 13.5px; color: #1D3149;">Bagus: ≤ Rp 60 rb</strong><span style="font-size: 12px; font-weight: 800; color: #067A70;">Sekarang Rp 54 rb</span></div><div style="display: flex; flex-direction: column; gap: 2px; padding: 8px 10px; border-radius: 10px; background: #F7F8FA; min-width: 0;"><span style="font-size: 11.5px; font-weight: 800; color: #5B6573;">ROAS marketing <b style="font-size: 10px; font-weight: 900; background: #FDF3D7; color: #7A5200; border-radius: 6px; padding: 1px 6px; margin-left: 4px;">Rumus</b></span><strong style="font-size: 13.5px; color: #1D3149;">Bagus: ≥ 8x</strong><span style="font-size: 12px; font-weight: 800; color: #067A70;">Sekarang 16,1x</span></div><div style="display: flex; flex-direction: column; gap: 2px; padding: 8px 10px; border-radius: 10px; background: #F7F8FA; min-width: 0;"><span style="font-size: 11.5px; font-weight: 800; color: #5B6573;">Leads bulan ini <b style="font-size: 10px; font-weight: 900; background: #DDF5F2; color: #067A70; border-radius: 6px; padding: 1px 6px; margin-left: 4px;">Target Kevin</b></span><strong style="font-size: 13.5px; color: #1D3149;">Bagus: 520</strong><span style="font-size: 12px; font-weight: 800; color: #9A3F0A;">Sekarang 486 (93%)</span></div></div></div>
+</section>
+
+<div style="display: flex; flex-wrap: wrap; gap: 22px; align-items: flex-start;">
+
+<div style="flex: 2 1 640px; min-width: 0; display: flex; flex-direction: column; gap: 22px;">
+
+<section aria-labelledby="uang-h" style="background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 20px; padding: 18px 20px; display: flex; flex-direction: column; gap: 12px;">
+<div style="display: flex; flex-direction: column;"><h2 id="uang-h" data-icon-done="1" style="display: flex; align-items: center; gap: 10px; margin: 0; font-size: 17px; font-weight: 900; color: #1D3149;"><span aria-hidden="true" style="width: 28px; height: 28px; flex: none; border-radius: 8px; background: #E5EEF9; color: #1E5AA8; display: inline-flex; align-items: center; justify-content: center;"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18v10H3zM12 9.5a2.5 2.5 0 1 0 0 5a2.5 2.5 0 1 0 0-5"></path></svg></span>Budget ke mana, hasilnya apa</h2><span style="font-size: 12.5px; color: #5B6573;">Chat dihitung dari kode sumber di pesan pembuka WA. Closing dicocokkan ke transaksi lunas.</span></div>
+<div style="overflow-x: auto;">
+<table style="width: 100%; min-width: 760px; border-collapse: collapse; font-size: 13px;">
+<thead><tr style="text-align: right; color: #5B6573; font-size: 12px;">
+<th scope="col" style="text-align: left; padding: 8px; border-bottom: 1px solid #E3E6EB; font-weight: 800;">Kanal</th>
+<th scope="col" style="padding: 8px; border-bottom: 1px solid #E3E6EB; font-weight: 800;">Biaya</th>
+<th scope="col" style="padding: 8px; border-bottom: 1px solid #E3E6EB; font-weight: 800;">Leads</th>
+<th scope="col" style="padding: 8px; border-bottom: 1px solid #E3E6EB; font-weight: 800;">CPL</th>
+<th scope="col" style="padding: 8px; border-bottom: 1px solid #E3E6EB; font-weight: 800;">Closing</th>
+<th scope="col" style="padding: 8px; border-bottom: 1px solid #E3E6EB; font-weight: 800;">Omzet</th>
+<th scope="col" style="padding: 8px; border-bottom: 1px solid #E3E6EB; font-weight: 800;">ROAS</th>
+<th scope="col" style="text-align: left; padding: 8px; border-bottom: 1px solid #E3E6EB; font-weight: 800;">Lalu apa</th>
+</tr></thead>
+<tbody>
+<template data-sc="for" list="{{money}}" as="m" hint-placeholder-count="4">
+<tr style="text-align: right; font-weight: {{m.weight}}; background: {{m.bg}};">
+<th scope="row" style="text-align: left; padding: 12px 8px; border-bottom: 1px solid #EEF0F3; font-weight: 800;">{{m.name}}</th>
+<td style="padding: 12px 8px; border-bottom: 1px solid #EEF0F3;">{{m.cost}}</td>
+<td style="padding: 12px 8px; border-bottom: 1px solid #EEF0F3;">{{m.chat}}</td>
+<td style="padding: 12px 8px; border-bottom: 1px solid #EEF0F3; color: {{m.cplColor}};">{{m.cpl}}</td>
+<td style="padding: 12px 8px; border-bottom: 1px solid #EEF0F3;">{{m.close}}</td>
+<td style="padding: 12px 8px; border-bottom: 1px solid #EEF0F3;">{{m.omzet}}</td>
+<td style="padding: 12px 8px; border-bottom: 1px solid #EEF0F3; font-weight: 900; color: {{m.roasColor}};">{{m.roas}}</td>
+<td style="text-align: left; padding: 12px 8px; border-bottom: 1px solid #EEF0F3;"><span style="font-size: 12px; font-weight: 800; color: {{m.nextFg}}; background: {{m.nextBg}}; padding: 3px 10px; border-radius: 10px; white-space: nowrap;">{{m.next}}</span></td>
+</tr>
+</template>
+</tbody>
+</table>
+</div>
+</section>
+
+<section aria-labelledby="vonis-h" style="background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 20px; padding: 18px 20px; display: flex; flex-direction: column; gap: 12px;">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 10px;">
+<div style="display: flex; flex-direction: column;"><h2 id="vonis-h" data-icon-done="1" style="display: flex; align-items: center; gap: 10px; margin: 0; font-size: 17px; font-weight: 900; color: #1D3149;"><span aria-hidden="true" style="width: 28px; height: 28px; flex: none; border-radius: 8px; background: #FDF3D7; color: #7A5200; display: inline-flex; align-items: center; justify-content: center;"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.5 6.7 19.4l1.2-6L3.4 9.3l6-.7z"></path></svg></span>Content verdict minggu lalu</h2><span style="font-size: 12.5px; color: #5B6573;">Dibandingkan dengan median akunnya sendiri. Juara diukur dari chat, bukan hanya ER.</span></div>
+<div role="group" aria-label="Filter vonis" style="display: flex; flex-wrap: wrap; gap: 6px;">
+<template data-sc="for" list="{{vf}}" as="f" hint-placeholder-count="4">
+<button type="button" onClick="{{f.pick}}" aria-pressed="{{f.pressed}}" style="height: 36px; padding: 0 12px; border-radius: 18px; border: 1px solid {{f.border}}; background: {{f.bg}}; color: {{f.fg}}; font-family: inherit; font-size: 12.5px; font-weight: 800; cursor: pointer;">{{f.label}}</button>
+</template>
+</div>
+</div>
+<template data-sc="for" list="{{verdicts}}" as="v" hint-placeholder-count="6">
+<article style="display: grid; grid-template-columns: 76px minmax(0, 1fr) 190px; gap: 14px; align-items: center; padding: 10px; border: 1px solid #EEF0F3; border-radius: 14px;">
+<div role="img" aria-label="Foto postingan {{v.title}}, muncul setelah Instagram tersambung" style="width: 76px; height: 76px; border-radius: 12px; background: {{v.tint}}; display: flex; align-items: center; justify-content: center; color: {{v.dot}}; font-size: 11.5px; font-weight: 900;">{{v.fmt}}</div>
+<div style="display: flex; flex-direction: column; gap: 4px; min-width: 0;">
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px;">
+<span style="display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 800; color: #3B4250;"><span style="width: 8px; height: 8px; border-radius: 4px; background: {{v.dot}};"></span>{{v.acc}}</span>
+<span style="display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 700; color: #5B6573;">
+<template data-sc="if" value="{{v.who.photo}}" hint-placeholder-val="{{ true }}"><img src="{{v.who.photo}}" alt="" style="width: 20px; height: 20px; border-radius: 10px; object-fit: cover;"></template>
+<template data-sc="if" value="{{v.who.ini}}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" style="width: 20px; height: 20px; border-radius: 10px; background: {{v.who.color}}; color: #FFFFFF; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 900;">{{v.who.ini}}</span></template>
+{{v.who.name}} · {{v.date}} · {{v.pillar}}</span>
+</div>
+<strong style="font-size: 15px; color: #1D3149; line-height: 1.3;">{{v.title}}</strong>
+<div style="display: flex; flex-wrap: wrap; gap: 14px; font-size: 12.5px; color: #3B4250;"><span><b>{{v.reach}}</b> reach</span><span><b>{{v.er}}</b> ER</span><span><b>{{v.saves}}</b> simpan</span><span style="color: {{v.chatColor}};"><b>{{v.chat}}</b> leads dari kodenya</span></div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px; align-items: stretch;">
+<span style="text-align: center; font-size: 12.5px; font-weight: 900; padding: 5px 8px; border-radius: 10px; background: {{v.vBg}}; color: {{v.vFg}};">{{v.verdict}}</span>
+<button type="button" style="height: 36px; border-radius: 10px; border: 1px solid #E3E6EB; background: #FFFFFF; color: #1D3149; font-family: inherit; font-size: 12.5px; font-weight: 800; cursor: pointer;">{{v.next}}</button>
+</div>
+</article>
+</template>
+</section>
+
+<section aria-labelledby="akun-h" style="background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 20px; padding: 18px 20px; display: flex; flex-direction: column; gap: 12px;">
+<div style="display: flex; flex-direction: column;"><h2 id="akun-h" data-icon-done="1" style="display: flex; align-items: center; gap: 10px; margin: 0; font-size: 17px; font-weight: 900; color: #1D3149;"><span aria-hidden="true" style="width: 28px; height: 28px; flex: none; border-radius: 8px; background: #FDF0F6; color: #9C2C63; display: inline-flex; align-items: center; justify-content: center;"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4zM12 8.5a3.5 3.5 0 1 0 0 7a3.5 3.5 0 1 0 0-7zM17 7h.01"></path></svg></span>Account performance</h2><span style="font-size: 12.5px; color: #5B6573;">Organik saja. Corong leads → booking → DP/lunas, tapi ditarik dari WA dan booking, tidak diketik.</span></div>
+<div style="overflow-x: auto;">
+<table style="width: 100%; min-width: 720px; border-collapse: collapse; font-size: 13px;">
+<thead><tr style="text-align: right; color: #5B6573; font-size: 12px;">
+<th scope="col" style="text-align: left; padding: 8px; border-bottom: 1px solid #E3E6EB; font-weight: 800;">Akun</th>
+<th scope="col" style="text-align: left; padding: 8px; border-bottom: 1px solid #E3E6EB; font-weight: 800;">PIC</th>
+<th scope="col" style="padding: 8px; border-bottom: 1px solid #E3E6EB; font-weight: 800;">Tayang / rencana</th>
+<th scope="col" style="padding: 8px; border-bottom: 1px solid #E3E6EB; font-weight: 800;">Leads</th>
+<th scope="col" style="padding: 8px; border-bottom: 1px solid #E3E6EB; font-weight: 800;">Booking</th>
+<th scope="col" style="padding: 8px; border-bottom: 1px solid #E3E6EB; font-weight: 800;">DP / lunas</th>
+<th scope="col" style="padding: 8px; border-bottom: 1px solid #E3E6EB; font-weight: 800;">Closing rate</th>
+<th scope="col" style="text-align: left; padding: 8px; border-bottom: 1px solid #E3E6EB; font-weight: 800;">Catatan</th>
+</tr></thead>
+<tbody>
+<template data-sc="for" list="{{accounts}}" as="a" hint-placeholder-count="8">
+<tr style="text-align: right;">
+<th scope="row" style="text-align: left; padding: 10px 8px; border-bottom: 1px solid #EEF0F3; font-weight: 800;"><span style="display: inline-flex; align-items: center; gap: 8px;"><span style="width: 9px; height: 9px; border-radius: 5px; background: {{a.dot}};"></span>{{a.name}}</span></th>
+<td style="text-align: left; padding: 10px 8px; border-bottom: 1px solid #EEF0F3; color: {{a.picColor}}; font-weight: 700;">{{a.pic}}</td>
+<td style="padding: 10px 8px; border-bottom: 1px solid #EEF0F3;">{{a.posts}}</td>
+<td style="padding: 10px 8px; border-bottom: 1px solid #EEF0F3;">{{a.chat}}</td>
+<td style="padding: 10px 8px; border-bottom: 1px solid #EEF0F3;">{{a.book}}</td>
+<td style="padding: 10px 8px; border-bottom: 1px solid #EEF0F3; font-weight: 800;">{{a.close}}</td>
+<td style="padding: 10px 8px; border-bottom: 1px solid #EEF0F3; font-weight: 800;">{{a.rate}}</td>
+<td style="text-align: left; padding: 10px 8px; border-bottom: 1px solid #EEF0F3; color: {{a.noteColor}};">{{a.note}}</td>
+</tr>
+</template>
+</tbody>
+</table>
+</div>
+</section>
+
+<section aria-labelledby="tutup-h" style="background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 20px; padding: 18px 20px; display: flex; flex-direction: column; gap: 12px;">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 10px;"><div style="display: flex; flex-direction: column;"><h2 id="tutup-h" data-icon-done="1" style="display: flex; align-items: center; gap: 10px; margin: 0; font-size: 17px; font-weight: 900; color: #1D3149;"><span aria-hidden="true" style="width: 28px; height: 28px; flex: none; border-radius: 8px; background: #FDF0F6; color: #9C2C63; display: inline-flex; align-items: center; justify-content: center;"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4zM12 8.5a3.5 3.5 0 1 0 0 7a3.5 3.5 0 1 0 0-7zM17 7h.01"></path></svg></span>Monthly report per akun</h2><span style="font-size: 12.5px; color: #5B6573;">Diisi PIC akun tanggal 28, disetujui Kevin (Leader Marketing), lalu target dan strategi masuk ke rencana bulan depan.</span></div><span style="font-size: 12px; font-weight: 800; color: #7A5200; background: #FDF3D7; border-radius: 10px; padding: 4px 10px;">3 dari 8 akun sudah mengisi</span></div>
+<template data-sc="for" list="{{closing}}" as="c" hint-placeholder-count="3">
+<div style="display: grid; grid-template-columns: 170px repeat(3, minmax(0, 1fr)); gap: 12px; padding: 12px; border-radius: 14px; background: #F7F8FA;">
+<div style="display: flex; flex-direction: column; gap: 4px;"><span style="display: inline-flex; align-items: center; gap: 6px; font-weight: 900; color: #1D3149;"><span style="width: 9px; height: 9px; border-radius: 5px; background: {{c.dot}};"></span>{{c.acc}}</span><span style="font-size: 12px; color: #5B6573;">oleh {{c.pic}}</span><span style="font-size: 11.5px; font-weight: 800; color: {{c.stColor}};">{{c.status}}</span></div>
+<div style="display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 11.5px; font-weight: 900; letter-spacing: 0.04em; color: #5B6573;">PELAJARAN</span><span style="font-size: 12.5px; color: #1F2933;">{{c.lesson}}</span></div>
+<div style="display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 11.5px; font-weight: 900; letter-spacing: 0.04em; color: #5B6573;">TARGET NOVEMBER</span><span style="font-size: 12.5px; color: #1F2933;">{{c.target}}</span></div>
+<div style="display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 11.5px; font-weight: 900; letter-spacing: 0.04em; color: #5B6573;">STRATEGI</span><span style="font-size: 12.5px; color: #1F2933;">{{c.strategy}}</span></div>
+</div>
+</template>
+</section>
+
+</div>
+
+<aside style="flex: 1 1 320px; min-width: 0; display: flex; flex-direction: column; gap: 22px;">
+
+<section aria-labelledby="dec-h" style="background: #1D3149; color: #FFFFFF; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 14px;">
+<div style="display: flex; flex-direction: column;"><span style="font-size: 12px; font-weight: 900; letter-spacing: 0.1em; color: #86DCD3;">PERLU KEPUTUSAN · 4</span><h2 id="dec-h" data-icon-done="1" style="display: flex; align-items: center; gap: 10px; margin: 0; font-size: 19px; font-weight: 900;"><span aria-hidden="true" style="width: 28px; height: 28px; flex: none; border-radius: 8px; background: #DDF5F2; color: #067A70; display: inline-flex; align-items: center; justify-content: center;"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12l5 5L20 6"></path></svg></span>Menunggu keputusan</h2></div>
+<template data-sc="for" list="{{decisions}}" as="d" hint-placeholder-count="5">
+<div style="display: flex; flex-direction: column; gap: 8px; padding: 14px; border-radius: 14px; background: #24405E;">
+<strong style="font-size: 15px; line-height: 1.3;">{{d.title}}</strong>
+<span style="font-size: 12.5px; color: #C5D3E3;">{{d.why}}</span>
+<span style="font-size: 12px; font-weight: 800; color: #86DCD3;">{{d.effect}}</span>
+<div style="display: flex; gap: 8px;">
+<button type="button" style="flex: 1 1 0; height: 38px; border-radius: 10px; border: 0; background: #09BEAF; color: #1D3149; font-family: inherit; font-size: 13px; font-weight: 900; cursor: pointer;">Setujui</button>
+<button type="button" style="flex: 1 1 0; height: 38px; border-radius: 10px; border: 1px solid #5B7593; background: transparent; color: #FFFFFF; font-family: inherit; font-size: 13px; font-weight: 800; cursor: pointer;">Tunda</button>
+</div>
+</div>
+</template>
+</section>
+
+<section aria-labelledby="tgt-h" style="background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 20px; padding: 18px 20px; display: flex; flex-direction: column; gap: 12px;">
+<div style="display: flex; flex-direction: column;"><h2 id="tgt-h" data-icon-done="1" style="display: flex; align-items: center; gap: 10px; margin: 0; font-size: 17px; font-weight: 900; color: #1D3149;"><span aria-hidden="true" style="width: 28px; height: 28px; flex: none; border-radius: 8px; background: #DDF5F2; color: #067A70; display: inline-flex; align-items: center; justify-content: center;"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18zM12 7a5 5 0 1 0 0 10a5 5 0 1 0 0-10zM12 11a1 1 0 1 0 0 2a1 1 0 1 0 0-2z"></path></svg></span>Target Oktober</h2><span style="font-size: 12.5px; color: #5B6573;">Sisa 4 hari</span></div>
+<template data-sc="for" list="{{targets}}" as="t" hint-placeholder-count="4">
+<div style="display: flex; flex-direction: column; gap: 4px;">
+<div style="display: flex; justify-content: space-between; font-size: 13px;"><span style="font-weight: 800;">{{t.name}}</span><span style="font-weight: 900; color: #1D3149;">{{t.val}}</span></div>
+<div style="height: 8px; border-radius: 4px; background: #EEF0F3; overflow: hidden;"><div style="height: 100%; width: {{t.pct}}; border-radius: 4px; background: {{t.color}};"></div></div>
+<span style="font-size: 12px; font-weight: 700; color: {{t.noteColor}};">{{t.note}}</span>
+</div>
+</template>
+</section>
+
+</aside>
+</div>
+</main>
+</div>
+</template>
+<div id="dc-root"></div>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1360}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { vf: 'Semua' }; }
+  renderVals() {
+    var self = this;
+    var U = { RA: '#2F6FD0', WG: '#0FA394', NA: '#D08A1E' };
+    var TINT = { RA: '#E5EEF9', WG: '#DDF5F2', NA: '#FBEFD9' };
+    var P = {
+      dita: { name: 'Dita', ini: 'D', color: '#2F6FD0' }, mugni: { name: 'Mugni', ini: 'M', color: '#0FA394' },
+      nayla: { name: 'Nayla', photo: 'nayla.jpg' }, kevin: { name: 'Kevin', photo: 'kevin.jpg' }
+    };
+    var GOOD = '#067A70', BAD = '#9A3F0A';
+    var NX = { good: ['#DDF5F2', GOOD], warn: ['#FDF3D7', '#7A5200'], bad: ['#FCEBDD', BAD] };
+    var row = function (name, cost, chat, cpl, cplOk, close, omzet, roas, roasOk, next, kind, total) {
+      return { name: name, cost: cost, chat: chat, cpl: cpl, cplColor: cplOk ? GOOD : BAD, close: close, omzet: omzet, roas: roas, roasColor: roasOk ? GOOD : BAD, next: next, nextBg: NX[kind][0], nextFg: NX[kind][1], weight: total ? '800' : '500', bg: total ? '#F7F8FA' : '#FFFFFF' };
+    };
+    var money = [
+      row('Meta Ads', 'Rp 4,7 jt', '223', 'Rp 21,1 rb', true, '60', 'Rp 60,4 jt', '12,9x', true, 'Ganti materi Sewa motor Garut', 'warn'),
+      row('KOL', 'Rp 2,4 jt', '49', 'Rp 49,0 rb', false, '12', 'Rp 14,8 jt', '6,2x', false, 'Stop 1, nego ulang 2', 'bad'),
+      row('Organik, story, broadcast', 'Rp 0', '214', '—', true, '59', 'Rp 39,4 jt', '—', true, 'Tambah slot Carousel', 'good'),
+      row('Total', 'Rp 7,1 jt', '486', 'Rp 14,6 rb', true, '131', 'Rp 114,6 jt', '16,1x', true, 'Lihat keputusan', 'good', true)
+    ];
+    var VS = { 'Repeat': ['#DDF5F2', GOOD], 'Repurpose TikTok': ['#E5EEF9', '#1E5AA8'], 'Fix hook/CTA': ['#FDF3D7', '#7A5200'], 'Boost': ['#E5EEF9', '#1E5AA8'], 'Stop': ['#FCEBDD', BAD] };
+    var V = [
+      { u: 'WG', acc: 'Wisata Garut', who: P.nayla, date: '25 Okt', pillar: 'Educational', fmt: 'Carousel', title: 'Estimasi biaya liburan Garut 3 hari', reach: '7,6 rb', er: '6,2%', saves: '94', chat: '11', verdict: 'Repeat', next: 'Versi 2 hari, Sab 7 Nov' },
+      { u: 'WG', acc: 'Wisata Garut', who: P.nayla, date: '27 Okt', pillar: 'Entertainment', fmt: 'Reels', title: 'Curug Citiis yang masih tersembunyi', reach: '9,3 rb', er: '6,1%', saves: '69', chat: '7', verdict: 'Repurpose TikTok', next: 'Buat tugas TikTok' },
+      { u: 'WG', acc: 'TripinAja', who: P.nayla, date: '22 Okt', pillar: 'Promotional', fmt: 'Foto', title: 'Early bird trip tahun baru', reach: '6,8 rb', er: '5,7%', saves: '47', chat: '8', verdict: 'Repeat', next: 'Sudah di Sab 7 Nov' },
+      { u: 'RA', acc: 'Rentalaja', who: P.dita, date: '23 Okt', pillar: 'Promotional', fmt: 'Reels', title: 'Flash sale weekend: Beat Rp 85 rb', reach: '6,5 rb', er: '3,5%', saves: '28', chat: '9', verdict: 'Boost', next: 'Ajukan Rp 50 rb/hari' },
+      { u: 'RA', acc: 'Rentalaja', who: P.dita, date: '27 Okt', pillar: 'Educational', fmt: 'Reels', title: '3 hal dicek sebelum sewa motor', reach: '10,8 rb', er: '3,9%', saves: '51', chat: '4', verdict: 'Fix hook/CTA', next: 'Tambah tautan berkode', low: true },
+      { u: 'NA', acc: 'Laptopaja', who: P.dita, date: '22 Okt', pillar: 'Educational', fmt: 'Foto', title: 'Servis dan cleaning sebelum dijual', reach: '1,1 rb', er: '1,7%', saves: '2', chat: '0', verdict: 'Stop', next: 'Catat pelajarannya', low: true }
+    ];
+    var vfOpt = ['Semua', 'Repeat', 'Fix hook/CTA', 'Stop'];
+    var cur = this.state.vf;
+    var verdicts = V.filter(function (v) { return cur === 'Semua' || v.verdict === cur; }).map(function (v) {
+      return Object.assign({ dot: U[v.u], tint: TINT[v.u], vBg: VS[v.verdict][0], vFg: VS[v.verdict][1], chatColor: v.low ? BAD : '#3B4250', who: { name: v.who.name, photo: v.who.photo || '', ini: v.who.photo ? '' : v.who.ini, color: v.who.color } }, v, { who: { name: v.who.name, photo: v.who.photo || '', ini: v.who.photo ? '' : v.who.ini, color: v.who.color } });
+    });
+    var vf = vfOpt.map(function (label) {
+      var on = label === cur;
+      return { label: label, pressed: on ? 'true' : 'false', bg: on ? '#1D3149' : '#FFFFFF', fg: on ? '#FFFFFF' : '#1D3149', border: on ? '#1D3149' : '#E3E6EB', pick: function () { self.setState({ vf: label }); } };
+    });
+    var BK = { 'Rentalaja': 18, 'Rentalaja Experience': 4, 'ATVaja': 0, 'Maripoto': 1, 'TripinAja': 11, 'Wisata Garut': 8, 'Niagaaja': 0, 'Laptopaja': 7 };
+    var acc = function (name, u, pic, posts, chat, close, note, warn) { var c = +chat; return { name: name, dot: U[u], pic: pic, picColor: pic === 'Belum ada PIC' ? BAD : '#3B4250', posts: posts, chat: chat, book: String(BK[name]), close: close, rate: c ? Math.round(+close / c * 100) + '%' : '—', note: note, noteColor: warn ? BAD : '#3B4250' }; };
+    var accounts = [
+      acc('Rentalaja', 'RA', 'Dita', '12 / 14', '44', '12', 'Reels ramai tapi CTA lemah'),
+      acc('Rentalaja Experience', 'RA', 'Dita', '3 / 6', '9', '3', 'Kurang konten, tapi tiap chat mahal nilainya', true),
+      acc('ATVaja', 'RA', 'Nayla', '0 / 4', '0', '0', 'Tidak ada konten bulan ini, baru pindah ke Nayla', true),
+      acc('Maripoto', 'RA', 'Nayla', '1 / 4', '2', '0', 'Perlu jadwal tetap', true),
+      acc('TripinAja', 'WG', 'Nayla', '12 / 14', '32', '7', 'Foto promo jalan'),
+      acc('Wisata Garut', 'WG', 'Nayla', '8 / 10', '21', '5', 'Carousel biaya paling disimpan'),
+      acc('Laptopaja', 'NA', 'Dita', '10 / 13', '17', '5', 'Edukasi cek laptop lebih jalan dari stok'),
+      acc('Niagaaja', 'NA', 'Dita', '0 / 0', '0', '0', 'Belum jalan, fokus ke Laptopaja dulu')
+    ];
+    var decisions = [
+      { title: 'Pilih 2 KOL travel dari 4 kandidat', why: 'Untuk Libur Akhir Tahun. Tayang pekan pertama Desember.', effect: 'Budget KOL rencana Rp 1,5 jt' },
+      { title: 'Ganti materi iklan Sewa motor Garut ke Reels "jas hujan gratis"', why: 'ROAS 6,8x, di bawah 8x. Frekuensi 2,7.', effect: 'Target ROAS kembali di atas 8x' },
+      { title: 'Alihkan Rp 900 rb dari KOL ke iklan carousel TripinAja', why: 'ROAS KOL 6,2x, iklan 12,9x. Dua KOL lewat jadwal tayang.', effect: 'Perkiraan +25 leads bulan depan' },
+      { title: 'Jadwal tetap ATVaja dan Maripoto (Nayla)', why: 'Empat slot minggu depan kosong. ATVaja tidak posting sama sekali di Oktober.', effect: 'Menutup 4 slot kosong per minggu' }
+    ];
+    var targets = [
+      { name: 'Chat WA', val: '486 / 520', pct: '93%', color: '#09BEAF', note: 'Butuh 9 per hari', noteColor: '#7A5200' },
+      { name: 'Closing', val: '131 / 150', pct: '87%', color: '#F2A33A', note: 'Butuh 5 per hari', noteColor: BAD },
+      { name: 'Konten tayang', val: '46 / 65', pct: '71%', color: '#F2A33A', note: 'ATVaja dan Maripoto menarik turun', noteColor: BAD },
+      { name: 'Omzet terlacak', val: 'Rp 114,6 / 120 jt', pct: '96%', color: '#09BEAF', note: 'Aman', noteColor: GOOD }
+    ];
+    var closing = [
+      { acc: 'Rentalaja', dot: U.RA, pic: 'Dita', status: 'Menunggu persetujuan Kevin', stColor: '#7A5200', lesson: 'Reels edukasi paling banyak ditonton, tapi caption tanpa tautan berkode jadi chat sedikit.', target: '230 leads · 62 closing', strategy: 'Link WA dengan kode tracking di semua caption. Ulangi format "syarat sewa" untuk motor dan kamera.' },
+      { acc: 'Wisata Garut', dot: U.WG, pic: 'Nayla', status: 'Disetujui', stColor: GOOD, lesson: 'Carousel estimasi biaya paling disimpan dan paling memancing chat.', target: '110 leads · 26 closing', strategy: 'Seri estimasi biaya 2, 3, dan 4 hari. Konten Hari Ayah 12 Nov.' },
+      { acc: 'Laptopaja', dot: U.NA, pic: 'Dita', status: 'Menunggu persetujuan Kevin', stColor: '#7A5200', lesson: 'Konten edukasi cek laptop lebih jalan daripada konten stok.', target: '60 leads · 14 closing', strategy: 'Mulai TikTok dengan format cek laptop 60 detik.' }
+    ];
+    return { money: money, verdicts: verdicts, vf: vf, accounts: accounts, decisions: decisions, targets: targets, closing: closing };
+  }
+}
+</script>
+</body>
+</html>

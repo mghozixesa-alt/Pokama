@@ -1,0 +1,326 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Campaign — Marketing Pokama</title>
+<link rel="icon" href="logo-pokama.png">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F3F5F8}
+a{color:#1D3149}a:hover{color:#0F1D2E}
+table{font-variant-numeric:tabular-nums}
+main > header{background:radial-gradient(circle at 92% -30%, rgba(9,190,175,.45), transparent 42%),linear-gradient(135deg,#1D3149 0%,#28507A 100%);border-radius:22px;padding:22px 26px;align-items:center !important;box-shadow:0 10px 30px rgba(29,49,73,.18)}
+main > header h1{color:#FFFFFF !important}
+main > header span{color:#D3E0EC !important}
+main > header b{color:#7FF0E2 !important}
+main > header span[style*="dashed"]{border-color:rgba(255,255,255,.45) !important}
+main > header button{border-color:rgba(255,255,255,.35) !important}
+main > header button[aria-pressed="true"]{background:#09BEAF !important;color:#1D3149 !important;border-color:#09BEAF !important}
+main > header button[aria-pressed="false"]{background:rgba(255,255,255,.08) !important;color:#FFFFFF !important}
+main > header a{color:#1D3149}
+main section{transition:box-shadow .2s ease, transform .2s ease}
+main section:hover{box-shadow:0 8px 24px rgba(29,49,73,.07)}
+main > header span[aria-hidden="true"]{flex:none}
+@media (max-width: 760px){article[style*="grid-template-columns: 36px minmax(0, 1fr) auto"]{grid-template-columns:32px minmax(0,1fr) !important}
+article[style*="grid-template-columns: 36px minmax(0, 1fr) auto"] > div:last-child{grid-column:2;flex-direction:row !important;justify-content:space-between;align-items:center !important}}
+@media (max-width: 760px){main > header{padding:16px !important;border-radius:16px}}
+@media (max-width: 760px){table:not(:has(th:nth-child(5))){min-width:0 !important;width:100% !important}}
+td[style*="text-align: right"]{white-space:nowrap}
+tbody tr:hover td{background:#F9FAFB}
+thead th{position:sticky;top:0;background:#FFFFFF}
+button:focus-visible,a:focus-visible{outline:2px solid #09BEAF;outline-offset:2px;border-radius:8px}
+button{transition:filter .15s}button:hover{filter:brightness(0.97)}
+@media (max-width: 760px){
+nav[aria-label="Menu utama"]{flex:1 1 100% !important;flex-direction:row !important;align-items:center !important;overflow-x:auto;gap:4px !important;padding:8px 12px !important;border-right:0 !important;border-bottom:1px solid #E3E6EB;position:sticky;top:0;z-index:20;scrollbar-width:none}
+nav[aria-label="Menu utama"] > div{flex-direction:row !important;gap:4px !important;padding:0 !important;flex:none !important}
+nav[aria-label="Menu utama"] > div > span:first-child{display:none !important}
+nav[aria-label="Menu utama"] > div:first-child img{width:84px !important}
+nav[aria-label="Menu utama"] > div:first-child span{display:none !important}
+nav[aria-label="Menu utama"] a{white-space:nowrap;min-height:36px !important;padding:0 10px !important}
+nav[aria-label="Menu utama"] > div[style*="margin-top: auto"]{display:none !important}
+main{padding:18px 16px 40px !important}
+h1{font-size:24px !important}
+}
+</style>
+<link rel="stylesheet" href="gate.css">
+<script src="gate.js"></script>
+<script src="dc-lite.js"></script>
+</head>
+<body>
+<template id="dc-tpl">
+
+<div style="min-height: 2860px; display: flex; flex-wrap: wrap; background: #F3F5F8; color: #1F2933; font-family: 'Nunito', system-ui, sans-serif; font-size: 14px; line-height: 1.45;">
+
+<nav aria-label="Menu utama" style="flex: 1 1 240px; box-sizing: border-box; background: #FFFFFF; border-right: 1px solid #E3E6EB; padding: 24px 16px; display: flex; flex-direction: column; gap: 18px;">
+<div style="display: flex; flex-direction: column; gap: 6px; padding: 0 8px;">
+<img src="logo-pokama.png" alt="Pokama" style="width: 132px; height: auto;">
+<span style="font-size: 12px; color: #5B6573; font-weight: 700;">Marketing</span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 2px;">
+<span style="font-size: 11px; font-weight: 800; letter-spacing: 0.08em; color: #5B6573; padding: 0 12px 4px;">UTAMA</span>
+<a href="Dashboard.dc.html" style="display: flex; align-items: center; gap: 10px; min-height: 38px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 600; color: #3B4250;"><span style="display: inline-flex; color: #5B6573;"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h7v9H3zM14 3h7v5h-7zM14 12h7v9h-7zM3 16h7v5H3z"></path></svg></span><span style="flex-grow: 1;">Dashboard utama</span></a>
+<a href="Main.dc.html" style="display: flex; align-items: center; gap: 10px; min-height: 38px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 600; color: #3B4250;"><span style="display: inline-flex; color: #5B6573;"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18zM12 7v5l3 2"></path></svg></span><span style="flex-grow: 1;">Hari ini</span><span style="min-width: 22px; height: 22px; border-radius: 11px; background: #C2410C; color: #FFFFFF; font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center; padding: 0 6px; box-sizing: border-box;">7</span></a>
+<a href="Campaign.dc.html" aria-current="page" style="display: flex; align-items: center; gap: 10px; min-height: 38px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 800; color: #1D3149; background: #DDF5F2;"><span style="display: inline-flex; color: #067A70;"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21V4M5 4h12l-2 4 2 4H5"></path></svg></span><span style="flex-grow: 1;">Campaign</span><span style="font-size: 12px; font-weight: 800; color: #067A70; white-space: nowrap;">4 jalan</span></a>
+</div>
+<div style="display: flex; flex-direction: column; gap: 2px;">
+<span style="font-size: 11px; font-weight: 800; letter-spacing: 0.08em; color: #5B6573; padding: 0 12px 4px;">KONTEN ORGANIK</span>
+<a href="MingguDepan.dc.html" style="display: flex; align-items: center; gap: 10px; min-height: 38px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 600; color: #3B4250;"><span style="display: inline-flex; color: #5B6573;"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h18v16H3zM3 10h18M8 3v4M16 3v4"></path></svg></span><span style="flex-grow: 1;">Content plan</span><span style="font-size: 12px; font-weight: 800; color: #9A3F0A; white-space: nowrap;">8 kosong</span></a>
+<a href="BankIde.dc.html" style="display: flex; align-items: center; gap: 10px; min-height: 38px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 600; color: #3B4250;"><span style="display: inline-flex; color: #5B6573;"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10.5c.8.8 1 1.5 1 2.5h6c0-1 .2-1.7 1-2.5A6 6 0 0 0 12 3z"></path></svg></span><span style="flex-grow: 1;">Content bank</span><span style="font-size: 12px; font-weight: 800; color: #067A70; white-space: nowrap;">+6</span></a>
+<a href="Sosial.dc.html" style="display: flex; align-items: center; gap: 10px; min-height: 38px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 600; color: #3B4250;"><span style="display: inline-flex; color: #5B6573;"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4zM12 8.5a3.5 3.5 0 1 0 0 7a3.5 3.5 0 1 0 0-7zM17 7h.01"></path></svg></span><span style="flex-grow: 1;">Analytics IG &amp; TikTok</span></a>
+</div>
+<div style="display: flex; flex-direction: column; gap: 2px;">
+<span style="font-size: 11px; font-weight: 800; letter-spacing: 0.08em; color: #5B6573; padding: 0 12px 4px;">CHANNEL</span>
+<a href="Ads.dc.html" style="display: flex; align-items: center; gap: 10px; min-height: 38px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 600; color: #3B4250;"><span style="display: inline-flex; color: #5B6573;"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11v2a1 1 0 0 0 1 1h3l5 4V6L7 10H4a1 1 0 0 0-1 1zM16 8a5 5 0 0 1 0 8"></path></svg></span><span style="flex-grow: 1;">Paid ads</span></a>
+<a href="KOL.dc.html" style="display: flex; align-items: center; gap: 10px; min-height: 38px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 600; color: #3B4250;"><span style="display: inline-flex; color: #5B6573;"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.5 6.7 19.4l1.2-6L3.4 9.3l6-.7z"></path></svg></span><span style="flex-grow: 1;">KOL</span><span style="font-size: 12px; font-weight: 800; color: #9A3F0A; white-space: nowrap;">2 telat</span></a>
+<a href="Maps.dc.html" style="display: flex; align-items: center; gap: 10px; min-height: 38px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 600; color: #3B4250;"><span style="display: inline-flex; color: #5B6573;"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4a7 7 0 1 0 0 14a7 7 0 1 0 0-14zM21 21l-5-5"></path></svg></span><span style="flex-grow: 1;">SEO</span></a>
+<a href="WA.dc.html" style="display: flex; align-items: center; gap: 10px; min-height: 38px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 600; color: #3B4250;"><span style="display: inline-flex; color: #5B6573;"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H8l-4 4z"></path></svg></span><span style="flex-grow: 1;">WA &amp; CS</span></a>
+</div>
+<div style="display: flex; flex-direction: column; gap: 2px;">
+<span style="font-size: 11px; font-weight: 800; letter-spacing: 0.08em; color: #5B6573; padding: 0 12px 4px;">REVIEW</span>
+<a href="Hasil.dc.html" style="display: flex; align-items: center; gap: 10px; min-height: 38px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 600; color: #3B4250;"><span style="display: inline-flex; color: #5B6573;"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4h6v3H9zM6 6h12v15H6zM9 12h6M9 16h4"></path></svg></span><span style="flex-grow: 1;">Review mingguan</span></a>
+<a href="Laporan.dc.html" style="display: flex; align-items: center; gap: 10px; min-height: 38px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 600; color: #3B4250;"><span style="display: inline-flex; color: #5B6573;"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 16v-5a6 6 0 0 1 12 0v5l2 2H4zM10 20a2 2 0 0 0 4 0"></path></svg></span><span style="flex-grow: 1;">Laporan &amp; WA</span><span style="font-size: 12px; font-weight: 800; color: #9A3F0A; white-space: nowrap;">2 menunggu</span></a>
+<a href="Tim.dc.html" style="display: flex; align-items: center; gap: 10px; min-height: 38px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 600; color: #3B4250;"><span style="display: inline-flex; color: #5B6573;"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11a3.5 3.5 0 1 0 0-7a3.5 3.5 0 1 0 0 7zM2.5 20c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5M17 11a2.5 2.5 0 1 0 0-5M17 14.5c2.3 0 4 1.5 4.5 4"></path></svg></span><span style="flex-grow: 1;">Tim &amp; workload</span></a>
+</div>
+<div style="display: flex; flex-direction: column; gap: 2px;">
+<span style="font-size: 11px; font-weight: 800; letter-spacing: 0.08em; color: #5B6573; padding: 0 12px 4px;">PENGATURAN</span>
+<a href="Data.dc.html" style="display: flex; align-items: center; gap: 10px; min-height: 38px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 600; color: #3B4250;"><span style="display: inline-flex; color: #5B6573;"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6c0-1.7 3.6-3 8-3s8 1.3 8 3-3.6 3-8 3-8-1.3-8-3zM4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"></path></svg></span><span style="flex-grow: 1;">Input &amp; patokan</span><span style="font-size: 12px; font-weight: 800; color: #9A3F0A; white-space: nowrap;">2 telat</span></a>
+<a href="Brand.dc.html" style="display: flex; align-items: center; gap: 10px; min-height: 38px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 600; color: #3B4250;"><span style="display: inline-flex; color: #5B6573;"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12V4h8l10 10-8 8zM7.5 7.5h.01"></path></svg></span><span style="flex-grow: 1;">Brand &amp; positioning</span></a>
+</div>
+<div style="margin-top: auto; display: flex; align-items: center; gap: 10px; padding: 14px 12px 0; border-top: 1px solid #E3E6EB;">
+<img src="kevin.jpg" alt="" style="width: 38px; height: 38px; border-radius: 19px; object-fit: cover;">
+<div style="display: flex; flex-direction: column;"><span style="font-weight: 800;">Kevin</span><span style="font-size: 12px; color: #5B6573;">Leader Marketing</span></div>
+</div>
+</nav>
+
+<main style="flex: 999 1 560px; min-width: 0; box-sizing: border-box; padding: 28px 36px 48px; display: flex; flex-direction: column; gap: 22px;">
+
+<header style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px;">
+<div style="display: flex; flex-direction: column; gap: 4px; max-width: 960px;">
+<span style="font-size: 13px; color: #5B6573; font-weight: 700;">Dipegang Kevin · setiap konten, iklan, dan KOL punya induk campaign</span>
+<h1 style="margin: 0; font-size: 28px; font-weight: 900; color: #1D3149;">Campaign</h1>
+<span style="font-size: 14px; color: #3B4250; max-width: 900px;">Setiap campaign punya tujuan, target, dan budget, lalu dipecah ke organik, paid ads, KOL, WA, dan SEO.</span>
+</div>
+<div style="display: flex; gap: 8px; align-items: center;"><span style="font-size: 12px; font-weight: 700; color: #5B6573; border: 1px dashed #A9B4C2; border-radius: 18px; padding: 8px 12px;">Data contoh</span><a href="#brief-baru" style="height: 42px; padding: 0 16px; border-radius: 10px; background: #09BEAF; color: #1D3149; font-size: 13.5px; font-weight: 900; display: flex; align-items: center; text-decoration: none;">+ Campaign baru</a></div>
+</header>
+
+<div style="display: flex; flex-wrap: wrap; gap: 22px; align-items: flex-start;">
+
+<aside aria-label="Daftar campaign" style="flex: 1 1 270px; min-width: 0; display: flex; flex-direction: column; gap: 10px;">
+<template data-sc="for" list="{{list}}" as="c" hint-placeholder-count="6">
+<button type="button" onClick="{{c.pick}}" aria-pressed="{{c.pressed}}" style="text-align: left; font-family: inherit; cursor: pointer; background: {{c.bg}}; border: 1px solid {{c.border}}; border-left: 5px solid {{c.dot}}; border-radius: 14px; padding: 12px; display: flex; flex-direction: column; gap: 4px;">
+<span style="font-size: 11.5px; font-weight: 900; color: {{c.stFg}}; background: {{c.stBg}}; border-radius: 7px; padding: 1px 7px; align-self: flex-start;">{{c.status}}</span>
+<strong style="font-size: 14.5px; color: #1D3149;">{{c.name}}</strong>
+<span style="font-size: 12px; color: #5B6573;">{{c.period}} · {{c.budget}}</span>
+<div style="height: 6px; border-radius: 3px; background: #E3E6EB; overflow: hidden;"><div style="height: 100%; width: {{c.goalPct}}; background: {{c.goalBar}};"></div></div>
+<span style="font-size: 11.5px; font-weight: 800; color: #3B4250;">{{c.goal}}</span>
+</button>
+</template>
+</aside>
+
+<div style="flex: 4 1 760px; min-width: 0; display: flex; flex-direction: column; gap: 18px;">
+
+<section style="background: #FFFFFF; border: 1px solid #E3E6EB; border-top: 5px solid {{c.dot}}; border-radius: 20px; padding: 18px 20px; display: flex; flex-direction: column; gap: 12px;">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; align-items: flex-start;">
+<div style="display: flex; flex-direction: column; gap: 4px;"><span style="font-size: 11.5px; font-weight: 900; color: {{c.stFg}}; background: {{c.stBg}}; border-radius: 7px; padding: 2px 8px; align-self: flex-start;">{{c.status}}</span><h2 style="margin: 0; font-size: 24px; font-weight: 900; color: #1D3149;">{{c.name}}</h2><span style="font-size: 13px; color: #3B4250;">{{c.period}} · tujuan <b>{{c.objective}}</b> · budget <b>{{c.budget}}</b></span></div>
+<div style="display: flex; align-items: center; gap: 10px;"><img src="kevin.jpg" alt="Kevin" style="width: 40px; height: 40px; border-radius: 20px; object-fit: cover;"><div style="display: flex; flex-direction: column;"><span style="font-size: 11.5px; color: #5B6573;">Pemilik campaign</span><strong style="font-size: 13.5px; color: #1D3149;">Kevin</strong></div></div>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 6px;">
+<template data-sc="for" list="{{c.accs}}" as="a" hint-placeholder-count="3"><span style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 800; color: #3B4250; background: #F3F5F8; border-radius: 10px; padding: 4px 10px;"><span style="width: 8px; height: 8px; border-radius: 4px; background: {{a.dot}};"></span>{{a.name}}</span></template>
+</div>
+</section>
+
+<section style="background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 20px; padding: 18px 20px; display: flex; flex-direction: column; gap: 12px;">
+<div style="display: flex; flex-direction: column;"><h3 data-icon-done="1" style="display: flex; align-items: center; gap: 10px; margin: 0; font-size: 17px; font-weight: 900; color: #1D3149;"><span aria-hidden="true" style="width: 28px; height: 28px; flex: none; border-radius: 8px; background: #DDF5F2; color: #067A70; display: inline-flex; align-items: center; justify-content: center;"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18zM12 7a5 5 0 1 0 0 10a5 5 0 1 0 0-10zM12 11a1 1 0 1 0 0 2a1 1 0 1 0 0-2z"></path></svg></span>1 · Tujuan dan target</h3><span style="font-size: 12.5px; color: #5B6573;">Disetujui CEO sebelum campaign mulai. Semua angka di bawah dijumlah dari channel.</span></div>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px;">
+<template data-sc="for" list="{{c.targets}}" as="t" hint-placeholder-count="4">
+<div style="background: #F7F8FA; border-radius: 14px; padding: 12px; display: flex; flex-direction: column; gap: 4px;"><span style="font-size: 12px; font-weight: 800; color: #5B6573;">{{t.label}}</span><span style="font-size: 20px; font-weight: 900; color: #1D3149;">{{t.val}}</span><div style="height: 6px; border-radius: 3px; background: #E3E6EB; overflow: hidden;"><div style="height: 100%; width: {{t.pct}}; background: {{t.bar}};"></div></div><span style="font-size: 11.5px; font-weight: 800; color: {{t.noteColor}};">{{t.note}}</span></div>
+</template>
+</div>
+</section>
+
+<section style="background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 20px; padding: 18px 20px; display: flex; flex-direction: column; gap: 12px;">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px;"><div style="display: flex; flex-direction: column;"><h3 data-icon-done="1" style="display: flex; align-items: center; gap: 10px; margin: 0; font-size: 17px; font-weight: 900; color: #1D3149;"><span aria-hidden="true" style="width: 28px; height: 28px; flex: none; border-radius: 8px; background: #FDF3D7; color: #7A5200; display: inline-flex; align-items: center; justify-content: center;"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10.5c.8.8 1 1.5 1 2.5h6c0-1 .2-1.7 1-2.5A6 6 0 0 0 12 3z"></path></svg></span>2 · Strategi</h3><span style="font-size: 12.5px; color: #5B6573;">Positioning dan audiens diambil dari Brand. Campaign hanya memilih pesan dan pillar yang ditonjolkan.</span></div><a href="Brand.dc.html" style="font-size: 12.5px; font-weight: 800; color: #067A70;">Brand &amp; positioning →</a></div>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 10px;">
+<template data-sc="for" list="{{c.strategy}}" as="s" hint-placeholder-count="6">
+<div style="border: 1px solid {{s.border}}; background: {{s.bg}}; border-radius: 14px; padding: 12px; display: flex; flex-direction: column; gap: 4px;"><span style="font-size: 11.5px; font-weight: 900; letter-spacing: 0.06em; color: #5B6573;">{{s.label}}</span><span style="font-size: 13.5px; font-weight: 700; color: #1D3149;">{{s.val}}</span></div>
+</template>
+</div>
+</section>
+
+<section style="background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 20px; padding: 18px 20px; display: flex; flex-direction: column; gap: 12px;">
+<div style="display: flex; flex-direction: column;"><h3 data-icon-done="1" style="display: flex; align-items: center; gap: 10px; margin: 0; font-size: 17px; font-weight: 900; color: #1D3149;"><span aria-hidden="true" style="width: 28px; height: 28px; flex: none; border-radius: 8px; background: #DDF5F2; color: #067A70; display: inline-flex; align-items: center; justify-content: center;"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01"></path></svg></span>3 · Rencana per channel</h3><span style="font-size: 12.5px; color: #5B6573;">Setiap baris membuat pekerjaan di halaman channel-nya, dengan tanda campaign ini. Klik nama channel untuk membukanya.</span></div>
+<div style="overflow-x: auto;">
+<table style="width: 100%; min-width: 720px; border-collapse: collapse; font-size: 13px;">
+<thead><tr style="text-align: left; color: #5B6573; font-size: 12px;"><th scope="col" style="padding: 8px; border-bottom: 1px solid #E3E6EB;">Channel</th><th scope="col" style="padding: 8px; border-bottom: 1px solid #E3E6EB;">Rencana</th><th scope="col" style="padding: 8px; border-bottom: 1px solid #E3E6EB;">PIC</th><th scope="col" style="padding: 8px; border-bottom: 1px solid #E3E6EB; text-align: right;">Budget</th><th scope="col" style="padding: 8px; border-bottom: 1px solid #E3E6EB;">Progress</th></tr></thead>
+<tbody>
+<template data-sc="for" list="{{c.plan}}" as="p" hint-placeholder-count="6">
+<tr>
+<td style="padding: 10px 8px; border-bottom: 1px solid #EEF0F3;"><a href="{{p.href}}" style="display: inline-flex; align-items: center; gap: 7px; font-weight: 800; color: #1D3149;"><span style="width: 10px; height: 10px; border-radius: 3px; background: {{p.color}};"></span>{{p.ch}}</a></td>
+<td style="padding: 10px 8px; border-bottom: 1px solid #EEF0F3; color: #3B4250;">{{p.plan}}</td>
+<td style="padding: 10px 8px; border-bottom: 1px solid #EEF0F3; font-weight: 700;">{{p.pic}}</td>
+<td style="padding: 10px 8px; border-bottom: 1px solid #EEF0F3; text-align: right; font-weight: 700;">{{p.budget}}</td>
+<td style="padding: 10px 8px; border-bottom: 1px solid #EEF0F3; min-width: 140px;"><div style="display: flex; flex-direction: column; gap: 3px;"><div style="height: 6px; border-radius: 3px; background: #E3E6EB; overflow: hidden;"><div style="height: 100%; width: {{p.pct}}; background: {{p.bar}};"></div></div><span style="font-size: 11.5px; font-weight: 800; color: {{p.noteColor}};">{{p.note}}</span></div></td>
+</tr>
+</template>
+</tbody>
+</table>
+</div>
+</section>
+
+<section style="background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 20px; padding: 18px 20px; display: flex; flex-direction: column; gap: 12px;">
+<div style="display: flex; flex-direction: column;"><h3 data-icon-done="1" style="display: flex; align-items: center; gap: 10px; margin: 0; font-size: 17px; font-weight: 900; color: #1D3149;"><span aria-hidden="true" style="width: 28px; height: 28px; flex: none; border-radius: 8px; background: #DDF5F2; color: #067A70; display: inline-flex; align-items: center; justify-content: center;"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h10M6 12h12M9 18h10"></path></svg></span>4 · Timeline</h3><span style="font-size: 12.5px; color: #5B6573;">Garis putus-putus = hari ini.</span></div>
+<div style="overflow-x: auto;"><div style="min-width: 760px; display: flex; flex-direction: column; gap: 6px;">
+<div style="display: grid; grid-template-columns: 170px minmax(0, 1fr); gap: 10px;"><span></span><div style="display: grid; grid-template-columns: repeat({{c.weekN}}, minmax(0, 1fr));"><template data-sc="for" list="{{c.weeks}}" as="w" hint-placeholder-count="8"><span style="font-size: 11.5px; font-weight: 800; color: #5B6573; border-left: 1px solid #E3E6EB; padding-left: 4px;">{{w}}</span></template></div></div>
+<template data-sc="for" list="{{c.time}}" as="r" hint-placeholder-count="6">
+<div style="display: grid; grid-template-columns: 170px minmax(0, 1fr); gap: 10px; align-items: center;"><span style="font-size: 12.5px; font-weight: 800; color: #1D3149;">{{r.label}}</span><div style="position: relative; height: 26px; background: #F7F8FA; border-radius: 6px;"><div style="position: absolute; top: 4px; bottom: 4px; left: {{r.left}}; width: {{r.width}}; background: {{r.color}}; border-radius: 6px; display: flex; align-items: center; padding: 0 8px; box-sizing: border-box; overflow: hidden;"><span style="font-size: 11.5px; font-weight: 800; color: #FFFFFF; white-space: nowrap;">{{r.note}}</span></div><div style="position: absolute; top: -3px; bottom: -3px; left: {{c.today}}; border-left: 2px dashed #1D3149;"></div></div></div>
+</template>
+</div></div>
+</section>
+
+<template data-sc="if" value="{{c.hasResults}}" hint-placeholder-val="{{ true }}">
+<section style="background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 20px; padding: 18px 20px; display: flex; flex-direction: column; gap: 12px;">
+<div style="display: flex; flex-direction: column;"><h3 data-icon-done="1" style="display: flex; align-items: center; gap: 10px; margin: 0; font-size: 17px; font-weight: 900; color: #1D3149;"><span aria-hidden="true" style="width: 28px; height: 28px; flex: none; border-radius: 8px; background: #E5EEF9; color: #1E5AA8; display: inline-flex; align-items: center; justify-content: center;"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V9M10 19V5M16 19v-7M22 19H2"></path></svg></span>5 · Hasil per channel</h3><span style="font-size: 12.5px; color: #5B6573;">Leads dan closing dihitung dari kode tracking campaign ini.</span></div>
+<div style="overflow-x: auto;">
+<table style="width: 100%; min-width: 640px; border-collapse: collapse; font-size: 13px;">
+<thead><tr style="color: #5B6573; font-size: 12px;"><th scope="col" style="padding: 8px; border-bottom: 1px solid #E3E6EB; text-align: left;">Channel</th><th scope="col" style="padding: 8px; border-bottom: 1px solid #E3E6EB; text-align: right;">Biaya</th><th scope="col" style="padding: 8px; border-bottom: 1px solid #E3E6EB; text-align: right;">Leads</th><th scope="col" style="padding: 8px; border-bottom: 1px solid #E3E6EB; text-align: right;">Closing</th><th scope="col" style="padding: 8px; border-bottom: 1px solid #E3E6EB; text-align: right;">Omzet</th><th scope="col" style="padding: 8px; border-bottom: 1px solid #E3E6EB; text-align: right;">ROAS</th></tr></thead>
+<tbody>
+<template data-sc="for" list="{{c.results}}" as="r" hint-placeholder-count="4">
+<tr style="background: {{r.bg}};"><td style="padding: 10px 8px; border-bottom: 1px solid #EEF0F3; font-weight: 800; color: #1D3149;">{{r.ch}}</td><td style="padding: 10px 8px; border-bottom: 1px solid #EEF0F3; text-align: right;">{{r.cost}}</td><td style="padding: 10px 8px; border-bottom: 1px solid #EEF0F3; text-align: right;">{{r.leads}}</td><td style="padding: 10px 8px; border-bottom: 1px solid #EEF0F3; text-align: right; font-weight: 800;">{{r.closing}}</td><td style="padding: 10px 8px; border-bottom: 1px solid #EEF0F3; text-align: right;">{{r.omzet}}</td><td style="padding: 10px 8px; border-bottom: 1px solid #EEF0F3; text-align: right; font-weight: 900; color: {{r.roasColor}};">{{r.roas}}</td></tr>
+</template>
+</tbody>
+</table>
+</div>
+<div style="background: #F0FBF9; border: 1px solid #BFE9E3; border-radius: 14px; padding: 12px 14px; display: flex; flex-direction: column; gap: 6px;"><span style="font-size: 11.5px; font-weight: 900; letter-spacing: 0.1em; color: #067A70;">LEARNING SEJAUH INI</span>
+<template data-sc="for" list="{{c.learn}}" as="l" hint-placeholder-count="2"><span style="font-size: 13px; color: #1D3149;">• {{l}}</span></template>
+</div>
+</section>
+</template>
+
+<template data-sc="if" value="{{c.isPrep}}" hint-placeholder-val="{{ false }}">
+<section style="background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 20px; padding: 18px 20px; display: flex; flex-direction: column; gap: 12px;">
+<div style="display: flex; flex-direction: column;"><h3 data-icon-done="1" style="display: flex; align-items: center; gap: 10px; margin: 0; font-size: 17px; font-weight: 900; color: #1D3149;"><span aria-hidden="true" style="width: 28px; height: 28px; flex: none; border-radius: 8px; background: #DDF5F2; color: #067A70; display: inline-flex; align-items: center; justify-content: center;"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12l5 5L20 6"></path></svg></span>5 · Kesiapan sebelum mulai</h3><span style="font-size: 12.5px; color: #5B6573;">Campaign baru boleh jalan kalau semua baris hijau, atau CEO setuju jalan dengan catatan.</span></div>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 8px;">
+<template data-sc="for" list="{{c.ready}}" as="r" hint-placeholder-count="8">
+<div style="display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 12px; background: {{r.bg}};"><span aria-hidden="true" style="width: 22px; height: 22px; flex: none; border-radius: 11px; background: {{r.dot}}; color: #FFFFFF; font-size: 12px; font-weight: 900; display: flex; align-items: center; justify-content: center;">{{r.icon}}</span><div style="display: flex; flex-direction: column;"><strong style="font-size: 13px; color: #1D3149;">{{r.label}}</strong><span style="font-size: 12px; color: #3B4250;">{{r.note}}</span></div></div>
+</template>
+</div>
+</section>
+</template>
+
+</div>
+</div>
+
+<section id="brief-baru" aria-labelledby="brief-h" style="background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 20px; padding: 18px 20px; display: flex; flex-direction: column; gap: 12px;">
+<div style="display: flex; flex-direction: column;"><h2 id="brief-h" data-icon-done="1" style="display: flex; align-items: center; gap: 10px; margin: 0; font-size: 18px; font-weight: 900; color: #1D3149;"><span aria-hidden="true" style="width: 28px; height: 28px; flex: none; border-radius: 8px; background: #DDF5F2; color: #067A70; display: inline-flex; align-items: center; justify-content: center;"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21V4M5 4h12l-2 4 2 4H5"></path></svg></span>Brief campaign baru</h2><span style="font-size: 12.5px; color: #5B6573;">Urutannya mengikuti SOSTAC: situasi, tujuan, strategi, taktik, aksi, kontrol. Diisi Kevin sekitar 15 menit, di-approve CEO.</span></div>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px;">
+<template data-sc="for" list="{{brief}}" as="b" hint-placeholder-count="6">
+<div style="border: 1px solid #E3E6EB; border-radius: 14px; padding: 12px; display: flex; flex-direction: column; gap: 6px;"><span style="font-size: 11.5px; font-weight: 900; color: #067A70;">{{b.step}}</span><strong style="font-size: 14px; color: #1D3149;">{{b.title}}</strong>
+<template data-sc="for" list="{{b.fields}}" as="f" hint-placeholder-count="3"><span style="font-size: 12.5px; color: #3B4250; border-bottom: 1px dashed #D5DAE1; padding-bottom: 4px;">{{f}}</span></template>
+</div>
+</template>
+</div>
+</section>
+
+</main>
+
+</div>
+</template>
+<div id="dc-root"></div>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2860}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { sel: 'lat' }; }
+  renderVals() {
+    var self = this;
+    var GOOD = '#067A70', BAD = '#9A3F0A';
+    var U = { RA: '#2F6FD0', WG: '#0FA394', NA: '#D08A1E' };
+    var CH = { Organik: '#09BEAF', Ads: '#2F6FD0', KOL: '#D08A1E', WA: '#0FA394', Maps: '#7A5BD0', Boost: '#5B8FE0', Persiapan: '#A9B4C2', Learning: '#5B6573' };
+    var HREF = { Organik: 'MingguDepan.dc.html', Ads: 'Ads.dc.html', KOL: 'KOL.dc.html', WA: 'WA.dc.html', Maps: 'Maps.dc.html', Boost: 'Ads.dc.html' };
+    var ST = { Jalan: ['#DDF5F2', GOOD], 'Di bawah patokan': ['#FCEBDD', BAD], Persiapan: ['#E5EEF9', '#1E5AA8'] };
+    var acc = function (n, u) { return { name: n, dot: U[u] }; };
+    var tg = function (label, val, pct, note, ok) { return { label: label, val: val, pct: pct, bar: ok ? '#09BEAF' : '#F2A33A', note: note, noteColor: ok ? GOOD : BAD }; };
+    var sg = function (label, val, inherit) { return { label: label, val: val, bg: inherit ? '#F7F8FA' : '#FFFFFF', border: inherit ? '#E3E6EB' : '#BFE9E3' }; };
+    var pl = function (ch, plan, pic, budget, pct, note, ok, label) { return { ch: label || (ch === 'Maps' ? 'SEO' : ch), color: CH[ch], plan: plan, pic: pic, budget: budget, pct: pct, note: note, bar: ok ? '#09BEAF' : '#F2A33A', noteColor: ok ? GOOD : BAD, href: HREF[ch] || 'Campaign.dc.html' }; };
+    var tl = function (n) { return function (label, ch, a, b, note) { return { label: label, color: CH[ch], left: (a / n * 100) + '%', width: ((b - a) / n * 100) + '%', note: note || '' }; }; };
+    var rs = function (ch, cost, leads, closing, omzet, roas, ok, total) { return { ch: ch, cost: cost, leads: leads, closing: closing, omzet: omzet, roas: roas, roasColor: ok === false ? BAD : (ok ? GOOD : '#5B6573'), bg: total ? '#F7F8FA' : '#FFFFFF' }; };
+    var rd = function (label, note, state) { var m = { ok: ['#067A70', '✓', '#F0FBF9'], part: ['#F2A33A', '…', '#FFFBF0'], no: ['#C2410C', '!', '#FFF6F2'] }[state]; return { label: label, note: note, dot: m[0], icon: m[1], bg: m[2] }; };
+    var t9 = tl(9), t6 = tl(6), t5 = tl(5), t7 = tl(7);
+    var C = {
+      lat: { name: 'Libur Akhir Tahun', status: 'Persiapan', dot: U.WG, period: '15 Nov – 31 Des 2026', objective: 'booking', budget: 'Rp 6 jt', goal: 'Kesiapan 55%', goalPct: '55%', ok: false,
+        accs: [acc('TripinAja', 'WG'), acc('Wisata Garut', 'WG'), acc('Rentalaja Experience', 'RA')],
+        targets: [tg('Closing (peserta DP)', '0 / 60', '0%', 'Mulai 15 Nov', true), tg('Leads WA', '0 / 240', '0%', 'Asumsi closing rate 25%', true), tg('Omzet', 'Rp 126 jt', '0%', '60 × Rp 2,1 jt', true), tg('ROAS rencana', '21x', '100%', 'Patokan ≥ 8x', true)],
+        strategy: [sg('BIG IDEA', 'Tahun baru pertama di alam Garut'), sg('PESAN UTAMA', 'Liburan akhir tahun keluarga tanpa ribet: trip, penginapan, dan transport dalam satu paket'), sg('OFFER', 'Early bird 10% sampai 30 Nov, dokumentasi gratis'), sg('AUDIENS', 'Keluarga muda Bandung–Jakarta, 28–40 tahun, cari liburan dekat (dari Brand TripinAja)', true), sg('PILLAR', 'Educational 40% (itinerary + harga) · Entertainment 30% · Promotional 30%'), sg('POSITIONING', 'Trip Garut yang sudah diatur dari jemput sampai pulang (dari Brand TripinAja)', true), sg('CTA', 'Chat WA dengan kode LAT, link di bio dan story'), sg('PATOKAN', 'CPL ≤ Rp 50 rb · ROAS ≥ 8x · booking per minggu ≥ 8')],
+        plan: [pl('Organik', '18 slot TripinAja + Wisata Garut, seri itinerary + harga', 'Nayla', 'Rp 0', '22%', '4 / 18 slot terisi', false), pl('Organik', '4 slot paket menginap keluarga', 'Dita', 'Rp 0', '25%', '1 / 4 slot terisi', false, 'Organik · RA Exp.'), pl('Ads', '3 materi: carousel itinerary, Reels testimoni, early bird', 'Kevin', 'Rp 3 jt', '33%', '1 / 3 materi siap', false), pl('Boost', 'Boost 2 konten organik terbaik minggu pertama', 'Kevin', 'Rp 1,5 jt', '0%', 'Menunggu konten tayang', true), pl('KOL', '2 travel vlogger, tayang pekan pertama Desember', 'Kevin', 'Rp 1,5 jt', '0%', '0 / 2 deal · 4 kandidat', false), pl('WA', 'Broadcast early bird + last call ke peserta trip 2025 (640 kontak)', 'Nayla', 'Rp 0', '50%', 'Template siap, segmen siap', true), pl('Maps', 'Post promo + minta ulasan peserta trip November', 'Nayla', 'Rp 0', '0%', 'Mulai 15 Nov', true)],
+        weekN: 9, weeks: ['2 Nov', '9 Nov', '16 Nov', '23 Nov', '30 Nov', '7 Des', '14 Des', '21 Des', '28 Des'], today: '0%',
+        time: [t9('Persiapan & brief', 'Persiapan', 0, 2, 'brief, materi, KOL'), t9('Organik', 'Organik', 2, 9, '18 slot'), t9('Ads early bird', 'Ads', 2, 4.2, 'sampai 30 Nov'), t9('KOL tayang', 'KOL', 5, 6, '2 KOL'), t9('Ads reguler', 'Ads', 4.2, 8, 'carousel + Reels'), t9('Broadcast WA', 'WA', 2, 2.6, 'early bird'), t9('Broadcast last call', 'WA', 6, 6.6, 'last call'), t9('Learning', 'Learning', 8.4, 9, 'tutup')],
+        isPrep: true, hasResults: false,
+        ready: [rd('Brief dan target', 'Disetujui CEO 27 Okt', 'ok'), rd('Pesan dan offer', 'Early bird 10% disetujui', 'ok'), rd('Kode tracking', 'ADS-RA-LAT, IG-RA-LAT, KOL-WG-LAT, BC-WG-LAT dibuat', 'ok'), rd('Template WA', 'Siap dipakai Nayla (CS TripinAja)', 'ok'), rd('Slot organik', '4 / 18 terisi', 'part'), rd('Materi iklan', '1 / 3 siap', 'part'), rd('KOL', '0 / 2 deal, keputusan sebelum 5 Nov', 'no'), rd('Kapasitas trip', 'Belum dicek dengan Wiranata', 'no')] },
+      otn: { name: 'Open Trip November', status: 'Jalan', dot: U.WG, period: '20 Okt – 30 Nov 2026', objective: 'booking', budget: 'Rp 2,9 / 4 jt', goal: '24 / 40 closing', goalPct: '60%', ok: true,
+        accs: [acc('TripinAja', 'WG'), acc('Wisata Garut', 'WG')],
+        targets: [tg('Closing (peserta DP)', '24 / 40', '60%', 'Di depan jadwal (24% waktu)', true), tg('Leads WA', '98 / 160', '61%', 'Closing rate 24%', true), tg('Omzet', 'Rp 50,4 / 84 jt', '60%', 'Rata-rata Rp 2,1 jt per closing', true), tg('ROAS', '17,4x', '100%', 'Patokan ≥ 8x', true)],
+        strategy: [sg('BIG IDEA', 'Sunrise Papandayan tanpa ribet'), sg('PESAN UTAMA', 'Open trip berangkat tiap Sabtu, sudah termasuk jemput, guide, dan makan'), sg('OFFER', 'Gratis dokumentasi untuk grup 4 orang'), sg('AUDIENS', 'Pekerja muda dan mahasiswa Bandung, 20–30 tahun (dari Brand TripinAja)', true), sg('PILLAR', 'Educational 50% · Entertainment 30% · Promotional 20%'), sg('POSITIONING', 'Trip Garut yang sudah diatur dari jemput sampai pulang (dari Brand TripinAja)', true)],
+        plan: [pl('Organik', '12 slot: itinerary, POV trek, testimoni', 'Nayla', 'Rp 0', '67%', '8 / 12 tayang', true), pl('Ads', 'Study tour + carousel itinerary', 'Kevin', 'Rp 1,6 / 2,5 jt', '64%', 'Study tour perlu materi baru', false), pl('KOL', 'Travel vlogger Bandung', 'Kevin', 'Rp 1,3 jt', '100%', 'Selesai · ROAS 7,4x', false), pl('WA', 'Broadcast peserta trip 2025', 'Nayla', 'Rp 0', '100%', 'Terkirim 21 Okt', true), pl('Maps', 'Post jadwal trip mingguan', 'Nayla', 'Rp 0', '50%', '2 / 4 post', true)],
+        weekN: 6, weeks: ['20 Okt', '27 Okt', '3 Nov', '10 Nov', '17 Nov', '24 Nov'], today: '25%',
+        time: [t6('Organik', 'Organik', 0, 6, '12 slot'), t6('Ads', 'Ads', 0, 6, 'Rp 4 jt'), t6('KOL tayang', 'KOL', 0, 1, 'vlogger'), t6('Broadcast WA', 'WA', 0.2, 0.6, ''), t6('Learning', 'Learning', 5.6, 6, '')],
+        isPrep: false, hasResults: true,
+        results: [rs('Ads', 'Rp 1,6 jt', '52', '14', 'Rp 29,4 jt', '18,4x', true), rs('KOL', 'Rp 1,3 jt', '22', '4', 'Rp 9,6 jt', '7,4x', false), rs('Organik', 'Rp 0', '16', '3', 'Rp 6,3 jt', '—'), rs('Broadcast WA', 'Rp 0', '8', '3', 'Rp 5,1 jt', '—'), rs('Total', 'Rp 2,9 jt', '98', '24', 'Rp 50,4 jt', '17,4x', true, true)],
+        learn: ['Carousel itinerary + harga paling murah per booking, jadi materi utama Libur Akhir Tahun.', 'KOL tayang di minggu pertama tapi leads-nya baru datang minggu kedua, setelah promo dokumentasi diumumkan.'] },
+      motor: { name: 'Sewa Motor Musim Hujan', status: 'Di bawah patokan', dot: U.RA, period: '15 Okt – 15 Nov 2026', objective: 'closing', budget: 'Rp 1,8 / 2,5 jt', goal: '38 / 90 closing', goalPct: '42%', ok: false,
+        accs: [acc('Rentalaja', 'RA')],
+        targets: [tg('Closing', '38 / 90', '42%', 'Waktu sudah 47%', false), tg('Leads WA', '128 / 300', '43%', 'Closing rate 30%', false), tg('Omzet', 'Rp 12,2 / 29 jt', '42%', '', false), tg('ROAS', '6,8x', '85%', 'Di bawah patokan 8x', false)],
+        strategy: [sg('BIG IDEA', 'Hujan bukan alasan batal jalan'), sg('PESAN UTAMA', 'Motor siap pakai plus jas hujan dan helm, antar ke stasiun dan hotel'), sg('OFFER', 'Gratis jas hujan untuk sewa 2 hari ke atas'), sg('AUDIENS', 'Wisatawan dan pekerja proyek di Garut tanpa kendaraan (dari Brand Rentalaja)', true), sg('PILLAR', 'Promotional 50% · Educational 50%'), sg('POSITIONING', 'Sewa apa saja di Garut, cukup KTP, diantar (dari Brand Rentalaja)', true)],
+        plan: [pl('Ads', 'Iklan "Sewa motor Garut", 1 materi', 'Kevin', 'Rp 1,8 / 2,5 jt', '72%', 'Frekuensi 2,7, materi lelah', false), pl('Organik', '8 slot Reels motor + jas hujan', 'Dita', 'Rp 0', '63%', '5 / 8 tayang', true), pl('WA', 'Story WA harian 3 nomor', 'Ica, El', 'Rp 0', '70%', 'Garut Kota 4 per hari', true), pl('Maps', 'Post "antar ke stasiun"', 'Dita', 'Rp 0', '0%', 'Belum', false)],
+        weekN: 5, weeks: ['12 Okt', '19 Okt', '26 Okt', '2 Nov', '9 Nov'], today: '58%',
+        time: [t5('Ads', 'Ads', 0.4, 5, '1 materi'), t5('Organik', 'Organik', 0.4, 5, '8 slot'), t5('Story WA', 'WA', 0.4, 5, 'harian'), t5('Learning', 'Learning', 4.6, 5, '')],
+        isPrep: false, hasResults: true,
+        results: [rs('Ads', 'Rp 1,8 jt', '96', '26', 'Rp 8,4 jt', '4,7x', false), rs('Organik', 'Rp 0', '22', '8', 'Rp 2,6 jt', '—'), rs('Story WA', 'Rp 0', '10', '4', 'Rp 1,2 jt', '—'), rs('Total', 'Rp 1,8 jt', '128', '38', 'Rp 12,2 jt', '6,8x', false, true)],
+        learn: ['Materi iklan sama sejak 15 Okt. Frekuensi 2,7, biaya per closing naik minggu ketiga.', 'Organik "jas hujan gratis" closing rate 36%, lebih tinggi dari iklan. Kandidat materi iklan baru.'] },
+      aorj: { name: 'Always-on Rentalaja', status: 'Jalan', dot: U.RA, period: 'Oktober 2026', objective: 'leads', budget: 'Rp 1,4 / 1,6 jt', goal: '210 / 230 leads', goalPct: '91%', ok: true,
+        accs: [acc('Rentalaja', 'RA'), acc('Rentalaja Experience', 'RA'), acc('ATVaja', 'RA'), acc('Maripoto', 'RA')],
+        targets: [tg('Leads WA', '210 / 230', '91%', 'Waktu 94%', false), tg('Closing', '58', '100%', 'Closing rate 28%', true), tg('Omzet', 'Rp 18,2 jt', '100%', '', true), tg('ROAS', '13,0x', '100%', 'Patokan ≥ 8x', true)],
+        strategy: [sg('PERAN', 'Konten harian di luar campaign: menjaga akun tetap hidup dan leads tetap masuk'), sg('POSITIONING', 'Sewa apa saja di Garut, cukup KTP, diantar (dari Brand Rentalaja)', true), sg('PILLAR', 'Educational 30% · Entertainment 25% · Promotional 25% · Conversational 20%'), sg('CTA', 'Link WA berkode di bio')],
+        plan: [pl('Organik', 'Rentalaja + Rentalaja Exp. 8 slot per minggu', 'Dita', 'Rp 0', '79%', 'tepat waktu 79%', true), pl('Organik', 'ATVaja + Maripoto 4 slot per minggu', 'Nayla', 'Rp 0', '13%', 'ATVaja 0 posting Oktober', false, 'Organik · ATVaja, Maripoto'), pl('Ads', 'Retargeting pengunjung profil', 'Kevin', 'Rp 0,5 jt', '100%', 'Jalan', true), pl('KOL', 'Komunitas motor, Content creator keluarga (barter)', 'Kevin', 'Rp 0,9 jt', '50%', '1 telat 8 hari', false), pl('WA', 'Story harian 3 nomor', 'Ica, El', 'Rp 0', '70%', '', true)],
+        weekN: 5, weeks: ['28 Sep', '5 Okt', '12 Okt', '19 Okt', '26 Okt'], today: '94%',
+        time: [t5('Organik', 'Organik', 0.4, 5, 'harian'), t5('Ads retargeting', 'Ads', 0.4, 5, ''), t5('KOL', 'KOL', 2, 3.4, '2 KOL'), t5('Story WA', 'WA', 0.4, 5, 'harian')],
+        isPrep: false, hasResults: true,
+        results: [rs('Organik', 'Rp 0', '120', '30', 'Rp 9,1 jt', '—'), rs('Ads', 'Rp 0,5 jt', '45', '14', 'Rp 4,2 jt', '8,4x', true), rs('KOL', 'Rp 0,9 jt', '17', '6', 'Rp 2,9 jt', '3,2x', false), rs('Story WA', 'Rp 0', '28', '8', 'Rp 2,0 jt', '—'), rs('Total', 'Rp 1,4 jt', '210', '58', 'Rp 18,2 jt', '13,0x', true, true)],
+        learn: ['Reels edukasi paling banyak ditonton, tapi leads per 1.000 reach baru 0,5. Masalahnya di CTA, bukan konten.'] },
+      aola: { name: 'Always-on Laptopaja', status: 'Jalan', dot: U.NA, period: 'Oktober 2026', objective: 'leads', budget: 'Rp 1,0 / 1,2 jt', goal: '50 / 60 leads', goalPct: '83%', ok: false,
+        accs: [acc('Laptopaja', 'NA')],
+        targets: [tg('Leads WA', '50 / 60', '83%', 'Waktu 94%', false), tg('Closing', '11', '100%', 'Closing rate 22%', false), tg('Omzet', 'Rp 33,8 jt', '100%', '', true), tg('ROAS', '33,8x', '100%', 'Patokan ≥ 8x', true)],
+        strategy: [sg('PERAN', 'Konten harian Laptopaja. Niagaaja belum jalan.'), sg('POSITIONING', 'Laptop bekas yang sudah dicek dan bergaransi toko (dari Brand Laptopaja)', true), sg('PILLAR', 'Educational 50% · Promotional 40% · Entertainment 10%')],
+        plan: [pl('Organik', '5 slot per minggu', 'Dita', 'Rp 0', '77%', '10 / 13 tayang', true), pl('Ads', 'Laptop bekas mahasiswa', 'Kevin', 'Rp 0,8 jt', '100%', 'Frekuensi 2,7', false), pl('KOL', 'Tech reviewer lokal', 'Kevin', 'Rp 0,2 jt', '80%', 'Laporan H+7 belum masuk', false)],
+        weekN: 5, weeks: ['28 Sep', '5 Okt', '12 Okt', '19 Okt', '26 Okt'], today: '94%',
+        time: [t5('Organik', 'Organik', 0.4, 5, ''), t5('Ads', 'Ads', 0.4, 5, ''), t5('KOL tayang', 'KOL', 3.2, 3.5, '')],
+        isPrep: false, hasResults: true,
+        results: [rs('Ads', 'Rp 0,8 jt', '30', '6', 'Rp 18,4 jt', '23,0x', true), rs('KOL', 'Rp 0,2 jt', '10', '2', 'Rp 2,3 jt', '11,5x', true), rs('Organik', 'Rp 0', '10', '3', 'Rp 13,1 jt', '—'), rs('Total', 'Rp 1,0 jt', '50', '11', 'Rp 33,8 jt', '33,8x', true, true)],
+        learn: ['Konten "cek laptop 60 detik" lebih banyak menghasilkan leads daripada konten daftar stok.'] },
+      lsg: { name: 'Laptop Semester Genap', status: 'Persiapan', dot: U.NA, period: '1 Des 2026 – 15 Jan 2027', objective: 'closing', budget: 'Rp 2 jt', goal: 'Kesiapan 20%', goalPct: '20%', ok: false,
+        accs: [acc('Laptopaja', 'NA')],
+        targets: [tg('Closing', '0 / 25', '0%', 'Mulai 1 Des', true), tg('Leads WA', '0 / 110', '0%', 'Asumsi closing rate 22%', true), tg('Omzet', 'Rp 75 jt', '0%', '25 × Rp 3 jt', true)],
+        strategy: [sg('BIG IDEA', 'Siap kuliah lagi tanpa beli laptop baru'), sg('OFFER', 'Garansi toko 30 hari + tas gratis (usulan)'), sg('AUDIENS', 'Mahasiswa dan orang tua mahasiswa (dari Brand Laptopaja)', true), sg('PILLAR', 'Educational 50% · Promotional 50%')],
+        plan: [pl('Organik', '10 slot: laptop per jurusan, cek kondisi', 'Dita', 'Rp 0', '0%', 'Belum', false), pl('Ads', 'Iklan per jurusan (DKV, teknik, umum)', 'Kevin', 'Rp 1,5 jt', '0%', 'Belum', false), pl('KOL', 'Mahasiswa DKV reviewer + Influencer kampus', 'Kevin', 'Rp 0,5 jt', '0%', 'Shortlist', false)],
+        weekN: 7, weeks: ['23 Nov', '30 Nov', '7 Des', '14 Des', '21 Des', '28 Des', '4 Jan'], today: '0%',
+        time: [t7('Persiapan', 'Persiapan', 0, 1, ''), t7('Organik', 'Organik', 1, 7, '10 slot'), t7('Ads', 'Ads', 1, 7, ''), t7('KOL tayang', 'KOL', 2, 3, '')],
+        isPrep: true, hasResults: false,
+        ready: [rd('Brief dan target', 'Menunggu approve Kevin', 'part'), rd('Offer', 'Tas gratis belum disetujui CEO', 'no'), rd('Kode tracking', 'Belum dibuat', 'no'), rd('Stok laptop', 'Perlu cek dengan Yusril', 'no')] }
+    };
+    var ORDER = ['lat', 'otn', 'motor', 'aorj', 'aola', 'lsg'];
+    var sel = this.state.sel;
+    var list = ORDER.map(function (k) { var c = C[k], on = k === sel, s = ST[c.status]; return { name: c.name, status: c.status, stBg: s[0], stFg: s[1], period: c.period, budget: c.budget, goal: c.goal, goalPct: c.goalPct, goalBar: c.ok ? '#09BEAF' : '#F2A33A', dot: c.dot, pressed: on ? 'true' : 'false', bg: on ? '#FFFFFF' : '#FBFCFD', border: on ? '#1D3149' : '#E3E6EB', pick: function () { self.setState({ sel: k }); } }; });
+    var c = C[sel], s = ST[c.status];
+    c = Object.assign({ stBg: s[0], stFg: s[1], results: [], learn: [], ready: [] }, c);
+    var brief = [
+      { step: 'S · SITUASI', title: 'Kenapa sekarang', fields: ['Momen atau masalah', 'Data pendukung (dari Review mingguan)', 'Campaign serupa sebelumnya'] },
+      { step: 'O · TUJUAN', title: 'Target', fields: ['Tujuan: leads, booking, atau closing', 'Target angka + periode', 'Budget total + batas CPL'] },
+      { step: 'S · STRATEGI', title: 'Pesan', fields: ['Akun yang ikut (positioning ikut Brand)', 'Big idea dan pesan utama', 'Offer dan CTA'] },
+      { step: 'T · TAKTIK', title: 'Rencana per channel', fields: ['Organik: jumlah slot + pillar', 'Ads dan KOL: budget + materi', 'WA dan Maps: broadcast, post'] },
+      { step: 'A · AKSI', title: 'Siapa, kapan', fields: ['PIC per channel', 'Timeline per minggu', 'Kode tracking dibuat otomatis'] },
+      { step: 'C · KONTROL', title: 'Cara menilai', fields: ['Patokan bagus per channel', 'Dicek tiap minggu di Review mingguan', 'Learning ditulis saat ditutup'] }
+    ];
+    return { list: list, c: c, brief: brief };
+  }
+}
+</script>
+</body>
+</html>
