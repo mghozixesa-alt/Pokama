@@ -256,7 +256,7 @@ var BRANDS = [
  { k: 'Rentalaja', pic: 'Dita', c: '#2F6FD0', slot: 5 }, { k: 'Rentalaja Experience', pic: 'Dita', c: '#5B8DEF', slot: 3 }, { k: 'Laptopaja', pic: 'Dita', c: '#D08A1E', slot: 5 },
  { k: 'Wisata Garut', pic: 'Nayla', c: '#0FA394', slot: 4 }, { k: 'TripinAja', pic: 'Nayla', c: '#09BEAF', slot: 4 }, { k: 'ATVaja', pic: 'Nayla', c: '#7A5200', slot: 2 }, { k: 'Maripoto', pic: 'Nayla', c: '#B0466B', slot: 2 }
 ];
-var PEOPLE = [{ n: 'Head of Marketing', r: 'Kevin', a: 'kevin' }, { n: 'Dita', r: 'PIC akun', a: 'dita' }, { n: 'Nayla', r: 'PIC akun', a: 'nayla' }, { n: 'Editor', r: 'Mugni', a: 'mugni' }, { n: 'Admin WA', r: 'Ica · El · Arie', a: 'zzz' }, { n: 'Kepala Staf', r: 'Intifa · lihat saja', a: 'intifa' }];
+var PEOPLE = [{ n: 'Head of Marketing', r: 'Kevin', a: 'kevin' }, { n: 'Dita', r: 'PIC akun', a: 'dita' }, { n: 'Nayla', r: 'PIC akun', a: 'nayla' }, { n: 'Editor', r: 'Mugni', a: 'mugni' }, { n: 'Admin WA', r: 'Ariq (Leader CS) · Ica · El', a: 'ariq' }, { n: 'Kepala Staf', r: 'Intifa · lihat saja', a: 'intifa' }];
 var EDITOR = 'Editor', LEAD = 'Head of Marketing';
 var LTEAMS = ['Tim marketing', 'Cabang Garut Kota', 'Cabang Bandung', 'Cabang Wanaraja', 'TripinAja', 'Laptopaja'];
 var FORMATS = ['Reels', 'Carousel', 'Foto', 'Story', 'TikTok', 'Live TikTok'];
@@ -788,7 +788,7 @@ function repText(list) {
 function applyTeam() { S.pic = S.pic || {}; S.slot = S.slot || {}; BRANDS.forEach(function (b) { if (S.pic[b.k]) b.pic = S.pic[b.k]; if (S.slot[b.k] != null && S.slot[b.k] !== '') b.slot = +S.slot[b.k]; }); }
 applyTeam();
 var PICS = ['Dita', 'Nayla'];
-var TEAM = [{ n: 'Head of Marketing', who: 'Kevin', r: 'Review konten, campaign, KOL, Ads' }, { n: 'Dita', who: 'Dita', r: 'PIC akun' }, { n: 'Nayla', who: 'Nayla', r: 'PIC akun · CS TripinAja' }, { n: 'Editor', who: 'Mugni', r: 'Edit video & desain' }, { n: 'Admin WA', who: 'Ica · El · Arie', r: 'CS WhatsApp' }];
+var TEAM = [{ n: 'Head of Marketing', who: 'Kevin', r: 'Review konten, campaign, KOL, Ads' }, { n: 'Dita', who: 'Dita', r: 'PIC akun' }, { n: 'Nayla', who: 'Nayla', r: 'PIC akun · CS TripinAja' }, { n: 'Editor', who: 'Mugni', r: 'Edit video & desain' }, { n: 'Admin WA', who: 'Ariq (Leader CS) · Ica · El', r: 'CS WhatsApp' }];
 function holding(n) { return S.items.filter(function (it) { return who(it) === n && it.status !== 'Tayang'; }); }
 function vTim() {
   var head = S.me === LEAD;
@@ -1290,7 +1290,7 @@ function mapPerson(p) {
   if (/dita/.test(n)) return 'Dita';
   if (/nayla/.test(n)) return 'Nayla';
   if (/mugni/.test(n)) return 'Editor';
-  if (/ariq|arie|ica|\bel\b/.test(n)) return 'Admin WA';
+  if (/ariq|ica|\bel\b/.test(n)) return 'Admin WA';
   return 'Kepala Staf';
 }
 var tries = 0, iv = setInterval(function () {
