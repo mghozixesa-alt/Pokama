@@ -8,6 +8,7 @@ import tim from './screens/tim.js';
 import sistem from './screens/sistem.js';
 
 const I = {
+  bell: '<path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>',
   sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
   grid: '<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18M15 3v18"/>',
   layers: '<path d="M12 2 2 7l10 5 10-5-10-5z"/><path d="m2 17 10 5 10-5M2 12l10 5 10-5"/>',
@@ -72,14 +73,30 @@ function shell() {
   const nav = ROUTES.map(([sec, items]) => `<div class="nav-sec"><span class="nav-h">${sec}</span>${items.map(([k, l, ic]) =>
     `<a href="#/${k}" data-k="${k}">${svg(ic)}<span>${l}</span><b class="badge" data-badge="${k}" hidden></b></a>`).join('')}</div>`).join('');
   root.innerHTML = `<div class="shell">
-    <nav class="side" aria-label="Menu utama"><a class="brand" href="#/kkh"><img src="img/pokama-logo.png" alt="Pokama"></a><span class="muted small brand-sub">Sistem Kerja Harian</span>${nav}
+    <nav class="side" aria-label="Menu utama"><div class="brand-row"><a class="brand" href="#/kkh"><img src="img/pokama-logo.png" alt="Pokama"></a><button type="button" class="bell" data-bell aria-label="Notifikasi">${svg('bell', 20)}<b class="badge" data-badge="ntf" hidden></b></button></div><span class="muted small brand-sub">Sistem Kerja Harian</span>${nav}
       <div class="side-me"><a href="#/pengaturan" class="me">${avatar(me.id, 36)}<span><b>${esc(me.nickname || me.name)}</b><small>${esc(me.title || ROLE[me.role])}</small></span></a>
       <button class="link mute" type="button" id="logout">Keluar</button></div></nav>
+    <button type="button" class="bell m-bell" data-bell aria-label="Notifikasi">${svg('bell', 22)}<b class="badge" data-badge="ntf" hidden></b></button>
     <main class="main" id="view" tabindex="-1"></main>
     <nav class="bottom" aria-label="Menu bawah">${MOBILE.map(k => { const r = FLAT.find(x => x[0] === k); return `<a href="#/${k}" data-k="${k}">${svg(r[2], 22)}<span>${r[1].split(' ')[0]}</span><b class="badge" data-badge="${k}" hidden></b></a>`; }).join('')}
       <a href="#/menu" data-k="menu">${svg('menu', 22)}<span>Lainnya</span></a></nav>
   </div>`;
   root.querySelector('#logout').onclick = () => signOut();
+  root.querySelectorAll('[data-bell]').forEach(b => b.onclick = openNotifs);
+}
+async function openNotifs() {
+  const { db, modal, esc, ftime, toast } = await import('./core.js');
+  const list = await db.get('pk_notifications', `select=*&person_id=eq.${ctx.me.id}&order=created_at.desc&limit=40`);
+  const unread = list.filter(n => !n.read_at);
+  const KIND = { tugas: 'Tugas', review: 'Review', rab: 'Belanja', kkh: 'KKH', cuti: 'Kehadiran', permintaan: 'Permintaan' };
+  const onOpen = (ev) => { document.removeEventListener('modal:open', onOpen); ev.detail.addEventListener('click', async (e) => {
+    const a = e.target.closest('[data-n]'); if (!a) return; e.preventDefault();
+    try { await db.update('pk_notifications', 'id=eq.' + a.dataset.n, { read_at: new Date().toISOString() }); } catch (er) {}
+    document.querySelector('.modal-wrap')?.remove(); location.hash = a.getAttribute('href') || '#/kkh'; route(); }); };
+  document.addEventListener('modal:open', onOpen);
+  const r = await modal('Notifikasi', list.length ? `<div class="ntf-list">${list.map(n => `<a class="ntf${n.read_at ? '' : ' new'}" data-n="${n.id}" href="${esc(n.link || '#/kkh')}"><small>${esc(KIND[n.kind] || n.kind)} · ${ftime(n.created_at)}</small><b>${esc(n.title)}</b>${n.body ? `<span>${esc(n.body)}</span>` : ''}</a>`).join('')}</div>` : '<p class="muted">Belum ada notifikasi.</p>',
+    { submit: unread.length ? 'Tandai semua sudah dibaca' : null, onSubmit: async () => { await db.update('pk_notifications', `person_id=eq.${ctx.me.id}&read_at=is.null`, { read_at: new Date().toISOString() }); } });
+  if (r) { toast('Semua notifikasi ditandai dibaca'); badges(); }
 }
 function menuView(el) {
   el.innerHTML = `<header class="ph"><div><h1>Menu</h1><p class="muted">${esc(ctx.me.name)} · ${esc(ctx.me.title || ROLE[ctx.me.role])}</p></div></header>
@@ -121,13 +138,16 @@ async function badges() {
   try {
     const { db } = await import('./core.js');
     const me = ctx.me.id;
-    const [rv, rb] = await Promise.all([
+        const [rv, rb, nt] = await Promise.all([
       db.get('pk_tasks', `select=id&reviewer_id=eq.${me}&status=eq.review`),
-      db.get('pk_rab', 'select=id,chain,step&status=eq.diajukan'),
+      db.get('pk_rab', 'select=id,chain,step,status&status=in.(diajukan,siap_cair,lpj)'),
+      db.get('pk_notifications', `select=id&person_id=eq.${me}&read_at=is.null&limit=99`),
     ]);
-    const nb = rb.filter(r => r.chain[r.step] === me).length;
+    const nb = rb.filter(r => r.status === 'diajukan' && r.chain[r.step] === me).length + (ctx.me.role === 'keuangan' ? rb.filter(r => r.status !== 'diajukan').length : 0);
+
     const set = (k, n) => document.querySelectorAll(`[data-badge="${k}"]`).forEach(b => { b.hidden = !n; b.textContent = n; });
-    set('review', rv.length); set('belanja', nb);
+    set('ntf', nt.length); set('review', rv.length); set('belanja', nb);
+    document.title = (nt.length ? `(${nt.length}) ` : '') + document.title.replace(/^\(\d+\) /, '');
   } catch (e) {}
 }
 
@@ -145,3 +165,12 @@ async function boot() {
 
 takeSessionFromUrl();
 if (hasSession()) boot(); else loginView();
+
+// Data diperbarui otomatis: badge tiap 60 detik, halaman saat aplikasi dibuka kembali (kalau tidak sedang mengisi form)
+const busy = () => document.querySelector('.modal-wrap') || (document.activeElement && /INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName));
+setInterval(() => { if (ctx.me && document.visibilityState === 'visible') badges(); }, 60000);
+let hiddenAt = 0;
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'hidden') { hiddenAt = Date.now(); return; }
+  if (ctx.me && Date.now() - hiddenAt > 20000 && !busy()) route();
+});

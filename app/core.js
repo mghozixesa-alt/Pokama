@@ -191,7 +191,7 @@ export function modal(title, bodyHtml, { submit = 'Simpan', onSubmit, wide = fal
     wrap.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(null); });
     const run = async (fn) => {
       const btns = wrap.querySelectorAll('button'); btns.forEach(b => b.disabled = true); err.hidden = true;
-      try { const v = await fn(Object.fromEntries(new FormData(form)), form); close(v === undefined ? true : v); }
+      try { const v = await fn(Object.fromEntries(new FormData(form)), form); close(v === undefined || v === null ? true : v); }
       catch (e2) { err.textContent = e2.message; err.hidden = false; btns.forEach(b => b.disabled = false); }
     };
     form.addEventListener('submit', (e) => { e.preventDefault(); run(onSubmit || (() => true)); });

@@ -82,6 +82,7 @@ export default async function belanja(el, params, reload) {
         ${myTurn(r) || (isCeo() && r.status === 'diajukan' && r.created_by !== me) ? `<button class="btn pri" data-a="approve">${myTurn(r) ? 'Setujui' : 'Setujui langsung (CEO)'}</button><button class="btn" data-a="revise">Minta revisi</button><button class="btn danger" data-a="reject">Tolak</button>` : ''}
         ${r.status === 'revisi' && r.created_by === me ? `<button class="btn pri" data-a="resubmit">Revisi & ajukan ulang</button>` : ''}
         ${r.status === 'siap_cair' && isFin() ? `<button class="btn pri" data-a="cair">Tandai dana sudah dicairkan</button>` : ''}
+        ${r.status === 'diajukan' && isFin() ? `<button class="btn pri" disabled title="Persetujuan belum lengkap">Cairkan (menunggu ${esc(nick(r.chain[r.step]))})</button>` : ''}
         ${['diajukan', 'revisi', 'siap_cair'].includes(r.status) && (r.created_by === me || isCeo()) ? `<button class="btn danger" data-a="cancel">Batalkan RAB</button>` : ''}
         ${r.status === 'cair' && (r.created_by === me || isFin()) ? `<button class="btn pri" data-a="lpj">Upload nota (LPJ)</button>` : ''}
         ${r.status === 'lpj' && isFin() ? `<button class="btn pri" data-a="close">Nota sesuai · selesai</button>` : ''}

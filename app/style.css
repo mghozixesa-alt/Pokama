@@ -281,3 +281,13 @@ table.kkh th .att{display:flex;align-items:center;gap:4px;justify-content:center
 .swipe-hint{display:none}
 @media (max-width:760px){.swipe-hint{display:block;font-size:12px;color:var(--mut);margin:-4px 0 0}.kkh thead th{min-width:132px}}
 .chips.sub{margin-top:-6px}.chips.sub .chipbtn.on{background:var(--teal);border-color:var(--teal);color:var(--navy)}
+/* notifikasi */
+.brand-row{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.bell{position:relative;background:#fff;border:1px solid var(--line);border-radius:12px;width:40px;height:40px;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;color:var(--navy)}
+.bell .badge{position:absolute;top:-6px;right:-6px}
+.m-bell{display:none}
+@media (max-width:760px){.m-bell{display:inline-flex;position:fixed;top:12px;right:14px;z-index:30;box-shadow:0 2px 8px rgba(29,49,73,.12)}.route>.ph,.route>header.ph{padding-right:52px}}
+.ntf-list{display:flex;flex-direction:column;max-height:60vh;overflow:auto;margin:0 -4px}
+.ntf{display:flex;flex-direction:column;gap:2px;padding:10px 12px;border-radius:10px;text-decoration:none;color:var(--ink);border-bottom:1px solid var(--line2)}
+.ntf:hover{background:var(--bg)}.ntf small{color:var(--mut);font-size:11px;font-weight:700}.ntf span{font-size:13px;color:var(--mut)}
+.ntf.new{background:#F1FBFA}.ntf.new b::before{content:'';display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--teal);margin-right:6px;vertical-align:middle}
