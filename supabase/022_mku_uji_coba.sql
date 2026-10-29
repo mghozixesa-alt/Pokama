@@ -25,4 +25,6 @@ drop policy if exists mku_docs_r on public.mku_docs;
 drop policy if exists mku_docs_w on public.mku_docs;
 create policy mku_docs_r on public.mku_docs for select to authenticated using (public.pk_me() is not null);
 create policy mku_docs_w on public.mku_docs for all to authenticated using (public.pk_me() is not null) with check (public.pk_me() is not null);
+revoke all on public.mku_docs from anon;
 grant select, insert, update on public.mku_docs to authenticated;
+revoke delete, truncate on public.mku_docs from authenticated; -- hapus = tandai deleted, tidak hapus baris
