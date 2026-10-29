@@ -1,5 +1,18 @@
-import { safeUrl, ctx, db, esc, today, fdate, ftime, avatar, nick, modal, field, opts, toast, unitName, unitOpts, peopleOpts, isAdmin, logo, bizOf, need, chip, confirmBox } from '../core.js';
+import { safeUrl, ctx, db, esc, today, fdate, ftime, avatar, nick, modal, field, opts, toast, unitName, unitOpts, peopleOpts, isAdmin, logo, bizOf, need, chip, confirmBox, waReport, addDays } from '../core.js';
 
+const STW = { todo: 'Belum mulai', doing: 'Dikerjakan', review: 'Menunggu review', revisi: 'Perlu revisi', done: 'Selesai', hold: 'Ditunda' };
+const ICO = { todo: '⚪', doing: '🔵', review: '🟡', revisi: '🔴', done: '✅', hold: '⏸' };
+const waDue = (t) => { if (!t.due) return ''; const d = daysTo(t.due); return ' · tenggat ' + fdate(t.due) + (t.status !== 'done' && d < 0 ? ` (*lewat ${-d} hari*)` : t.status !== 'done' && d <= 1 ? ' (*segera*)' : ''); };
+const waLine = (t) => `${ICO[t.status] || '•'} ${t.title} — ${nick(t.pic_id)} · ${STW[t.status] || t.status}${waDue(t)}`;
+export function waTask(t, pts = []) {
+  let x = `*${t.title}*\n${unitName(t.unit_code)} · ${STW[t.status] || t.status}${t.version ? ' · v' + t.version : ''}\nPIC: ${nick(t.pic_id)} · Reviewer: ${t.reviewer_id ? nick(t.reviewer_id) : '-'}${waDue(t)}\n`;
+  if (t.dod) x += `Selesai bila: ${t.dod}\n`;
+  if (t.status === 'revisi' && t.revise_due) x += `Tenggat revisi: *${fdate(t.revise_due)}*\n`;
+  const open = pts.filter(p => p.status !== 'accepted');
+  if (open.length) x += `\n*Poin revisi (${open.length})*\n` + open.map((p, i) => `${i + 1}. ${p.text}${p.answer ? ' — _' + p.answer + '_' : ''}`).join('\n') + '\n';
+  if (t.last_link) x += `\nHasil: ${t.last_link}\n`;
+  return x + `\npokama.org/#/review?tab=semua&t=${t.id}`;
+}
 export const ST = {
   todo: ['Belum mulai', '#C9CED6', '#1F2933'], doing: ['Dikerjakan', '#2F6FDB', '#fff'], review: ['Menunggu review', '#F2B33D', '#1F2933'],
   revisi: ['Perlu revisi', '#E4475B', '#fff'], done: ['Selesai', '#09BEAF', '#1D3149'], hold: ['Ditunda', '#8E6FD8', '#fff'],
@@ -70,7 +83,7 @@ async function board(el, params, reload) {
     return blocks || looseHtml ? blocks + looseHtml : empty; };
   el.innerHTML = `
   <header class="ph"><div><span class="muted small">Proyek = tujuan besar · Tugas = langkah kerja di dalamnya · selesai setelah disetujui reviewer</span><h1>Proyek & Tugas</h1></div>
-    <div class="row gap"><button class="btn" data-a="proj">+ Proyek</button><button class="btn pri" data-a="new">+ Tugas baru</button></div></header>
+    <div class="row gap"><button class="btn" data-a="wa">Laporan WA</button><button class="btn" data-a="proj">+ Proyek</button><button class="btn pri" data-a="new">+ Tugas baru</button></div></header>
   <div class="chips">${[['ALL', 'Semua']].concat(biz.map(u => [u.code, u.name])).map(([k, l]) => `<a class="chipbtn${scope === k ? ' on' : ''}" href="${q({ u: k })}">${k !== 'ALL' ? logo(k, 18) : ''}${esc(l)}</a>`).join('')}
     <span style="flex:1"></span><span class="seg"><a class="${view === 'proyek' ? 'on' : ''}" href="${q({ v: '' })}">Per proyek</a><a class="${view === 'unit' ? 'on' : ''}" href="${q({ v: 'unit' })}">Per unit</a></span><a class="chipbtn${onlyMe ? ' on' : ''}" href="${q({ me: onlyMe ? '' : 1 })}">Pekerjaan saya</a><a class="chipbtn${attention ? ' on' : ''}" href="${q({ a: attention ? '' : 1 })}">Perlu perhatian</a><a class="chipbtn${showDone ? ' on' : ''}" href="${q({ done: showDone ? '' : 1 })}">Tampilkan selesai</a></div>
   <div class="tiles"><div class="tile"><span>Tugas aktif</span><b>${act.length}</b></div><div class="tile"><span>Perlu revisi</span><b class="red">${act.filter(t => t.status === 'revisi').length}</b></div>
@@ -78,6 +91,16 @@ async function board(el, params, reload) {
   ${view === 'proyek' ? projView() : unitView()}`;
   el.onclick = async (e) => {
     const a = e.target.closest('[data-a]');
+    if (a && a.dataset.a === 'wa') {
+      const act = list.filter(t => t.status !== 'done'); const scopeName = scope === 'ALL' ? 'Semua unit' : unitName(scope);
+      let x = `*Laporan Proyek & Tugas · ${scopeName}*\n${fdate(today())}\n${act.length} tugas aktif · ${act.filter(t => t.status === 'revisi').length} perlu revisi · ${act.filter(t => t.due && daysTo(t.due) < 0).length} lewat tenggat\n`;
+      const ps = projects.filter(p => !p.is_closed && (scope === 'ALL' || bizOf(p.unit_code) === scope));
+      for (const p of ps) { const all = tasks.filter(t => t.project_id === p.id); const rows = act.filter(t => t.project_id === p.id); if (!all.length) continue;
+        const pct = Math.round(all.reduce((s, t) => s + (t.status === 'done' ? 100 : +t.progress || 0), 0) / all.length);
+        x += `\n📁 *${p.name}* — ${pct}% (${all.filter(t => t.status === 'done').length}/${all.length} selesai) · PJ ${nick(p.owner_id)}${p.due ? ' · tenggat ' + fdate(p.due) : ''}\n` + rows.map(waLine).join('\n') + (rows.length ? '\n' : ''); }
+      const loose = act.filter(t => !t.project_id || !ps.some(p => p.id === t.project_id));
+      if (loose.length) x += `\n*Tugas lepas*\n` + loose.map(waLine).join('\n') + '\n';
+      await waReport('Proyek & Tugas', x + '\npokama.org/#/tugas'); return; }
     if (a && a.dataset.a === 'new') { if (await taskForm({}, projects)) { toast('Tugas dibuat'); reload(); } return; }
     if (a && a.dataset.a === 'proj') { if (await projForm()) reload(); return; }
     const np = e.target.closest('[data-np]'); if (np) { const p0 = proj[np.dataset.np]; if (await taskForm({ project_id: p0.id, unit_code: p0.unit_code }, projects)) { toast('Tugas ditambahkan ke ' + p0.name); reload(); } return; }
@@ -112,8 +135,11 @@ async function detail(t, projects) {
     ${points.length ? `<h3>Poin review</h3><ul class="pts">${points.map(p => `<li>${chip({ open: 'Belum dijawab', fixed: 'Sudah diperbaiki', disagree: 'Tidak setuju', accepted: 'Diterima' }[p.status], { open: 'red', fixed: 'blue', disagree: 'yellow', accepted: 'green' }[p.status])} ${esc(p.text)}${p.answer ? `<small> ↳ ${esc(p.answer)}</small>` : ''}</li>`).join('')}</ul>` : ''}
     ${canEdit && ['todo', 'doing', 'hold'].includes(t.status) ? `<div class="row gap wrap"><span class="muted small">Ubah status:</span>${['todo', 'doing', 'hold'].map(s => `<label class="chk"><input type="radio" name="st" value="${s}" ${t.status === s ? 'checked' : ''}> ${ST[s][0]}</label>`).join('')}</div>` : ''}
     ${isPic && ['todo', 'doing', 'revisi', 'hold'].includes(t.status) ? field('Ajukan ke reviewer · tautan hasil', `<input name="link" class="inp" placeholder="https://drive.google.com/…" value="${esc(t.last_link || '')}">`, 'Isi tautan lalu Simpan untuk mengajukan ke reviewer. Kalau ada poin revisi, jawab dulu di Review & Revisi.') : ''}
+    <div class="row gap"><button type="button" class="btn sm" data-wa1>Bagikan ke WA</button></div>
     <h3>Riwayat</h3><ul class="log">${log.map(l => `<li><b>${esc(nick(l.actor_id))}</b> ${esc(l.action)}${l.note ? ' · ' + esc(l.note) : ''} <small class="muted">${ftime(l.at)}</small></li>`).join('') || '<li class="muted">—</li>'}</ul>`;
   let mode = 'save';
+  const onOpen = (ev) => { document.removeEventListener('modal:open', onOpen); ev.detail.querySelector('[data-wa1]').onclick = () => waReport(t.title, waTask(t, points)); };
+  document.addEventListener('modal:open', onOpen);
   const res = await modal(t.title, body, {
     wide: true, submit: canEdit ? 'Simpan' : null,
     danger: canEdit ? { label: 'Ubah detail', confirm: false, onClick: async () => { mode = 'edit'; return 'edit'; } } : null,
@@ -145,7 +171,7 @@ async function review(el, params, reload) {
   const sel = params.get('t') ? tasks.find(t => t.id === params.get('t')) : list[0];
   const late = (t) => t.status === 'revisi' && t.revise_due && t.revise_due < today();
   el.innerHTML = `
-  <header class="ph"><div><span class="muted small">Pekerjaan baru dianggap selesai setelah dicek dan disetujui reviewer</span><h1>Review & Revisi</h1></div></header>
+  <header class="ph"><div><span class="muted small">Pekerjaan baru dianggap selesai setelah dicek dan disetujui reviewer</span><h1>Review & Revisi</h1></div><button class="btn" data-wa="list">Laporan WA</button></header>
   <ol class="steps"><li><b>1</b><span><strong>PIC mengajukan</strong><small>hasil + tautan</small></span></li><li><b>2</b><span><strong>Dicek reviewer</strong><small>kekurangan ditulis per poin</small></span></li><li><b>3</b><span><strong>PIC memperbaiki</strong><small>tiap poin dijawab, tenggat 2 hari kerja</small></span></li><li><b class="t">4</b><span><strong>Disetujui = selesai</strong><small>PIC tidak bisa menandai sendiri</small></span></li></ol>
   <div class="chips">${[['cek', 'Perlu saya cek', sets.cek.length], ['saya', 'Pekerjaan saya', sets.saya.length], ['semua', 'Semua yang berjalan', sets.semua.length], ['selesai', 'Baru selesai', null]].map(([k, l, n]) => `<a class="chipbtn${tab === k ? ' on' : ''}" href="#/review?tab=${k}">${l}${n !== null ? ` (${n})` : ''}</a>`).join('')}</div>
   <div class="split${params.get('t') ? ' picked' : ''}">
@@ -158,6 +184,18 @@ async function review(el, params, reload) {
   </div>`;
 
   el.onclick = async (e) => {
+    const w = e.target.closest('[data-wa]');
+    if (w && w.dataset.wa === 'one' && sel) return waReport(sel.title, waTask(sel, P(sel.id)));
+    if (w && w.dataset.wa === 'list') {
+      const run = tasks.filter(t => t.status !== 'done'); const rev = run.filter(t => t.status === 'review'), rv = run.filter(t => t.status === 'revisi');
+      let x = `*Laporan Review & Revisi*\n${fdate(today())}\n${rev.length} menunggu dicek · ${rv.length} sedang revisi · ${rv.filter(late).length} revisi lewat tenggat\n`;
+      if (rev.length) { x += `\n*🟡 MENUNGGU DICEK*\n`; const by = {}; rev.forEach(t => (by[t.reviewer_id] ||= []).push(t));
+        for (const [r, ts] of Object.entries(by)) x += `_Reviewer ${nick(r)}:_\n` + ts.map(t => `• ${t.title} — dari ${nick(t.pic_id)} · v${t.version}`).join('\n') + '\n'; }
+      if (rv.length) x += `\n*🔴 SEDANG REVISI*\n` + rv.map(t => { const ps = P(t.id); return `• ${t.title} — ${nick(t.pic_id)} · ${ps.filter(p => p.status === 'accepted').length}/${ps.length} poin beres · tenggat ${t.revise_due ? fdate(t.revise_due) : '-'}${late(t) ? ' *(LEWAT)*' : ''}`; }).join('\n') + '\n';
+      const done = tasks.filter(t => t.status === 'done' && t.done_at && t.done_at.slice(0, 10) >= addDays(today(), -7));
+      if (done.length) x += `\n*✅ SELESAI 7 HARI TERAKHIR*\n` + done.map(t => `• ${t.title} — ${nick(t.pic_id)}`).join('\n') + '\n';
+      return waReport('Review & Revisi', x + '\npokama.org/#/review');
+    }
     const b = e.target.closest('[data-r]'); if (!b) return;
     const t = sel; const act = b.dataset.r;
     try {
@@ -189,7 +227,7 @@ async function review(el, params, reload) {
       <div class="row between"><h2>${esc(t.title)}</h2>${stCell(t.status)}</div>
       ${t.dod ? `<p class="muted">Selesai bila: ${esc(t.dod)}</p>` : ''}
       <div class="kv"><div><span>PIC</span><b>${avatar(t.pic_id, 22)} ${esc(nick(t.pic_id))}</b></div><div><span>Reviewer</span><b>${avatar(t.reviewer_id, 22)} ${esc(nick(t.reviewer_id))}</b></div><div><span>Versi · putaran</span><b>v${t.version} · ${t.round}</b></div><div><span>Tenggat</span><b>${t.status === 'revisi' ? 'revisi ' + fdate(t.revise_due) : fdate(t.due)}</b></div></div>
-      ${t.last_link ? `<a class="btn" href="${safeUrl(t.last_link)}" target="_blank" rel="noopener">Buka hasil ↗</a>` : ''}
+      <div class="row gap wrap">${t.last_link ? `<a class="btn" href="${safeUrl(t.last_link)}" target="_blank" rel="noopener">Buka hasil ↗</a>` : ''}<button type="button" class="btn" data-wa="one">${t.status === 'revisi' ? 'Kirim poin revisi ke WA' : 'Bagikan ke WA'}</button></div>
       ${t.status === 'revisi' && t.revise_due && t.revise_due < today() ? '<p class="note err">Revisi lewat tenggat. Kepala Staf menindaklanjuti langsung dengan PIC.</p>' : ''}
       <h3>Poin review (${pts.length})</h3>
       ${pts.length ? `<ul class="pts">${pts.map(p => `<li><div class="row between gap"><span>${esc(p.text)}</span>${chip({ open: 'Belum dijawab', fixed: 'Sudah diperbaiki', disagree: 'Tidak setuju', accepted: 'Diterima' }[p.status], { open: 'red', fixed: 'blue', disagree: 'yellow', accepted: 'green' }[p.status])}</div>

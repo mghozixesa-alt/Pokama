@@ -1,0 +1,3 @@
+-- 021: cuti/izin/WFA disetujui berjenjang Valuer 1 → Valuer 2 (pk_approval_chain; libur mingguan cukup atasan),
+--      pk_leave/pk_wfa: kolom chain & step, keputusan per giliran (CEO boleh memutus langsung), notifikasi ke giliran berikutnya;
+--      email penting seketika: trigger pk_kick_notify → pk-notify (jeda 20 dtk) + cron tiap menit; pk_claim_urgent mencegah email ganda.

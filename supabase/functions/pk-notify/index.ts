@@ -56,8 +56,11 @@ async function people() {
 }
 
 async function instant() {
+  // klaim atomik: baris yang diklaim langsung ditandai terkirim, jadi pemicu & cron tidak mengirim ganda
   const ppl = await people(); const byId = Object.fromEntries(ppl.map((p: any) => [p.id, p]));
-  const { data: rows } = await db.from("pk_notifications").select("*").eq("urgent", true).is("emailed_at", null).order("created_at").limit(500);
+  if (!KEY) return { skipped: "Kunci layanan email belum diisi" };
+  const { data: rows, error } = await db.rpc("pk_claim_urgent", { p_limit: 500 });
+  if (error) return { error: error.message };
   const groups: Record<string, any[]> = {};
   for (const n of rows || []) if (byId[n.person_id]) (groups[n.person_id] ||= []).push(n);
   let sent = 0; const errors: unknown[] = [];
@@ -67,14 +70,10 @@ async function instant() {
     const html = shell(nm, list.length === 1 ? "Ada yang perlu tindakan Anda" : `${list.length} hal perlu tindakan Anda`,
       `<table role="presentation" width="100%" cellpadding="0" cellspacing="0">${list.map(item).join("")}</table><div style="margin-top:14px">${btn(APP + (list[0].link || ""), "Buka Sistem Kerja")}</div>`);
     const r = await send(p.email, subject, html);
-    if (r.ok) { sent++; await db.from("pk_notifications").update({ emailed_at: new Date().toISOString() }).in("id", list.map((x) => x.id)); }
-    else errors.push({ to: p.email, ...r });
-    if (!KEY) break;
+    if (r.ok) sent++;
+    else { errors.push({ to: p.email, ...r }); await db.from("pk_notifications").update({ emailed_at: null }).in("id", list.map((x) => x.id)); }
   }
-  // notifikasi penting untuk orang tanpa email / email dimatikan: tandai agar tidak menumpuk
-  const skip = (rows || []).filter((n: any) => !byId[n.person_id]).map((n: any) => n.id);
-  if (skip.length && KEY) await db.from("pk_notifications").update({ emailed_at: new Date().toISOString() }).in("id", skip);
-  return { pending: (rows || []).length, sent, errors };
+  return { claimed: (rows || []).length, sent, errors };
 }
 
 const LINES: [string, string, string][] = [
