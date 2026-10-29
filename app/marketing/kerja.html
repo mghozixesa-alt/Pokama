@@ -141,7 +141,7 @@ main > header .btn.pri{background:#09BEAF;color:#1D3149;border-color:#09BEAF !im
 <span style="font-size: 11px; font-weight: 800; letter-spacing: 0.08em; color: #5B6573; padding: 0 12px 4px;">UTAMA</span>
 <a href="Dashboard.dc.html" style="display: flex; align-items: center; gap: 10px; min-height: 38px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 600; color: #3B4250;"><span data-ic style="display: inline-flex; color: #5B6573;"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h7v9H3zM14 3h7v5h-7zM14 12h7v9h-7zM3 16h7v5H3z"></path></svg></span><span style="flex-grow: 1;">Dashboard utama</span></a>
 <a href="kerja.html#today" data-view="today" style="display: flex; align-items: center; gap: 10px; min-height: 38px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 600; color: #3B4250;"><span data-ic style="display: inline-flex; color: #5B6573;"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18zM12 7v5l3 2"></path></svg></span><span style="flex-grow: 1;">Hari ini</span><span data-badge="today"></span></a>
-<a href="Campaign.dc.html" style="display: flex; align-items: center; gap: 10px; min-height: 38px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 600; color: #3B4250;"><span data-ic style="display: inline-flex; color: #5B6573;"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21V4M5 4h12l-2 4 2 4H5"></path></svg></span><span style="flex-grow: 1;">Campaign</span></a>
+<a href="kerja.html#campaign" data-view="campaign" style="display: flex; align-items: center; gap: 10px; min-height: 38px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 600; color: #3B4250;"><span data-ic style="display: inline-flex; color: #5B6573;"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21V4M5 4h12l-2 4 2 4H5"></path></svg></span><span style="flex-grow: 1;">Campaign</span><span data-badge="campaign"></span></a>
 </div>
 <div style="display: flex; flex-direction: column; gap: 2px;">
 <span style="font-size: 11px; font-weight: 800; letter-spacing: 0.08em; color: #5B6573; padding: 0 12px 4px;">KONTEN ORGANIK</span>
@@ -185,7 +185,7 @@ var BRANDS = [
  { k: 'Rentalaja', pic: 'Dita', c: '#2F6FD0', slot: 5 }, { k: 'Rentalaja Experience', pic: 'Dita', c: '#5B8DEF', slot: 3 }, { k: 'Laptopaja', pic: 'Dita', c: '#D08A1E', slot: 5 },
  { k: 'Wisata Garut', pic: 'Nayla', c: '#0FA394', slot: 4 }, { k: 'TripinAja', pic: 'Nayla', c: '#09BEAF', slot: 4 }, { k: 'ATVaja', pic: 'Nayla', c: '#7A5200', slot: 2 }, { k: 'Maripoto', pic: 'Nayla', c: '#B0466B', slot: 2 }
 ];
-var PEOPLE = [{ n: 'Kevin', r: 'Leader marketing' }, { n: 'Dita', r: 'PIC akun' }, { n: 'Nayla', r: 'PIC akun' }, { n: 'Mugni', r: 'Editor' }];
+var PEOPLE = [{ n: 'Kevin', r: 'Leader marketing' }, { n: 'Dita', r: 'PIC akun' }, { n: 'Nayla', r: 'PIC akun' }, { n: 'Mugni', r: 'Editor' }, { n: 'Ghozy', r: 'CEO' }];
 var EDITOR = 'Mugni', LEAD = 'Kevin';
 var FORMATS = ['Reels', 'Carousel', 'Foto', 'Story', 'TikTok'];
 var PILLARS = ['Educational', 'Entertainment', 'Promotional', 'Conversational'];
@@ -198,7 +198,7 @@ var MON = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt',
 var MONL = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
 var GOOD = '#067A70', BAD = '#9A3F0A', AMB = '#7A5200', TEAL = '#09BEAF', ORG = '#F2A33A';
 
-function blank() { return { ideas: [], items: [], cap: 3, me: 'Kevin', brand: 'Saya', week: 0, used: 0 }; }
+function blank() { return { camps: [], ideas: [], items: [], cap: 3, me: 'Kevin', brand: 'Saya', week: 0, used: 0 }; }
 var S;
 try { S = Object.assign(blank(), JSON.parse(localStorage.getItem(KEY) || '{}')); } catch (e) { S = blank(); }
 function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
@@ -247,8 +247,9 @@ function kpis(list) {
 function sec(title, icon, sub, right, body) {
   return '<section class="sec"><div class="sec-h"><div style="display:flex;flex-direction:column"><h2><span class="ib">' + ic(icon) + '</span>' + title + '</h2>' + (sub ? '<span class="sub">' + sub + '</span>' : '') + '</div>' + (right || '') + '</div>' + body + '</section>';
 }
-function rowItem(it, title, why, btn) {
+function rowItem(it, title, why, btn, campId) {
   var b = brand(it.brand);
+  if (campId) return '<div class="row click" data-camp="' + campId + '"><span class="ib">' + ic('flag') + '</span><div class="grow"><strong>' + esc(title) + '</strong><span class="m">Campaign · ' + esc(it.title) + '</span>' + (why ? '<span class="m">' + esc(why) + '</span>' : '') + '</div><button class="btn sm" data-camp="' + campId + '">' + btn + '</button></div>';
   return '<div class="row click" data-open="' + it.id + '"><span class="dot" style="background:' + b.c + '"></span><div class="grow"><strong>' + esc(title) + '</strong><span class="m">' + esc(it.brand) + ' · ' + esc(it.format) + (title !== it.title ? ' · ' + esc(it.title) : '') + '</span>' + (why ? '<span class="m">' + esc(why) + '</span>' : '') + '</div>' + stChip(it.status) + (it.priority === 'Penting' ? '<span class="st" style="background:#FCEBDD;color:#9A3F0A">Penting</span>' : '') + '<button class="btn sm" data-open="' + it.id + '">' + btn + '</button></div>';
 }
 function empty(t) { return '<div class="empty">' + t + '</div>'; }
@@ -278,6 +279,12 @@ function tasksFor(n) {
     if (mine && it.status === 'Revisi' && it.revTo !== 'editor') t.push({ it: it, do: 'Revisi dari Kevin', why: it.revNote || '', btn: 'Buka' });
     if (mine && it.status === 'Siap tayang' && it.date <= TODAY) t.push({ it: it, do: 'Tayangkan', why: 'Jadwal ' + nice(it.date) + (it.time ? ' ' + it.time : ''), btn: 'Buka' });
   });
+  (S.camps || []).forEach(function (c) {
+    var cb = (c.accs || [])[0] || '';
+    if (n === CEO && c.state === 'ajuan') t.push({ it: { id: '', brand: cb, format: 'Campaign', title: c.name, status: 'Review' }, camp: c.id, do: 'Setujui campaign', why: 'Diajukan Kevin · ' + nice(c.start) + ' – ' + nice(c.end) + ' · budget ' + rpS(c.budget), btn: 'Buka' });
+    if (n === LEAD && c.state === 'draf') t.push({ it: { id: '', brand: cb, format: 'Campaign', title: c.name, status: 'Brief' }, camp: c.id, do: 'Lengkapi brief campaign, lalu ajukan', why: 'Masih draf', btn: 'Buka' });
+    if (n === LEAD && c.state === 'ok' && c.end && c.end < TODAY) t.push({ it: { id: '', brand: cb, format: 'Campaign', title: c.name, status: 'Siap tayang' }, camp: c.id, do: 'Tutup campaign dan tulis pelajaran', why: 'Periode selesai ' + nice(c.end), btn: 'Buka' });
+  });
   t.sort(function (a, b) { return (a.sort || a.it.date || '').localeCompare(b.sort || b.it.date || ''); });
   return t;
 }
@@ -288,12 +295,12 @@ function count(f) { return S.items.filter(f).length; }
 
 /* ---------- Hari ini ---------- */
 function vToday() {
-  var me = S.me, t = tasksFor(me), w = me === LEAD || me === EDITOR ? [] : waitingFor(me);
-  var scope = function (it) { return me === LEAD || me === EDITOR || ownerOf(it) === me; };
+  var me = S.me, t = tasksFor(me), w = me === LEAD || me === EDITOR || me === CEO ? [] : waitingFor(me);
+  var scope = function (it) { return me === LEAD || me === EDITOR || me === CEO || ownerOf(it) === me; };
   var risk = S.items.filter(function (it) { return late(it) && scope(it); });
   var wk = S.items.filter(function (it) { return inWeek(it) && scope(it); });
   var posted = wk.filter(function (it) { return it.status === 'Tayang'; }).length;
-  var target = me === LEAD || me === EDITOR ? BRANDS.reduce(function (a, b) { return a + b.slot; }, 0) : BRANDS.filter(function (b) { return b.pic === me; }).reduce(function (a, b) { return a + b.slot; }, 0);
+  var target = me === LEAD || me === EDITOR || me === CEO ? BRANDS.reduce(function (a, b) { return a + b.slot; }, 0) : BRANDS.filter(function (b) { return b.pic === me; }).reduce(function (a, b) { return a + b.slot; }, 0);
   var h = header(longDate(TODAY), 'Hari ini', me === LEAD ? 'Yang menunggu keputusan dan review Anda, plus konten yang berisiko telat.' : me === EDITOR ? 'Antrean edit Anda, urut dari yang penting dan paling dekat tenggatnya.' : 'Tugas dari konten Anda sendiri. Semua diambil dari status di Content plan.',
     '<button class="btn pri" data-a="new">+ Konten baru</button><button class="btn" data-a="idea">+ Tulis ide</button>');
   h += kpis([
@@ -303,7 +310,7 @@ function vToday() {
     { label: 'Tayang minggu ini', ic: 'check', val: posted + ' / ' + target, note: 'Target slot per minggu', pct: target ? posted / target * 100 : 0, bar: TEAL }
   ]);
   if (me === LEAD) { var over = overDays(); if (over.length) h += '<div class="row" style="border-color:#E9B999;background:#FFFBF8"><span class="ib" style="background:#FCEBDD;color:#9A3F0A">' + ic('alert') + '</span><div class="grow"><strong>Editor bentrok di ' + over.map(short).join(', ') + '</strong><span class="m">Permintaan ke Mugni melebihi kapasitas. Tandai mana yang penting.</span></div><a class="btn sm warn" href="#editor" style="display:inline-flex;align-items:center;text-decoration:none">Atur prioritas</a></div>'; }
-  var body = t.length ? '<div class="list">' + t.map(function (x) { return rowItem(x.it, x.do, x.why, x.btn); }).join('') + '</div>' : empty(me === EDITOR ? 'Belum ada permintaan edit. Konten yang dikirim ke editor akan muncul di sini.' : 'Belum ada tugas. Mulai dari <b>+ Tulis ide</b> atau tambah konten di Content plan.');
+  var body = t.length ? '<div class="list">' + t.map(function (x) { return rowItem(x.it, x.do, x.why, x.btn, x.camp); }).join('') + '</div>' : empty(me === EDITOR ? 'Belum ada permintaan edit. Konten yang dikirim ke editor akan muncul di sini.' : 'Belum ada tugas. Mulai dari <b>+ Tulis ide</b> atau tambah konten di Content plan.');
   h += '<div class="cols">' + sec('Daftar kerja hari ini', 'list', '', '', body);
   var side = '';
   if (risk.length) side += sec('Berisiko telat tayang', 'alert', 'Tayang hari ini atau besok, tapi belum siap.', '', '<div class="list">' + risk.map(function (it) { return rowItem(it, it.title, 'Tayang ' + nice(it.date) + ' · sekarang di ' + (who(it) || '-'), 'Buka'); }).join('') + '</div>');
@@ -348,7 +355,7 @@ function vPlan() {
 }
 function kard(it) {
   var b = brand(it.brand), m = it.status === 'Brief' ? 'Belum dikirim' : it.mode === 'editor' ? 'Editor · ' + (it.editDue ? short(it.editDue) : '-') : it.mode === 'sendiri' ? 'Edit sendiri' : '';
-  return '<button class="k" style="--c:' + b.c + '" data-open="' + it.id + '"><span class="t">' + esc(it.title) + '</span><span class="m">' + esc(it.brand) + ' · ' + esc(it.format) + (it.time ? ' · ' + esc(it.time) : '') + '</span><span style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">' + stChip(it.status) + (it.priority === 'Penting' ? '<span class="st" style="background:#FCEBDD;color:#9A3F0A">Penting</span>' : '') + '<span class="m">' + esc(m) + '</span></span></button>';
+  return '<button class="k" style="--c:' + b.c + '" data-open="' + it.id + '"><span class="t">' + esc(it.title) + '</span><span class="m">' + esc(it.brand) + ' · ' + esc(it.format) + (it.time ? ' · ' + esc(it.time) : '') + '</span>' + (campOf(it.camp) ? '<span class="m" style="color:#1E5AA8">◆ ' + esc(campOf(it.camp).name) + '</span>' : '') + '<span style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">' + stChip(it.status) + (it.priority === 'Penting' ? '<span class="st" style="background:#FCEBDD;color:#9A3F0A">Penting</span>' : '') + '<span class="m">' + esc(m) + '</span></span></button>';
 }
 
 /* ---------- Content bank ---------- */
@@ -400,6 +407,103 @@ function vEditor() {
   return h;
 }
 
+/* ---------- Campaign ---------- */
+var CEO = 'Ghozy';
+var OBJ = ['Leads (chat masuk)', 'Booking', 'Closing (DP / lunas)', 'Awareness (reach)'];
+var CH = [['org', 'Konten organik'], ['ads', 'Paid ads'], ['kol', 'KOL'], ['wa', 'Broadcast & story WA'], ['seo', 'SEO / Google Maps']];
+function campStatus(c) {
+  if (c.state === 'draf') return 'Draf';
+  if (c.state === 'ajuan') return 'Menunggu persetujuan';
+  if (c.state === 'selesai') return 'Selesai';
+  if (c.start && TODAY < c.start) return 'Persiapan';
+  return 'Jalan';
+}
+var CSC = { 'Draf': ['#EEF0F3', '#3B4250'], 'Menunggu persetujuan': ['#FDF3D7', '#7A5200'], 'Persiapan': ['#E5EEF9', '#1E5AA8'], 'Jalan': ['#DDF5F2', '#067A70'], 'Selesai': ['#EEF0F3', '#5B6573'] };
+function cChip(s) { var c = CSC[s]; return '<span class="st" style="background:' + c[0] + ';color:' + c[1] + '">' + s + '</span>'; }
+function campOf(id) { return (S.camps || []).filter(function (c) { return c.id === id; })[0]; }
+function campItems(c) { return S.items.filter(function (i) { return i.camp === c.id; }); }
+function daysBetween(a, b) { return Math.round((parse(b) - parse(a)) / 864e5); }
+function timePct(c) { if (!c.start || !c.end) return 0; var tot = daysBetween(c.start, c.end) + 1, d = daysBetween(c.start, TODAY) + 1; return Math.max(0, Math.min(100, Math.round(d / tot * 100))); }
+function vCampaign() {
+  S.camps = S.camps || [];
+  var cs = S.camps.slice().sort(function (a, b) { var o = { 'Jalan': 0, 'Menunggu persetujuan': 1, 'Persiapan': 2, 'Draf': 3, 'Selesai': 4 }; return o[campStatus(a)] - o[campStatus(b)]; });
+  var n = function (s) { return S.camps.filter(function (c) { return campStatus(c) === s; }).length; };
+  var linked = S.items.filter(function (i) { return i.camp; }).length;
+  var h = header('Utama · semua kerja punya tujuan', 'Campaign', 'Setiap konten, iklan, dan KOL masuk ke satu campaign. Konten harian yang tidak ikut campaign tetap boleh (Always-on).',
+    S.me === LEAD || S.me === CEO ? '<button class="btn pri" data-a="camp">+ Campaign baru</button>' : '<span style="font-size:12.5px;font-weight:700;align-self:center">Campaign dibuat oleh Kevin</span>');
+  h += kpis([
+    { label: 'Campaign jalan', ic: 'flag', val: n('Jalan'), note: n('Persiapan') + ' persiapan', bar: TEAL },
+    { label: 'Menunggu persetujuan CEO', ic: 'check', val: n('Menunggu persetujuan'), note: n('Draf') + ' masih draf', bar: n('Menunggu persetujuan') ? ORG : TEAL, nc: n('Menunggu persetujuan') ? AMB : '#5B6573' },
+    { label: 'Konten terhubung campaign', ic: 'cal', val: linked + ' / ' + S.items.length, note: 'Sisanya Always-on', pct: S.items.length ? linked / S.items.length * 100 : 0, bar: TEAL },
+    { label: 'Budget campaign aktif', ic: 'money', val: rpS(S.camps.filter(function (c) { var s = campStatus(c); return s === 'Jalan' || s === 'Persiapan'; }).reduce(function (a, c) { return a + (+c.budget || 0); }, 0)), note: 'Ads + KOL + lainnya', bar: TEAL }
+  ]);
+  var flow = '<div class="flow"><span>1 · Kevin tulis brief</span><span style="background:none">→</span><span>2 · Ajukan ke CEO</span><span style="background:none">→</span><span>3 · Disetujui, jadi Persiapan / Jalan</span><span style="background:none">→</span><span>4 · PIC isi konten di Content plan</span><span style="background:none">→</span><span>5 · Tutup + tulis pelajaran</span></div>';
+  var list = cs.length ? '<div class="list">' + cs.map(campRow).join('') + '</div>' : empty('Belum ada campaign. ' + (S.me === LEAD || S.me === CEO ? 'Klik <b>+ Campaign baru</b> di atas.' : 'Kevin yang membuat campaign; nanti muncul di sini.'));
+  h += sec('Cara kerja campaign', 'time', '', '', flow);
+  h += sec('Daftar campaign', 'flag', 'Klik untuk melihat brief, konten yang terhubung, dan progresnya.', '', list);
+  return h;
+}
+function rpS(n) { n = +n || 0; return n >= 1e6 ? 'Rp ' + (Math.round(n / 1e5) / 10).toString().replace('.', ',') + ' jt' : n ? 'Rp ' + Math.round(n / 1000) + ' rb' : 'Rp 0'; }
+function campRow(c) {
+  var st = campStatus(c), its = campItems(c), done = its.filter(function (i) { return i.status === 'Tayang'; }).length, tp = timePct(c);
+  return '<div class="row click" data-camp="' + c.id + '"><span class="ib">' + ic('flag') + '</span><div class="grow"><strong>' + esc(c.name) + '</strong><span class="m">' + esc((c.accs || []).join(' · ')) + ' · ' + nice(c.start) + ' – ' + nice(c.end) + '</span><span class="m">Tujuan: ' + esc(c.obj) + (c.target ? ' · target ' + esc(c.target) : '') + ' · budget ' + rpS(c.budget) + '</span>' +
+    '<div style="display:flex;gap:14px;flex-wrap:wrap;margin-top:4px"><span class="m" style="min-width:150px">Waktu ' + tp + '%<span class="trk" style="display:block;margin-top:3px"><i style="width:' + tp + '%;background:#1D3149"></i></span></span><span class="m" style="min-width:150px">Konten tayang ' + done + ' / ' + its.length + '<span class="trk" style="display:block;margin-top:3px"><i style="width:' + (its.length ? done / its.length * 100 : 0) + '%;background:' + TEAL + '"></i></span></span></div></div>' + cChip(st) + '<button class="btn sm" data-camp="' + c.id + '">Buka</button></div>';
+}
+function campForm(c) {
+  var isNew = !c; c = c || { accs: [], ch: ['org'], obj: OBJ[0], start: TODAY, end: addDays(TODAY, 30) };
+  var dis = (S.me === LEAD || S.me === CEO) && (isNew || c.state === 'draf' || c.state === 'ajuan') ? '' : ' disabled';
+  var t = function (id, label, v, ph, area) { return '<div class="f"><label for="' + id + '">' + label + '</label>' + (area ? '<textarea id="' + id + '" placeholder="' + (ph || '') + '"' + dis + '>' + esc(v || '') + '</textarea>' : '<input id="' + id + '" value="' + esc(v || '') + '" placeholder="' + (ph || '') + '"' + dis + '>') + '</div>'; };
+  var h = '<div style="display:flex;justify-content:space-between;gap:10px"><div><span class="sub">' + (isNew ? 'Brief campaign baru · urutan SOSTAC' : cChip(campStatus(c))) + '</span><h1>' + (isNew ? 'Campaign baru' : esc(c.name)) + '</h1></div><button class="btn sm" data-close aria-label="Tutup">✕</button></div>';
+  h += t('c-name', 'Nama campaign', c.name, 'Contoh: Libur Akhir Tahun');
+  h += '<div class="box"><h2>1 · Situasi</h2>' + t('c-why', 'Kenapa sekarang? Momen atau masalah apa', c.why, 'Contoh: libur sekolah 20 Des, booking trip biasanya naik', true) + '</div>';
+  h += '<div class="box"><h2>2 · Tujuan</h2><div class="f2"><div class="f"><label for="c-obj">Yang dikejar</label><select id="c-obj"' + dis + '>' + opts(OBJ, c.obj) + '</select></div>' + t('c-target', 'Target angka', c.target, 'Contoh: 60 booking') + '</div>' +
+    '<div class="f2"><div class="f"><label for="c-start">Mulai</label><input id="c-start" type="date" value="' + esc(c.start || '') + '"' + dis + '></div><div class="f"><label for="c-end">Selesai</label><input id="c-end" type="date" value="' + esc(c.end || '') + '"' + dis + '></div></div>' +
+    '<div class="f"><label for="c-budget">Budget total (Rp)</label><input id="c-budget" type="number" min="0" step="50000" value="' + esc(c.budget || '') + '" placeholder="Contoh: 2000000"' + dis + '></div></div>';
+  h += '<div class="box"><h2>3 · Strategi</h2><div class="f"><label>Akun yang ikut</label><div class="chips">' + BRANDS.map(function (b) { var on = (c.accs || []).indexOf(b.k) >= 0; return '<label class="chip" style="cursor:pointer"><input type="checkbox" data-acc value="' + esc(b.k) + '"' + (on ? ' checked' : '') + dis + ' style="margin:0"> ' + esc(b.k) + '</label>'; }).join('') + '</div></div>' +
+    t('c-msg', 'Pesan utama (big idea)', c.msg, 'Satu kalimat yang mau diingat pelanggan', true) + t('c-offer', 'Offer dan ajakan (CTA)', c.offer, 'Contoh: early bird 10% sampai 30 Nov, chat WA') + '</div>';
+  h += '<div class="box"><h2>4 · Taktik per channel</h2><div class="chips">' + CH.map(function (x) { var on = (c.ch || []).indexOf(x[0]) >= 0; return '<label class="chip" style="cursor:pointer"><input type="checkbox" data-ch value="' + x[0] + '"' + (on ? ' checked' : '') + dis + ' style="margin:0"> ' + x[1] + '</label>'; }).join('') + '</div>' +
+    '<div class="f2">' + t('c-slot', 'Slot konten organik per minggu', c.slot, 'Contoh: 4') + t('c-kpi', 'Cara menilai (patokan)', c.kpi, 'Contoh: biaya per booking ≤ Rp 50 rb') + '</div><span class="sub">PIC tiap akun mengikuti pembagian akun (Dita / Nayla). Konten untuk campaign ini dibuat di Content plan dan dipilih campaign-nya.</span></div>';
+  if (!isNew && c.state === 'selesai') h += '<div class="box"><h2>Pelajaran</h2><span class="sub">' + esc(c.learning || '-') + '</span></div>';
+  var a = [];
+  if (!dis) a.push('<button class="btn" data-cs="save">' + (isNew ? 'Simpan sebagai draf' : 'Simpan perubahan') + '</button>');
+  if (!dis && (isNew || c.state === 'draf')) a.push('<button class="btn pri" data-cs="ajukan">Ajukan ke CEO</button>');
+  if (!isNew && c.state === 'ajuan' && S.me === CEO) { a.push('<button class="btn pri" data-cs="setujui">Setujui</button>'); a.push('<button class="btn warn" data-cs="kembali">Kembalikan ke draf</button>'); }
+  if (!isNew && c.state === 'ok' && (S.me === LEAD || S.me === CEO)) a.push('<div class="box" style="width:100%"><div class="f"><label for="c-learn">Pelajaran saat ditutup</label><textarea id="c-learn" placeholder="Apa yang berhasil, apa yang tidak, dipakai lagi atau tidak"></textarea></div><button class="btn" data-cs="tutup">Tutup campaign</button></div>');
+  h += '<div class="acts">' + a.join('') + '</div>';
+  if (!isNew && c.state === 'ajuan' && S.me !== CEO) h += '<div class="hint" style="background:#FDF3D7;color:#7A5200">Menunggu persetujuan CEO. Ganti "Saya" ke Ghozy untuk mencoba menyetujui.</div>';
+  if (!isNew) {
+    var its = campItems(c);
+    h += '<div style="display:flex;justify-content:space-between;align-items:center"><h2>Konten campaign ini (' + its.length + ')</h2>' + (c.state === 'ok' ? '<button class="btn sm pri" data-cs="konten">+ Konten</button>' : '') + '</div>';
+    h += its.length ? '<div class="list">' + its.sort(function (a, b) { return (a.date || '').localeCompare(b.date || ''); }).map(function (it) { return '<div class="row click" data-open2="' + it.id + '"><span class="dot" style="background:' + brand(it.brand).c + '"></span><div class="grow"><strong>' + esc(it.title) + '</strong><span class="m">' + esc(it.brand) + ' · ' + nice(it.date) + '</span></div>' + stChip(it.status) + '</div>'; }).join('') + '</div>' : '<span class="sub">' + (c.state === 'ok' ? 'Belum ada konten. Klik + Konten, atau pilih campaign ini saat membuat konten di Content plan.' : 'Konten bisa ditambahkan setelah campaign disetujui.') + '</span>';
+    if (c.log && c.log.length) h += '<h2>Riwayat</h2><div class="log">' + c.log.map(function (l) { return '<div><b>' + esc(l.who) + '</b> · ' + esc(l.text) + '<br><span class="sub">' + esc(l.at) + '</span></div>'; }).join('') + '</div>';
+  }
+  panel(h, function (p) {
+    p.addEventListener('click', function (e) {
+      var o2 = e.target.closest('[data-open2]'); if (o2) { openItem(o2.getAttribute('data-open2')); return; }
+      var b = e.target.closest('[data-cs]'); if (!b) return;
+      var k = b.getAttribute('data-cs');
+      if (k === 'konten') { var cc = c; formNew({ camp: cc.id, brand: (cc.accs || [])[0], date: cc.start > TODAY ? cc.start : addDays(TODAY, 3) }); return; }
+      if (k === 'save' || k === 'ajukan') {
+        var v = function (id) { var el = p.querySelector('#' + id); return el ? el.value.trim() : ''; };
+        if (!v('c-name')) { p.querySelector('#c-name').focus(); toast('Nama campaign belum diisi'); return; }
+        var accs = [].map.call(p.querySelectorAll('[data-acc]:checked'), function (x) { return x.value; });
+        if (!accs.length) { toast('Pilih minimal satu akun'); return; }
+        if (isNew) { c.id = uid(); c.state = 'draf'; c.log = []; c.by = S.me; S.camps = S.camps || []; S.camps.push(c); }
+        Object.assign(c, { name: v('c-name'), why: v('c-why'), obj: v('c-obj'), target: v('c-target'), start: v('c-start'), end: v('c-end'), budget: +v('c-budget') || 0, msg: v('c-msg'), offer: v('c-offer'), slot: v('c-slot'), kpi: v('c-kpi'), accs: accs, ch: [].map.call(p.querySelectorAll('[data-ch]:checked'), function (x) { return x.value; }) });
+        if (k === 'ajukan') { c.state = 'ajuan'; log(c, 'diajukan ke CEO'); toast('Diajukan ke CEO'); } else { log(c, isNew ? 'brief dibuat' : 'brief diubah'); toast('Tersimpan'); }
+      }
+      if (k === 'setujui') { c.state = 'ok'; log(c, 'disetujui CEO'); toast('Campaign disetujui'); }
+      if (k === 'kembali') { c.state = 'draf'; log(c, 'dikembalikan ke draf'); toast('Dikembalikan ke Kevin'); }
+      if (k === 'tutup') { c.state = 'selesai'; c.learning = (p.querySelector('#c-learn').value || '').trim(); log(c, 'ditutup'); toast('Campaign ditutup'); }
+      save(); close(); render();
+    });
+  });
+}
+function campOptions(brandK, cur) {
+  var list = (S.camps || []).filter(function (c) { return c.state === 'ok' && (!brandK || (c.accs || []).indexOf(brandK) >= 0 || c.id === cur); });
+  return '<option value="">Always-on (tanpa campaign)</option>' + list.map(function (c) { return '<option value="' + c.id + '"' + (c.id === cur ? ' selected' : '') + '>' + esc(c.name) + '</option>'; }).join('');
+}
+
 /* ---------- panel detail ---------- */
 function opts(list, v) { return list.map(function (o) { return '<option' + (o === v ? ' selected' : '') + '>' + esc(o) + '</option>'; }).join(''); }
 function openItem(id) {
@@ -412,6 +516,7 @@ function openItem(id) {
   h += '<div class="f"><label for="i-title">Judul</label><input id="i-title" value="' + esc(it.title) + '"' + dis + '></div>';
   h += '<div class="f2"><div class="f"><label for="i-brand">Brand</label><select id="i-brand"' + dis + '>' + opts(BRANDS.map(function (b) { return b.k; }), it.brand) + '</select></div><div class="f"><label for="i-format">Format</label><select id="i-format"' + dis + '>' + opts(FORMATS, it.format) + '</select></div></div>';
   h += '<div class="f2"><div class="f"><label for="i-date">Tanggal tayang</label><input id="i-date" type="date" value="' + esc(it.date) + '"' + dis + '></div><div class="f"><label for="i-time">Jam tayang</label><input id="i-time" type="time" value="' + esc(it.time || '') + '"' + dis + '></div></div>';
+  h += '<div class="f"><label for="i-camp">Campaign</label><select id="i-camp"' + dis + '>' + campOptions('', it.camp) + '</select></div>';
   h += '<div class="f"><label for="i-pillar">Content pillar</label><select id="i-pillar"' + dis + '>' + opts(PILLARS, it.pillar) + '</select></div>';
   h += '<div class="f"><label for="i-brief">Brief untuk editor</label><textarea id="i-brief" placeholder="Hook, isi, CTA, referensi, link footage"' + dis + '>' + esc(it.brief || '') + '</textarea></div>';
   if (canEdit) h += '<div class="acts"><button class="btn" data-savei>Simpan perubahan</button></div>';
@@ -451,7 +556,7 @@ function openItem(id) {
   });
 }
 function read(p, it) {
-  ['title', 'brand', 'format', 'date', 'time', 'pillar', 'brief'].forEach(function (k) { var el = p.querySelector('#i-' + k); if (el) it[k] = k === 'title' ? (el.value.trim() || it.title) : el.value; });
+  ['title', 'brand', 'format', 'date', 'time', 'pillar', 'brief', 'camp'].forEach(function (k) { var el = p.querySelector('#i-' + k); if (el) it[k] = k === 'title' ? (el.value.trim() || it.title) : el.value; });
 }
 function formNew(o) {
   o = o || {};
@@ -461,6 +566,7 @@ function formNew(o) {
   h += '<div class="f2"><div class="f"><label for="n-brand">Brand</label><select id="n-brand">' + opts(BRANDS.map(function (b) { return b.k; }), def) + '</select></div><div class="f"><label for="n-format">Format</label><select id="n-format">' + opts(FORMATS, o.format || 'Reels') + '</select></div></div>';
   h += '<div class="f2"><div class="f"><label for="n-pillar">Content pillar</label><select id="n-pillar">' + opts(PILLARS, o.pillar || 'Educational') + '</select></div>';
   h += isIdea ? '<div class="f"><label for="n-source">Sumber ide</label><select id="n-source">' + opts(SOURCES, 'Ide sendiri') + '</select></div></div>' : '<div class="f"><label for="n-date">Tanggal tayang</label><input id="n-date" type="date" value="' + esc(o.date || addDays(TODAY, 3)) + '"></div></div>';
+  if (!isIdea) h += '<div class="f"><label for="n-camp">Campaign</label><select id="n-camp">' + campOptions('', o.camp) + '</select></div>';
   h += '<div class="f"><label for="n-note">' + (isIdea ? 'Catatan' : 'Brief singkat') + ' (boleh kosong)</label><textarea id="n-note">' + esc(o.note || '') + '</textarea></div>';
   h += '<div class="acts"><button class="btn pri" data-ok>' + (isIdea ? 'Simpan ke Content bank' : 'Masukkan ke Content plan') + '</button><button class="btn" data-close>Batal</button></div>';
   panel(h, function (p) {
@@ -470,7 +576,7 @@ function formNew(o) {
       if (!v('n-title')) { p.querySelector('#n-title').focus(); toast('Judul belum diisi'); return; }
       if (isIdea) { S.ideas.unshift({ id: uid(), title: v('n-title'), brand: v('n-brand'), format: v('n-format'), pillar: v('n-pillar'), source: v('n-source'), note: v('n-note'), by: S.me, at: TODAY }); toast('Ide tersimpan di Content bank'); }
       else {
-        var it = { id: uid(), title: v('n-title'), brand: v('n-brand'), format: v('n-format'), pillar: v('n-pillar'), date: v('n-date'), brief: v('n-note'), status: 'Brief', mode: '', log: [] };
+        var it = { id: uid(), title: v('n-title'), brand: v('n-brand'), format: v('n-format'), pillar: v('n-pillar'), date: v('n-date'), camp: v('n-camp'), brief: v('n-note'), status: 'Brief', mode: '', log: [] };
         log(it, o.fromIdea ? 'dibuat dari Content bank' : 'dibuat'); S.items.push(it);
         if (o.fromIdea) { S.ideas = S.ideas.filter(function (x) { return x.id !== o.fromIdea; }); S.used = (S.used || 0) + 1; }
         toast('Masuk Content plan ' + nice(it.date));
@@ -492,7 +598,7 @@ function close() { if (cur) { cur.remove(); cur = null; } }
 document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
 
 /* ---------- render & menu kiri ---------- */
-var VIEWS = { today: vToday, plan: vPlan, bank: vBank, editor: vEditor };
+var VIEWS = { campaign: vCampaign, today: vToday, plan: vPlan, bank: vBank, editor: vEditor };
 function view() { var v = (location.hash || '').slice(1); return VIEWS[v] ? v : 'today'; }
 var ON = 'font-weight: 800; color: #1D3149; background: #DDF5F2;', OFF = 'font-weight: 600; color: #3B4250;';
 function render() {
@@ -503,10 +609,10 @@ function render() {
     if (on) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
     var i = a.querySelector('[data-ic]'); if (i) i.style.color = on ? '#067A70' : '#5B6573';
   });
-  var B = { today: tasksFor(S.me).length, plan: Math.max(0, BRANDS.reduce(function (a, b) { return a + b.slot; }, 0) - S.items.filter(function (i) { return inWeek(i, 1); }).length), bank: S.ideas.length, editor: S.items.filter(atEditor).length };
+  var B = { campaign: (S.camps || []).filter(function (c) { return campStatus(c) === 'Jalan'; }).length, today: tasksFor(S.me).length, plan: Math.max(0, BRANDS.reduce(function (a, b) { return a + b.slot; }, 0) - S.items.filter(function (i) { return inWeek(i, 1); }).length), bank: S.ideas.length, editor: S.items.filter(atEditor).length };
   document.querySelectorAll('[data-badge]').forEach(function (el) {
     var k = el.getAttribute('data-badge'), n = B[k];
-    el.innerHTML = !n ? '' : k === 'today' || k === 'editor' ? '<span class="nb">' + n + '</span>' : k === 'plan' ? '<span class="nb" title="Slot kosong minggu depan" style="background:#FCEBDD;color:#9A3F0A">' + n + '</span>' : '<span class="nb t">' + n + '</span>';
+    el.innerHTML = !n ? '' : k === 'campaign' ? '<span class="nb t">' + n + ' jalan</span>' : k === 'today' || k === 'editor' ? '<span class="nb">' + n + '</span>' : k === 'plan' ? '<span class="nb" title="Slot kosong minggu depan" style="background:#FCEBDD;color:#9A3F0A">' + n + '</span>' : '<span class="nb t">' + n + '</span>';
   });
   document.getElementById('app').innerHTML = VIEWS[v]() + '<div style="font-size:12px;color:#5B6573">Uji coba tahap 1 · mulai dari nol · data tersimpan di browser ini, belum di database.</div>';
 }
@@ -514,8 +620,10 @@ window.addEventListener('hashchange', function () { close(); render(); window.sc
 document.addEventListener('change', function (e) { if (e.target.id === 'me') { S.me = e.target.value; save(); render(); } });
 document.addEventListener('click', function (e) {
   if (cur && cur.contains(e.target)) return;
-  var t = e.target.closest('[data-open],[data-a],[data-new],[data-brand],[data-wk],[data-use],[data-delidea],[data-cap],[data-prio]'); if (!t) return;
+  var t = e.target.closest('[data-camp],[data-open],[data-a],[data-new],[data-brand],[data-wk],[data-use],[data-delidea],[data-cap],[data-prio]'); if (!t) return;
   var g = function (k) { return t.getAttribute(k); };
+  if (g('data-camp')) { campForm(campOf(g('data-camp'))); return; }
+  if (g('data-a') === 'camp') return campForm(null);
   if (g('data-open')) { openItem(g('data-open')); return; }
   if (g('data-a') === 'new') return formNew({});
   if (g('data-a') === 'idea') return formNew({ kind: 'idea' });
@@ -529,7 +637,7 @@ document.addEventListener('click', function (e) {
 });
 var tries = 0, iv = setInterval(function () {
   var p = window.mkPerson, n = p && (p.nickname || p.name || '');
-  if (n) { var m = PEOPLE.filter(function (x) { return n.toLowerCase().indexOf(x.n.toLowerCase()) === 0; })[0]; if (m && !S._auto) { S.me = m.n; S._auto = 1; save(); render(); } clearInterval(iv); }
+  if (n) { var m = PEOPLE.filter(function (x) { return n.toLowerCase().indexOf(x.n.toLowerCase()) >= 0; })[0]; if (m && !S._auto) { S.me = m.n; S._auto = 1; save(); render(); } clearInterval(iv); }
   if (++tries > 20) clearInterval(iv);
 }, 300);
 render();
