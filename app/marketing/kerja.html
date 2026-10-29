@@ -184,6 +184,7 @@ main > header .btn.pri{background:#09BEAF;color:#1D3149;border-color:#09BEAF !im
 <div style="display: flex; flex-direction: column; gap: 2px;">
 <span style="font-size: 11px; font-weight: 800; letter-spacing: 0.08em; color: #5B6573; padding: 0 12px 4px;">KERJA</span>
 <a href="kerja.html#today" data-view="today" style="display: flex; align-items: center; gap: 10px; min-height: 38px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 600; color: #3B4250;"><span data-ic style="display: inline-flex; color: #5B6573;"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18zM12 7v5l3 2"></path></svg></span><span style="flex-grow: 1;">Tugas saya</span><span data-badge="today"></span></a>
+<a href="kerja.html#appr" data-view="appr" data-roles="head ks" style="display: flex; align-items: center; gap: 10px; min-height: 38px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 600; color: #3B4250;"><span data-ic style="display: inline-flex; color: #5B6573;"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12l5 5L20 6"></path></svg></span><span style="flex-grow: 1;">Persetujuan</span><span data-badge="appr"></span></a>
 <a href="kerja.html#tim" data-view="tim" data-roles="head pic editor ks" style="display: flex; align-items: center; gap: 10px; min-height: 38px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 600; color: #3B4250;"><span data-ic style="display: inline-flex; color: #5B6573;"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11a3.5 3.5 0 1 0 0-7a3.5 3.5 0 1 0 0 7zM2.5 20c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5M17 11a2.5 2.5 0 1 0 0-5M17 14.5c2.3 0 4 1.5 4.5 4"></path></svg></span><span style="flex-grow: 1;">Kerja tim</span><span data-badge="tim"></span></a>
 <a href="kerja.html#campaign" data-view="campaign" data-roles="head pic editor ks" style="display: flex; align-items: center; gap: 10px; min-height: 38px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 600; color: #3B4250;"><span data-ic style="display: inline-flex; color: #5B6573;"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21V4M5 4h12l-2 4 2 4H5"></path></svg></span><span style="flex-grow: 1;">Campaign</span><span data-badge="campaign"></span></a>
 <a href="kerja.html#plan" data-view="plan" data-roles="head pic editor ks" style="display: flex; align-items: center; gap: 10px; min-height: 38px; padding: 0 12px; border-radius: 10px; text-decoration: none; font-weight: 600; color: #3B4250;"><span data-ic style="display: inline-flex; color: #5B6573;"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h18v16H3zM3 10h18M8 3v4M16 3v4"></path></svg></span><span style="flex-grow: 1;">Content plan</span><span data-badge="plan"></span></a>
@@ -352,6 +353,7 @@ function vToday() {
     { label: 'Hampir telat tayang', ic: 'alert', val: risk.length, note: risk.length ? 'Tayang hari ini atau besok, belum siap' : 'Aman', bar: risk.length ? '#C2410C' : TEAL, nc: risk.length ? BAD : GOOD },
     { label: 'Tayang minggu ini', ic: 'check', val: posted + ' / ' + target, note: 'Target slot per minggu', pct: target ? posted / target * 100 : 0, bar: TEAL }
   ]);
+  if (me === LEAD && apprCount()) h += '<a class="row click" href="#appr" style="text-decoration:none;border-color:#BFE9E3;background:#F0FBF9"><span class="ib">' + ic('check') + '</span><div class="grow"><strong>' + apprCount() + ' hal menunggu persetujuan Anda</strong><span class="m">Konten, campaign, dan KOL di satu halaman</span></div><span class="btn sm pri" style="display:inline-flex;align-items:center">Buka Persetujuan</span></a>';
   if (me === LEAD) { var over = overDays(); if (over.length) h += '<div class="row" style="border-color:#E9B999;background:#FFFBF8"><span class="ib" style="background:#FCEBDD;color:#9A3F0A">' + ic('alert') + '</span><div class="grow"><strong>Editor bentrok di ' + over.map(short).join(', ') + '</strong><span class="m">Permintaan ke Editor melebihi kapasitas. Tandai mana yang penting.</span></div><a class="btn sm warn" href="#editor" style="display:inline-flex;align-items:center;text-decoration:none">Atur prioritas</a></div>'; }
   var body = t.length ? '<div class="list">' + t.map(function (x) { return x.isi ? '<a class="row click" href="#isi" style="text-decoration:none"><span class="ib">' + ic('form') + '</span><div class="grow"><strong>' + esc(x.do) + '</strong><span class="m">' + esc(x.why) + '</span></div><span class="btn sm" style="display:inline-flex;align-items:center">Isi</span></a>' : x.wa ? '<div class="row click" data-a="rep"><span class="ib">' + ic('chat') + '</span><div class="grow"><strong>' + esc(x.do) + '</strong><span class="m">' + esc(x.why) + '</span></div><button class="btn sm" data-a="rep">Isi</button></div>' : x.kol ? '<div class="row click" data-kol="' + x.kol + '"><span class="ib">' + ic('star') + '</span><div class="grow"><strong>' + esc(x.do) + '</strong><span class="m">' + esc(x.it.title) + ' · ' + esc(x.why) + '</span></div><button class="btn sm" data-kol="' + x.kol + '">Buka</button></div>' : rowItem(x.it, x.do, x.why, x.btn, x.camp); }).join('') + '</div>' : empty(me === EDITOR ? 'Belum ada permintaan edit. Konten yang dikirim ke editor akan muncul di sini.' : 'Belum ada tugas. Mulai dari <b>+ Tulis ide</b> atau tambah konten di Content plan.');
   h += '<div class="cols">' + sec('Daftar kerja hari ini', 'list', '', '', body);
@@ -592,6 +594,7 @@ function waReport(v) {
   if (v === 'wa') { var tr = reps().filter(function (r) { return r.date === TODAY; }); out = tr.length ? '*Marketing Pokama · Laporan admin WA*\n' + longDate(TODAY) + '\n\n' + repText(tr).replace(/\*Laporan admin WA · ([^*]+)\*\n[^\n]+/g, '*$1*') : 'Belum ada laporan admin WA hari ini.'; }
   if (v === 'kol') { var ks = kols().filter(function (k) { return k.st !== 'Dibayar'; }); out = '*Marketing Pokama · Pipeline KOL*\n' + nice(TODAY) + '\n\n' + (ks.length ? KST.map(function (st) { var x = ks.filter(function (k) { return k.st === st; }); return x.length ? '*' + st + '*\n' + x.map(function (k) { return '• ' + k.name + ' (' + k.brand + ') · ' + rpS(k.fee) + (k.date ? ' · tayang ' + nice(k.date) : '') + (kolLate(k) ? ' · TELAT' : kolNeedInsight(k) ? ' · isi insight' : ''); }).join('\n') : ''; }).filter(Boolean).join('\n\n') : 'Belum ada KOL berjalan.'); }
   if (v === 'dash') { out = '*Marketing Pokama · Ringkasan ' + monthName(monthKey()) + '*\n' + longDate(TODAY) + '\n\n' + [].map.call(document.querySelectorAll('.kpi'), function (k) { return '• ' + k.querySelector('.l').textContent.trim() + ': ' + k.querySelector('.v').textContent.trim() + ' (' + k.querySelector('.n').textContent.trim() + ')'; }).join('\n'); }
+  if (v === 'appr') { var al = apprLists(); out = '*Marketing Pokama · Menunggu persetujuan*\n' + nice(TODAY) + '\n\nKonten (' + al.konten.length + ')\n' + (al.konten.map(function (i) { return '• ' + i.title + ' (' + i.brand + ') · tayang ' + nice(i.date); }).join('\n') || '• -') + '\n\nCampaign draf (' + al.camp.length + ')\n' + (al.camp.map(function (c) { return '• ' + c.name; }).join('\n') || '• -') + '\n\nKOL siap deal (' + al.kol.length + ')\n' + (al.kol.map(function (k) { return '• ' + k.name + ' · ' + rpS(k.fee); }).join('\n') || '• -'); }
   if (v === 'isi') { out = '*Marketing Pokama · Data harian ' + nice(ISID || addDays(TODAY, -1)) + '*\nSudah diisi di Isi data harian.'; }
   if (v === 'set') { out = '*Marketing Pokama · Pembagian akun*\n' + BRANDS.map(function (b) { return '• ' + b.k + ': ' + b.pic + ' · ' + b.slot + ' slot per minggu'; }).join('\n') + '\nKapasitas editor: ' + S.cap + ' per hari'; }
   if (v === 'tim') { out = '*Marketing Pokama · Kerja tim*\n' + longDate(TODAY) + '\n\n' + TEAM.map(function (p) { var t = tasksFor(p.n); return '*' + p.n + (p.n !== p.who ? ' (' + p.who + ')' : '') + '* · ' + t.length + ' tugas' + (t.length ? '\n' + t.slice(0, 5).map(function (x) { return '• ' + x.do + ': ' + x.it.title; }).join('\n') : ''); }).join('\n\n'); }
@@ -616,7 +619,7 @@ function waPanel(text, title) {
     });
   }, true);
 }
-var WA_TITLE = { isi: 'Data harian', set: 'Pengaturan tim', dash: 'Ringkasan marketing', tim: 'Laporan kerja tim', ig: 'Laporan IG & TikTok', ads: 'Laporan Paid ads', seo: 'Laporan SEO', kol: 'Laporan KOL', wa: 'Laporan admin WA', today: 'Laporan harian', plan: 'Laporan content plan', bank: 'Laporan content bank', editor: 'Laporan antrean editor', campaign: 'Laporan campaign' };
+var WA_TITLE = { appr: 'Persetujuan', isi: 'Data harian', set: 'Pengaturan tim', dash: 'Ringkasan marketing', tim: 'Laporan kerja tim', ig: 'Laporan IG & TikTok', ads: 'Laporan Paid ads', seo: 'Laporan SEO', kol: 'Laporan KOL', wa: 'Laporan admin WA', today: 'Laporan harian', plan: 'Laporan content plan', bank: 'Laporan content bank', editor: 'Laporan antrean editor', campaign: 'Laporan campaign' };
 
 /* ---------- Pipeline KOL ---------- */
 var KST = ['Shortlist', 'Negosiasi', 'Deal', 'Produksi', 'Tayang', 'Insight H+7', 'Dibayar'];
@@ -947,6 +950,34 @@ function vDash() {
   h += '<div class="cols">' + sec('Perlu perhatian', 'alert', 'Klik untuk langsung ke halamannya.', '', attH) + sec('Campaign berjalan', 'flag', '', '<a class="btn sm" href="#campaign" style="display:inline-flex;align-items:center;text-decoration:none">Semua campaign</a>', cs.length ? '<div class="list">' + cs.map(campRow).join('') + '</div>' : '<span class="sub">Belum ada campaign aktif.</span>') + '</div>';
   return h;
 }
+/* ---------- Persetujuan (Head of Marketing) ---------- */
+function apprLists() {
+  return {
+    konten: S.items.filter(function (i) { return i.status === 'Review'; }).sort(function (a, b) { return (a.date || '').localeCompare(b.date || ''); }),
+    camp: (S.camps || []).filter(function (c) { return c.state === 'draf'; }),
+    kol: kols().filter(function (k) { return k.st === 'Negosiasi' && +k.fee && k.date; })
+  };
+}
+function apprCount() { var a = apprLists(); return a.konten.length + a.camp.length + a.kol.length; }
+function vAppr() {
+  var a = apprLists(), head = S.me === LEAD, n = a.konten.length + a.camp.length + a.kol.length;
+  var btn = function (attr, id, label, cls) { return head ? '<button class="btn sm ' + (cls || '') + '" ' + attr + '="' + id + '">' + label + '</button>' : ''; };
+  var h = header('Kerja · Head of Marketing', 'Persetujuan', 'Semua yang menunggu keputusan Head of Marketing, di satu tempat. Setujui langsung, atau buka untuk minta revisi.', '');
+  h += kpis([
+    { label: 'Total menunggu', ic: 'check', val: n, note: n ? 'Kerjakan dari atas' : 'Semua beres', bar: n ? ORG : TEAL, nc: n ? AMB : GOOD },
+    { label: 'Konten', ic: 'review', val: a.konten.length, note: a.konten.filter(function (i) { return i.date <= addDays(TODAY, 1); }).length + ' tayang hari ini atau besok', bar: TEAL },
+    { label: 'Campaign', ic: 'flag', val: a.camp.length, note: 'Masih draf', bar: TEAL },
+    { label: 'KOL siap deal', ic: 'star', val: a.kol.length, note: 'Fee dan tanggal sudah ada', bar: TEAL }
+  ]);
+  var kh = a.konten.length ? '<div class="list">' + a.konten.map(function (it) { var b = brand(it.brand), urgent = it.date <= addDays(TODAY, 1); return '<div class="row"><span class="dot" style="background:' + b.c + '"></span><div class="grow"><strong>' + esc(it.title) + '</strong><span class="m">' + esc(it.brand) + ' · ' + esc(it.format) + ' · dari ' + (it.mode === 'editor' ? 'Editor' : esc(ownerOf(it))) + ' · tayang <b style="color:' + (urgent ? BAD : '#1D3149') + '">' + nice(it.date) + '</b></span>' + (it.brief ? '<span class="m">Brief: ' + esc(it.brief.slice(0, 90)) + (it.brief.length > 90 ? '…' : '') + '</span>' : '') + '</div><div class="acts">' + btn('data-apok', it.id, 'Setujui', 'pri') + '<button class="btn sm" data-open="' + it.id + '">' + (head ? 'Revisi / buka' : 'Buka') + '</button></div></div>'; }).join('') + '</div>' : empty('Tidak ada konten yang menunggu review.');
+  h += sec('Konten menunggu review', 'review', 'Setujui = siap tayang. Untuk revisi, buka kartunya dan tulis catatan ke editor atau PIC.', '', kh);
+  var ch = a.camp.length ? '<div class="list">' + a.camp.map(function (c) { return '<div class="row"><span class="ib">' + ic('flag') + '</span><div class="grow"><strong>' + esc(c.name) + '</strong><span class="m">' + esc((c.accs || []).join(' · ')) + ' · ' + nice(c.start) + ' – ' + nice(c.end) + ' · budget ' + rpS(c.budget) + '</span><span class="m">Tujuan: ' + esc(c.obj) + (c.target ? ' · target ' + esc(c.target) : '') + '</span></div><div class="acts">' + btn('data-apcamp', c.id, 'Aktifkan', 'pri') + '<button class="btn sm" data-camp="' + c.id + '">Buka brief</button></div></div>'; }).join('') + '</div>' : empty('Tidak ada campaign draf.');
+  h += sec('Campaign draf', 'flag', 'Aktifkan = campaign mulai dipakai, PIC bisa menambah konten ke dalamnya.', '', ch);
+  var ko = a.kol.length ? '<div class="list">' + a.kol.map(function (k) { return '<div class="row"><span class="ib">' + ic('star') + '</span><div class="grow"><strong>' + esc(k.name) + '</strong><span class="m">' + esc(k.brand) + ' · ' + esc(k.plat || '') + (k.fol ? ' · ' + esc(k.fol) : '') + ' · fee <b style="color:#1D3149">' + rpS(k.fee) + '</b> · tayang ' + nice(k.date) + (campOf(k.camp) ? ' · ◆ ' + esc(campOf(k.camp).name) : '') + '</span></div><div class="acts">' + btn('data-apkol', k.id, 'Setujui deal', 'pri') + '<button class="btn sm" data-kol="' + k.id + '">Buka</button></div></div>'; }).join('') + '</div>' : empty('Tidak ada KOL yang menunggu deal.');
+  h += sec('KOL siap deal', 'star', 'Setujui deal = KOL masuk tahap Deal dan kode tracking-nya aktif.', '', ko);
+  return h;
+}
+
 /* ---------- panel detail ---------- */
 function opts(list, v) { return list.map(function (o) { return '<option' + (o === v ? ' selected' : '') + '>' + esc(o) + '</option>'; }).join(''); }
 function openItem(id) {
@@ -1046,7 +1077,7 @@ document.addEventListener('keydown', function (e) { if (e.key === 'Escape') clos
 var ROLE = { 'Head of Marketing': 'head', Dita: 'pic', Nayla: 'pic', Editor: 'editor', 'Admin WA': 'cs', 'Kepala Staf': 'ks' };
 function role() { return ROLE[S.me] || 'pic'; }
 function canSee(el) { var r = el.getAttribute('data-roles'); return !r || r.split(' ').indexOf(role()) >= 0; }
-var VIEWS = { isi: vIsi, dash: vDash, tim: vTim, set: vSet, ig: vIg, ads: vAds, seo: vSeo, kol: vKol, wa: vAdmin, campaign: vCampaign, today: vToday, plan: vPlan, bank: vBank, editor: vEditor };
+var VIEWS = { appr: vAppr, isi: vIsi, dash: vDash, tim: vTim, set: vSet, ig: vIg, ads: vAds, seo: vSeo, kol: vKol, wa: vAdmin, campaign: vCampaign, today: vToday, plan: vPlan, bank: vBank, editor: vEditor };
 function view() { var v = (location.hash || '').slice(1); return VIEWS[v] ? v : (S.me === 'Kepala Staf' ? 'dash' : 'today'); }
 var ON = 'font-weight: 800; color: #1D3149; background: #DDF5F2;', OFF = 'font-weight: 600; color: #3B4250;';
 function render() {
@@ -1058,10 +1089,10 @@ function render() {
     if (on) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
     var i = a.querySelector('[data-ic]'); if (i) i.style.color = on ? '#067A70' : '#5B6573';
   });
-  var B = { campaign: (S.camps || []).filter(function (c) { return campStatus(c) === 'Jalan'; }).length, today: tasksFor(S.me).length, plan: Math.max(0, BRANDS.reduce(function (a, b) { return a + b.slot; }, 0) - S.items.filter(function (i) { return inWeek(i, 1); }).length), bank: S.ideas.length, editor: S.items.filter(atEditor).length };
+  var B = { appr: apprCount(), campaign: (S.camps || []).filter(function (c) { return campStatus(c) === 'Jalan'; }).length, today: tasksFor(S.me).length, plan: Math.max(0, BRANDS.reduce(function (a, b) { return a + b.slot; }, 0) - S.items.filter(function (i) { return inWeek(i, 1); }).length), bank: S.ideas.length, editor: S.items.filter(atEditor).length };
   document.querySelectorAll('[data-badge]').forEach(function (el) {
     var k = el.getAttribute('data-badge'), n = B[k];
-    el.innerHTML = !n ? '' : k === 'campaign' ? '<span class="nb t">' + n + ' jalan</span>' : k === 'today' || k === 'editor' ? '<span class="nb">' + n + '</span>' : k === 'plan' ? '<span class="nb" title="Slot kosong minggu depan" style="background:#FCEBDD;color:#9A3F0A">' + n + '</span>' : '<span class="nb t">' + n + '</span>';
+    el.innerHTML = !n ? '' : k === 'campaign' ? '<span class="nb t">' + n + ' jalan</span>' : k === 'today' || k === 'editor' || k === 'appr' ? '<span class="nb">' + n + '</span>' : k === 'plan' ? '<span class="nb" title="Slot kosong minggu depan" style="background:#FCEBDD;color:#9A3F0A">' + n + '</span>' : '<span class="nb t">' + n + '</span>';
   });
   document.querySelectorAll('nav a[data-roles]').forEach(function (x) { x.style.display = canSee(x) ? 'flex' : 'none'; });
   document.querySelectorAll('nav > div').forEach(function (g) { var as = g.querySelectorAll('a'); if (!as.length) return; g.style.display = [].some.call(as, function (x) { return x.style.display !== 'none'; }) ? 'flex' : 'none'; });
@@ -1081,10 +1112,17 @@ document.addEventListener('click', function (e) {
   if (e.target.closest('[data-menu]')) { document.body.classList.toggle('nav-open'); return; }
   if (e.target.closest('nav a')) document.body.classList.remove('nav-open');
   if (cur && cur.contains(e.target)) return;
-  var t = e.target.closest('[data-isid],[data-am],[data-plat],[data-kol],[data-rep],[data-wa],[data-camp],[data-open],[data-a],[data-new],[data-brand],[data-wk],[data-use],[data-delidea],[data-cap],[data-prio]'); if (!t) return;
+  var t = e.target.closest('[data-apok],[data-apcamp],[data-apkol],[data-isid],[data-am],[data-plat],[data-kol],[data-rep],[data-wa],[data-camp],[data-open],[data-a],[data-new],[data-brand],[data-wk],[data-use],[data-delidea],[data-cap],[data-prio]'); if (!t) return;
   var g = function (k) { return t.getAttribute(k); };
   if (role() === 'ks' && (t.hasAttribute('data-new') || t.hasAttribute('data-use') || t.hasAttribute('data-delidea') || t.hasAttribute('data-prio') || t.hasAttribute('data-cap') || ['new', 'idea', 'kol', 'rep', 'budget', 'camp'].indexOf(g('data-a')) >= 0)) { toast('Kepala Staf hanya bisa melihat'); return; }
   if (g('data-am')) { var mk = aMonth().split('-'), yy = +mk[0], mm = +mk[1] + +g('data-am'); if (mm < 1) { mm = 12; yy--; } if (mm > 12) { mm = 1; yy++; } S.am = yy + '-' + (mm < 10 ? '0' : '') + mm; save(); render(); return; }
+  if (g('data-apok') || g('data-apcamp') || g('data-apkol')) {
+    if (S.me !== LEAD) { toast('Hanya Head of Marketing'); return; }
+    if (g('data-apok')) { var ai = S.items.filter(function (i) { return i.id === g('data-apok'); })[0]; if (ai) { ai.status = 'Siap tayang'; log(ai, 'disetujui'); toast('Disetujui, siap tayang'); } }
+    if (g('data-apcamp')) { var ac = campOf(g('data-apcamp')); if (ac) { ac.state = 'ok'; log(ac, 'diaktifkan'); toast('Campaign aktif'); } }
+    if (g('data-apkol')) { var ak = kols().filter(function (k) { return k.id === g('data-apkol'); })[0]; if (ak) { ak.st = 'Deal'; log(ak, 'deal disetujui'); toast(ak.name + ' → Deal'); } }
+    save(); render(); return;
+  }
   if (g('data-isid')) { var nd = addDays(ISID || addDays(TODAY, -1), +g('data-isid')); if (nd > TODAY) return; ISID = nd; render(); return; }
   if (g('data-plat')) { S.plat = g('data-plat'); save(); render(); return; }
   if (g('data-a') === 'budget') return budgetForm();
