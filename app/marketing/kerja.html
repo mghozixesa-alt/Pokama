@@ -335,19 +335,19 @@ function vToday() {
   var wk = S.items.filter(function (it) { return inWeek(it) && scope(it); });
   var posted = wk.filter(function (it) { return it.status === 'Tayang'; }).length;
   var target = me === LEAD || me === EDITOR ? BRANDS.reduce(function (a, b) { return a + b.slot; }, 0) : BRANDS.filter(function (b) { return b.pic === me; }).reduce(function (a, b) { return a + b.slot; }, 0);
-  var h = header(longDate(TODAY), 'Tugas saya', me === LEAD ? 'Yang menunggu keputusan dan review Anda, plus konten yang berisiko telat.' : me === EDITOR ? 'Antrean edit Anda, urut dari yang penting dan paling dekat tenggatnya.' : 'Tugas dari konten Anda sendiri. Semua diambil dari status di Content plan.',
+  var h = header(longDate(TODAY), 'Tugas saya', me === LEAD ? 'Yang menunggu keputusan dan review Anda, plus konten yang hampir telat tayang.' : me === EDITOR ? 'Antrean edit Anda, urut dari yang penting dan paling dekat tenggatnya.' : 'Tugas dari konten Anda sendiri. Semua diambil dari status di Content plan.',
     '<button class="btn pri" data-a="new">+ Konten baru</button><button class="btn" data-a="idea">+ Tulis ide</button>');
   h += kpis([
     { label: 'Tugas hari ini', ic: 'list', val: t.length, note: t.length ? 'Kerjakan dari atas' : 'Belum ada tugas', bar: t.length ? ORG : TEAL, nc: t.length ? AMB : '#5B6573' },
     me === LEAD ? { label: 'Menunggu review', ic: 'review', val: count(function (i) { return i.status === 'Review'; }), note: 'Batas review 1 hari', bar: TEAL } : me === EDITOR ? { label: 'Antrean edit', ic: 'form', val: count(atEditor), note: 'Kapasitas ' + S.cap + ' per hari', bar: TEAL } : { label: 'Menunggu orang lain', ic: 'wait', val: w.length, note: 'Di editor atau Head of Marketing', bar: TEAL },
-    { label: 'Berisiko telat tayang', ic: 'alert', val: risk.length, note: risk.length ? 'Tayang ≤ besok, belum siap' : 'Aman', bar: risk.length ? '#C2410C' : TEAL, nc: risk.length ? BAD : GOOD },
+    { label: 'Hampir telat tayang', ic: 'alert', val: risk.length, note: risk.length ? 'Tayang hari ini atau besok, belum siap' : 'Aman', bar: risk.length ? '#C2410C' : TEAL, nc: risk.length ? BAD : GOOD },
     { label: 'Tayang minggu ini', ic: 'check', val: posted + ' / ' + target, note: 'Target slot per minggu', pct: target ? posted / target * 100 : 0, bar: TEAL }
   ]);
   if (me === LEAD) { var over = overDays(); if (over.length) h += '<div class="row" style="border-color:#E9B999;background:#FFFBF8"><span class="ib" style="background:#FCEBDD;color:#9A3F0A">' + ic('alert') + '</span><div class="grow"><strong>Editor bentrok di ' + over.map(short).join(', ') + '</strong><span class="m">Permintaan ke Editor melebihi kapasitas. Tandai mana yang penting.</span></div><a class="btn sm warn" href="#editor" style="display:inline-flex;align-items:center;text-decoration:none">Atur prioritas</a></div>'; }
   var body = t.length ? '<div class="list">' + t.map(function (x) { return x.wa ? '<div class="row click" data-a="rep"><span class="ib">' + ic('chat') + '</span><div class="grow"><strong>' + esc(x.do) + '</strong><span class="m">' + esc(x.why) + '</span></div><button class="btn sm" data-a="rep">Isi</button></div>' : x.kol ? '<div class="row click" data-kol="' + x.kol + '"><span class="ib">' + ic('star') + '</span><div class="grow"><strong>' + esc(x.do) + '</strong><span class="m">' + esc(x.it.title) + ' · ' + esc(x.why) + '</span></div><button class="btn sm" data-kol="' + x.kol + '">Buka</button></div>' : rowItem(x.it, x.do, x.why, x.btn, x.camp); }).join('') + '</div>' : empty(me === EDITOR ? 'Belum ada permintaan edit. Konten yang dikirim ke editor akan muncul di sini.' : 'Belum ada tugas. Mulai dari <b>+ Tulis ide</b> atau tambah konten di Content plan.');
   h += '<div class="cols">' + sec('Daftar kerja hari ini', 'list', '', '', body);
   var side = '';
-  if (risk.length) side += sec('Berisiko telat tayang', 'alert', 'Tayang hari ini atau besok, tapi belum siap.', '', '<div class="list">' + risk.map(function (it) { return rowItem(it, it.title, 'Tayang ' + nice(it.date) + ' · sekarang di ' + (who(it) || '-'), 'Buka'); }).join('') + '</div>');
+  if (risk.length) side += sec('Hampir telat tayang', 'alert', 'Tayang hari ini atau besok, tapi belum siap.', '', '<div class="list">' + risk.map(function (it) { return rowItem(it, it.title, 'Tayang ' + nice(it.date) + ' · sekarang di ' + (who(it) || '-'), 'Buka'); }).join('') + '</div>');
   if (w.length) side += sec('Menunggu orang lain', 'wait', '', '', '<div class="list">' + w.map(function (it) { return rowItem(it, it.title, 'Di ' + who(it) + ' · ' + it.status, 'Lihat'); }).join('') + '</div>');
   if (!side) side = sec('Alur satu konten', 'time', '', '', '<div class="flow">' + FLOW.map(function (s) { return '<span>' + s + '</span>'; }).join('<span style="background:none">→</span>') + '</div><span class="sub">PIC membuat brief, memilih dikirim ke editor atau dikerjakan sendiri. Head of Marketing me-review: setujui, atau revisi ke editor / ke PIC. Setelah tayang, kartu ditandai "Sudah tayang".</span>');
   h += '<div style="display:flex;flex-direction:column;gap:22px">' + side + '</div></div>';
@@ -415,7 +415,7 @@ function vBank() {
     return '<div class="row"><span class="dot" style="background:' + b.c + '"></span><div class="grow"><strong>' + esc(x.title) + '</strong><span class="m">' + esc(x.brand) + ' · ' + esc(x.format) + ' · ' + esc(x.pillar) + ' · ' + esc(x.source) + ' · oleh ' + esc(x.by) + '</span>' + (x.note ? '<span class="m">' + esc(x.note) + '</span>' : '') + '</div><button class="btn sm pri" data-use="' + x.id + '">Pakai di content plan</button><button class="btn sm" data-delidea="' + x.id + '" aria-label="Hapus ide ' + esc(x.title) + '">Hapus</button></div>';
   }).join('') + '</div>' : empty('Belum ada ide' + (S.brand !== 'Semua' ? ' untuk pilihan ini' : '') + '. Klik <b>+ Tulis ide</b> untuk mulai.');
   var per = '<table class="tbl"><thead><tr><th>Akun</th><th>PIC</th><th style="text-align:right">Ide</th></tr></thead><tbody>' + BRANDS.map(function (b) { var n = S.ideas.filter(function (x) { return x.brand === b.k; }).length; return '<tr><td><span class="dot" style="background:' + b.c + ';margin-right:6px"></span>' + esc(b.k) + '</td><td>' + b.pic + '</td><td style="text-align:right"><b style="color:' + (n ? GOOD : BAD) + '">' + n + '</b></td></tr>'; }).join('') + '</tbody></table>';
-  h += '<div class="cols">' + sec('Daftar ide', 'bulb', '', '', brandChips() + list) + '<div style="flex:0 1 340px">' + sec('Ide per akun', 'insta', 'Akun tanpa ide berisiko slotnya kosong.', '', per) + '</div></div>';
+  h += '<div class="cols">' + sec('Daftar ide', 'bulb', '', '', brandChips() + list) + '<div style="flex:0 1 340px">' + sec('Ide per akun', 'insta', 'Akun tanpa ide biasanya slotnya kosong.', '', per) + '</div></div>';
   return h;
 }
 
@@ -565,7 +565,7 @@ function waReport(v) {
     out = head + 'Laporan harian ' + me + '*\n' + longDate(TODAY) + '\n\n✅ Dikerjakan hari ini (' + doneToday.length + ')\n' + (doneToday.length ? doneToday.map(function (it) { return '• ' + it.title + ' (' + it.brand + ') → ' + it.log.filter(function (l) { return l.who === me; })[0].text; }).join('\n') : '• -') +
       '\n\n📋 Masih harus dikerjakan (' + t.length + ')\n' + (t.length ? t.map(function (x) { return '• ' + x.do + ': ' + x.it.title; }).join('\n') : '• -');
     if (w.length) out += '\n\n⏳ Menunggu orang lain\n' + w.map(function (it) { return '• ' + it.title + ' · di ' + who(it); }).join('\n');
-    if (risk.length) out += '\n\n⚠️ Berisiko telat tayang\n' + risk.map(L).join('\n');
+    if (risk.length) out += '\n\n⚠️ Hampir telat tayang\n' + risk.map(L).join('\n');
   }
   if (v === 'plan') {
     var ws = weekStart(S.week), we = addDays(ws, 6), its = S.items.filter(function (it) { return it.date >= ws && it.date <= we && brandOk(it.brand); });
@@ -742,7 +742,7 @@ function vTim() {
   var all = TEAM.map(function (p) { return { p: p, t: tasksFor(p.n), hold: holding(p.n) }; });
   h += kpis([
     { label: 'Tugas terbuka seluruh tim', ic: 'list', val: all.reduce(function (a, x) { return a + x.t.length; }, 0), note: 'Dari semua halaman kerja', bar: TEAL },
-    { label: 'Konten telat atau berisiko', ic: 'alert', val: S.items.filter(late).length, note: 'Tayang ≤ besok, belum siap', bar: S.items.filter(late).length ? '#C2410C' : TEAL, nc: S.items.filter(late).length ? BAD : GOOD },
+    { label: 'Konten hampir telat tayang', ic: 'alert', val: S.items.filter(late).length, note: 'Tayang hari ini atau besok, belum siap', bar: S.items.filter(late).length ? '#C2410C' : TEAL, nc: S.items.filter(late).length ? BAD : GOOD },
     { label: 'Tayang minggu ini', ic: 'check', val: count(function (i) { return inWeek(i) && i.status === 'Tayang'; }) + ' / ' + BRANDS.reduce(function (a, b) { return a + b.slot; }, 0), note: 'Target slot semua akun', bar: TEAL },
     { label: 'Editor bentrok', ic: 'form', val: overDays().length, note: overDays().length ? overDays().map(short).join(', ') : 'Tidak ada', bar: overDays().length ? '#C2410C' : TEAL, nc: overDays().length ? BAD : GOOD }
   ]);
@@ -750,10 +750,10 @@ function vTim() {
     var lt = x.hold.filter(late).length, acc = myBrands(x.p.n);
     var doneW = S.items.filter(function (it) { return inWeek(it) && (it.log || []).some(function (l) { return l.who === x.p.n && /tayang|review|disetujui/.test(l.text); }); }).length;
     return '<div class="box" style="gap:8px"><div style="display:flex;align-items:center;gap:10px"><span class="ib" style="width:38px;height:38px;border-radius:19px;background:#1D3149;color:#FFFFFF;font-weight:900">' + esc(x.p.who.charAt(0)) + '</span><div style="display:flex;flex-direction:column"><b style="color:#1D3149">' + esc(x.p.n) + (x.p.n !== x.p.who ? ' · ' + esc(x.p.who) : '') + '</b><span class="sub">' + esc(x.p.r) + (acc.length ? ' · ' + esc(acc.join(', ')) : '') + '</span></div></div>' +
-      '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;text-align:center"><div><b style="font-size:20px;color:#1D3149">' + x.t.length + '</b><div class="sub">tugas</div></div><div><b style="font-size:20px;color:' + (lt ? BAD : '#1D3149') + '">' + lt + '</b><div class="sub">berisiko</div></div><div><b style="font-size:20px;color:' + GOOD + '">' + doneW + '</b><div class="sub">beres minggu ini</div></div></div>' +
+      '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;text-align:center"><div><b style="font-size:20px;color:#1D3149">' + x.t.length + '</b><div class="sub">tugas</div></div><div><b style="font-size:20px;color:' + (lt ? BAD : '#1D3149') + '">' + lt + '</b><div class="sub">hampir telat</div></div><div><b style="font-size:20px;color:' + GOOD + '">' + doneW + '</b><div class="sub">selesai minggu ini</div></div></div>' +
       (x.t.length ? '<div class="list" style="gap:4px">' + x.t.slice(0, 4).map(function (y) { return '<span class="sub" style="border-top:1px dashed #E3E6EB;padding-top:4px">• ' + esc(y.do) + (y.do.indexOf(y.it.title) >= 0 ? '' : ': <b style="color:#1D3149">' + esc(y.it.title) + '</b>') + '</span>'; }).join('') + (x.t.length > 4 ? '<span class="sub">+' + (x.t.length - 4) + ' lagi</span>' : '') + '</div>' : '<span class="sub">Tidak ada tugas terbuka.</span>') + '</div>';
   }).join('') + '</div>';
-  h += sec('Per orang', 'users', 'Diambil otomatis dari status konten, campaign, KOL, dan laporan admin WA.', '', cards);
+  h += sec('Per orang', 'users', 'Tugas = yang harus dikerjakan orang itu sekarang. Hampir telat = kontennya tayang hari ini atau besok tapi belum siap. Selesai minggu ini = konten yang sudah ia kirim, setujui, atau tayangkan.', '', cards);
   var dis = head ? '' : ' disabled';
   var set = '<div style="overflow-x:auto"><table class="tbl"><thead><tr><th>Akun</th><th>PIC akun</th><th style="text-align:right">Target slot per minggu</th></tr></thead><tbody>' + BRANDS.map(function (b, i) { return '<tr><td><span class="dot" style="background:' + b.c + ';margin-right:6px"></span><b>' + esc(b.k) + '</b></td><td><select data-tset="pic" data-i="' + i + '"' + dis + ' style="height:34px;border:1px solid #E3E6EB;border-radius:8px;padding:0 8px;font-family:inherit;font-weight:700">' + opts(PICS, b.pic) + '</select></td><td style="text-align:right"><input type="number" min="0" max="14" data-tset="slot" data-i="' + i + '" value="' + b.slot + '"' + dis + ' style="width:70px;height:34px;border:1px solid #E3E6EB;border-radius:8px;padding:0 8px;font-family:inherit;font-weight:700;text-align:right"></td></tr>'; }).join('') + '</tbody></table></div>' +
     '<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><b style="color:#1D3149">Kapasitas editor per hari</b><input type="number" min="1" max="10" data-tset="cap" value="' + S.cap + '"' + dis + ' style="width:70px;height:34px;border:1px solid #E3E6EB;border-radius:8px;padding:0 8px;font-family:inherit;font-weight:700;text-align:right"><span class="sub">' + (head ? 'Perubahan langsung tersimpan.' : 'Hanya Head of Marketing yang bisa mengubah.') + '</span></div>' +
@@ -881,7 +881,7 @@ function vDash() {
   var att = [];
   var td = reps().filter(function (r) { return r.date === TODAY; }), miss = NUMS.filter(function (n) { return !td.some(function (r) { return r.num === n[0]; }); });
   if (overDays().length) att.push(['form', 'Editor bentrok di ' + overDays().map(short).join(', '), 'editor']);
-  if (S.items.filter(late).length) att.push(['alert', S.items.filter(late).length + ' konten berisiko telat tayang', 'tim']);
+  if (S.items.filter(late).length) att.push(['alert', S.items.filter(late).length + ' konten hampir telat tayang (tayang hari ini atau besok, belum siap)', 'tim']);
   if (S.items.filter(function (i) { return i.status === 'Review'; }).length) att.push(['review', S.items.filter(function (i) { return i.status === 'Review'; }).length + ' konten menunggu review', 'today']);
   if (kols().filter(kolLate).length) att.push(['star', kols().filter(kolLate).length + ' KOL telat tayang', 'kol']);
   if (kols().filter(kolNeedInsight).length) att.push(['star', kols().filter(kolNeedInsight).length + ' KOL belum diisi insight H+7', 'kol']);
