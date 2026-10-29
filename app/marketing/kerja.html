@@ -56,6 +56,14 @@ main > header .btn.pri{background:#09BEAF;color:#1D3149;border-color:#09BEAF !im
 .mewho{display:none}
 .navwho{display:flex;flex-direction:column;gap:8px;width:100%}
 .chks{display:flex;flex-wrap:wrap;gap:6px}.chk{display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 10px;border:1px solid #E3E6EB;border-radius:10px;font-size:13px;font-weight:700;color:#1F2933;cursor:pointer}.chk input{margin:0;accent-color:#09BEAF}
+.bboard{display:grid;grid-template-columns:repeat(5,minmax(165px,1fr));gap:10px;overflow-x:auto;padding-bottom:4px}.bcol{background:#F7F8FA;border:1px solid #E3E6EB;border-radius:14px;padding:8px;display:flex;flex-direction:column;gap:6px;min-width:0}.bcol-h{display:flex;justify-content:space-between;align-items:center;padding:2px 2px 4px}.bcol-h b{color:#1D3149}
+.who{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:800;color:#3B4250}.who i{font-style:normal;width:18px;height:18px;border-radius:9px;background:#1D3149;color:#FFFFFF;display:inline-flex;align-items:center;justify-content:center;font-size:10px}
+.seg{display:inline-flex;gap:4px}.seg .btn[aria-pressed="true"]{background:#1D3149 !important;color:#FFFFFF !important;border-color:#1D3149 !important}
+.cal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}.cal-h{font-size:11px;font-weight:800;color:#5B6573;text-align:center}.cal-d{background:#FFFFFF;border:1px solid #E3E6EB;border-radius:10px;min-height:92px;padding:6px;display:flex;flex-direction:column;gap:3px;min-width:0}.cal-d.off{background:transparent;border:0}.cal-d.today{box-shadow:inset 0 0 0 2px #09BEAF}.cal-n{font-size:12px;font-weight:900;color:#1D3149}
+.ce{display:block;width:100%;text-align:left;border:0;border-left:3px solid var(--c);background:#F3F5F8;border-radius:5px;padding:2px 5px;font:inherit;font-size:11.5px;font-weight:700;color:#1F2933;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer}
+.cal-l{background:#FFFFFF;border:1px solid #E3E6EB;border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:4px}.cal-l.today{box-shadow:inset 0 0 0 2px #09BEAF}.cal-l .ce{font-size:13px;padding:5px 8px;white-space:normal}
+.legend{display:flex;gap:6px;flex-wrap:wrap}
+@media (max-width: 860px){.bboard{grid-template-columns:repeat(5,82%);scroll-snap-type:x mandatory}.bcol{scroll-snap-align:start}}
 .syncst{display:flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;color:#5B6573}
 .navwho label{font-size:11px;font-weight:800;letter-spacing:.08em;color:#5B6573}
 .navwho select,.mewho select{height:36px;border:1px solid #E3E6EB;border-radius:10px;padding:0 8px;background:#FFFFFF;color:#1D3149;font-family:inherit;font-weight:800;font-size:13px;width:100%}
@@ -239,7 +247,7 @@ main > header.ph .btn.pri{background:#09BEAF !important;border-color:#09BEAF !im
 </div>
 <div style="display: flex; flex-direction: column; gap: 1px;">
 <span style="font-size: 10.5px; font-weight: 800; letter-spacing: 0.1em; color: #8A94A3; padding: 0 10px 5px;">TIM</span>
-<a href="kerja.html#tim" data-view="tim" data-roles="head pic editor ks" style="display: flex; align-items: center; gap: 10px; min-height: 36px; padding: 0 10px; border-radius: 9px; text-decoration: none; font-size: 13.5px; font-weight: 600; color: #3B4250;"><span data-ic style="display: inline-flex; color: #8A94A3;"><svg aria-hidden="true" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11a3.5 3.5 0 1 0 0-7a3.5 3.5 0 1 0 0 7zM2.5 20c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5M17 11a2.5 2.5 0 1 0 0-5M17 14.5c2.3 0 4 1.5 4.5 4"></path></svg></span><span style="flex-grow: 1;">Kerja tim</span><span data-badge="tim"></span></a>
+<a href="kerja.html#papan" data-view="papan" data-roles="head pic editor cs ks" style="display: flex; align-items: center; gap: 10px; min-height: 36px; padding: 0 10px; border-radius: 9px; text-decoration: none; font-size: 13.5px; font-weight: 600; color: #3B4250;"><span data-ic style="display: inline-flex; color: #8A94A3;"><svg aria-hidden="true" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11a3.5 3.5 0 1 0 0-7a3.5 3.5 0 1 0 0 7zM2.5 20c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5M17 11a2.5 2.5 0 1 0 0-5M17 14.5c2.3 0 4 1.5 4.5 4"></path></svg></span><span style="flex-grow: 1;">Papan progres</span><span data-badge="papan"></span></a>
 <a href="kerja.html#set" data-view="set" data-roles="head" style="display: flex; align-items: center; gap: 10px; min-height: 36px; padding: 0 10px; border-radius: 9px; text-decoration: none; font-size: 13.5px; font-weight: 600; color: #3B4250;"><span data-ic style="display: inline-flex; color: #8A94A3;"><svg aria-hidden="true" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6c0-1.7 3.6-3 8-3s8 1.3 8 3-3.6 3-8 3-8-1.3-8-3zM4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"></path></svg></span><span style="flex-grow: 1;">Pengaturan tim</span><span data-badge="set"></span></a>
 </div>
 <div style="margin-top: auto; display: flex; align-items: center; gap: 10px; padding: 14px 12px 0; border-top: 1px solid #E3E6EB;">
@@ -622,6 +630,7 @@ function campText(c) {
 }
 function waReport(v) {
   var me = S.me, d = nice(TODAY), head = '*Marketing Pokama · ', out = '';
+  if (v === 'papan') { var pi = boardItems(); return head + 'Papan progres*\n' + longDate(TODAY) + '\n' + STAGES.filter(function (st) { return st !== 'Posted'; }).map(function (st) { var c = pi.filter(function (i) { return stage(i) === st; }); return '\n*' + st + ' (' + c.length + ')*\n' + (c.length ? c.map(function (i) { return '• ' + i.title + ' · ' + i.brand + ' · ' + short(i.date) + (who(i) ? ' · di ' + who(i) : '') + (late(i) ? ' ⚠️' : ''); }).join('\n') : '• -'); }).join('\n') + '\n\n*Dipegang sekarang*\n' + HOLDERS.map(function (n) { return '• ' + n + ': ' + S.items.filter(function (i) { return who(i) === n; }).length; }).join('\n'); }
   if (v === 'live') { var ws = weekStart(S.lweek || 0), wl = lives().filter(function (i) { return i.date >= ws && i.date <= addDays(ws, 6); }).sort(function (a, b) { return (a.date + (a.time || '')).localeCompare(b.date + (b.time || '')); }); return head + 'Live TikTok*\nMinggu ' + short(ws) + ' ' + MON[parse(ws).getMonth()] + '\n\n' + (wl.length ? wl.map(function (i) { return '• ' + nice(i.date) + ' ' + (i.time || '') + '–' + (i.tend || '') + ' · ' + i.brand + ' · ' + i.title + ' · host ' + (i.host || '-') + ' · ' + (i.team || 'Tim marketing') + (i.status === 'Tayang' ? ' → ' + (+i.lv || 0) + ' penonton, ' + (+i.lc || 0) + ' closing, ' + rpS(i.lo) : ''); }).join('\n') : '• Belum ada jadwal'); }
   if (v === 'foot') { return head + 'Footage*\n\n' + (foots().length ? foots().slice(0, 30).map(function (f) { return '• ' + f.title + ' (' + f.brand + ', ' + f.type + ')\n  ' + f.link; }).join('\n') : '• Belum ada'); }
   if (v === 'today') {
@@ -674,7 +683,7 @@ function waPanel(text, title) {
     });
   }, true);
 }
-var WA_TITLE = { live: 'Laporan Live TikTok', foot: 'Daftar footage',  appr: 'Persetujuan', isi: 'Data harian', set: 'Pengaturan tim', dash: 'Marketing summary', tim: 'Laporan kerja tim', ig: 'Laporan IG & TikTok', ads: 'Laporan Paid ads', seo: 'Laporan SEO', kol: 'Laporan KOL', wa: 'Laporan admin WA', today: 'Laporan harian', plan: 'Laporan content plan', bank: 'Laporan content bank', editor: 'Laporan antrean editor', campaign: 'Laporan campaign' };
+var WA_TITLE = { papan: 'Papan progres', live: 'Laporan Live TikTok', foot: 'Daftar footage',  appr: 'Persetujuan', isi: 'Data harian', set: 'Pengaturan tim', dash: 'Marketing summary', tim: 'Laporan kerja tim', ig: 'Laporan IG & TikTok', ads: 'Laporan Paid ads', seo: 'Laporan SEO', kol: 'Laporan KOL', wa: 'Laporan admin WA', today: 'Laporan harian', plan: 'Laporan content plan', bank: 'Laporan content bank', editor: 'Laporan antrean editor', campaign: 'Laporan campaign' };
 
 /* ---------- Pipeline KOL ---------- */
 var KST = ['Shortlist', 'Negosiasi', 'Deal', 'Produksi', 'Tayang', 'Insight H+7', 'Dibayar'];
@@ -1003,7 +1012,7 @@ function vDash() {
   var att = [];
   var td = reps().filter(function (r) { return r.date === TODAY; }), miss = NUMS.filter(function (n) { return !td.some(function (r) { return r.num === n[0]; }); });
   if (overDays().length) att.push(['form', 'Editor bentrok di ' + overDays().map(short).join(', '), 'editor']);
-  if (S.items.filter(late).length) att.push(['alert', S.items.filter(late).length + ' konten hampir telat tayang (tayang hari ini atau besok, belum siap)', 'tim']);
+  if (S.items.filter(late).length) att.push(['alert', S.items.filter(late).length + ' konten hampir telat tayang (tayang hari ini atau besok, belum siap)', 'papan']);
   if (S.items.filter(function (i) { return i.status === 'Review'; }).length) att.push(['review', S.items.filter(function (i) { return i.status === 'Review'; }).length + ' konten menunggu review', 'today']);
   if (kols().filter(kolLate).length) att.push(['star', kols().filter(kolLate).length + ' KOL telat tayang', 'kol']);
   if (kols().filter(kolNeedInsight).length) att.push(['star', kols().filter(kolNeedInsight).length + ' KOL belum diisi insight H+7', 'kol']);
@@ -1170,6 +1179,45 @@ function close() { if (cur) { cur.remove(); cur = null; } }
 document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
 
 
+
+/* ---------- Papan progres (untuk semua orang) ---------- */
+var STAGES = ['Planned', 'On going', 'Revisi', 'On hold', 'Posted'];
+var HOLDERS = ['Dita', 'Nayla', 'Editor', 'Head of Marketing'];
+function boardItems() {
+  var f = S.bwho || 'Semua', old = addDays(TODAY, -7);
+  return S.items.filter(function (i) { if (!brandOk(i.brand)) return false; if (i.status === 'Tayang' && i.date < old) return false; if (f === 'Semua') return true; return who(i) === f || ownerOf(i) === f || (f === EDITOR && i.mode === 'editor'); });
+}
+function bCard(i) {
+  var b = brand(i.brand), w = who(i), lt = late(i);
+  return '<button class="k" style="--c:' + b.c + (lt ? ';box-shadow:inset 0 0 0 1px #E9B999' : '') + '" data-open="' + i.id + '"><span class="t">' + esc(i.title) + '</span><span class="m">' + esc(i.brand) + ' · ' + esc(i.format) + ' · ' + short(i.date) + (i.time ? ' ' + esc(i.time) : '') + '</span>' + (stDetail(i) ? '<span class="m">' + stDetail(i) + '</span>' : '') + '<span style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">' + (w ? '<span class="who"><i>' + esc(w.charAt(0)) + '</i>' + esc(w === LEAD ? 'Head of Mkt' : w) + '</span>' : '') + (lt ? '<span class="st" style="background:#FCEBDD;color:#9A3F0A">hampir telat</span>' : '') + (i.hold && i.holdNote ? '<span class="m">' + esc(i.holdNote) + '</span>' : '') + '</span></button>';
+}
+function vPapan() {
+  var mode = S.bmode || 'papan', f = S.bwho || 'Semua', its = boardItems();
+  var tog = '<div class="seg" role="group" aria-label="Tampilan"><button class="btn sm" data-bmode="papan" aria-pressed="' + (mode === 'papan') + '">Papan</button><button class="btn sm" data-bmode="kal" aria-pressed="' + (mode === 'kal') + '">Kalender</button></div>';
+  var h = header('Tim · dilihat semua orang', 'Papan progres', 'Semua konten dan live di satu papan: sampai tahap mana, dan sekarang dipegang siapa.', tog);
+  var load = HOLDERS.map(function (n) { var a = S.items.filter(function (i) { return who(i) === n; }), lt = a.filter(late).length; return '<button class="chip" data-bwho="' + esc(n) + '" aria-pressed="' + (f === n) + '"><span class="who"><i>' + esc(n.charAt(0)) + '</i></span>' + esc(n === LEAD ? 'Head of Marketing' : n === EDITOR ? 'Editor · Mugni' : n) + ' <b>' + a.length + '</b>' + (lt ? '<span class="st" style="background:#FCEBDD;color:#9A3F0A">' + lt + ' telat</span>' : '') + '</button>'; }).join('');
+  h += '<div class="chips" role="group" aria-label="Pilih orang"><button class="chip" data-bwho="Semua" aria-pressed="' + (f === 'Semua') + '">Semua orang</button>' + load + '</div>';
+  if (mode === 'papan') {
+    var cols = STAGES.map(function (st) { var c = its.filter(function (i) { return stage(i) === st; }).sort(function (a, b) { return (a.date + (a.time || '')).localeCompare(b.date + (b.time || '')); }); return '<div class="bcol"><div class="bcol-h">' + stChip(st) + '<b>' + c.length + '</b></div>' + (c.length ? c.map(bCard).join('') : '<span class="sub" style="padding:4px 2px">Kosong</span>') + '</div>'; }).join('');
+    h += sec('Papan', 'list', 'Angka di samping nama = konten yang sedang menunggu orang itu. Klik nama untuk melihat punyanya saja. Posted hanya 7 hari terakhir.', '', brandChips() + '<div class="bboard">' + cols + '</div>');
+  } else {
+    var mk = S.bm || monthKey(), y = +mk.slice(0, 4), m = +mk.slice(5, 7), first = mk + '-01', dim = new Date(y, m, 0).getDate();
+    var nav = '<div style="display:flex;gap:6px;align-items:center"><button class="btn sm" data-bm="-1" aria-label="Bulan sebelumnya">‹</button><b style="color:#1D3149">' + monthName(mk) + '</b><button class="btn sm" data-bm="1" aria-label="Bulan berikutnya">›</button></div>';
+    var all = S.items.filter(function (i) { return brandOk(i.brand) && monthKey(i.date) === mk && (f === 'Semua' || who(i) === f || ownerOf(i) === f || (f === EDITOR && i.mode === 'editor')); });
+    var ks = f === 'Semua' ? kols().filter(function (k) { return k.date && monthKey(k.date) === mk && brandOk(k.brand); }) : [];
+    var cell = function (d) { var di = all.filter(function (i) { return i.date === d; }).sort(function (a, b) { return (a.time || '').localeCompare(b.time || ''); }), dk = ks.filter(function (k) { return k.date === d; }); return di.map(function (i) { return '<button class="ce" data-open="' + i.id + '" style="--c:' + brand(i.brand).c + '" title="' + esc(i.title + ' · ' + stage(i)) + '">' + (i.format === 'Live TikTok' ? '● ' : '') + esc(i.title) + '</button>'; }).join('') + dk.map(function (k) { return '<button class="ce" data-kol="' + k.id + '" style="--c:#5B3FB0">★ ' + esc(k.name) + '</button>'; }).join(''); };
+    var wd = (parse(first).getDay() + 6) % 7, g = '<div class="cal desk">' + ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'].map(function (x) { return '<span class="cal-h">' + x + '</span>'; }).join('');
+    for (var b = 0; b < wd; b++) g += '<div class="cal-d off"></div>';
+    for (var d = 1; d <= dim; d++) { var ds = mk + '-' + (d < 10 ? '0' : '') + d; g += '<div class="cal-d' + (ds === TODAY ? ' today' : '') + '"><span class="cal-n">' + d + '</span>' + cell(ds) + '</div>'; }
+    g += '</div><div class="mob" style="flex-direction:column;gap:8px">';
+    for (var d2 = 1; d2 <= dim; d2++) { var ds2 = mk + '-' + (d2 < 10 ? '0' : '') + d2, c2 = cell(ds2); if (c2) g += '<div class="cal-l' + (ds2 === TODAY ? ' today' : '') + '"><b>' + nice(ds2) + '</b>' + c2 + '</div>'; }
+    if (!all.length && !ks.length) g += empty('Belum ada jadwal di bulan ini.');
+    g += '</div>';
+    h += sec('Kalender ' + monthName(mk), 'cal', 'Konten feed, ● live TikTok, dan ★ KOL dalam satu bulan. Klik untuk membuka.', nav, brandChips() + '<div class="legend">' + STAGES.map(function (st) { return stChip(st); }).join(' ') + '</div>' + g);
+  }
+  return h;
+}
+
 /* ---------- Live TikTok (menu sendiri) ---------- */
 function lives() { return S.items.filter(function (i) { return i.format === 'Live TikTok'; }); }
 function liveForm(o) {
@@ -1263,7 +1311,7 @@ function vFoot() {
 var SB_URL = 'https://shrvzlltysnbmgpkhjjg.supabase.co', SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNocnZ6bGx0eXNuYm1ncGtoampnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI4NzAzNTYsImV4cCI6MjEwODQ0NjM1Nn0.V0EDK0y3ZFIuNW5uGJjDcHZlEVxAURVC6OJVPaUYUFY', SKEY = 'pokama.session';
 var LOCAL = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
 var ONLINE = false, DOCS = {}, LAST = '1970-01-01T00:00:00Z', SYNC = 'lokal', pushT = null, pushing = false, dirty = false;
-var PERSONAL = ['me', 'brand', 'week', 'plat', 'am', '_auto', 'lweek', 'ftype', 'fq'];
+var PERSONAL = ['me', 'brand', 'week', 'plat', 'am', '_auto', 'lweek', 'ftype', 'fq', 'bmode', 'bwho', 'bm'];
 var ARR = ['camps', 'ideas', 'items', 'kols', 'reps', 'foot'];
 function save() {
   var keep = {}; if (ONLINE) { PERSONAL.forEach(function (k) { keep[k] = S[k]; }); } else keep = S;
@@ -1348,8 +1396,8 @@ function startOnline() {
 var ROLE = { 'Head of Marketing': 'head', Dita: 'pic', Nayla: 'pic', Editor: 'editor', 'Admin WA': 'cs', 'Kepala Staf': 'ks' };
 function role() { return ROLE[S.me] || 'pic'; }
 function canSee(el) { var r = el.getAttribute('data-roles'); return !r || r.split(' ').indexOf(role()) >= 0; }
-var VIEWS = { live: vLive, foot: vFoot, appr: vAppr, isi: vIsi, dash: vDash, tim: vTim, set: vSet, ig: vIg, ads: vAds, seo: vSeo, kol: vKol, wa: vAdmin, campaign: vCampaign, today: vToday, plan: vPlan, bank: vBank, editor: vEditor };
-function view() { var v = (location.hash || '').slice(1); return VIEWS[v] ? v : (S.me === 'Kepala Staf' ? 'dash' : 'today'); }
+var VIEWS = { papan: vPapan, live: vLive, foot: vFoot, appr: vAppr, isi: vIsi, dash: vDash, tim: vTim, set: vSet, ig: vIg, ads: vAds, seo: vSeo, kol: vKol, wa: vAdmin, campaign: vCampaign, today: vToday, plan: vPlan, bank: vBank, editor: vEditor };
+function view() { var v = (location.hash || '').slice(1); if (v === 'tim') v = 'papan'; return VIEWS[v] ? v : (S.me === 'Kepala Staf' ? 'dash' : 'today'); }
 var ON = 'font-weight: 800; color: #1D3149; background: #EAF8F6; box-shadow: inset 3px 0 0 #09BEAF;', OFF = 'font-weight: 600; color: #3B4250;';
 var BOT = { head: ['today', 'appr', 'plan', 'dash'], pic: ['today', 'plan', 'isi', 'dash'], editor: ['today', 'editor', 'plan', 'dash'], cs: ['today', 'wa', 'dash'], ks: ['dash', 'appr', 'plan'] };
 var BOTL = { today: 'Tugas', appr: 'Persetujuan', plan: 'Content plan', dash: 'Dashboard', isi: 'Jurnal', editor: 'Antrean', wa: 'Laporan WA' };
@@ -1395,7 +1443,7 @@ document.addEventListener('click', function (e) {
   if (e.target.closest('[data-menu]')) { document.body.classList.toggle('nav-open'); return; }
   if (e.target.closest('nav a')) document.body.classList.remove('nav-open');
   if (cur && cur.contains(e.target)) return;
-  var t = e.target.closest('[data-foot],[data-ftype],[data-lwk],[data-keepfoot],[data-apok],[data-apcamp],[data-apkol],[data-isid],[data-am],[data-plat],[data-kol],[data-rep],[data-wa],[data-camp],[data-open],[data-a],[data-new],[data-brand],[data-wk],[data-use],[data-delidea],[data-cap],[data-prio]'); if (!t) return;
+  var t = e.target.closest('[data-bmode],[data-bwho],[data-bm],[data-foot],[data-ftype],[data-lwk],[data-keepfoot],[data-apok],[data-apcamp],[data-apkol],[data-isid],[data-am],[data-plat],[data-kol],[data-rep],[data-wa],[data-camp],[data-open],[data-a],[data-new],[data-brand],[data-wk],[data-use],[data-delidea],[data-cap],[data-prio]'); if (!t) return;
   var g = function (k) { return t.getAttribute(k); };
   if (role() === 'ks' && (t.hasAttribute('data-new') || t.hasAttribute('data-use') || t.hasAttribute('data-delidea') || t.hasAttribute('data-keepfoot') || t.hasAttribute('data-prio') || t.hasAttribute('data-cap') || ['new', 'idea', 'kol', 'rep', 'budget', 'camp', 'live', 'foot'].indexOf(g('data-a')) >= 0)) { toast('Kepala Staf hanya bisa melihat'); return; }
   if (g('data-am')) { var mk = aMonth().split('-'), yy = +mk[0], mm = +mk[1] + +g('data-am'); if (mm < 1) { mm = 12; yy--; } if (mm > 12) { mm = 1; yy++; } S.am = yy + '-' + (mm < 10 ? '0' : '') + mm; save(); render(); return; }
@@ -1412,6 +1460,9 @@ document.addEventListener('click', function (e) {
   if (t.hasAttribute('data-wa')) { var vv = view(); waPanel(waReport(vv), WA_TITLE[vv]); return; }
   if (g('data-kol')) { kolForm(kols().filter(function (k) { return k.id === g('data-kol'); })[0]); return; }
   if (g('data-rep')) { repForm(reps().filter(function (r) { return r.id === g('data-rep'); })[0]); return; }
+  if (g('data-bmode')) { S.bmode = g('data-bmode'); save(); render(); return; }
+  if (g('data-bwho')) { S.bwho = g('data-bwho'); save(); render(); return; }
+  if (g('data-bm')) { var bk = (S.bm || monthKey()).split('-'), by2 = +bk[0], bm2 = +bk[1] + +g('data-bm'); if (bm2 < 1) { bm2 = 12; by2--; } if (bm2 > 12) { bm2 = 1; by2++; } S.bm = by2 + '-' + (bm2 < 10 ? '0' : '') + bm2; save(); render(); return; }
   if (g('data-a') === 'live') return liveForm({});
   if (g('data-a') === 'foot') return footForm(null);
   if (g('data-foot')) return footForm(foots().filter(function (f) { return f.id === g('data-foot'); })[0]);
