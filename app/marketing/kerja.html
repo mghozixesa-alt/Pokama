@@ -1,0 +1,407 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kerja konten — Marketing Pokama</title>
+<link rel="icon" href="logo-pokama.png">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="gate.css">
+<script src="gate.js"></script>
+<style>
+:root{--navy:#1D3149;--teal:#09BEAF;--teal-d:#067A70;--teal-l:#DDF5F2;--bg:#F3F5F8;--line:#E3E6EB;--mut:#5B6573;--ink:#1F2933;--warn:#9A3F0A;--warn-l:#FCEBDD;--amb:#7A5200;--amb-l:#FDF3D7}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Nunito',system-ui,sans-serif;font-size:14px}
+button,input,select,textarea{font-family:inherit;font-size:14px}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+.top{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20}
+.top-in{max-width:1280px;margin:0 auto;padding:12px 20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.top img{width:104px;height:auto}
+.top .sub{font-weight:800;color:var(--mut);font-size:13px}
+.tabs{display:flex;gap:4px;flex:1 1 auto;overflow-x:auto}
+.tab{border:0;background:none;padding:9px 14px;border-radius:10px;font-weight:700;color:#3B4250;white-space:nowrap;display:flex;align-items:center;gap:6px}
+.tab[aria-current="page"]{background:var(--teal-l);color:var(--navy);font-weight:900}
+.cnt{min-width:20px;height:20px;border-radius:10px;background:#C2410C;color:#fff;font-size:11px;font-weight:900;display:inline-flex;align-items:center;justify-content:center;padding:0 6px}
+.me{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:var(--mut)}
+.me select{height:36px;border:1px solid var(--line);border-radius:10px;padding:0 10px;font-weight:800;color:var(--navy);background:#fff}
+main{max-width:1280px;margin:0 auto;padding:20px 20px 60px;display:flex;flex-direction:column;gap:16px}
+.note{font-size:12.5px;color:var(--amb);background:var(--amb-l);border-radius:10px;padding:8px 12px;font-weight:700}
+h1{margin:0;font-size:24px;font-weight:900;color:var(--navy)}
+h2{margin:0;font-size:16px;font-weight:900;color:var(--navy)}
+.head{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap}
+.muted{color:var(--mut);font-size:13px}
+.card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px}
+.btn{height:38px;padding:0 14px;border-radius:10px;border:1px solid #C9D1DB;background:#fff;color:var(--navy);font-weight:800}
+.btn.pri{background:var(--teal);border-color:var(--teal);color:var(--navy)}
+.btn.dark{background:var(--navy);border-color:var(--navy);color:#fff}
+.btn.warn{background:#fff;border-color:#E9B999;color:var(--warn)}
+.btn.sm{height:32px;padding:0 10px;font-size:13px}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{height:34px;padding:0 12px;border-radius:17px;border:1px solid var(--line);background:#fff;font-weight:800;color:var(--navy);display:inline-flex;align-items:center;gap:6px;font-size:13px}
+.chip[aria-pressed="true"]{background:var(--navy);border-color:var(--navy);color:#fff}
+.dot{width:8px;height:8px;border-radius:4px;flex:none;display:inline-block}
+.st{font-size:11.5px;font-weight:900;border-radius:6px;padding:2px 7px;white-space:nowrap}
+.empty{border:1px dashed #C9D1DB;border-radius:14px;padding:22px;text-align:center;color:var(--mut);font-weight:700;background:#fff}
+.list{display:flex;flex-direction:column;gap:8px}
+.row{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 14px}
+.row .grow{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:3px}
+.row strong{color:var(--navy);font-size:14.5px}
+.row.click{cursor:pointer}
+.row.click:hover{border-color:#BFE9E3}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px}
+/* week board */
+.week{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px}
+.day{background:#fff;border:1px solid var(--line);border-radius:14px;min-height:180px;display:flex;flex-direction:column}
+.day.today{border-color:var(--teal);box-shadow:0 0 0 1px var(--teal)}
+.day-h{display:flex;justify-content:space-between;align-items:center;padding:8px 10px;border-bottom:1px solid var(--line)}
+.day-h b{color:var(--navy)}
+.day-b{padding:8px;display:flex;flex-direction:column;gap:6px;flex:1}
+.add{border:1px dashed #C9D1DB;background:none;border-radius:10px;height:32px;color:var(--mut);font-weight:800;font-size:12.5px}
+.k{border:1px solid var(--line);border-left:4px solid var(--c,#A9B4C2);border-radius:10px;padding:8px;background:#fff;text-align:left;display:flex;flex-direction:column;gap:4px;width:100%}
+.k:hover{border-color:#BFE9E3;border-left-color:var(--c)}
+.k .t{font-weight:800;color:var(--navy);font-size:13px;line-height:1.3}
+.k .m{font-size:11.5px;color:var(--mut);font-weight:700}
+.wk{display:flex;align-items:center;gap:8px}
+/* editor */
+.cap{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
+.capd{background:#fff;border:1px solid var(--line);border-radius:12px;padding:8px;display:flex;flex-direction:column;gap:6px}
+.bar{height:8px;border-radius:4px;background:#EEF0F3;overflow:hidden}
+.bar i{display:block;height:100%}
+/* modal */
+.scrim{position:fixed;inset:0;background:rgba(29,49,73,.45);z-index:50;display:flex;justify-content:flex-end}
+.panel{background:#fff;width:min(520px,100%);height:100%;overflow:auto;padding:20px;display:flex;flex-direction:column;gap:14px}
+.panel.center{margin:auto;height:auto;max-height:92vh;border-radius:18px}
+.f{display:flex;flex-direction:column;gap:5px}
+.f label{font-size:12.5px;font-weight:800;color:#3B4250}
+.f input,.f select,.f textarea{border:1px solid var(--line);border-radius:10px;padding:9px 11px;color:var(--ink);background:#fff}
+.f textarea{min-height:84px;resize:vertical}
+.f2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.acts{display:flex;gap:8px;flex-wrap:wrap}
+.flow{display:flex;gap:4px;flex-wrap:wrap}
+.flow span{font-size:11.5px;font-weight:800;padding:3px 8px;border-radius:6px;background:#EEF0F3;color:var(--mut)}
+.flow span.on{background:var(--navy);color:#fff}
+.flow span.done{background:var(--teal-l);color:var(--teal-d)}
+.log{display:flex;flex-direction:column;gap:6px;font-size:12.5px;color:#3B4250}
+.log div{border-left:2px solid var(--line);padding-left:8px}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--navy);color:#fff;padding:10px 16px;border-radius:12px;font-weight:800;z-index:80}
+@media (max-width:860px){
+ .top-in{padding:10px 14px;gap:10px}
+ .tabs{order:3;flex-basis:100%}
+ main{padding:14px 14px 60px}
+ .week{grid-template-columns:1fr}
+ .day{min-height:0}
+ .cap{grid-template-columns:repeat(7,minmax(64px,1fr));overflow-x:auto}
+ .f2{grid-template-columns:1fr}
+ .row{flex-wrap:wrap}
+ .chips{flex-wrap:nowrap;overflow-x:auto;padding-bottom:2px}
+ .chip{flex:none}
+}
+</style>
+</head>
+<body>
+<div id="dc-root">
+<div class="top"><div class="top-in">
+ <img src="logo-pokama.png" alt="Pokama"><span class="sub">Marketing · Kerja konten</span>
+ <nav class="tabs" aria-label="Menu" id="tabs"></nav>
+ <div class="me"><label for="me">Saya</label><select id="me"></select></div>
+</div></div>
+<main id="app"></main>
+</div>
+<script>
+(function () {
+'use strict';
+var KEY = 'pokama.mk.tahap1';
+var BRANDS = [
+ { k: 'Rentalaja', pic: 'Dita', c: '#2F6FD0' }, { k: 'Rentalaja Experience', pic: 'Dita', c: '#5B8DEF' }, { k: 'Laptopaja', pic: 'Dita', c: '#D08A1E' },
+ { k: 'Wisata Garut', pic: 'Nayla', c: '#0FA394' }, { k: 'TripinAja', pic: 'Nayla', c: '#09BEAF' }, { k: 'ATVaja', pic: 'Nayla', c: '#7A5200' }, { k: 'Maripoto', pic: 'Nayla', c: '#B0466B' }
+];
+var PEOPLE = [{ n: 'Kevin', r: 'Leader marketing · review' }, { n: 'Dita', r: 'PIC akun' }, { n: 'Nayla', r: 'PIC akun' }, { n: 'Mugni', r: 'Editor' }];
+var EDITOR = 'Mugni', LEAD = 'Kevin';
+var FORMATS = ['Reels', 'Carousel', 'Foto', 'Story', 'TikTok'];
+var PILLARS = ['Educational', 'Entertainment', 'Promotional', 'Conversational'];
+var SOURCES = ['Ide sendiri', 'Pertanyaan di WA', 'Ulasan pelanggan', 'Tren', 'Ulang konten bagus'];
+var FLOW = ['Brief', 'Produksi', 'Review', 'Siap tayang', 'Tayang'];
+var STC = { Brief: ['#E5EEF9', '#1E5AA8'], Produksi: ['#FDF3D7', '#7A5200'], Review: ['#EDE7FB', '#5B3FB0'], Revisi: ['#FCEBDD', '#9A3F0A'], 'Siap tayang': ['#DDF5F2', '#067A70'], Tayang: ['#EEF0F3', '#3B4250'] };
+var DAYS = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
+var MON = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+
+function blank() { return { ideas: [], items: [], cap: 3, me: 'Kevin', view: 'today', brand: 'Saya', week: 0 }; }
+var S;
+try { S = Object.assign(blank(), JSON.parse(localStorage.getItem(KEY) || '{}')); } catch (e) { S = blank(); }
+function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+
+function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
+function iso(d) { var m = d.getMonth() + 1, x = d.getDate(); return d.getFullYear() + '-' + (m < 10 ? '0' : '') + m + '-' + (x < 10 ? '0' : '') + x; }
+function parse(s) { var p = s.split('-'); return new Date(+p[0], +p[1] - 1, +p[2]); }
+function addDays(s, n) { var d = parse(s); d.setDate(d.getDate() + n); return iso(d); }
+var TODAY = iso(new Date());
+function nice(s) { if (!s) return '—'; var d = parse(s); var rel = s === TODAY ? 'Hari ini' : s === addDays(TODAY, 1) ? 'Besok' : s === addDays(TODAY, -1) ? 'Kemarin' : ''; return (rel ? rel + ' · ' : '') + DAYS[d.getDay()] + ' ' + d.getDate() + ' ' + MON[d.getMonth()]; }
+function short(s) { var d = parse(s); return DAYS[d.getDay()] + ' ' + d.getDate(); }
+function brand(k) { return BRANDS.filter(function (b) { return b.k === k; })[0] || { k: k, pic: '', c: '#A9B4C2' }; }
+function myBrands(n) { return BRANDS.filter(function (b) { return b.pic === n; }).map(function (b) { return b.k; }); }
+function ownerOf(it) { return brand(it.brand).pic; }
+function now() { var d = new Date(); return nice(iso(d)) + ' ' + String(d.getHours()).padStart(2, '0') + '.' + String(d.getMinutes()).padStart(2, '0'); }
+function log(it, text) { it.log = it.log || []; it.log.unshift({ at: now(), who: S.me, text: text }); }
+function stChip(s) { var c = STC[s] || STC.Tayang; return '<span class="st" style="background:' + c[0] + ';color:' + c[1] + '">' + esc(s) + '</span>'; }
+function weekStart(off) { var d = parse(TODAY); var wd = (d.getDay() + 6) % 7; d.setDate(d.getDate() - wd + off * 7); return iso(d); }
+function who(it) { // siapa yang sedang memegang konten ini
+  if (it.status === 'Brief' || it.status === 'Siap tayang') return ownerOf(it);
+  if (it.status === 'Produksi') return it.mode === 'editor' ? EDITOR : ownerOf(it);
+  if (it.status === 'Revisi') return it.revTo === 'editor' ? EDITOR : ownerOf(it);
+  if (it.status === 'Review') return LEAD;
+  return '';
+}
+function atEditor(it) { return it.mode === 'editor' && (it.status === 'Produksi' || (it.status === 'Revisi' && it.revTo === 'editor')); }
+function late(it) { return it.status !== 'Tayang' && it.status !== 'Siap tayang' && it.date && it.date <= addDays(TODAY, 1); }
+
+var toastT;
+function toast(t) { var el = document.querySelector('.toast'); if (!el) { el = document.createElement('div'); el.className = 'toast'; el.setAttribute('role', 'status'); document.body.appendChild(el); } el.textContent = t; clearTimeout(toastT); toastT = setTimeout(function () { el.remove(); }, 2200); }
+
+/* ---------- tugas hari ini ---------- */
+function tasksFor(n) {
+  var t = [];
+  S.items.forEach(function (it) {
+    var mine = ownerOf(it) === n;
+    if (n === LEAD && it.status === 'Review') t.push({ it: it, do: 'Review konten', why: 'Dikirim ' + (it.sentAt || ''), btn: 'Buka' });
+    if (n === EDITOR && atEditor(it)) t.push({ it: it, do: it.status === 'Revisi' ? 'Revisi edit' : 'Edit konten', why: 'Diminta ' + ownerOf(it) + ' · selesai ' + nice(it.editDue) + (it.priority === 'Penting' ? ' · PENTING' : '') + (it.status === 'Revisi' && it.revNote ? ' · catatan Kevin: ' + it.revNote : ''), btn: 'Buka', sort: (it.priority === 'Penting' ? '0' : '1') + (it.editDue || '') });
+    if (mine && it.status === 'Brief') t.push({ it: it, do: 'Lengkapi brief, pilih siapa yang edit', why: 'Tayang ' + nice(it.date), btn: 'Buka' });
+    if (mine && it.status === 'Produksi' && it.mode === 'sendiri') t.push({ it: it, do: 'Kerjakan konten (edit sendiri)', why: 'Tayang ' + nice(it.date), btn: 'Buka' });
+    if (mine && it.status === 'Revisi' && it.revTo !== 'editor') t.push({ it: it, do: 'Revisi dari Kevin', why: it.revNote || '', btn: 'Buka' });
+    if (mine && it.status === 'Siap tayang' && it.date <= TODAY) t.push({ it: it, do: 'Tayangkan', why: 'Jadwal ' + nice(it.date) + (it.time ? ' ' + it.time : ''), btn: 'Buka' });
+  });
+  t.sort(function (a, b) { return (a.sort || a.it.date || '').localeCompare(b.sort || b.it.date || ''); });
+  return t;
+}
+function waitingFor(n) {
+  return S.items.filter(function (it) { var w = who(it); return ownerOf(it) === n && w && w !== n && it.status !== 'Tayang'; });
+}
+
+/* ---------- views ---------- */
+function vToday() {
+  var me = S.me, t = tasksFor(me), w = me === LEAD || me === EDITOR ? [] : waitingFor(me);
+  var risk = S.items.filter(function (it) { return late(it) && (me === LEAD || ownerOf(it) === me); });
+  var h = '<div class="head"><div><h1>Hari ini · ' + esc(me) + '</h1><div class="muted">' + nice(TODAY) + '</div></div>';
+  h += '<div class="acts"><button class="btn pri" data-a="new">+ Konten baru</button><button class="btn" data-a="idea">+ Tulis ide</button></div></div>';
+  if (me === LEAD) {
+    var over = overDays();
+    if (over.length) h += '<div class="row" style="border-color:#E9B999;background:#FFFBF8"><div class="grow"><strong>Editor bentrok di ' + over.map(short).join(', ') + '</strong><span class="muted">Permintaan ke Mugni melebihi kapasitas. Tentukan mana yang penting.</span></div><button class="btn sm warn" data-go="editor">Atur prioritas</button></div>';
+  }
+  h += '<section class="list"><h2>Tugas saya (' + t.length + ')</h2>';
+  if (!t.length) h += '<div class="empty">Belum ada tugas. ' + (me === EDITOR ? 'Konten yang dikirim ke editor akan muncul di sini.' : 'Mulai dari tulis ide atau tambah konten di Content plan.') + '</div>';
+  t.forEach(function (x) { h += rowItem(x.it, x.do, x.why, x.btn); });
+  h += '</section>';
+  if (risk.length) { h += '<section class="list"><h2>Berisiko telat tayang</h2>'; risk.forEach(function (it) { h += rowItem(it, it.title, 'Tayang ' + nice(it.date) + ' · sekarang di ' + (who(it) || '-'), 'Buka'); }); h += '</section>'; }
+  if (w.length) { h += '<section class="list"><h2>Menunggu orang lain</h2>'; w.forEach(function (it) { h += rowItem(it, it.title, 'Di ' + who(it) + ' · ' + it.status, 'Lihat'); }); h += '</section>'; }
+  return h;
+}
+function rowItem(it, title, why, btn) {
+  var b = brand(it.brand);
+  return '<div class="row click" data-open="' + it.id + '"><span class="dot" style="background:' + b.c + '"></span><div class="grow"><strong>' + esc(title) + '</strong><span class="muted">' + esc(it.brand) + ' · ' + esc(it.format) + (title !== it.title ? ' · ' + esc(it.title) : '') + '</span>' + (why ? '<span class="muted">' + esc(why) + '</span>' : '') + '</div>' + stChip(it.status) + '<button class="btn sm" data-open="' + it.id + '">' + btn + '</button></div>';
+}
+function brandChips() {
+  var opts = ['Saya', 'Semua'].concat(BRANDS.map(function (b) { return b.k; }));
+  return '<div class="chips" role="group" aria-label="Pilih brand">' + opts.map(function (o) {
+    var b = brand(o), lbl = o === 'Saya' ? 'Brand saya' : o === 'Semua' ? 'Semua brand' : o;
+    return '<button class="chip" data-brand="' + esc(o) + '" aria-pressed="' + (S.brand === o) + '">' + (o !== 'Saya' && o !== 'Semua' ? '<span class="dot" style="background:' + b.c + '"></span>' : '') + esc(lbl) + '</button>';
+  }).join('') + '</div>';
+}
+function brandOk(k) {
+  if (S.brand === 'Semua') return true;
+  if (S.brand === 'Saya') { var m = myBrands(S.me); return m.length ? m.indexOf(k) >= 0 : true; }
+  return S.brand === k;
+}
+function vPlan() {
+  var ws = weekStart(S.week), we = addDays(ws, 6);
+  var h = '<div class="head"><div><h1>Content plan</h1><div class="muted">Satu kartu = satu konten. Klik kartu untuk brief, kirim ke editor, review, dan tayang.</div></div>';
+  h += '<div class="wk"><button class="btn sm" data-wk="-1" aria-label="Minggu sebelumnya">‹</button><b>' + short(ws) + ' ' + MON[parse(ws).getMonth()] + ' – ' + short(we) + ' ' + MON[parse(we).getMonth()] + '</b><button class="btn sm" data-wk="1" aria-label="Minggu berikutnya">›</button>' + (S.week ? '<button class="btn sm" data-wk="0">Minggu ini</button>' : '') + '</div></div>';
+  h += brandChips();
+  h += '<div class="week">';
+  for (var i = 0; i < 7; i++) {
+    var d = addDays(ws, i), its = S.items.filter(function (it) { return it.date === d && brandOk(it.brand); });
+    h += '<div class="day' + (d === TODAY ? ' today' : '') + '"><div class="day-h"><b>' + short(d) + '</b><span class="muted">' + (its.length || '') + '</span></div><div class="day-b">';
+    its.forEach(function (it) { h += kard(it); });
+    h += '<button class="add" data-new="' + d + '">+ Tambah</button></div></div>';
+  }
+  h += '</div>';
+  var cnt = S.items.filter(function (it) { return it.date >= ws && it.date <= we && brandOk(it.brand); });
+  if (cnt.length) {
+    var by = {}; FLOW.concat(['Revisi']).forEach(function (s) { by[s] = 0; }); cnt.forEach(function (it) { by[it.status]++; });
+    h += '<div class="card"><div class="acts" style="gap:14px">' + Object.keys(by).filter(function (k) { return by[k]; }).map(function (k) { return stChip(k) + ' <b>' + by[k] + '</b>'; }).join('&nbsp;&nbsp;') + '</div></div>';
+  }
+  return h;
+}
+function kard(it) {
+  var b = brand(it.brand), m = it.status === 'Brief' ? 'Belum dikirim' : it.mode === 'editor' ? 'Editor · ' + (it.editDue ? short(it.editDue) : '-') : it.mode === 'sendiri' ? 'Edit sendiri' : '';
+  return '<button class="k" style="--c:' + b.c + '" data-open="' + it.id + '"><span class="t">' + esc(it.title) + '</span><span class="m">' + esc(it.brand) + ' · ' + esc(it.format) + (it.time ? ' · ' + esc(it.time) : '') + '</span><span style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">' + stChip(it.status) + (it.priority === 'Penting' ? '<span class="st" style="background:#FCEBDD;color:#9A3F0A">Penting</span>' : '') + '<span class="m">' + esc(m) + '</span></span></button>';
+}
+function vBank() {
+  var ideas = S.ideas.filter(function (x) { return brandOk(x.brand); });
+  var h = '<div class="head"><div><h1>Content bank</h1><div class="muted">Simpan ide kapan saja. Kalau sudah siap, pakai di content plan.</div></div><button class="btn pri" data-a="idea">+ Tulis ide</button></div>';
+  h += brandChips();
+  if (!ideas.length) h += '<div class="empty">Belum ada ide. Klik <b>+ Tulis ide</b> untuk mulai.</div>';
+  h += '<div class="list">';
+  ideas.forEach(function (x) {
+    var b = brand(x.brand);
+    h += '<div class="row"><span class="dot" style="background:' + b.c + '"></span><div class="grow"><strong>' + esc(x.title) + '</strong><span class="muted">' + esc(x.brand) + ' · ' + esc(x.format) + ' · ' + esc(x.pillar) + ' · ' + esc(x.source) + ' · oleh ' + esc(x.by) + '</span>' + (x.note ? '<span class="muted">' + esc(x.note) + '</span>' : '') + '</div><button class="btn sm pri" data-use="' + x.id + '">Pakai di content plan</button><button class="btn sm" data-delidea="' + x.id + '" aria-label="Hapus ide ' + esc(x.title) + '">Hapus</button></div>';
+  });
+  return h + '</div>';
+}
+function editorLoad() { var m = {}; S.items.forEach(function (it) { if (atEditor(it) && it.editDue) m[it.editDue] = (m[it.editDue] || 0) + 1; }); return m; }
+function overDays() { var m = editorLoad(); return Object.keys(m).filter(function (d) { return m[d] > S.cap && d >= TODAY; }).sort(); }
+function vEditor() {
+  var q = S.items.filter(atEditor).sort(function (a, b) { return ((a.priority === 'Penting' ? '0' : '1') + (a.editDue || '9')).localeCompare((b.priority === 'Penting' ? '0' : '1') + (b.editDue || '9')); });
+  var m = editorLoad();
+  var h = '<div class="head"><div><h1>Antrean editor · Mugni</h1><div class="muted">Semua permintaan edit dari Dita dan Nayla di satu tempat. Kevin menentukan yang penting kalau bentrok.</div></div>';
+  h += '<div class="acts" style="align-items:center"><span class="muted"><b>Kapasitas per hari</b></span><button class="btn sm" data-cap="-1" aria-label="Kurangi kapasitas">−</button><b style="min-width:20px;text-align:center">' + S.cap + '</b><button class="btn sm" data-cap="1" aria-label="Tambah kapasitas">+</button></div></div>';
+  h += '<div class="cap">';
+  for (var i = 0; i < 7; i++) {
+    var d = addDays(TODAY, i), n = m[d] || 0, over = n > S.cap;
+    h += '<div class="capd" style="' + (over ? 'border-color:#E9B999;background:#FFFBF8' : '') + '"><b style="color:var(--navy)">' + short(d) + '</b><div class="bar"><i style="width:' + Math.min(100, n / S.cap * 100) + '%;background:' + (over ? '#C2410C' : '#09BEAF') + '"></i></div><span class="muted" style="font-weight:800;color:' + (over ? 'var(--warn)' : 'var(--mut)') + '">' + n + ' / ' + S.cap + (over ? ' · bentrok' : '') + '</span></div>';
+  }
+  h += '</div><section class="list"><h2>Antrean (' + q.length + ')</h2>';
+  if (!q.length) h += '<div class="empty">Belum ada permintaan edit. Konten yang di-"Kirim ke editor" akan masuk ke sini.</div>';
+  q.forEach(function (it) {
+    var b = brand(it.brand), lateEdit = it.editDue && it.editDue < TODAY;
+    h += '<div class="row"><span class="dot" style="background:' + b.c + '"></span><div class="grow"><strong>' + esc(it.title) + '</strong><span class="muted">' + esc(it.brand) + ' · ' + esc(it.format) + ' · diminta ' + esc(ownerOf(it)) + ' · tayang ' + nice(it.date) + '</span><span class="muted" style="' + (lateEdit ? 'color:var(--warn);font-weight:800' : '') + '">Selesai edit: ' + nice(it.editDue) + (it.status === 'Revisi' ? ' · revisi: ' + esc(it.revNote || '') : '') + '</span></div>' + stChip(it.status) +
+      (S.me === LEAD ? '<button class="btn sm ' + (it.priority === 'Penting' ? 'warn' : '') + '" data-prio="' + it.id + '">' + (it.priority === 'Penting' ? '★ Penting' : 'Tandai penting') + '</button>' : (it.priority === 'Penting' ? '<span class="st" style="background:#FCEBDD;color:#9A3F0A">Penting</span>' : '')) +
+      '<button class="btn sm" data-open="' + it.id + '">Buka</button></div>';
+  });
+  return h + '</section>';
+}
+
+/* ---------- panel detail konten ---------- */
+function opts(list, v) { return list.map(function (o) { return '<option' + (o === v ? ' selected' : '') + '>' + esc(o) + '</option>'; }).join(''); }
+function openItem(id) {
+  var it = S.items.filter(function (x) { return x.id === id; })[0]; if (!it) return;
+  var me = S.me, owner = ownerOf(it), canEdit = me === owner || me === LEAD;
+  var idx = FLOW.indexOf(it.status === 'Revisi' ? 'Review' : it.status);
+  var h = '<div class="head"><div><span class="muted">' + esc(it.brand) + ' · PIC ' + esc(owner) + '</span><h1 style="font-size:20px">' + esc(it.title) + '</h1></div><button class="btn sm" data-close aria-label="Tutup">✕</button></div>';
+  h += '<div class="flow">' + FLOW.map(function (s, i) { return '<span class="' + (i < idx ? 'done' : i === idx ? 'on' : '') + '">' + s + '</span>'; }).join('') + (it.status === 'Revisi' ? '<span class="on" style="background:#C2410C">Revisi</span>' : '') + '</div>';
+  var w = who(it); if (w) h += '<div class="note" style="background:#F0FBF9;color:var(--teal-d)">Sekarang di: <b>' + esc(w) + '</b>' + (it.status === 'Revisi' && it.revNote ? ' · catatan: ' + esc(it.revNote) : '') + '</div>';
+  h += '<div class="f"><label for="i-title">Judul</label><input id="i-title" value="' + esc(it.title) + '"' + (canEdit ? '' : ' disabled') + '></div>';
+  h += '<div class="f2"><div class="f"><label for="i-brand">Brand</label><select id="i-brand"' + (canEdit ? '' : ' disabled') + '>' + opts(BRANDS.map(function (b) { return b.k; }), it.brand) + '</select></div><div class="f"><label for="i-format">Format</label><select id="i-format"' + (canEdit ? '' : ' disabled') + '>' + opts(FORMATS, it.format) + '</select></div></div>';
+  h += '<div class="f2"><div class="f"><label for="i-date">Tanggal tayang</label><input id="i-date" type="date" value="' + esc(it.date) + '"' + (canEdit ? '' : ' disabled') + '></div><div class="f"><label for="i-time">Jam tayang</label><input id="i-time" type="time" value="' + esc(it.time || '') + '"' + (canEdit ? '' : ' disabled') + '></div></div>';
+  h += '<div class="f"><label for="i-pillar">Content pillar</label><select id="i-pillar"' + (canEdit ? '' : ' disabled') + '>' + opts(PILLARS, it.pillar) + '</select></div>';
+  h += '<div class="f"><label for="i-brief">Brief untuk editor</label><textarea id="i-brief" placeholder="Hook, isi, CTA, referensi, link footage"' + (canEdit ? '' : ' disabled') + '>' + esc(it.brief || '') + '</textarea></div>';
+  if (canEdit) h += '<div class="acts"><button class="btn" data-savei="' + it.id + '">Simpan perubahan</button></div>';
+  // aksi sesuai tahap & orang
+  var a = [];
+  if (it.status === 'Brief' && canEdit) {
+    a.push('<div class="card" style="display:flex;flex-direction:column;gap:10px"><h2>Siapa yang mengerjakan?</h2><div class="f"><label for="i-due">Selesai edit paling lambat</label><input id="i-due" type="date" value="' + esc(it.editDue || addDays(it.date || TODAY, -1)) + '"></div><div class="acts"><button class="btn pri" data-act="toEditor">Kirim ke editor (Mugni)</button><button class="btn" data-act="self">Kerjakan sendiri</button></div><span class="muted">Beban Mugni di tanggal itu: <b id="i-load"></b></span></div>');
+  }
+  if (it.status === 'Produksi' && (me === w || me === LEAD)) a.push('<button class="btn pri" data-act="toReview">Selesai, kirim ke Kevin untuk review</button>');
+  if (it.status === 'Produksi' && it.mode === 'editor' && me === owner) a.push('<button class="btn" data-act="takeover">Ambil alih, edit sendiri</button>');
+  if (it.status === 'Review' && me === LEAD) {
+    a.push('<button class="btn pri" data-act="approve">Setujui</button>');
+    a.push('<div class="card" style="display:flex;flex-direction:column;gap:8px;width:100%"><div class="f"><label for="i-rev">Catatan revisi</label><textarea id="i-rev" placeholder="Apa yang perlu diubah"></textarea></div><div class="acts"><button class="btn warn" data-act="revEditor"' + (it.mode === 'editor' ? '' : ' hidden') + '>Revisi ke editor</button><button class="btn warn" data-act="revPic">Revisi ke ' + esc(owner) + '</button></div></div>');
+  }
+  if (it.status === 'Revisi' && (me === w || me === LEAD)) a.push('<button class="btn pri" data-act="toReview">Revisi selesai, kirim review lagi</button>');
+  if (it.status === 'Siap tayang' && (me === owner || me === LEAD)) a.push('<button class="btn pri" data-act="posted">Sudah tayang</button>');
+  if (a.length) h += '<div class="acts" style="flex-direction:column;align-items:stretch">' + a.join('') + '</div>';
+  else if (it.status !== 'Tayang') h += '<div class="muted">Tahap ini dikerjakan oleh ' + esc(w || '-') + '. Ganti "Saya" di kanan atas untuk mencoba sebagai orang lain.</div>';
+  if (it.log && it.log.length) h += '<h2>Riwayat</h2><div class="log">' + it.log.map(function (l) { return '<div><b>' + esc(l.who) + '</b> · ' + esc(l.text) + '<br><span class="muted">' + esc(l.at) + '</span></div>'; }).join('') + '</div>';
+  if (canEdit) h += '<div><button class="btn sm warn" data-act="del">Hapus konten</button></div>';
+  panel(h, function (p) {
+    var due = p.querySelector('#i-due'), ld = p.querySelector('#i-load');
+    function upd() { if (!due || !ld) return; var n = editorLoad()[due.value] || 0; ld.textContent = n + ' dari ' + S.cap + (n >= S.cap ? ' · penuh, Kevin akan diberi tahu' : ''); ld.style.color = n >= S.cap ? 'var(--warn)' : ''; }
+    if (due) { due.addEventListener('change', upd); upd(); }
+    p.addEventListener('click', function (e) {
+      var s = e.target.closest('[data-savei]'); if (s) { read(p, it); log(it, 'mengubah detail'); save(); render(); toast('Tersimpan'); return; }
+      var b = e.target.closest('[data-act]'); if (!b) return;
+      var k = b.getAttribute('data-act');
+      if (canEdit) read(p, it);
+      if (k === 'toEditor') { it.mode = 'editor'; it.editDue = due.value; it.status = 'Produksi'; it.sentAt = nice(TODAY); log(it, 'kirim ke editor, selesai ' + nice(it.editDue)); toast('Masuk antrean Mugni'); }
+      if (k === 'self') { it.mode = 'sendiri'; it.status = 'Produksi'; log(it, 'dikerjakan sendiri'); toast('Dikerjakan sendiri'); }
+      if (k === 'takeover') { it.mode = 'sendiri'; log(it, 'ambil alih dari editor'); toast('Keluar dari antrean editor'); }
+      if (k === 'toReview') { it.status = 'Review'; it.sentAt = nice(TODAY); log(it, 'kirim ke Kevin untuk review'); toast('Masuk antrean review Kevin'); }
+      if (k === 'approve') { it.status = 'Siap tayang'; log(it, 'disetujui'); toast('Siap tayang'); }
+      if (k === 'revEditor' || k === 'revPic') { var nt = p.querySelector('#i-rev').value.trim(); if (!nt) { p.querySelector('#i-rev').focus(); toast('Tulis catatan revisinya dulu'); return; } it.status = 'Revisi'; it.revTo = k === 'revEditor' ? 'editor' : 'pic'; it.revNote = nt; log(it, 'minta revisi ke ' + (it.revTo === 'editor' ? EDITOR : owner) + ': ' + nt); toast('Revisi dikirim'); }
+      if (k === 'posted') { it.status = 'Tayang'; log(it, 'sudah tayang'); toast('Tercatat tayang'); }
+      if (k === 'del') { S.items = S.items.filter(function (x) { return x !== it; }); save(); close(); render(); toast('Konten dihapus'); return; }
+      save(); close(); render();
+    });
+  });
+}
+function read(p, it) {
+  var g = function (id) { var el = p.querySelector('#' + id); return el ? el.value : undefined; };
+  ['title', 'brand', 'format', 'date', 'time', 'pillar', 'brief'].forEach(function (k) { var v = g('i-' + k); if (v !== undefined) it[k] = k === 'title' ? (v.trim() || it.title) : v; });
+}
+function formNew(o) {
+  o = o || {};
+  var isIdea = o.kind === 'idea', mb = myBrands(S.me), def = o.brand || (S.brand !== 'Saya' && S.brand !== 'Semua' ? S.brand : mb[0] || BRANDS[0].k);
+  var h = '<div class="head"><h1 style="font-size:20px">' + (isIdea ? 'Tulis ide' : o.fromIdea ? 'Pakai ide di content plan' : 'Konten baru') + '</h1><button class="btn sm" data-close aria-label="Tutup">✕</button></div>';
+  h += '<div class="f"><label for="n-title">Judul / ide</label><input id="n-title" value="' + esc(o.title || '') + '" placeholder="Contoh: 3 hal dicek sebelum sewa motor" required></div>';
+  h += '<div class="f2"><div class="f"><label for="n-brand">Brand</label><select id="n-brand">' + opts(BRANDS.map(function (b) { return b.k; }), def) + '</select></div><div class="f"><label for="n-format">Format</label><select id="n-format">' + opts(FORMATS, o.format || 'Reels') + '</select></div></div>';
+  h += '<div class="f2"><div class="f"><label for="n-pillar">Content pillar</label><select id="n-pillar">' + opts(PILLARS, o.pillar || 'Educational') + '</select></div>';
+  h += isIdea ? '<div class="f"><label for="n-source">Sumber ide</label><select id="n-source">' + opts(SOURCES, 'Ide sendiri') + '</select></div></div>' : '<div class="f"><label for="n-date">Tanggal tayang</label><input id="n-date" type="date" value="' + esc(o.date || addDays(TODAY, 3)) + '"></div></div>';
+  h += '<div class="f"><label for="n-note">' + (isIdea ? 'Catatan' : 'Brief singkat') + ' (boleh kosong)</label><textarea id="n-note">' + esc(o.note || '') + '</textarea></div>';
+  h += '<div class="acts"><button class="btn pri" data-ok>' + (isIdea ? 'Simpan ke Content bank' : 'Masukkan ke Content plan') + '</button><button class="btn" data-close>Batal</button></div>';
+  panel(h, function (p) {
+    p.querySelector('#n-title').focus();
+    p.querySelector('[data-ok]').addEventListener('click', function () {
+      var v = function (id) { var el = p.querySelector('#' + id); return el ? el.value.trim() : ''; };
+      if (!v('n-title')) { p.querySelector('#n-title').focus(); toast('Judul belum diisi'); return; }
+      if (isIdea) { S.ideas.unshift({ id: uid(), title: v('n-title'), brand: v('n-brand'), format: v('n-format'), pillar: v('n-pillar'), source: v('n-source'), note: v('n-note'), by: S.me, at: TODAY }); toast('Ide tersimpan di Content bank'); }
+      else {
+        var it = { id: uid(), title: v('n-title'), brand: v('n-brand'), format: v('n-format'), pillar: v('n-pillar'), date: v('n-date'), brief: v('n-note'), status: 'Brief', mode: '', log: [] };
+        log(it, o.fromIdea ? 'dibuat dari Content bank' : 'dibuat'); S.items.push(it);
+        if (o.fromIdea) S.ideas = S.ideas.filter(function (x) { return x.id !== o.fromIdea; });
+        toast('Masuk Content plan ' + nice(it.date));
+      }
+      save(); close(); render();
+    });
+  }, true);
+}
+var cur;
+function panel(html, after, center) {
+  close();
+  cur = document.createElement('div'); cur.className = 'scrim';
+  cur.innerHTML = '<div class="panel' + (center ? ' center' : '') + '" role="dialog" aria-modal="true">' + html + '</div>';
+  document.body.appendChild(cur);
+  cur.addEventListener('click', function (e) { if (e.target === cur || e.target.closest('[data-close]')) close(); });
+  if (after) after(cur.querySelector('.panel'));
+}
+function close() { if (cur) { cur.remove(); cur = null; } }
+document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
+
+/* ---------- render ---------- */
+var VIEWS = [['today', 'Hari ini'], ['plan', 'Content plan'], ['bank', 'Content bank'], ['editor', 'Antrean editor']];
+function render() {
+  var badge = { today: tasksFor(S.me).length, plan: 0, bank: S.ideas.length, editor: S.items.filter(atEditor).length };
+  document.getElementById('tabs').innerHTML = VIEWS.map(function (v) { return '<button class="tab" data-go="' + v[0] + '"' + (S.view === v[0] ? ' aria-current="page"' : '') + '>' + v[1] + (badge[v[0]] ? '<span class="cnt"' + (v[0] === 'bank' ? ' style="background:#067A70"' : '') + '>' + badge[v[0]] + '</span>' : '') + '</button>'; }).join('');
+  var me = document.getElementById('me');
+  me.innerHTML = PEOPLE.map(function (p) { return '<option value="' + p.n + '"' + (p.n === S.me ? ' selected' : '') + '>' + p.n + ' · ' + p.r + '</option>'; }).join('');
+  var h = '<div class="note">Uji coba tahap 1 · mulai dari nol · data tersimpan di browser ini saja, belum di database. <a href="Dashboard.dc.html" style="color:inherit">Lihat rancangan lengkap →</a></div>';
+  h += ({ today: vToday, plan: vPlan, bank: vBank, editor: vEditor }[S.view] || vToday)();
+  document.getElementById('app').innerHTML = h;
+}
+document.getElementById('me').addEventListener('change', function (e) { S.me = e.target.value; save(); render(); });
+document.addEventListener('click', function (e) {
+  if (cur && cur.contains(e.target)) return;
+  var t = e.target.closest('[data-go],[data-open],[data-a],[data-new],[data-brand],[data-wk],[data-use],[data-delidea],[data-cap],[data-prio]'); if (!t) return;
+  var g = function (k) { return t.getAttribute(k); };
+  if (g('data-go')) { S.view = g('data-go'); save(); render(); window.scrollTo(0, 0); return; }
+  if (g('data-open')) { openItem(g('data-open')); return; }
+  if (g('data-a') === 'new') return formNew({});
+  if (g('data-a') === 'idea') return formNew({ kind: 'idea' });
+  if (g('data-new')) return formNew({ date: g('data-new') });
+  if (g('data-brand')) { S.brand = g('data-brand'); save(); render(); return; }
+  if (g('data-wk') !== null) { var v = +g('data-wk'); S.week = v === 0 ? 0 : S.week + v; save(); render(); return; }
+  if (g('data-use')) { var x = S.ideas.filter(function (i) { return i.id === g('data-use'); })[0]; if (x) formNew({ title: x.title, brand: x.brand, format: x.format, pillar: x.pillar, note: x.note, fromIdea: x.id }); return; }
+  if (g('data-delidea')) { S.ideas = S.ideas.filter(function (i) { return i.id !== g('data-delidea'); }); save(); render(); toast('Ide dihapus'); return; }
+  if (g('data-cap')) { S.cap = Math.max(1, S.cap + +g('data-cap')); save(); render(); return; }
+  if (g('data-prio')) { var it = S.items.filter(function (i) { return i.id === g('data-prio'); })[0]; if (it) { it.priority = it.priority === 'Penting' ? '' : 'Penting'; log(it, it.priority ? 'ditandai penting' : 'tanda penting dihapus'); save(); render(); } }
+});
+// pakai nama akun yang login kalau cocok
+var tries = 0, iv = setInterval(function () {
+  var p = window.mkPerson, n = p && (p.nickname || p.name || '');
+  if (n) { var m = PEOPLE.filter(function (x) { return n.toLowerCase().indexOf(x.n.toLowerCase()) === 0; })[0]; if (m && !S._auto) { S.me = m.n; S._auto = 1; save(); render(); } clearInterval(iv); }
+  if (++tries > 20) clearInterval(iv);
+}, 300);
+render();
+})();
+</script>
+</body>
+</html>

@@ -3,7 +3,7 @@
 Modul Marketing Pokama di `pokama.org/marketing`, masih dengan **data contoh**. Menunya terpisah dari Sistem Kerja (KKH), tetapi nanti memakai database yang sama.
 
 - Masuk memakai akun dan sesi Sistem Kerja (`gate.js`, kunci `pokama.session`). Akun Kepala Staf tidak punya akses. Tidak ada file KKH yang diubah.
-- `index.html` mengalihkan ke `Dashboard.dc.html`. Nama halaman lama (Instagram, Konten, WALeads, WAStory, DataInput, Integrasi, TV) dialihkan ke halaman barunya.
+- `index.html` mengalihkan ke `kerja.html` (tahap 1: Hari ini, Content plan, Content bank, Antrean editor; data disimpan di browser, belum di database). Rancangan lengkap tetap ada mulai dari `Dashboard.dc.html`. Nama halaman lama (Instagram, Konten, WALeads, WAStory, DataInput, Integrasi, TV) dialihkan ke halaman barunya.
 - `dc-lite.js` menjalankan halaman (templat `{{…}}`, perulangan, kondisi, event). Tampilan HP ada di CSS tiap halaman.
 - Halaman: Dashboard utama, Hari ini (`Main`), Campaign, Content plan (`MingguDepan`), Content bank (`BankIde`), Analytics IG & TikTok (`Sosial`), Paid ads, KOL, SEO (`Maps`), WA & CS, Halaman CS (HP), Review mingguan (`Hasil`), Laporan & WA, Tim & workload, Input & patokan (`Data`), Brand & positioning.
 - Sumber rancangan ada di `design/marketing/` (format kanvas `.dc.html`). Halaman di sini dibuat dari sumber itu.
