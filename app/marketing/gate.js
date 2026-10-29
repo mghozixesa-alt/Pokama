@@ -36,8 +36,6 @@
     return fresh(s).then(function (v) { return me(v).catch(function (e) { if (e.message !== 'expired') throw e; return auth('token?grant_type=refresh_token', { refresh_token: v.refresh_token }).then(save).then(me); }); });
   }
   function open(person) {
-    // Kepala Staf tidak punya akses ke modul Marketing.
-    if (person && person.role === 'kepala_staf') { showGate('Akun ini tidak punya akses ke Dashboard Marketing.'); return; }
     root.classList.remove('mk-locked');
     var g = document.getElementById('mk-gate'); if (g) g.remove();
     window.mkPerson = person;
