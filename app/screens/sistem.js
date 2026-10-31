@@ -1,4 +1,4 @@
-import { safeUrl, ctx, db, esc, ftime, avatar, nick, modal, field, opts, toast, unitName, unitOpts, isAdmin, isFin, need, chip, logo, ROLE, changePassword, rp, num , callFn } from '../core.js';
+import { shrinkImage, uploadPhoto, SB_URL, safeUrl, ctx, db, esc, ftime, avatar, nick, modal, field, opts, toast, unitName, unitOpts, isAdmin, isFin, need, chip, logo, ROLE, changePassword, rp, num , callFn } from '../core.js';
 
 const CAT = [['strategi', 'Strategi & rencana'], ['proposal', 'Proposal & penawaran'], ['sop', 'SOP & aturan'], ['laporan', 'Laporan'], ['desain', 'Desain & brand'], ['kontrak', 'Kontrak & legal'], ['lainnya', 'Lainnya']];
 const KINDS = ['Dokumen', 'Deck', 'Sheet', 'Desain', 'PDF', 'Folder'];
@@ -53,7 +53,7 @@ async function pengaturan(el, params, reload) {
   <section class="card"><h2>Akun saya</h2><div class="row gap">${avatar(me.id, 56)}<div><b>${esc(me.name)}</b><p class="muted">${esc(me.title || ROLE[me.role])} · ${esc(unitName(me.unit_code))}</p></div></div>
     <div class="kv"><div><span>Email login</span><b>${esc(me.email || '—')}</b></div><div><span>WhatsApp</span><b>${me.phone ? '+' + esc(me.phone) : '—'}</b></div><div><span>Atasan</span><b>${esc(nick(me.boss_id))}</b></div><div><span>Valuer</span><b>${esc(nick(me.valuer1_id))}${me.valuer2_id ? ' · ' + esc(nick(me.valuer2_id)) : ''}</b></div></div>
     <label class="chk ntf"><input type="checkbox" id="ntf" ${pref.notify_email !== false ? 'checked' : ''}><span><b>Kirim notifikasi ke email saya</b><small class="muted">Yang perlu tindakan langsung dikirim, sisanya dirangkum setiap pagi 07.00.</small></span></label>
-    <div class="row gap"><button class="btn" data-a="pw">Ganti password</button>${admin ? '<button class="btn" data-a="mailtest">Kirim email uji</button>' : ''}</div></section>
+    <div class="row gap"><button class="btn" data-a="prof">Ubah nama &amp; foto</button><button class="btn" data-a="pw">Ganti password</button>${admin ? '<button class="btn" data-a="mailtest">Kirim email uji</button>' : ''}</div></section>
   ${GROUPS.map(([g, keys]) => `<section class="card"><h2>${g}</h2><div class="list">${keys.filter(k => k in ctx.settings).map(k => `<div class="li row gap"><span style="flex:1"><b>${esc(ctx.notes[k] || k)}</b></span><span class="b">${esc(show(ctx.settings[k]))}</span>${admin ? `<button class="btn sm" data-k="${k}">Ubah</button>` : ''}</div>`).join('')}</div></section>`).join('')}
   ${!admin ? '<p class="muted small">Aturan diubah oleh Kepala Staf atau CEO.</p>' : ''}`;
   el.querySelector('#ntf').onchange = async (e) => { try { await db.rpc('pk_set_notify', { p_on: e.target.checked }); toast(e.target.checked ? 'Notifikasi email aktif' : 'Notifikasi email dimatikan'); } catch (er) { toast(er.message, 'err'); e.target.checked = !e.target.checked; } };
@@ -61,6 +61,24 @@ async function pengaturan(el, params, reload) {
     const a = e.target.closest('[data-a]'); const k = e.target.closest('[data-k]');
     try {
       if (a && a.dataset.a === 'mailtest') { a.disabled = true; try { const r = await callFn('pk-notify', { mode: 'test' }); toast('Email uji terkirim ke ' + r.to); } catch (er) { toast(er.message === 'Gagal' ? 'Belum terkirim: layanan email belum disambungkan' : er.message, 'err'); } finally { a.disabled = false; } return; }
+      if (a && a.dataset.a === 'prof') {
+        let blob = null, clear = false;
+        document.addEventListener('modal:open', (ev) => { const fm = ev.detail, prev = fm.querySelector('[data-prev]');
+          fm.querySelector('[data-file]').onchange = async (x) => { const fl = x.target.files[0]; if (!fl) return; try { blob = await shrinkImage(fl, 512, .85); clear = false; prev.innerHTML = `<img class="av" src="${URL.createObjectURL(blob)}" alt="" style="width:64px;height:64px">`; } catch (er) { toast('Foto tidak bisa dibaca', 'err'); } };
+          const c = fm.querySelector('[data-clr]'); if (c) c.onclick = () => { blob = null; clear = true; prev.innerHTML = `<span class="av" style="width:64px;height:64px;font-size:23px">${esc((me.code || me.name || '?').slice(0, 2).toUpperCase())}</span>`; };
+        }, { once: true });
+        const r = await modal('Ubah nama & foto', `<div class="row gap" style="align-items:center"><span data-prev>${avatar(me.id, 64)}</span><div class="col" style="gap:6px"><label class="btn sm" style="cursor:pointer">Pilih foto<input type="file" accept="image/*" data-file hidden></label>${me.photo ? '<button type="button" class="btn sm ghost" data-clr>Hapus foto</button>' : ''}</div></div>`
+          + field('Nama lengkap', `<input name="name" class="inp" value="${esc(me.name || '')}">`) + field('Nama panggilan', `<input name="nickname" class="inp" value="${esc(me.nickname || '')}">`, 'Dipakai di KKH, notifikasi, dan dashboard marketing'),
+          { onSubmit: async (f) => {
+            if (!f.name.trim()) throw new Error('Nama belum diisi');
+            let photo = null;
+            if (blob) { const path = me.id + '/' + Date.now() + '.jpg'; await uploadPhoto('pk-avatar', path, blob); photo = SB_URL + '/storage/v1/object/public/pk-avatar/' + path; }
+            else if (clear) photo = '';
+            const out = await db.rpc('pk_set_profile', { p_name: f.name, p_nickname: f.nickname, p_photo: photo });
+            Object.assign(me, { name: out.name, nickname: out.nickname, photo: out.photo }); if (ctx.byId[me.id]) Object.assign(ctx.byId[me.id], { name: out.name, nickname: out.nickname, photo: out.photo });
+          } });
+        if (r) { toast('Profil tersimpan'); location.reload(); }
+      }
       if (a && a.dataset.a === 'pw') { const r = await modal('Ganti password', field('Password baru (min. 8 karakter)', '<input type="password" name="p1" class="inp" autocomplete="new-password">') + field('Ulangi', '<input type="password" name="p2" class="inp" autocomplete="new-password">'),
         { onSubmit: async (f) => { if ((f.p1 || '').length < 8) throw new Error('Minimal 8 karakter'); if (f.p1 !== f.p2) throw new Error('Password tidak sama'); await changePassword(f.p1); } });
         if (r) toast('Password diganti'); }

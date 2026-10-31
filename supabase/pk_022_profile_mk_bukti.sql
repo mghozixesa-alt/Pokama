@@ -1,0 +1,3 @@
+-- Applied via Supabase MCP as migrations pk_022_profile_mk_bukti + pk_022b_bucket_update.
+-- Buckets: pk-avatar (public, folder = pk_me()), mku-bukti (private, screenshot live; read for all staff).
+-- RPC pk_set_profile(p_name, p_nickname, p_photo): user updates own name/nickname/photo (photo must be in pk-avatar/<own id>/).

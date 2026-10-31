@@ -203,6 +203,63 @@ main > header.ph .btn.pri{background:#09BEAF !important;border-color:#09BEAF !im
  main > header.ph{padding:0 !important}
  main > header.ph > div:first-child > span:first-child{display:none}
 }
+
+/* rev3: preview, papan 15 hari, jurnal, media partner */
+.panel > *{flex-shrink:0}
+.panel{padding-bottom:calc(48px + env(safe-area-inset-bottom))}
+.panel h1{overflow-wrap:anywhere}
+.pvh{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.pv{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 14px;background:#F7F8FA;border:1px solid #E3E6EB;border-radius:12px;padding:12px}
+.pv > div{display:flex;flex-direction:column;gap:2px;min-width:0}
+.pv span{font-size:11.5px;font-weight:800;color:#5B6573}
+.pv b{color:#1D3149;overflow-wrap:anywhere;font-size:13.5px}
+.pv code{font-family:ui-monospace,Menlo,monospace;background:#EAF8F6;color:#067A70;border-radius:6px;padding:1px 6px}
+.pvtext{white-space:pre-wrap;overflow-wrap:anywhere;background:#F7F8FA;border:1px solid #E3E6EB;border-radius:10px;padding:10px 12px;color:#1F2933}
+.shots{display:flex;gap:8px;flex-wrap:wrap}
+.shots img{width:88px;height:88px;object-fit:cover;border-radius:10px;border:1px solid #E3E6EB;cursor:zoom-in;background:#F3F5F8}
+.k{min-width:0;overflow:hidden}
+.k .t,.k .m{overflow-wrap:anywhere;word-break:break-word;min-width:0}
+.k .m{display:block}
+.day{min-width:0}
+.strip{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(200px,1fr);gap:8px;overflow-x:auto;padding-bottom:8px;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch}
+.strip .day{scroll-snap-align:start}
+.strip .day.past{background:#F1F2F5}
+.strip .day.past .day-h b{color:#5B6573}
+.isist{display:flex;align-items:center;gap:12px;flex-wrap:wrap;border:1px solid #F2D9A0;background:#FFFBEF;border-radius:14px;padding:12px 14px}
+.isist.ok{border-color:#BFE9E3;background:#F0FBF9}
+.isist .grow{flex:1 1 240px;display:flex;flex-direction:column;min-width:0}
+.isist .m{font-size:12.5px;color:#5B6573}
+.isibar{position:sticky;bottom:12px;z-index:5;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;background:#FFFFFF;border:1px solid #E3E6EB;border-radius:14px;padding:10px 14px;box-shadow:0 6px 20px rgba(29,49,73,.12)}
+.jwrap{overflow-x:auto}
+.jt{width:100%;border-collapse:collapse;min-width:720px}
+.jt th{font-size:11.5px;font-weight:800;color:#5B6573;text-align:left;padding:6px 6px;border-bottom:1px solid #E3E6EB;white-space:nowrap}
+.jt td{padding:5px 6px;vertical-align:middle}
+.jt tr.r1 td{border-top:1px solid #EEF0F3}
+.jt td.jb{white-space:nowrap;color:#1D3149}
+.jt td.jp{white-space:nowrap;font-size:12.5px;color:#3B4250}
+.jt td input{min-width:80px}
+.jt .mob-only{display:none}
+.mpc{text-align:left;font-family:inherit;cursor:pointer;background:#FFFFFF;border-left:4px solid var(--c,#A9B4C2)}
+.mpc:hover{border-color:#BFE9E3;border-left-color:var(--c,#A9B4C2)}
+@media (max-width: 860px){
+ .strip{grid-auto-flow:row;grid-auto-columns:auto;overflow:visible}
+ .strip .day.past.kosong{display:none}
+ .jt{min-width:0}
+ .jt thead{display:none}
+ .jt,.jt tbody{display:block}
+ .jt tr{display:grid;grid-template-columns:1fr 1fr;gap:8px;border:1px solid #E3E6EB;border-radius:12px;padding:10px;margin-bottom:8px}
+ .jt tr.r1 td{border-top:0}
+ .jt td{padding:0;display:flex;flex-direction:column;gap:3px;min-width:0}
+ .jt td[data-l]:not(.jb)::before{content:attr(data-l);font-size:11.5px;font-weight:800;color:#5B6573}
+ .jt td.jb{grid-column:1/-1;flex-direction:row;align-items:center;white-space:normal}
+ .jt td.jp{display:none}
+ .jt .jpm{margin-left:auto;font-weight:800;color:#1D3149}
+ .jt td.jst{grid-column:1/-1;flex-direction:row}
+ .jt .mob-only{display:inline}
+ .jt td input{min-width:0}
+ .pv{grid-template-columns:1fr 1fr}
+ .isibar{bottom:76px}
+}
 </style>
 <link rel="stylesheet" href="gate.css">
 <script src="gate.js"></script>
@@ -237,18 +294,20 @@ main > header.ph .btn.pri{background:#09BEAF !important;border-color:#09BEAF !im
 <div style="display: flex; flex-direction: column; gap: 1px;">
 <span style="font-size: 10.5px; font-weight: 800; letter-spacing: 0.1em; color: #8A94A3; padding: 0 10px 5px;">CHANNEL</span>
 <a href="kerja.html#kol" data-view="kol" data-roles="head pic ks" style="display: flex; align-items: center; gap: 10px; min-height: 36px; padding: 0 10px; border-radius: 9px; text-decoration: none; font-size: 13.5px; font-weight: 600; color: #3B4250;"><span data-ic style="display: inline-flex; color: #8A94A3;"><svg aria-hidden="true" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.5 6.7 19.4l1.2-6L3.4 9.3l6-.7z"></path></svg></span><span style="flex-grow: 1;">Pipeline KOL</span><span data-badge="kol"></span></a>
+<a href="kerja.html#mp" data-view="mp" data-roles="head pic ks" style="display: flex; align-items: center; gap: 10px; min-height: 36px; padding: 0 10px; border-radius: 9px; text-decoration: none; font-size: 13.5px; font-weight: 600; color: #3B4250;"><span data-ic style="display: inline-flex; color: #8A94A3;"><svg aria-hidden="true" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l18-8-8 18-2-8-8-2z"></path></svg></span><span style="flex-grow: 1;">Media partner</span><span data-badge="mp"></span></a>
 <a href="kerja.html#wa" data-view="wa" data-roles="head pic cs ks" style="display: flex; align-items: center; gap: 10px; min-height: 36px; padding: 0 10px; border-radius: 9px; text-decoration: none; font-size: 13.5px; font-weight: 600; color: #3B4250;"><span data-ic style="display: inline-flex; color: #8A94A3;"><svg aria-hidden="true" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H8l-4 4z"></path></svg></span><span style="flex-grow: 1;">Laporan admin WA</span><span data-badge="wa"></span></a>
 </div>
 <div style="display: flex; flex-direction: column; gap: 1px;">
 <span style="font-size: 10.5px; font-weight: 800; letter-spacing: 0.1em; color: #8A94A3; padding: 0 10px 5px;">ANALITIK</span>
 <a href="kerja.html#ig" data-view="ig" data-roles="head pic ks" style="display: flex; align-items: center; gap: 10px; min-height: 36px; padding: 0 10px; border-radius: 9px; text-decoration: none; font-size: 13.5px; font-weight: 600; color: #3B4250;"><span data-ic style="display: inline-flex; color: #8A94A3;"><svg aria-hidden="true" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4zM12 8.5a3.5 3.5 0 1 0 0 7a3.5 3.5 0 1 0 0-7zM17 7h.01"></path></svg></span><span style="flex-grow: 1;">IG &amp; TikTok</span><span data-badge="ig"></span></a>
+<a href="kerja.html#hasil" data-view="hasil" data-roles="head pic ks" style="display: flex; align-items: center; gap: 10px; min-height: 36px; padding: 0 10px; border-radius: 9px; text-decoration: none; font-size: 13.5px; font-weight: 600; color: #3B4250;"><span data-ic style="display: inline-flex; color: #8A94A3;"><svg aria-hidden="true" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V9M10 19V5M16 19v-7M22 19H2"></path></svg></span><span style="flex-grow: 1;">Hasil per konten</span><span data-badge="hasil"></span></a>
 <a href="kerja.html#ads" data-view="ads" data-roles="head ks" style="display: flex; align-items: center; gap: 10px; min-height: 36px; padding: 0 10px; border-radius: 9px; text-decoration: none; font-size: 13.5px; font-weight: 600; color: #3B4250;"><span data-ic style="display: inline-flex; color: #8A94A3;"><svg aria-hidden="true" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11v2a1 1 0 0 0 1 1h3l5 4V6L7 10H4a1 1 0 0 0-1 1zM16 8a5 5 0 0 1 0 8"></path></svg></span><span style="flex-grow: 1;">Paid ads</span><span data-badge="ads"></span></a>
 <a href="kerja.html#seo" data-view="seo" data-roles="head ks" style="display: flex; align-items: center; gap: 10px; min-height: 36px; padding: 0 10px; border-radius: 9px; text-decoration: none; font-size: 13.5px; font-weight: 600; color: #3B4250;"><span data-ic style="display: inline-flex; color: #8A94A3;"><svg aria-hidden="true" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4a7 7 0 1 0 0 14a7 7 0 1 0 0-14zM21 21l-5-5"></path></svg></span><span style="flex-grow: 1;">SEO</span><span data-badge="seo"></span></a>
 </div>
 <div style="display: flex; flex-direction: column; gap: 1px;">
 <span style="font-size: 10.5px; font-weight: 800; letter-spacing: 0.1em; color: #8A94A3; padding: 0 10px 5px;">TIM</span>
 <a href="kerja.html#papan" data-view="papan" data-roles="head pic editor cs ks" style="display: flex; align-items: center; gap: 10px; min-height: 36px; padding: 0 10px; border-radius: 9px; text-decoration: none; font-size: 13.5px; font-weight: 600; color: #3B4250;"><span data-ic style="display: inline-flex; color: #8A94A3;"><svg aria-hidden="true" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11a3.5 3.5 0 1 0 0-7a3.5 3.5 0 1 0 0 7zM2.5 20c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5M17 11a2.5 2.5 0 1 0 0-5M17 14.5c2.3 0 4 1.5 4.5 4"></path></svg></span><span style="flex-grow: 1;">Papan progres</span><span data-badge="papan"></span></a>
-<a href="kerja.html#set" data-view="set" data-roles="head" style="display: flex; align-items: center; gap: 10px; min-height: 36px; padding: 0 10px; border-radius: 9px; text-decoration: none; font-size: 13.5px; font-weight: 600; color: #3B4250;"><span data-ic style="display: inline-flex; color: #8A94A3;"><svg aria-hidden="true" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6c0-1.7 3.6-3 8-3s8 1.3 8 3-3.6 3-8 3-8-1.3-8-3zM4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"></path></svg></span><span style="flex-grow: 1;">Pengaturan tim</span><span data-badge="set"></span></a>
+<a href="kerja.html#set" data-view="set" data-roles="head pic editor cs ks" style="display: flex; align-items: center; gap: 10px; min-height: 36px; padding: 0 10px; border-radius: 9px; text-decoration: none; font-size: 13.5px; font-weight: 600; color: #3B4250;"><span data-ic style="display: inline-flex; color: #8A94A3;"><svg aria-hidden="true" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6c0-1.7 3.6-3 8-3s8 1.3 8 3-3.6 3-8 3-8-1.3-8-3zM4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"></path></svg></span><span style="flex-grow: 1;">Pengaturan</span><span data-badge="set"></span></a>
 </div>
 <div style="margin-top: auto; display: flex; align-items: center; gap: 10px; padding: 14px 12px 0; border-top: 1px solid #E3E6EB;">
 <img src="kevin.jpg" alt="" style="width: 38px; height: 38px; border-radius: 19px; object-fit: cover;">
@@ -313,7 +372,7 @@ function who(it) {
   if (it.status === 'Brief' || it.status === 'Siap tayang') return ownerOf(it);
   if (it.status === 'Produksi') return it.mode === 'editor' ? EDITOR : ownerOf(it);
   if (it.status === 'Revisi') return it.revTo === 'editor' ? EDITOR : ownerOf(it);
-  if (it.status === 'Review') return LEAD;
+  if (it.status === 'Review') return reviewer(it);
   return '';
 }
 function atEditor(it) { return it.mode === 'editor' && (it.status === 'Produksi' || (it.status === 'Revisi' && it.revTo === 'editor')); }
@@ -327,7 +386,7 @@ function toast(t) { var el = document.querySelector('.toast'); if (!el) { el = d
 function whoSel(id) { return '<select id="' + id + '" data-me aria-label="Saya sebagai">' + PEOPLE.map(function (p) { return '<option value="' + p.n + '"' + (p.n === S.me ? ' selected' : '') + '>' + p.n + ' · ' + p.r + '</option>'; }).join('') + '</select>'; }
 function meCard() {
   var nm = WHO ? (WHO.nickname || WHO.name) : 'Uji lokal', pr = PEOPLE.filter(function (p) { return p.n === S.me; })[0];
-  return '<div style="display:flex;align-items:center;gap:10px"><div aria-hidden="true" style="width:36px;height:36px;border-radius:18px;background:#1D3149;color:#FFFFFF;display:flex;align-items:center;justify-content:center;font-weight:900;flex:none">' + esc(nm.charAt(0).toUpperCase()) + '</div><div style="display:flex;flex-direction:column;min-width:0"><b style="font-weight:800">' + esc(nm) + '</b><small style="font-size:12px;color:#5B6573">' + esc(S.me === 'Dita' || S.me === 'Nayla' ? 'PIC akun' : S.me) + '</small></div></div>';
+  return '<a href="#set" style="display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit" title="Ubah nama & foto">' + (WHO ? avHtml(36) : '<div aria-hidden="true" style="width:36px;height:36px;border-radius:18px;background:#1D3149;color:#FFFFFF;display:flex;align-items:center;justify-content:center;font-weight:900;flex:none">' + esc(nm.charAt(0).toUpperCase()) + '</div>') + '<div style="display:flex;flex-direction:column;min-width:0"><b style="font-weight:800">' + esc(nm) + '</b><small style="font-size:12px;color:#5B6573">' + esc(S.me === 'Dita' || S.me === 'Nayla' ? 'PIC akun' : S.me) + '</small></div></a>';
 }
 function header(eyebrow, title, sub, right) {
   var wa = '<button class="btn sm" data-wa title="Salin laporan halaman ini untuk WhatsApp" style="display:inline-flex;align-items:center;gap:6px">' + ic('chat', 15) + (title === 'Dashboard utama' ? 'Salin marketing summary' : 'Salin WA') + '</button>';
@@ -378,14 +437,17 @@ function tasksFor(n) {
   S.items.forEach(function (it) {
     if (it.hold) return;
     var mine = ownerOf(it) === n;
-    if (n === LEAD && it.status === 'Review') t.push({ it: it, do: 'Review konten', why: 'Dari ' + (it.mode === 'editor' ? EDITOR : ownerOf(it)) + ' · tayang ' + nice(it.date), btn: 'Review' });
-    if (n === EDITOR && atEditor(it)) t.push({ it: it, do: it.status === 'Revisi' ? 'Revisi edit' : 'Edit konten', why: 'Diminta ' + ownerOf(it) + ' · selesai ' + nice(it.editDue) + (it.status === 'Revisi' && it.revNote ? ' · catatan Head of Marketing: ' + it.revNote : ''), btn: 'Buka', sort: (it.priority === 'Penting' ? '0' : '1') + (it.editDue || '') });
+    if (it.status === 'Review' && n === reviewer(it)) t.push({ it: it, do: 'Review konten' + (n === LEAD ? '' : ' harian'), why: 'Dari ' + (it.mode === 'editor' ? EDITOR : ownerOf(it)) + ' · tayang ' + nice(it.date), btn: 'Review' });
+    if (n === EDITOR && atEditor(it)) t.push({ it: it, do: it.status === 'Revisi' ? 'Revisi edit' : 'Edit konten', why: 'Diminta ' + ownerOf(it) + ' · selesai ' + nice(it.editDue) + (it.status === 'Revisi' && it.revNote ? ' · catatan reviewer: ' + it.revNote : ''), btn: 'Buka', sort: (it.priority === 'Penting' ? '0' : '1') + (it.editDue || '') });
     if (mine && it.status === 'Brief') t.push({ it: it, do: 'Lengkapi brief, pilih siapa yang edit', why: 'Tayang ' + nice(it.date), btn: 'Buka' });
     if (mine && it.status === 'Produksi' && it.mode === 'sendiri') t.push({ it: it, do: 'Kerjakan konten (edit sendiri)', why: 'Tayang ' + nice(it.date), btn: 'Buka' });
-    if (mine && it.status === 'Revisi' && it.revTo !== 'editor') t.push({ it: it, do: 'Revisi dari Head of Marketing', why: it.revNote || '', btn: 'Buka' });
+    if (mine && it.status === 'Revisi' && it.revTo !== 'editor') t.push({ it: it, do: 'Revisi dari ' + (reviewer(it) === LEAD ? 'Kevin' : reviewer(it)), why: it.revNote || '', btn: 'Buka' });
+    if (mine && it.status === 'Tayang' && it.format !== 'Live TikTok' && !perfHas(it) && it.date <= addDays(TODAY, -3) && it.date >= addDays(TODAY, -30)) t.push({ it: it, do: 'Isi hasil konten', why: 'Tayang ' + nice(it.date) + ' · kode ' + kCode(it), btn: 'Isi' });
     if (mine && it.status === 'Siap tayang' && it.date <= TODAY) t.push({ it: it, do: 'Tayangkan', why: 'Jadwal ' + nice(it.date) + (it.time ? ' ' + it.time : ''), btn: 'Buka' });
   });
   if (n === 'Admin WA' || n === 'Nayla') { var td = reps().filter(function (r) { return r.date === TODAY; }); NUMS.filter(function (x) { return (n === 'Nayla' ? x[1] === 'TripinAja' : x[1] !== 'TripinAja') && !td.some(function (r) { return r.num === x[0]; }); }).forEach(function (x) { t.push({ it: { id: '', brand: x[1], format: 'WA', title: x[0], status: 'Brief' }, wa: 1, do: 'Isi laporan admin WA ' + x[0], why: 'Sebelum 21.00', btn: 'Isi' }); }); }
+  mps().forEach(function (m) { if (mpEnding(m) && (n === LEAD || brand(m.brand).pic === n)) t.push({ it: { id: '', brand: m.brand, format: 'Media partner', title: m.name, status: 'Revisi' }, mp: m.id, do: 'Jatah media partner belum habis', why: 'Periode selesai ' + nice(m.end), btn: 'Buka' }); });
+  if (n === LEAD && !dirOf(weekStart(0))) t.push({ dir: 1, it: { id: '', brand: '', format: 'Arahan', title: 'Arahan minggu ini', status: 'Brief', date: '0' }, do: 'Tulis arahan konten minggu ini', why: 'Strategi awal minggu untuk Dita dan Nayla', btn: 'Tulis' });
   if (n === LEAD) kols().forEach(function (k) { if (kolLate(k)) t.push({ it: { id: '', brand: k.brand, format: 'KOL', title: k.name, status: 'Revisi' }, kol: k.id, do: 'KOL telat tayang, tindak lanjuti', why: 'Jadwal ' + nice(k.date), btn: 'Buka' }); if (kolNeedInsight(k)) t.push({ it: { id: '', brand: k.brand, format: 'KOL', title: k.name, status: 'Produksi' }, kol: k.id, do: 'Isi insight H+7 KOL', why: 'Tayang ' + nice(k.date), btn: 'Buka' }); });
   var yd = addDays(TODAY, -1), mine = n === LEAD ? BRANDS : BRANDS.filter(function (b) { return b.pic === n; });
   var igMiss = mine.filter(function (b) { var x = ((((S.daily || {}).ig || {})[yd] || {}).Instagram || {})[b.k]; return !x || x.reach === undefined || x.reach === ''; });
@@ -413,16 +475,17 @@ function vToday() {
   var posted = wk.filter(function (it) { return it.status === 'Tayang'; }).length;
   var target = me === LEAD || me === EDITOR ? BRANDS.reduce(function (a, b) { return a + b.slot; }, 0) : BRANDS.filter(function (b) { return b.pic === me; }).reduce(function (a, b) { return a + b.slot; }, 0);
   var h = header(longDate(TODAY), 'Tugas saya', me === LEAD ? 'Yang menunggu keputusan dan review Anda, plus konten yang hampir telat tayang.' : me === EDITOR ? 'Antrean edit Anda, urut dari yang penting dan paling dekat tenggatnya.' : 'Tugas dari konten Anda sendiri. Semua diambil dari status di Content plan.',
-    '<button class="btn pri" data-a="new">+ Konten baru</button><button class="btn" data-a="idea">+ Tulis ide</button>' + (me === LEAD || ROLE[me] === 'pic' ? '<a class="btn" href="#isi" style="display:inline-flex;align-items:center;text-decoration:none">Isi jurnal harian</a>' : ''));
+    (me === EDITOR ? '' : '<button class="btn pri" data-a="new">+ Konten baru</button><button class="btn" data-a="idea">+ Tulis ide</button>') + (me === LEAD || ROLE[me] === 'pic' ? '<a class="btn" href="#isi" style="display:inline-flex;align-items:center;text-decoration:none">Isi jurnal harian</a>' : ''));
   h += kpis([
     { label: 'Tugas hari ini', ic: 'list', val: t.length, note: t.length ? 'Kerjakan dari atas' : 'Belum ada tugas', bar: t.length ? ORG : TEAL, nc: t.length ? AMB : '#5B6573' },
-    me === LEAD ? { label: 'Menunggu review', ic: 'review', val: count(function (i) { return i.status === 'Review'; }), note: 'Batas review 1 hari', bar: TEAL } : me === EDITOR ? { label: 'Antrean edit', ic: 'form', val: count(atEditor), note: 'Kapasitas ' + S.cap + ' per hari', bar: TEAL } : { label: 'Menunggu orang lain', ic: 'wait', val: w.length, note: 'Di editor atau Head of Marketing', bar: TEAL },
+    me === LEAD ? { label: 'Menunggu review', ic: 'review', val: count(function (i) { return i.status === 'Review' && reviewer(i) === LEAD; }), note: count(function (i) { return i.status === 'Review' && reviewer(i) !== LEAD; }) + ' konten harian di Dita', bar: TEAL } : me === EDITOR ? { label: 'Antrean edit', ic: 'form', val: count(atEditor), note: 'Kapasitas ' + S.cap + ' per hari', bar: TEAL } : { label: 'Menunggu orang lain', ic: 'wait', val: w.length, note: 'Di editor atau Head of Marketing', bar: TEAL },
     { label: 'Hampir telat tayang', ic: 'alert', val: risk.length, note: risk.length ? 'Tayang hari ini atau besok, belum siap' : 'Aman', bar: risk.length ? '#C2410C' : TEAL, nc: risk.length ? BAD : GOOD },
     { label: 'Tayang minggu ini', ic: 'check', val: posted + ' / ' + target, note: 'Target slot per minggu', pct: target ? posted / target * 100 : 0, bar: TEAL }
   ]);
+  if (ROLE[me] === 'pic') h += dirBox(weekStart(0));
   if (me === LEAD && apprCount()) h += '<a class="row click" href="#appr" style="text-decoration:none;border-color:#BFE9E3;background:#F0FBF9"><span class="ib">' + ic('check') + '</span><div class="grow"><strong>' + apprCount() + ' hal menunggu persetujuan Anda</strong><span class="m">Konten, campaign, dan KOL di satu halaman</span></div><span class="btn sm pri" style="display:inline-flex;align-items:center">Buka Persetujuan</span></a>';
   if (me === LEAD) { var over = overDays(); if (over.length) h += '<div class="row" style="border-color:#E9B999;background:#FFFBF8"><span class="ib" style="background:#FCEBDD;color:#9A3F0A">' + ic('alert') + '</span><div class="grow"><strong>Editor bentrok di ' + over.map(short).join(', ') + '</strong><span class="m">Permintaan ke Editor melebihi kapasitas. Tandai mana yang penting.</span></div><a class="btn sm warn" href="#editor" style="display:inline-flex;align-items:center;text-decoration:none">Atur prioritas</a></div>'; }
-  var body = t.length ? '<div class="list">' + t.map(function (x) { return x.isi ? '<a class="row click" href="#isi" style="text-decoration:none"><span class="ib">' + ic('form') + '</span><div class="grow"><strong>' + esc(x.do) + '</strong><span class="m">' + esc(x.why) + '</span></div><span class="btn sm" style="display:inline-flex;align-items:center">Isi</span></a>' : x.wa ? '<div class="row click" data-a="rep"><span class="ib">' + ic('chat') + '</span><div class="grow"><strong>' + esc(x.do) + '</strong><span class="m">' + esc(x.why) + '</span></div><button class="btn sm" data-a="rep">Isi</button></div>' : x.kol ? '<div class="row click" data-kol="' + x.kol + '"><span class="ib">' + ic('star') + '</span><div class="grow"><strong>' + esc(x.do) + '</strong><span class="m">' + esc(x.it.title) + ' · ' + esc(x.why) + '</span></div><button class="btn sm" data-kol="' + x.kol + '">Buka</button></div>' : rowItem(x.it, x.do, x.why, x.btn, x.camp); }).join('') + '</div>' : empty(me === EDITOR ? 'Belum ada permintaan edit. Konten yang dikirim ke editor akan muncul di sini.' : 'Belum ada tugas. Mulai dari <b>+ Tulis ide</b> atau tambah konten di Content plan.');
+  var body = t.length ? '<div class="list">' + t.map(function (x) { return x.isi ? '<a class="row click" href="#isi" style="text-decoration:none"><span class="ib">' + ic('form') + '</span><div class="grow"><strong>' + esc(x.do) + '</strong><span class="m">' + esc(x.why) + '</span></div><span class="btn sm" style="display:inline-flex;align-items:center">Isi</span></a>' : x.wa ? '<div class="row click" data-a="rep"><span class="ib">' + ic('chat') + '</span><div class="grow"><strong>' + esc(x.do) + '</strong><span class="m">' + esc(x.why) + '</span></div><button class="btn sm" data-a="rep">Isi</button></div>' : x.dir ? '<div class="row click" data-a="dir" data-ws="' + weekStart(0) + '"><span class="ib">' + ic('flag') + '</span><div class="grow"><strong>' + esc(x.do) + '</strong><span class="m">' + esc(x.why) + '</span></div><button class="btn sm" data-a="dir" data-ws="' + weekStart(0) + '">Tulis</button></div>' : x.mp ? '<div class="row click" data-mp="' + x.mp + '"><span class="ib">' + ic('users') + '</span><div class="grow"><strong>' + esc(x.do) + '</strong><span class="m">' + esc(x.it.title) + ' · ' + esc(x.why) + '</span></div><button class="btn sm" data-mp="' + x.mp + '">Buka</button></div>' : x.kol ? '<div class="row click" data-kol="' + x.kol + '"><span class="ib">' + ic('star') + '</span><div class="grow"><strong>' + esc(x.do) + '</strong><span class="m">' + esc(x.it.title) + ' · ' + esc(x.why) + '</span></div><button class="btn sm" data-kol="' + x.kol + '">Buka</button></div>' : rowItem(x.it, x.do, x.why, x.btn, x.camp); }).join('') + '</div>' : empty(me === EDITOR ? 'Belum ada permintaan edit. Konten yang dikirim ke editor akan muncul di sini.' : 'Belum ada tugas. Mulai dari <b>+ Tulis ide</b> atau tambah konten di Content plan.');
   h += '<div class="cols">' + sec('Daftar kerja hari ini', 'list', '', '', body);
   var side = '';
   if (risk.length) side += sec('Hampir telat tayang', 'alert', 'Tayang hari ini atau besok, tapi belum siap.', '', '<div class="list">' + risk.map(function (it) { return rowItem(it, it.title, 'Tayang ' + nice(it.date) + ' · sekarang di ' + (who(it) || '-'), 'Buka'); }).join('') + '</div>');
@@ -434,26 +497,28 @@ function vToday() {
 
 /* ---------- Content plan ---------- */
 function vPlan() {
-  var ws = weekStart(S.week), we = addDays(ws, 6);
+  var ws = weekStart(S.week), we = addDays(ws, 6), c0 = addDays(TODAY, S.week * 7), from = addDays(c0, -7), to = addDays(c0, 7), ro = role() === 'editor' || role() === 'ks';
   var its = S.items.filter(function (it) { return it.format !== 'Live TikTok' && it.date >= ws && it.date <= we && brandOk(it.brand); });
+  var win = S.items.filter(function (it) { return it.format !== 'Live TikTok' && it.date >= from && it.date <= to && brandOk(it.brand); });
   var sb = shownBrands(), target = sb.reduce(function (a, b) { return a + b.slot; }, 0);
   var by = function (s) { return its.filter(function (i) { return i.status === s; }).length; };
-  var nav = '<button class="btn sm" data-wk="-1" aria-label="Minggu sebelumnya">‹</button><span style="font-weight:900;color:#1D3149;align-self:center">' + short(ws) + ' ' + MON[parse(ws).getMonth()] + ' – ' + short(we) + ' ' + MON[parse(we).getMonth()] + '</span><button class="btn sm" data-wk="1" aria-label="Minggu berikutnya">›</button>' + (S.week ? '<button class="btn sm" data-wk="0">Minggu ini</button>' : '');
-  var h = header('Konten organik · per minggu', 'Content plan', 'Konten feed per minggu. Satu kartu = satu konten. Live TikTok punya menu sendiri.', nav);
+  var nav = '<button class="btn sm" data-wk="-1" aria-label="Geser 7 hari ke belakang">‹ 7 hari</button><span style="font-weight:900;color:#1D3149;align-self:center">' + short(from) + ' ' + MON[parse(from).getMonth()] + ' – ' + short(to) + ' ' + MON[parse(to).getMonth()] + '</span><button class="btn sm" data-wk="1" aria-label="Geser 7 hari ke depan">7 hari ›</button>' + (S.week ? '<button class="btn sm" data-wk="0">Hari ini</button>' : '');
+  var h = header('Konten organik · H-7 sampai H+7', 'Content plan', 'Konten feed 7 hari ke belakang sampai 7 hari ke depan. Satu kartu = satu konten, klik untuk preview.' + (ro ? ' Anda hanya bisa melihat.' : ''), nav);
   h += kpis([
-    { label: 'Slot terisi minggu ini', ic: 'cal', val: its.length + ' / ' + target, note: target - its.length > 0 ? (target - its.length) + ' slot masih kosong' : 'Semua slot terisi', pct: target ? its.length / target * 100 : 0, bar: its.length >= target ? TEAL : ORG, nc: its.length >= target ? GOOD : AMB },
+    { label: 'Slot terisi minggu ' + short(ws), ic: 'cal', val: its.length + ' / ' + target, note: target - its.length > 0 ? (target - its.length) + ' slot masih kosong' : 'Semua slot terisi', pct: target ? its.length / target * 100 : 0, bar: its.length >= target ? TEAL : ORG, nc: its.length >= target ? GOOD : AMB },
     { label: 'Belum dikirim (brief)', ic: 'form', val: by('Brief'), note: 'Perlu brief dan pilih editor', bar: by('Brief') ? ORG : TEAL },
     { label: 'Sedang diproduksi', ic: 'time', val: by('Produksi') + by('Revisi'), note: by('Revisi') ? by('Revisi') + ' revisi' : 'Di editor atau PIC', bar: TEAL },
-    { label: 'Menunggu review', ic: 'review', val: by('Review'), note: 'Di Head of Marketing', bar: TEAL },
+    { label: 'Menunggu review', ic: 'review', val: by('Review'), note: its.filter(function (i) { return i.status === 'Review' && reviewer(i) !== LEAD; }).length + ' di Dita · ' + its.filter(function (i) { return i.status === 'Review' && reviewer(i) === LEAD; }).length + ' di Kevin', bar: TEAL },
     { label: 'Siap / sudah tayang', ic: 'check', val: by('Siap tayang') + by('Tayang'), note: by('Tayang') + ' sudah tayang', bar: TEAL }
   ]);
-  var board = brandChips() + '<div class="week">';
-  for (var i = 0; i < 7; i++) {
-    var d = addDays(ws, i), di = its.filter(function (it) { return it.date === d; });
-    board += '<div class="day' + (d === TODAY ? ' today' : '') + (di.length ? '' : ' kosong') + '"><div class="day-h"><b>' + short(d) + '</b><span class="sub" style="flex:1;text-align:right;margin-right:8px">' + (di.length ? di.length + ' konten' : '') + '</span><button class="add-s" data-new="' + d + '">+ Tambah</button></div><div class="day-b">' + di.map(kard).join('') + '<button class="add" data-new="' + d + '">+ Tambah</button></div></div>';
+  h += dirBox(ws);
+  var board = brandChips() + '<div class="strip" data-strip>';
+  for (var i = 0; i <= 14; i++) {
+    var d = addDays(from, i), di = win.filter(function (it) { return it.date === d; }).sort(function (a, b) { return (a.time || '').localeCompare(b.time || ''); });
+    board += '<div class="day' + (d === TODAY ? ' today' : '') + (d < TODAY ? ' past' : '') + (d === c0 ? ' center' : '') + (di.length ? '' : ' kosong') + '"><div class="day-h"><b>' + short(d) + ' ' + MON[parse(d).getMonth()] + '</b><span class="sub" style="flex:1;text-align:right;margin-right:8px">' + (di.length ? di.length + ' konten' : '') + '</span>' + (ro ? '' : '<button class="add-s" data-new="' + d + '">+ Tambah</button>') + '</div><div class="day-b">' + di.map(kard).join('') + (ro ? '' : '<button class="add" data-new="' + d + '">+ Tambah</button>') + '</div></div>';
   }
   board += '</div>';
-  h += sec('Papan minggu ini', 'cal', 'Pilih brand supaya fokus. Hari ini diberi garis hijau.', '', board);
+  h += sec('Papan 15 hari', 'cal', 'Geser ke kiri/kanan untuk melihat H-7 sampai H+7. Hari ini diberi garis hijau. Kode warna = brand.', '', board);
   // per akun + pillar
   var rows = sb.map(function (b) {
     var bi = its.filter(function (i) { return i.brand === b.k; }), n = bi.length, ok = n >= b.slot;
@@ -467,7 +532,7 @@ function vPlan() {
 }
 function kard(it) {
   var b = brand(it.brand), m = it.status === 'Brief' ? 'Belum dikirim' : it.mode === 'editor' ? 'Editor · ' + (it.editDue ? short(it.editDue) : '-') : it.mode === 'sendiri' ? 'Edit sendiri' : '';
-  return '<button class="k" style="--c:' + b.c + '" data-open="' + it.id + '"><span class="t">' + esc(it.title) + '</span><span class="m">' + esc(it.brand) + ' · ' + esc(it.format) + (it.time ? ' · ' + esc(it.time) : '') + '</span>' + (campOf(it.camp) ? '<span class="m" style="color:#1E5AA8">◆ ' + esc(campOf(it.camp).name) + '</span>' : '') + '<span style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">' + itChip(it) + (it.priority === 'Penting' ? '<span class="st" style="background:#FCEBDD;color:#9A3F0A">Penting</span>' : '') + '<span class="m">' + esc(m) + '</span></span>' + (it.ch && it.ch.length ? '<span class="m">' + esc(it.ch.join(' · ')) + (it.caption ? ' · caption ✓' : '') + '</span>' : '') + '</button>';
+  return '<button class="k" style="--c:' + b.c + '" data-open="' + it.id + '"><span class="t">' + esc(it.title) + '</span><span class="m">' + esc(it.brand) + ' · ' + esc(it.format) + (it.time ? ' · ' + esc(it.time) : '') + '</span>' + (campOf(it.camp) ? '<span class="m" style="color:#1E5AA8">◆ ' + esc(campOf(it.camp).name) + '</span>' : '') + '<span style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">' + itChip(it) + (it.priority === 'Penting' ? '<span class="st" style="background:#FCEBDD;color:#9A3F0A">Penting</span>' : '') + '<span class="m">' + esc(m) + '</span></span>' + (it.status === 'Review' ? '<span class="m">Review: ' + esc(reviewer(it) === LEAD ? 'Kevin' : reviewer(it)) + '</span>' : '') + (it.ch && it.ch.length ? '<span class="m">' + esc(it.ch.join(' · ')) + (it.caption ? ' · caption ✓' : '') + '</span>' : '') + (perfHas(it) ? '<span class="m" style="color:#067A70">' + fmt(it.perf.views) + ' views · ' + fmt(it.perf.leads) + ' leads</span>' : '') + '</button>';
 }
 
 /* ---------- Content bank ---------- */
@@ -632,6 +697,8 @@ function waReport(v) {
   var me = S.me, d = nice(TODAY), head = '*Marketing Pokama · ', out = '';
   if (v === 'papan') { var pi = boardItems(); return head + 'Papan progres*\n' + longDate(TODAY) + '\n' + STAGES.filter(function (st) { return st !== 'Posted'; }).map(function (st) { var c = pi.filter(function (i) { return stage(i) === st; }); return '\n*' + st + ' (' + c.length + ')*\n' + (c.length ? c.map(function (i) { return '• ' + i.title + ' · ' + i.brand + ' · ' + short(i.date) + (who(i) ? ' · di ' + who(i) : '') + (late(i) ? ' ⚠️' : ''); }).join('\n') : '• -'); }).join('\n') + '\n\n*Dipegang sekarang*\n' + HOLDERS.map(function (n) { return '• ' + n + ': ' + S.items.filter(function (i) { return who(i) === n; }).length; }).join('\n'); }
   if (v === 'live') { var ws = weekStart(S.lweek || 0), wl = lives().filter(function (i) { return i.date >= ws && i.date <= addDays(ws, 6); }).sort(function (a, b) { return (a.date + (a.time || '')).localeCompare(b.date + (b.time || '')); }); return head + 'Live TikTok*\nMinggu ' + short(ws) + ' ' + MON[parse(ws).getMonth()] + '\n\n' + (wl.length ? wl.map(function (i) { return '• ' + nice(i.date) + ' ' + (i.time || '') + '–' + (i.tend || '') + ' · ' + i.brand + ' · ' + i.title + ' · host ' + (i.host || '-') + ' · ' + (i.team || 'Tim marketing') + (i.status === 'Tayang' ? ' → ' + (+i.lv || 0) + ' penonton, ' + (+i.lc || 0) + ' closing, ' + rpS(i.lo) : ''); }).join('\n') : '• Belum ada jadwal'); }
+  if (v === 'hasil') { var hl = S.items.filter(function (i) { return i.format !== 'Live TikTok' && i.status === 'Tayang' && monthKey(i.date) === aMonth() && perfHas(i); }).sort(function (a, b) { return (+b.perf.leads || 0) - (+a.perf.leads || 0) || (+b.perf.views || 0) - (+a.perf.views || 0); }); return head + 'Hasil per konten · ' + monthName(aMonth()) + '*\n\n' + (hl.length ? hl.slice(0, 20).map(function (i) { var q = i.perf; return '• ' + i.title + ' (' + i.brand + ', ' + short(i.date) + ')\n  ' + fmt(q.views) + ' views · ER ' + pct1(erOf(q)) + '% · ' + fmt(q.leads) + ' leads · ' + fmt(q.close) + ' closing'; }).join('\n') : '• Belum ada hasil yang diisi'); }
+  if (v === 'mp') { return head + 'Media partner*\n' + nice(TODAY) + '\n\n' + (mps().length ? mps().map(function (m) { return '*' + m.name + '* (' + m.brand + ') · ' + m.st + '\nJatah tayang: ' + mpUsed(m, 'dapat') + '/' + (+m.adQ || 0) + (isBarter(m) ? '\nBalasan kita: ' + mpUsed(m, 'beri') + '/' + (+m.retQ || 0) + (m.retWhat ? ' ' + m.retWhat : '') : '\nBiaya: ' + rpS(m.fee) + ' · ' + (m.paid || 'Belum dibayar')) + (m.end ? '\nSampai ' + nice(m.end) : ''); }).join('\n\n') : 'Belum ada media partner.'); }
   if (v === 'foot') { return head + 'Footage*\n\n' + (foots().length ? foots().slice(0, 30).map(function (f) { return '• ' + f.title + ' (' + f.brand + ', ' + f.type + ')\n  ' + f.link; }).join('\n') : '• Belum ada'); }
   if (v === 'today') {
     var t = tasksFor(me), w = me === LEAD || me === EDITOR ? [] : waitingFor(me);
@@ -683,9 +750,14 @@ function waPanel(text, title) {
     });
   }, true);
 }
-var WA_TITLE = { papan: 'Papan progres', live: 'Laporan Live TikTok', foot: 'Daftar footage',  appr: 'Persetujuan', isi: 'Data harian', set: 'Pengaturan tim', dash: 'Marketing summary', tim: 'Laporan kerja tim', ig: 'Laporan IG & TikTok', ads: 'Laporan Paid ads', seo: 'Laporan SEO', kol: 'Laporan KOL', wa: 'Laporan admin WA', today: 'Laporan harian', plan: 'Laporan content plan', bank: 'Laporan content bank', editor: 'Laporan antrean editor', campaign: 'Laporan campaign' };
+var WA_TITLE = { hasil: 'Hasil per konten', mp: 'Media partner', papan: 'Papan progres', live: 'Laporan Live TikTok', foot: 'Daftar footage',  appr: 'Persetujuan', isi: 'Data harian', set: 'Pengaturan tim', dash: 'Marketing summary', tim: 'Laporan kerja tim', ig: 'Laporan IG & TikTok', ads: 'Laporan Paid ads', seo: 'Laporan SEO', kol: 'Laporan KOL', wa: 'Laporan admin WA', today: 'Laporan harian', plan: 'Laporan content plan', bank: 'Laporan content bank', editor: 'Laporan antrean editor', campaign: 'Laporan campaign' };
 
 /* ---------- Pipeline KOL ---------- */
+var KCAT = ['Nano (1–10 rb)', 'Micro (10–100 rb)', 'Macro (100 rb–1 jt)', 'Mega (> 1 jt)'];
+var NICHE = ['Travel & wisata', 'Otomotif', 'Lifestyle', 'Kuliner', 'Teknologi & gadget', 'Keluarga', 'Kampus / pelajar', 'Lokal Garut', 'Lainnya'];
+var KPAY = ['Paid', 'Barter', 'Paid + barter'];
+function folS(x) { var n = +x; if (!n) return x || ''; return n >= 1e6 ? pct1(n / 1e6) + ' jt' : n >= 1000 ? pct1(n / 1000) + ' rb' : String(n); }
+function catOf(n) { n = +n || 0; return !n ? '' : n < 10000 ? KCAT[0] : n < 100000 ? KCAT[1] : n < 1000000 ? KCAT[2] : KCAT[3]; }
 var KST = ['Shortlist', 'Negosiasi', 'Deal', 'Produksi', 'Tayang', 'Insight H+7', 'Dibayar'];
 var KNEXT = { Shortlist: 'Mulai negosiasi', Negosiasi: 'Deal', Deal: 'Konten diproduksi', Produksi: 'Sudah tayang', Tayang: 'Isi insight H+7', 'Insight H+7': 'Tandai dibayar' };
 function kols() { S.kols = S.kols || []; return S.kols; }
@@ -701,14 +773,14 @@ function vKol() {
     { label: 'KOL berjalan', ic: 'star', val: ks.filter(function (k) { return k.st !== 'Dibayar'; }).length, note: ks.filter(function (k) { return k.st === 'Shortlist'; }).length + ' masih shortlist', bar: TEAL },
     { label: 'Telat tayang', ic: 'clock', val: ks.filter(kolLate).length, note: 'Lewat tanggal tayang', bar: ks.filter(kolLate).length ? '#C2410C' : TEAL, nc: ks.filter(kolLate).length ? BAD : GOOD },
     { label: 'Menunggu insight H+7', ic: 'alert', val: ks.filter(kolNeedInsight).length, note: 'Tanpa insight, ROAS tidak terhitung', bar: ks.filter(kolNeedInsight).length ? ORG : TEAL, nc: ks.filter(kolNeedInsight).length ? AMB : '#5B6573' },
-    { label: 'Biaya KOL (deal)', ic: 'money', val: rpS(spent), note: 'Termasuk barter', bar: TEAL },
+    { label: 'Biaya KOL (deal)', ic: 'money', val: rpS(spent), note: ks.filter(function (k) { return KST.indexOf(k.st) >= 2 && (k.pay || 'Paid') !== 'Paid'; }).length + ' barter · sisanya paid', bar: TEAL },
     { label: 'ROAS KOL', ic: 'chart', val: fe ? (Math.round(om / fe * 10) / 10).toString().replace('.', ',') + 'x' : '—', note: 'Batas aman 8x', bar: fe && om / fe < 8 ? ORG : TEAL, nc: fe && om / fe < 8 ? AMB : GOOD }
   ]);
   var board = '<div class="kolboard" style="display:grid;grid-template-columns:repeat(7,minmax(150px,1fr));gap:8px;overflow-x:auto">' + KST.map(function (st) {
     var it = ks.filter(function (k) { return k.st === st; });
     return '<div class="day' + (it.length ? '' : ' kosongk') + '"><div class="day-h"><b>' + st + '</b><span class="sub">' + (it.length || '') + '</span></div><div class="day-b">' + it.map(function (k) {
       var b = brand(k.brand), warn = kolLate(k) ? 'Telat tayang' : kolNeedInsight(k) ? 'Isi insight' : '';
-      return '<button class="k" style="--c:' + b.c + '" data-kol="' + k.id + '"><span class="t">' + esc(k.name) + '</span><span class="m">' + esc(k.brand) + ' · ' + esc(k.plat || '') + (k.fol ? ' · ' + esc(k.fol) : '') + '</span><span class="m">' + rpS(k.fee) + (k.date ? ' · tayang ' + short(k.date) : '') + '</span>' + (warn ? '<span class="st" style="background:#FCEBDD;color:#9A3F0A">' + warn + '</span>' : '') + '</button>';
+      return '<button class="k" style="--c:' + b.c + '" data-kol="' + k.id + '"><span class="t">' + esc(k.name) + '</span><span class="m">' + esc(k.brand) + ' · ' + esc(k.plat || '') + (k.fol ? ' · ' + esc(folS(k.fol)) : '') + '</span>' + (k.cat || k.niche ? '<span class="m">' + esc([String(k.cat || '').split(' (')[0], k.niche].filter(Boolean).join(' · ')) + '</span>' : '') + '<span class="m">' + rpS(k.fee) + ' · ' + esc(k.pay || 'Paid') + (k.date ? ' · tayang ' + short(k.date) : '') + '</span>' + (warn ? '<span class="st" style="background:#FCEBDD;color:#9A3F0A">' + warn + '</span>' : '') + '</button>';
     }).join('') + '</div></div>';
   }).join('') + '</div>';
   h += sec('Pipeline', 'time', 'Klik kartu untuk detail dan pindah ke tahap berikutnya.', '', ks.length ? board : empty(head ? 'Belum ada KOL. Klik <b>+ Tambah KOL</b>.' : 'Belum ada KOL. KOL dikelola Head of Marketing.'));
@@ -719,15 +791,18 @@ function kolCode(k) { var b = (k.brand || '').replace(/[^A-Za-z]/g, '').slice(0,
 function kolForm(k) {
   var isNew = !k, head = S.me === LEAD; k = k || { st: 'Shortlist', brand: BRANDS[0].k, plat: 'Instagram' };
   var dis = head ? '' : ' disabled';
-  var f = function (id, l, v, t, ph) { return '<div class="f"><label for="' + id + '">' + l + '</label><input id="' + id + '" type="' + (t || 'text') + '" value="' + esc(v == null ? '' : v) + '" placeholder="' + (ph || '') + '"' + dis + '></div>'; };
+  var f = function (id, l, v, t, ph) { var nm = t === 'num' || t === 'number'; return '<div class="f"><label for="' + id + '">' + l + '</label><input id="' + id + '" type="' + (nm ? 'text' : t || 'text') + '"' + (nm ? ' inputmode="decimal" data-num' : '') + ' value="' + esc(v == null ? '' : v) + '" placeholder="' + (ph || '') + '"' + dis + '></div>'; };
   var h = '<div style="display:flex;justify-content:space-between;gap:10px"><div><span class="sub">' + (isNew ? 'KOL baru' : 'Tahap: ' + k.st + ' · kode ' + kolCode(k)) + '</span><h1>' + (isNew ? 'Tambah KOL' : esc(k.name)) + '</h1></div><button class="btn sm" data-close aria-label="Tutup">✕</button></div>';
   if (!isNew) h += '<div class="flow">' + KST.map(function (s, i) { var idx = KST.indexOf(k.st); return '<span class="' + (i < idx ? 'done' : i === idx ? 'on' : '') + '">' + s + '</span>'; }).join('') + '</div>';
   h += f('k-name', 'Nama / akun KOL', k.name, 'text', 'Contoh: @travelvlogger.bdg');
   h += '<div class="f2"><div class="f"><label for="k-brand">Akun yang dipromosikan</label><select id="k-brand"' + dis + '>' + opts(BRANDS.map(function (b) { return b.k; }), k.brand) + '</select></div><div class="f"><label for="k-plat">Platform</label><select id="k-plat"' + dis + '>' + opts(['Instagram', 'TikTok', 'YouTube'], k.plat) + '</select></div></div>';
-  h += '<div class="f2">' + f('k-fol', 'Followers', k.fol, 'text', 'Contoh: 24 rb') + f('k-fee', 'Fee / nilai barter (Rp)', k.fee, 'number', 'Contoh: 600000') + '</div>';
+  h += '<div class="f"><label for="k-link">Link akun KOL</label><input id="k-link" value="' + esc(k.link || '') + '" placeholder="https://instagram.com/namakol"' + dis + '>' + linkOut(k.link) + '</div>';
+  h += '<div class="f2">' + f('k-fol', 'Followers', /^\d+(\.\d+)?$/.test(String(k.fol || '')) ? k.fol : '', 'num', k.fol && !/^\d+(\.\d+)?$/.test(String(k.fol)) ? 'Sebelumnya: ' + esc(k.fol) : 'Contoh: 24.500') + '<div class="f"><label for="k-cat">Kategori KOL</label><select id="k-cat"' + dis + '><option value="">Pilih kategori…</option>' + opts(KCAT, k.cat || catOf(k.fol)) + '</select></div></div>';
+  h += '<div class="f2"><div class="f"><label for="k-niche">Niche</label><select id="k-niche"' + dis + '><option value="">Pilih niche…</option>' + opts(NICHE, k.niche) + '</select></div><div class="f"><label for="k-pay">Status kerja sama</label><select id="k-pay"' + dis + '>' + opts(KPAY, k.pay || 'Paid') + '</select></div></div>';
+  h += f('k-fee', (k.pay === 'Barter' ? 'Nilai barter (Rp)' : 'Fee / nilai (Rp)'), k.fee, 'num', 'Contoh: 600.000');
   h += '<div class="f2">' + f('k-date', 'Tanggal tayang', k.date, 'date') + '<div class="f"><label for="k-camp">Campaign</label><select id="k-camp"' + dis + '>' + campOptions('', k.camp) + '</select></div></div>';
   h += '<div class="f"><label for="k-note">Catatan (brief, deliverable, kontak)</label><textarea id="k-note"' + dis + '>' + esc(k.note || '') + '</textarea></div>';
-  if (!isNew && KST.indexOf(k.st) >= 4) h += '<div class="box"><h2>Insight H+7</h2><span class="sub">Leads dan closing dihitung dari kode <b>' + kolCode(k) + '</b> di WA. Isi views dari screenshot insight KOL.</span><div class="f2">' + f('k-views', 'Views', k.views, 'number') + f('k-leads', 'Leads (chat berkode)', k.leads, 'number') + '</div><div class="f2">' + f('k-close', 'Closing', k.close, 'number') + f('k-omzet', 'Omzet (Rp)', k.omzet, 'number') + '</div></div>';
+  if (!isNew && KST.indexOf(k.st) >= 4) h += '<div class="box"><h2>Insight H+7</h2><span class="sub">Leads dan closing dihitung dari kode <b>' + kolCode(k) + '</b> di WA. Isi views dari screenshot insight KOL.</span><div class="f2">' + f('k-views', 'Views', k.views, 'num') + f('k-leads', 'Leads (chat berkode)', k.leads, 'num') + '</div><div class="f2">' + f('k-close', 'Closing', k.close, 'num') + f('k-omzet', 'Omzet (Rp)', k.omzet, 'num') + '</div></div>';
   var a = [];
   if (head) a.push('<button class="btn" data-ks="save">' + (isNew ? 'Simpan ke shortlist' : 'Simpan') + '</button>');
   if (head && !isNew && KNEXT[k.st]) a.push('<button class="btn pri" data-ks="next">' + KNEXT[k.st] + ' →</button>');
@@ -736,13 +811,17 @@ function kolForm(k) {
   h += '<div class="acts">' + a.join('') + '</div>';
   if (!isNew && k.log && k.log.length) h += '<h2>Riwayat</h2><div class="log">' + k.log.map(function (l) { return '<div><b>' + esc(l.who) + '</b> · ' + esc(l.text) + '<br><span class="sub">' + esc(l.at) + '</span></div>'; }).join('') + '</div>';
   panel(h, function (p) {
+    var fo = p.querySelector('#k-fol'), ca = p.querySelector('#k-cat'), py = p.querySelector('#k-pay'), fe = p.querySelector('label[for="k-fee"]');
+    if (fo && ca) fo.addEventListener('input', function () { if (!ca.dataset.touched) ca.value = catOf(fo.value); });
+    if (ca) ca.addEventListener('change', function () { ca.dataset.touched = 1; });
+    if (py && fe) py.addEventListener('change', function () { fe.textContent = py.value === 'Barter' ? 'Nilai barter (Rp)' : 'Fee / nilai (Rp)'; });
     p.addEventListener('click', function (e) {
       var b = e.target.closest('[data-ks]'); if (!b) return;
       var x = b.getAttribute('data-ks'), v = function (id) { var el = p.querySelector('#' + id); return el ? el.value.trim() : undefined; };
-      if (x === 'wa') { waPanel('*KOL ' + k.name + '* (' + k.brand + ')\nTahap: ' + k.st + '\nFee: ' + rpS(k.fee) + (k.date ? '\nTayang: ' + nice(k.date) : '') + '\nKode: ' + kolCode(k) + (k.leads != null && k.leads !== '' ? '\nHasil: ' + (k.leads || 0) + ' leads, ' + (k.close || 0) + ' closing, ' + rpS(k.omzet) + ' · ROAS ' + (Math.round(roas(k) * 10) / 10).toString().replace('.', ',') + 'x' : ''), 'Laporan KOL'); return; }
-      if (x === 'del') { S.kols = kols().filter(function (y) { return y !== k; }); save(); close(); render(); toast('KOL dihapus'); return; }
+      if (x === 'wa') { waPanel('*KOL ' + k.name + '* (' + k.brand + ')\nTahap: ' + k.st + (k.link ? '\nAkun: ' + k.link : '') + (k.cat ? '\nKategori: ' + k.cat + (k.niche ? ' · ' + k.niche : '') : '') + '\nFee: ' + rpS(k.fee) + ' (' + (k.pay || 'Paid') + ')' + (k.date ? '\nTayang: ' + nice(k.date) : '') + '\nKode: ' + kolCode(k) + (k.leads != null && k.leads !== '' ? '\nHasil: ' + (k.leads || 0) + ' leads, ' + (k.close || 0) + ' closing, ' + rpS(k.omzet) + ' · ROAS ' + (Math.round(roas(k) * 10) / 10).toString().replace('.', ',') + 'x' : ''), 'Laporan KOL'); return; }
+      if (x === 'del') { if (!b.dataset.sure) { b.dataset.sure = 1; b.textContent = 'Yakin? Klik lagi'; return; } S.kols = kols().filter(function (y) { return y !== k; }); save(); close(); render(); toast('KOL dihapus'); return; }
       if (!v('k-name')) { p.querySelector('#k-name').focus(); toast('Nama KOL belum diisi'); return; }
-      Object.assign(k, { name: v('k-name'), brand: v('k-brand'), plat: v('k-plat'), fol: v('k-fol'), fee: +v('k-fee') || 0, date: v('k-date'), camp: v('k-camp'), note: v('k-note') });
+      Object.assign(k, { name: v('k-name'), link: v('k-link'), cat: v('k-cat'), niche: v('k-niche'), pay: v('k-pay'), brand: v('k-brand'), plat: v('k-plat'), fol: v('k-fol') || (/^\d/.test(String(k.fol || '')) ? '' : k.fol), fee: +v('k-fee') || 0, date: v('k-date'), camp: v('k-camp'), note: v('k-note') });
       ['views', 'leads', 'close', 'omzet'].forEach(function (q) { var y = v('k-' + q); if (y !== undefined) k[q] = y; });
       if (isNew) { k.id = uid(); k.log = []; kols().push(k); log(k, 'masuk shortlist'); }
       if (x === 'next') {
@@ -836,7 +915,8 @@ function vTim() {
 }
 function vSet() {
   var head = S.me === LEAD;
-  var h = header('Pengaturan · tim marketing', 'Pengaturan tim', 'Siapa PIC tiap akun, berapa target slot per minggu, dan kapasitas editor. Hanya Head of Marketing yang bisa mengubah.', '');
+  var h = header('Pengaturan', 'Pengaturan', 'Akun Anda, dan pembagian akun serta target slot tim marketing (diubah Head of Marketing).', '');
+  h += profBox();
   var dis = head ? '' : ' disabled';
   var set = '<div style="overflow-x:auto"><table class="tbl"><thead><tr><th>Akun</th><th>PIC akun</th><th style="text-align:right">Target slot per minggu</th></tr></thead><tbody>' + BRANDS.map(function (b, i) { return '<tr><td><span class="dot" style="background:' + b.c + ';margin-right:6px"></span><b>' + esc(b.k) + '</b></td><td><select data-tset="pic" data-i="' + i + '"' + dis + ' style="height:34px;border:1px solid #E3E6EB;border-radius:8px;padding:0 8px;font-family:inherit;font-weight:700">' + opts(PICS, b.pic) + '</select></td><td style="text-align:right"><input type="text" inputmode="decimal" data-num min="0" max="14" data-tset="slot" data-i="' + i + '" value="' + b.slot + '"' + dis + ' style="width:70px;height:34px;border:1px solid #E3E6EB;border-radius:8px;padding:0 8px;font-family:inherit;font-weight:700;text-align:right"></td></tr>'; }).join('') + '</tbody></table></div>' +
     '<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><b style="color:#1D3149">Kapasitas editor per hari</b><input type="text" inputmode="decimal" data-num min="1" max="10" data-tset="cap" value="' + S.cap + '"' + dis + ' style="width:70px;height:34px;border:1px solid #E3E6EB;border-radius:8px;padding:0 8px;font-family:inherit;font-weight:700;text-align:right"><span class="sub">' + (head ? 'Perubahan langsung tersimpan.' : 'Hanya Head of Marketing yang bisa mengubah.') + '</span></div>' +
@@ -900,23 +980,35 @@ function isiBtn() { return (S.me === LEAD || role() === 'pic') ? '<a class="btn 
 
 /* ---------- Kerja · Isi data harian ---------- */
 function vIsi() {
-  var d = ISID || addDays(TODAY, -1), head = S.me === LEAD, pic = role() === 'pic', plat = S.plat || 'Instagram';
-  var h = header('Kerja · angka kemarin', 'Jurnal harian', 'Isi angka kemarin dari Insights IG/TikTok dan Meta Ads, sekitar 5 menit. Halaman Analitik tinggal membaca dari sini.',
+  var d = ISID || addDays(TODAY, -1), head = S.me === LEAD, pic = role() === 'pic';
+  var h = header('Kerja · angka kemarin', 'Jurnal harian', 'Isi angka kemarin dari Insights IG/TikTok' + (head ? ' dan Meta Ads' : '') + ', lalu tekan Kirim jurnal. Halaman Analitik membaca dari sini.',
     '<button class="btn sm" data-isid="-1" aria-label="Hari sebelumnya">‹</button><span style="font-weight:900;color:#1D3149;align-self:center">' + nice(d) + '</span><button class="btn sm" data-isid="1" aria-label="Hari berikutnya"' + (d >= TODAY ? ' disabled' : '') + '>›</button>');
   if (!head && !pic) return h + sec('Jurnal harian', 'form', '', '', empty('Halaman ini diisi oleh PIC akun dan Head of Marketing.'));
   var brs = head ? BRANDS : BRANDS.filter(function (b) { return b.pic === S.me; });
-  var day = (D().ig[d] = D().ig[d] || {}); day = (day[plat] = day[plat] || {});
-  var done = brs.filter(function (b) { var x = day[b.k]; return x && x.reach !== undefined && x.reach !== ''; }).length;
-  var ig = '<div class="chips">' + ['Instagram', 'TikTok'].map(function (x) { return '<button class="chip" data-plat="' + x + '" aria-pressed="' + (plat === x) + '">' + x + '</button>'; }).join('') + '<span class="sub" style="align-self:center;margin-left:6px"><b style="color:' + (done === brs.length ? GOOD : AMB) + '">' + done + ' dari ' + brs.length + ' akun</b> sudah diisi</span></div>' +
-    '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:10px">' + brs.map(function (b) { var x = day[b.k] || {}, ok = x.reach !== undefined && x.reach !== ''; return '<div class="box" style="gap:10px;border-color:' + (ok ? '#BFE9E3' : '#E3E6EB') + '"><div style="display:flex;justify-content:space-between;align-items:center"><b style="color:#1D3149"><span class="dot" style="background:' + b.c + ';margin-right:6px"></span>' + esc(b.k) + '</b><span class="st" style="background:' + (ok ? '#DDF5F2' : '#FDF3D7') + ';color:' + (ok ? GOOD : AMB) + '">' + (ok ? 'Sudah' : 'Belum') + '</span></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">' + IGF.map(function (f) { return mField(f[1], numIn('ig|' + d + '|' + plat + '|' + b.k + '|' + f[0], x[f[0]], true)); }).join('') + '</div></div>'; }).join('') + '</div>';
-  h += sec('Sosial media · ' + plat, 'insta', 'Dari Insights kemarin. Leads dari konten = chat WA berkode IG/TT kemarin (nanti otomatis dari WA).', '', ig);
+  var day = (D().ig[d] = D().ig[d] || {}), sub = (day._sub || {})[S.me];
+  var okB = function (b, plat) { var x = (day[plat] || {})[b.k]; return x && x.reach !== undefined && x.reach !== ''; };
+  var done = 0, tot = brs.length * 2; brs.forEach(function (b) { ['Instagram', 'TikTok'].forEach(function (pl) { if (okB(b, pl)) done++; }); });
+  h += '<div class="isist' + (sub ? ' ok' : '') + '"><span class="ib">' + ic(sub ? 'check' : 'form') + '</span><div class="grow"><strong>' + (sub ? 'Jurnal ' + nice(d) + ' sudah dikirim' : 'Jurnal ' + nice(d) + ' belum dikirim') + '</strong><span class="m">' + (sub ? 'Dikirim ' + esc(sub) + '. Masih bisa diubah, lalu kirim ulang.' : 'Angka tersimpan otomatis sebagai draf. ') + ' <b>' + done + ' dari ' + tot + '</b> baris IG/TikTok sudah ada reach.</span></div><button class="btn pri" data-isisub>' + (sub ? 'Kirim ulang' : 'Kirim jurnal') + '</button></div>';
+  var th = '<thead><tr><th>Akun</th><th>Platform</th>' + IGF.map(function (f) { return '<th style="text-align:right">' + f[1].replace(' (total)', '') + '</th>'; }).join('') + '<th></th></tr></thead>';
+  var rows = brs.map(function (b) { return ['Instagram', 'TikTok'].map(function (pl, i) { var x = (day[pl] = day[pl] || {})[b.k] || {}, ok = okB(b, pl); return '<tr class="' + (i ? 'r2' : 'r1') + '"><td data-l="Akun" class="jb">' + (i ? '<span class="mob-only"><span class="dot" style="background:' + b.c + ';margin-right:6px"></span>' + esc(b.k) + '</span>' : '<span class="dot" style="background:' + b.c + ';margin-right:6px"></span><b>' + esc(b.k) + '</b>') + '<span class="mob-only jpm">' + pl + '</span></td><td class="jp"><b>' + pl + '</b></td>' + IGF.map(function (f) { return '<td data-l="' + f[1].replace(' (total)', '') + '">' + numIn('ig|' + d + '|' + pl + '|' + b.k + '|' + f[0], x[f[0]], true) + '</td>'; }).join('') + '<td class="jst"><span class="st" style="background:' + (ok ? '#DDF5F2' : '#FDF3D7') + ';color:' + (ok ? GOOD : AMB) + '">' + (ok ? 'Terisi' : 'Belum') + '</span></td></tr>'; }).join(''); }).join('');
+  h += sec('Sosial media', 'insta', 'Dari Insights kemarin, IG dan TikTok sekaligus. Leads dari konten = chat WA berkode IG/TT kemarin.', '', '<div class="jwrap"><table class="jt">' + th + '<tbody>' + rows + '</tbody></table></div>');
   if (head) {
     var ad = (D().ads[d] = D().ads[d] || {});
-    h += sec('Iklan (Meta Ads)', 'mega', 'Per unit, angka kemarin dari Ads Manager. Closing dan omzet diisi kalau sudah tahu, boleh menyusul.', '', '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px">' + ADU.map(function (u) { var x = ad[u[0]] || {}; return '<div class="box" style="gap:10px"><b style="color:#1D3149">' + u[0] + '</b><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">' + ADF.map(function (f) { return mField(f[1], numIn('ads|' + d + '|' + u[0] + '|' + f[0], x[f[0]], true)); }).join('') + '</div></div>'; }).join('') + '</div>');
+    h += sec('Iklan (Meta Ads)', 'mega', 'Per unit, angka kemarin dari Ads Manager. Closing dan omzet boleh menyusul.', '', '<div class="jwrap"><table class="jt"><thead><tr><th>Unit</th><th></th>' + ADF.map(function (f) { return '<th style="text-align:right">' + f[1] + '</th>'; }).join('') + '<th></th></tr></thead><tbody>' + ADU.map(function (u) { var x = ad[u[0]] || {}; return '<tr class="r1"><td class="jb"><b>' + u[0] + '</b></td><td class="jp"></td>' + ADF.map(function (f) { return '<td data-l="' + f[1] + '">' + numIn('ads|' + d + '|' + u[0] + '|' + f[0], x[f[0]], true) + '</td>'; }).join('') + '<td></td></tr>'; }).join('') + '</tbody></table></div>');
     var w = weekStart(Math.floor(daysBetween(weekStart(0), d) / 7)), sx = (D().seo[w] = D().seo[w] || {});
     h += sec('SEO · mingguan', 'search', 'Cukup sekali seminggu (Senin), untuk minggu ' + short(w) + ' ' + MON[parse(w).getMonth()] + '.', '', '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px">' + SEOF.map(function (f) { return mField(f[1] + ' <span style="font-weight:600">· ' + f[2] + '</span>', numIn('seo|' + w + '|' + f[0], sx[f[0]], true)); }).join('') + '</div>');
   }
+  h += '<div class="isibar"><span class="sub">' + (sub ? 'Sudah dikirim ' + esc(sub) : 'Belum dikirim') + '</span><button class="btn pri" data-isisub>' + (sub ? 'Kirim ulang jurnal' : 'Kirim jurnal ' + nice(d)) + '</button></div>';
   return h;
+}
+function isiSubmit(btn) {
+  var d = ISID || addDays(TODAY, -1), head = S.me === LEAD;
+  document.querySelectorAll('main [data-dly]').forEach(function (el) { var pp = el.getAttribute('data-dly').split('|'), o = D()[pp[0]]; for (var q = 1; q < pp.length - 1; q++) { o = o[pp[q]] = o[pp[q]] || {}; } o[pp[pp.length - 1]] = el.value; });
+  var brs = head ? BRANDS : BRANDS.filter(function (b) { return b.pic === S.me; }), day = D().ig[d] = D().ig[d] || {};
+  var miss = brs.filter(function (b) { var x = (day.Instagram || {})[b.k]; return !x || x.reach === undefined || x.reach === ''; });
+  if (miss.length && !btn.dataset.sure) { document.querySelectorAll('[data-isisub]').forEach(function (b) { b.dataset.sure = 1; b.textContent = 'Tetap kirim'; }); toast('Reach Instagram belum diisi: ' + miss.map(function (b) { return b.k; }).join(', ') + '. Tekan lagi untuk tetap kirim.'); return; }
+  day._sub = day._sub || {}; day._sub[S.me] = now();
+  save(); render(); window.scrollTo(0, 0); toast('Jurnal ' + nice(d) + ' terkirim');
 }
 
 /* ---------- Analitik (hanya melihat) ---------- */
@@ -1029,7 +1121,7 @@ function vDash() {
 /* ---------- Persetujuan (Head of Marketing) ---------- */
 function apprLists() {
   return {
-    konten: S.items.filter(function (i) { return i.status === 'Review'; }).sort(function (a, b) { return (a.date || '').localeCompare(b.date || ''); }),
+    konten: S.items.filter(function (i) { return i.status === 'Review' && reviewer(i) === LEAD; }).sort(function (a, b) { return (a.date || '').localeCompare(b.date || ''); }),
     camp: (S.camps || []).filter(function (c) { return c.state === 'draf'; }),
     kol: kols().filter(function (k) { return k.st === 'Negosiasi' && +k.fee && k.date; })
   };
@@ -1056,115 +1148,243 @@ function vAppr() {
 
 /* ---------- panel detail ---------- */
 function opts(list, v) { return list.map(function (o) { return '<option' + (o === v ? ' selected' : '') + '>' + esc(o) + '</option>'; }).join(''); }
-function openItem(id) {
-  var it = S.items.filter(function (x) { return x.id === id; })[0]; if (!it) return;
-  var me = S.me, owner = ownerOf(it), canEdit = me === owner || me === LEAD, dis = canEdit ? '' : ' disabled';
-  var idx = FLOW.indexOf(it.status === 'Revisi' ? 'Review' : it.status), w = who(it);
-  var h = '<div style="display:flex;justify-content:space-between;gap:10px"><div><span class="sub">' + esc(it.brand) + ' · PIC ' + esc(owner) + '</span><h1>' + esc(it.title) + '</h1></div><button class="btn sm" data-close aria-label="Tutup">✕</button></div>';
-  h += (it.hold && it.status !== 'Tayang' ? '<div class="hint" style="background:#EEF0F3"><b>On hold</b>' + (it.holdNote ? ' · ' + esc(it.holdNote) : '') + '</div>' : '') + '<div class="flow">' + FLOW.map(function (s, i) { return '<span class="' + (i < idx ? 'done' : i === idx ? 'on' : '') + '">' + ({ Brief: 'Planned', Tayang: 'Posted' }[s] || s) + '</span>'; }).join('') + (it.status === 'Revisi' ? '<span class="on" style="background:#C2410C">Revisi</span>' : '') + '</div>';
-  if (w) h += '<div class="hint">Sekarang di: <b>' + esc(w) + '</b>' + (it.status === 'Revisi' && it.revNote ? ' · catatan: ' + esc(it.revNote) : '') + '</div>';
-  h += '<div class="f"><label for="i-title">Judul</label><input id="i-title" value="' + esc(it.title) + '"' + dis + '></div>';
-  h += '<div class="f2"><div class="f"><label for="i-brand">Brand</label><select id="i-brand"' + dis + '>' + opts(BRANDS.map(function (b) { return b.k; }), it.brand) + '</select></div><div class="f"><label for="i-format">Format</label><select id="i-format"' + dis + '>' + opts(FORMATS, it.format) + '</select></div></div>';
-  h += '<div class="f2"><div class="f"><label for="i-date">Tanggal tayang</label><input id="i-date" type="date" value="' + esc(it.date) + '"' + dis + '></div><div class="f"><label for="i-time">Jam tayang</label><input id="i-time" type="time" value="' + esc(it.time || '') + '"' + dis + '></div></div>';
-  if (it.format === 'Live TikTok') h += '<div class="box"><h2>Detail live</h2><div class="f2"><div class="f"><label for="i-tend">Jam selesai</label><input id="i-tend" type="time" value="' + esc(it.tend || '') + '"' + dis + '></div><div class="f"><label for="i-host">Host</label><input id="i-host" value="' + esc(it.host || '') + '" placeholder="Nama host"' + dis + '></div></div><div class="f"><label for="i-team">Tim / cabang yang live</label><select id="i-team"' + dis + '>' + opts(LTEAMS, it.team || LTEAMS[0]) + '</select></div></div>';
-  h += '<div class="f"><label for="i-camp">Campaign</label><select id="i-camp"' + dis + '>' + campOptions('', it.camp) + '</select></div>';
-  h += '<div class="f"><label for="i-pillar">Content pillar</label><select id="i-pillar"' + dis + '>' + opts(PILLARS, it.pillar) + '</select></div>';
-  h += '<div class="f"><label>Channel upload</label><div class="chks">' + CHANNELS.map(function (c) { return '<label class="chk"><input type="checkbox" name="i-ch" value="' + c + '"' + ((it.ch || []).indexOf(c) >= 0 ? ' checked' : '') + dis + '>' + c + '</label>'; }).join('') + '</div></div>';
-  h += '<div class="f"><label for="i-brief">Brief untuk editor</label><textarea id="i-brief" placeholder="Hook, isi, CTA"' + dis + '>' + esc(it.brief || '') + '</textarea></div>';
-  h += '<div class="f"><label for="i-ref">Referensi konten</label><input id="i-ref" value="' + esc(it.ref || '') + '" placeholder="Link contoh konten (IG, TikTok, YouTube)"' + dis + '>' + linkOut(it.ref) + '</div>';
+/* jenis konten menentukan siapa yang review: harian cukup Dita, sisanya Kevin */
+var KINDS = ['Harian (rutin)', 'Campaign', 'Promo / poster', 'Konten khusus'];
+var DAILY_RV = 'Dita';
+function heavy(it) { return !!it.camp || !it.kind || it.kind !== KINDS[0]; }
+function reviewer(it) { return heavy(it) ? LEAD : DAILY_RV; }
+function rvName(n) { return n === LEAD ? 'Kevin (Head of Marketing)' : n; }
+function kCode(it) { var b = (it.brand || '').replace(/[^A-Za-z]/g, '').slice(0, 2).toUpperCase(); return b + '-' + String(it.id || '').slice(-4).toUpperCase(); }
+function canEditIt(it) { return role() !== 'ks' && role() !== 'editor' && (S.me === ownerOf(it) || S.me === LEAD); }
+function fieldsHtml(it) {
+  var live = it.format === 'Live TikTok';
+  var h = '<div class="f"><label for="i-title">' + (live ? 'Tema live' : 'Judul') + '</label><input id="i-title" value="' + esc(it.title || '') + '" placeholder="' + (live ? 'Contoh: Promo sewa motor akhir pekan' : 'Contoh: 3 hal dicek sebelum sewa motor') + '"></div>';
+  h += '<div class="f2"><div class="f"><label for="i-brand">Brand</label><select id="i-brand">' + opts(BRANDS.map(function (b) { return b.k; }), it.brand) + '</select></div><div class="f"><label for="i-format">Format</label><select id="i-format">' + opts(live ? FORMATS : FEED, it.format) + '</select></div></div>';
+  if (!live) h += '<div class="f2"><div class="f"><label for="i-kind">Jenis konten</label><select id="i-kind">' + opts(KINDS, it.kind || KINDS[0]) + '</select></div><div class="f"><label for="i-pillar">Content pillar</label><select id="i-pillar">' + opts(PILLARS, it.pillar || 'Educational') + '</select></div></div><span class="sub" id="i-rvh"></span>';
+  h += '<div class="f2"><div class="f"><label for="i-date">Tanggal tayang</label><input id="i-date" type="date" value="' + esc(it.date || '') + '"></div><div class="f"><label for="i-time">Jam ' + (live ? 'mulai' : 'tayang') + '</label><input id="i-time" type="time" value="' + esc(it.time || '') + '"></div></div>';
+  if (live) h += '<div class="f2"><div class="f"><label for="i-tend">Jam selesai</label><input id="i-tend" type="time" value="' + esc(it.tend || '') + '"></div><div class="f"><label for="i-host">Host</label><input id="i-host" value="' + esc(it.host || '') + '" placeholder="Nama host"></div></div><div class="f"><label for="i-team">Tim / cabang yang live</label><select id="i-team">' + opts(LTEAMS, it.team || LTEAMS[0]) + '</select></div>';
+  h += '<div class="f"><label for="i-camp">Campaign</label><select id="i-camp">' + campOptions('', it.camp) + '</select></div>';
+  if (!live) h += '<div class="f"><label>Channel upload</label><div class="chks">' + CHANNELS.map(function (c) { return '<label class="chk"><input type="checkbox" name="i-ch" value="' + c + '"' + ((it.ch || []).indexOf(c) >= 0 ? ' checked' : '') + '>' + c + '</label>'; }).join('') + '</div></div>';
+  h += '<div class="f"><label for="i-brief">' + (live ? 'Rundown / catatan' : 'Brief untuk editor') + '</label><textarea id="i-brief" placeholder="' + (live ? 'Produk yang dibahas, promo, giveaway' : 'Hook, isi, CTA') + '">' + esc(it.brief || '') + '</textarea></div>';
+  if (live) return h;
+  h += '<div class="f"><label for="i-ref">Referensi konten (boleh kosong)</label><input id="i-ref" value="' + esc(it.ref || '') + '" placeholder="Link contoh konten (IG, TikTok, YouTube)">' + linkOut(it.ref) + '</div>';
   var fl = foots().filter(function (f) { return !f.brand || f.brand === it.brand || f.brand === 'Semua brand'; });
-  h += '<div class="f"><label for="i-asset">Footage (kalau ada)</label>' + (fl.length && !dis ? '<select data-pickfoot aria-label="Pilih dari menu Footage"><option value="">Pilih dari menu Footage…</option>' + fl.map(function (f) { return '<option value="' + esc(f.link) + '">' + esc(f.title + ' · ' + f.type) + '</option>'; }).join('') + '</select>' : '') + '<input id="i-asset" value="' + esc(it.asset || '') + '" placeholder="Atau tempel link Google Drive footage"' + dis + '>' + linkOut(it.asset) + '<span class="sub">Semua footage dikumpulkan di menu <a href="#foot" data-close>Footage</a>.</span></div>';
-  var canOut = canEdit || me === EDITOR, disO = canOut ? '' : ' disabled';
-  h += '<div class="f"><label for="i-out">Link hasil edit</label><input id="i-out" value="' + esc(it.out || '') + '" placeholder="Link draft atau final yang siap direview"' + disO + '>' + linkOut(it.out) + '</div>';
-  h += '<div class="f"><label for="i-caption">Caption</label><textarea id="i-caption" rows="4" placeholder="Caption + hashtag yang akan diposting"' + disO + '>' + esc(it.caption || '') + '</textarea></div>';
-  h += '<div class="acts">' + (canOut ? '<button class="btn" data-savei>Simpan perubahan</button>' : '') + '<button class="btn" data-rep1 style="display:inline-flex;align-items:center;gap:6px">' + ic('chat', 15) + 'Salin progress konten</button>' + (canEdit && it.status !== 'Tayang' ? (it.hold ? '<button class="btn" data-act="unhold">Lanjutkan (lepas on hold)</button>' : '<button class="btn" data-act="hold">On hold</button>') : '') + '</div>';
-  var a = [];
-  if (it.status === 'Brief' && canEdit) a.push('<div class="box"><h2>Siapa yang mengerjakan?</h2><div class="f"><label for="i-due">Selesai edit paling lambat</label><input id="i-due" type="date" value="' + esc(it.editDue || addDays(it.date || TODAY, -1)) + '"></div><span class="sub">Beban Editor di tanggal itu: <b id="i-load"></b></span><div class="acts"><button class="btn pri" data-act="toEditor">Kirim ke editor</button><button class="btn" data-act="self">Kerjakan sendiri</button></div></div>');
-  if (it.status === 'Produksi' && (me === w || me === LEAD)) a.push('<button class="btn pri" data-act="toReview">Selesai, kirim ke Head of Marketing untuk review</button>');
+  h += '<div class="f"><label for="i-asset">Footage (kalau ada)</label>' + (fl.length ? '<select data-pickfoot aria-label="Pilih dari menu Footage"><option value="">Pilih dari menu Footage…</option>' + fl.map(function (f) { return '<option value="' + esc(f.link) + '">' + esc(f.title + ' · ' + f.type) + '</option>'; }).join('') + '</select>' : '') + '<input id="i-asset" value="' + esc(it.asset || '') + '" placeholder="Atau tempel link Google Drive footage">' + linkOut(it.asset) + '</div>';
+  h += '<div class="f"><label for="i-out">Link hasil edit (boleh menyusul)</label><input id="i-out" value="' + esc(it.out || '') + '" placeholder="Link draft atau final yang siap direview">' + linkOut(it.out) + '</div>';
+  h += '<div class="f"><label for="i-caption">Caption (boleh menyusul)</label><textarea id="i-caption" rows="4" placeholder="Caption + hashtag yang akan diposting">' + esc(it.caption || '') + '</textarea></div>';
+  return h;
+}
+function wireFields(p) {
+  var pf = p.querySelector('[data-pickfoot]'); if (pf) pf.addEventListener('change', function () { if (pf.value) p.querySelector('#i-asset').value = pf.value; });
+  var kd = p.querySelector('#i-kind'), cp = p.querySelector('#i-camp'), rh = p.querySelector('#i-rvh');
+  function upd() { if (!kd || !rh) return; var r = reviewer({ kind: kd.value, camp: cp ? cp.value : '' }); rh.innerHTML = 'Direview oleh <b>' + esc(rvName(r)) + '</b>. Konten harian cukup Dita; campaign, promo/poster, dan konten khusus direview Kevin.'; }
+  if (kd) kd.addEventListener('change', upd); if (cp) cp.addEventListener('change', upd); upd();
+}
+function pvRow(l, v) { return v ? '<div><span>' + l + '</span><b>' + v + '</b></div>' : ''; }
+function linkBtn(l, u) { u = (u || '').trim(); return /^https?:\/\//.test(u) ? '<a class="btn sm" href="' + esc(u) + '" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;text-decoration:none">' + l + ' ↗</a>' : ''; }
+var PERF = [['views', 'Views / tayangan'], ['reach', 'Reach'], ['likes', 'Like'], ['comm', 'Komentar'], ['share', 'Share'], ['save', 'Disimpan'], ['leads', 'Leads (chat berkode)'], ['close', 'Closing'], ['omzet', 'Omzet (Rp)']];
+function perfHas(it) { var p = it.perf || {}; return PERF.some(function (f) { return p[f[0]] !== undefined && p[f[0]] !== ''; }); }
+function inter(p) { return (+p.likes || 0) + (+p.comm || 0) + (+p.share || 0) + (+p.save || 0); }
+function erOf(p) { return +p.reach ? inter(p) / +p.reach * 100 : 0; }
+function perfBox(it, can) {
+  var p = it.perf || {}, has = perfHas(it);
+  var b = '<div class="box"><div style="display:flex;justify-content:space-between;gap:8px;align-items:center;flex-wrap:wrap"><h2>Hasil konten</h2>' + (can ? '<button class="btn sm' + (has ? '' : ' pri') + '" data-act="perf">' + (has ? 'Ubah hasil' : 'Isi hasil') + '</button>' : '') + '</div>';
+  if (!has) return b + '<span class="sub">Isi H+3 atau H+7 dari Insights: views, reach, interaksi, dan leads berkode <b>' + kCode(it) + '</b>.</span>' + (p.link ? linkBtn('Lihat postingan', p.link) : '') + '</div>';
+  b += '<div class="pv">' + [['Views', fmt(p.views)], ['Reach', fmt(p.reach)], ['Interaksi', fmt(inter(p))], ['ER', pct1(erOf(p)) + '%'], ['Leads', fmt(p.leads)], ['Closing', fmt(p.close)], ['Omzet', rpS(p.omzet)]].map(function (x) { return pvRow(x[0], x[1]); }).join('') + '</div>';
+  return b + '<span class="sub">Diisi ' + esc(p.by || '-') + (p.at ? ' · ' + nice(p.at) : '') + '</span>' + (p.link ? '<div>' + linkBtn('Lihat postingan', p.link) + '</div>' : '') + '</div>';
+}
+function perfForm(it) {
+  var p = it.perf || {};
+  var h = '<div class="pvh"><div style="min-width:0"><span class="sub">Hasil konten · kode ' + kCode(it) + '</span><h1>' + esc(it.title) + '</h1></div><button class="btn sm" data-close aria-label="Tutup">✕</button></div>';
+  h += '<div class="f"><label for="p-link">Link postingan</label><input id="p-link" value="' + esc(p.link || '') + '" placeholder="https://instagram.com/p/..."></div>';
+  h += '<div class="f2">' + PERF.map(function (f) { return '<div class="f"><label for="p-' + f[0] + '">' + f[1] + '</label><input id="p-' + f[0] + '" type="text" inputmode="decimal" data-num value="' + esc(p[f[0]] == null ? '' : p[f[0]]) + '"></div>'; }).join('') + '</div>';
+  h += '<span class="sub">Interaksi = like + komentar + share + disimpan. ER = interaksi ÷ reach. Leads dihitung dari chat WA yang menyebut kode <b>' + kCode(it) + '</b>.</span>';
+  h += '<div class="acts"><button class="btn pri" data-ok>Simpan hasil</button><button class="btn" data-back>Kembali</button></div>';
+  panel(h, function (pp) {
+    pp.addEventListener('click', function (e) {
+      if (e.target.closest('[data-back]')) { openItem(it.id); return; }
+      if (!e.target.closest('[data-ok]')) return;
+      var o = { link: pp.querySelector('#p-link').value.trim(), at: TODAY, by: S.me };
+      PERF.forEach(function (f) { o[f[0]] = pp.querySelector('#p-' + f[0]).value; });
+      it.perf = o; log(it, 'mengisi hasil konten'); save(); render(); toast('Hasil konten tersimpan'); openItem(it.id);
+    });
+  });
+}
+/* screenshot bukti live: disimpan di storage mku-bukti, dibuka lewat link sementara */
+function shrinkImg(file, max) {
+  return new Promise(function (ok, no) {
+    var img = new Image(), u = URL.createObjectURL(file);
+    img.onload = function () { var s = Math.min(1, max / Math.max(img.width, img.height)), c = document.createElement('canvas'); c.width = Math.round(img.width * s); c.height = Math.round(img.height * s); c.getContext('2d').drawImage(img, 0, 0, c.width, c.height); URL.revokeObjectURL(u); c.toBlob(function (b) { b ? ok(b) : no(new Error('foto')); }, 'image/jpeg', 0.82); };
+    img.onerror = function () { no(new Error('foto')); }; img.src = u;
+  });
+}
+function upShot(blob) {
+  var pid = WHO && WHO.id; if (!pid) return Promise.reject(new Error('nologin'));
+  var path = pid + '/' + TODAY + '-' + uid() + '.jpg';
+  return token().then(function (t) { return fetch(SB_URL + '/storage/v1/object/mku-bukti/' + path, { method: 'POST', headers: { apikey: SB_KEY, Authorization: 'Bearer ' + t, 'Content-Type': 'image/jpeg' }, body: blob }); }).then(function (r) { if (!r.ok) throw new Error('upload'); return path; });
+}
+var SIGNED = {};
+function signShot(path) {
+  if (SIGNED[path] && SIGNED[path][1] > Date.now()) return Promise.resolve(SIGNED[path][0]);
+  return token().then(function (t) { return fetch(SB_URL + '/storage/v1/object/sign/mku-bukti/' + path, { method: 'POST', headers: { apikey: SB_KEY, Authorization: 'Bearer ' + t, 'Content-Type': 'application/json' }, body: JSON.stringify({ expiresIn: 3600 }) }); })
+    .then(function (r) { return r.json(); }).then(function (j) { if (!j.signedURL) throw new Error('sign'); var u = SB_URL + '/storage/v1' + j.signedURL; SIGNED[path] = [u, Date.now() + 3000000]; return u; });
+}
+function shotsBox(it, can) {
+  var s = it.shots || [];
+  return '<div class="box"><h2>Screenshot hasil live</h2><span class="sub">Bukti dari TikTok Live: penonton, durasi, gift, pesanan. Bisa lebih dari satu.</span><div class="shots" data-shots>' + (s.length ? s.map(function (p) { return '<img data-shot="' + esc(p) + '" alt="Screenshot hasil live">'; }).join('') : '<span class="sub" data-noshot>Belum ada screenshot.</span>') + '</div>' + (can ? '<label class="btn sm" style="align-self:flex-start;cursor:pointer;display:inline-flex;align-items:center">+ Tambah screenshot<input type="file" accept="image/*" multiple data-shotin hidden></label>' : '') + '</div>';
+}
+function wireShots(p, it) {
+  function show(img) { signShot(img.getAttribute('data-shot')).then(function (u) { img.src = u; }, function () { img.alt = 'Tidak bisa dibuka'; }); }
+  p.querySelectorAll('img[data-shot]').forEach(show);
+  p.addEventListener('click', function (e) { var im = e.target.closest('img[data-shot]'); if (im && im.src) window.open(im.src, '_blank', 'noopener'); });
+  var inp = p.querySelector('[data-shotin]'); if (!inp) return;
+  inp.addEventListener('change', function () {
+    var files = [].slice.call(inp.files || []); if (!files.length) return;
+    if (!ONLINE) { toast('Screenshot butuh login (mode lokal tidak bisa upload)'); return; }
+    toast('Mengunggah ' + files.length + ' screenshot…');
+    files.reduce(function (pr, f) { return pr.then(function () { return shrinkImg(f, 1600).then(upShot).then(function (path) { it.shots = it.shots || []; it.shots.push(path); save(); var box = p.querySelector('[data-shots]'), no = box.querySelector('[data-noshot]'); if (no) no.remove(); var img = document.createElement('img'); img.setAttribute('data-shot', path); img.alt = 'Screenshot hasil live'; box.appendChild(img); show(img); }); }); }, Promise.resolve())
+      .then(function () { log(it, 'menambah screenshot hasil live'); save(); toast('Screenshot tersimpan'); }, function () { toast('Gagal mengunggah. Coba lagi.'); });
+    inp.value = '';
+  });
+}
+function openItem(id, edit) {
+  var it = S.items.filter(function (x) { return x.id === id; })[0]; if (!it) return;
+  var me = S.me, owner = ownerOf(it), can = canEditIt(it), live = it.format === 'Live TikTok', rv = reviewer(it);
+  if (edit && can) return editItem(it);
+  var idx = FLOW.indexOf(it.status === 'Revisi' ? 'Review' : it.status), w = who(it), cmp = campOf(it.camp);
+  var h = '<div class="pvh"><div style="min-width:0"><span class="sub">' + esc(it.brand) + ' · PIC ' + esc(owner) + (live ? ' · Live TikTok' : '') + '</span><h1>' + esc(it.title) + '</h1></div><div class="acts" style="flex:none;flex-wrap:nowrap">' + (can ? '<button class="btn sm pri" data-edit>Edit</button>' : '') + '<button class="btn sm" data-close aria-label="Tutup">✕</button></div></div>';
+  h += (it.hold && it.status !== 'Tayang' ? '<div class="hint" style="background:#EEF0F3"><b>On hold</b>' + (it.holdNote ? ' · ' + esc(it.holdNote) : '') + '</div>' : '') + (live ? '' : '<div class="flow">' + FLOW.map(function (s, i) { return '<span class="' + (i < idx ? 'done' : i === idx ? 'on' : '') + '">' + ({ Brief: 'Planned', Tayang: 'Posted' }[s] || s) + '</span>'; }).join('') + (it.status === 'Revisi' ? '<span class="on" style="background:#C2410C">Revisi</span>' : '') + '</div>');
+  if (w) h += '<div class="hint">Sekarang di: <b>' + esc(w === LEAD ? rvName(LEAD) : w) + '</b>' + (it.status === 'Revisi' && it.revNote ? ' · catatan: ' + esc(it.revNote) : '') + '</div>';
+  h += '<div class="pv">' + pvRow('Format', esc(it.format)) + (live ? '' : pvRow('Jenis konten', esc(it.kind || 'Belum dipilih')) + pvRow('Pillar', esc(it.pillar || '-'))) + pvRow('Tayang', nice(it.date) + (it.time ? ' · ' + esc(it.time) + (it.tend ? '–' + esc(it.tend) : '') : '')) + (live ? pvRow('Host', esc(it.host || '-')) + pvRow('Tim / cabang', esc(it.team || '-')) : '') + pvRow('Campaign', cmp ? esc(cmp.name) : '-') + (live ? '' : pvRow('Channel', esc((it.ch || []).join(', ') || '-')) + pvRow('Review oleh', esc(rvName(rv))) + pvRow('Pengerjaan', it.mode === 'editor' ? 'Editor' + (it.editDue ? ' · selesai ' + short(it.editDue) : '') : it.mode === 'sendiri' ? 'Edit sendiri' : 'Belum dipilih') + pvRow('Kode tracking', '<code>' + kCode(it) + '</code>')) + '</div>';
+  if (it.brief) h += '<div class="f"><label>' + (live ? 'Rundown' : 'Brief') + '</label><div class="pvtext">' + esc(it.brief) + '</div></div>';
+  if (!live) { var lk = linkBtn('Referensi', it.ref) + linkBtn('Footage', it.asset) + linkBtn('Hasil edit', it.out); if (lk) h += '<div class="acts">' + lk + '</div>'; }
+  if (!live && it.caption) h += '<div class="f"><label>Caption</label><div class="pvtext">' + esc(it.caption) + '</div></div>';
+  var resOwner = me === owner || me === LEAD;
+  if (live && it.status === 'Tayang') h += '<div class="hint">Hasil live: ' + fmt(it.lv) + ' penonton puncak · ' + fmt(it.lc) + ' closing · ' + rpS(it.lo) + (it.team ? ' · ' + esc(it.team) : '') + '</div>' + shotsBox(it, resOwner && role() !== 'ks');
+  if (!live && it.status === 'Tayang') h += perfBox(it, resOwner && role() !== 'ks');
+  var a = [], outIn = '<div class="f"><label for="i-out">Link hasil edit</label><input id="i-out" value="' + esc(it.out || '') + '" placeholder="Link draft atau final yang siap direview">' + linkOut(it.out) + '</div>';
+  if (it.status === 'Brief' && can) a.push('<div class="box"><h2>Siapa yang mengerjakan?</h2><div class="f"><label for="i-due">Selesai edit paling lambat</label><input id="i-due" type="date" value="' + esc(it.editDue || addDays(it.date || TODAY, -1)) + '"></div><span class="sub">Beban Editor di tanggal itu: <b id="i-load"></b></span><div class="acts"><button class="btn pri" data-act="toEditor">Kirim ke editor</button><button class="btn" data-act="self">Kerjakan sendiri</button></div></div>');
+  if ((it.status === 'Produksi' || it.status === 'Revisi') && (me === w || me === LEAD)) a.push('<div class="box">' + outIn + '<button class="btn pri" data-act="toReview">' + (it.status === 'Revisi' ? 'Revisi selesai, kirim review lagi ke ' : 'Selesai, kirim review ke ') + esc(rvName(rv)) + '</button></div>');
   if (it.status === 'Produksi' && it.mode === 'editor' && me === owner) a.push('<button class="btn" data-act="takeover">Ambil alih, edit sendiri</button>');
-  if (it.status === 'Review' && me === LEAD) {
+  if (it.status === 'Review' && (me === rv || me === LEAD)) {
     a.push('<button class="btn pri" data-act="approve">Setujui, siap tayang</button>');
     a.push('<div class="box"><div class="f"><label for="i-rev">Catatan revisi</label><textarea id="i-rev" placeholder="Apa yang perlu diubah"></textarea></div><div class="acts">' + (it.mode === 'editor' ? '<button class="btn warn" data-act="revEditor">Revisi ke editor</button>' : '') + '<button class="btn warn" data-act="revPic">Revisi ke ' + esc(owner) + '</button></div></div>');
   }
-  if (it.status === 'Revisi' && (me === w || me === LEAD)) a.push('<button class="btn pri" data-act="toReview">Revisi selesai, kirim review lagi</button>');
-  if (it.status === 'Siap tayang' && (me === owner || me === LEAD)) a.push((it.format === 'Live TikTok' ? '<div class="box"><h2>Hasil live</h2><div class="f2"><div class="f"><label for="i-lv">Penonton puncak</label><input id="i-lv" type="text" inputmode="decimal" data-num min="0"></div><div class="f"><label for="i-lc">Closing dari live</label><input id="i-lc" type="text" inputmode="decimal" data-num min="0"></div></div><div class="f"><label for="i-lo">Omzet dari live (Rp)</label><input id="i-lo" type="text" inputmode="decimal" data-num min="0"></div></div>' : '') + '<button class="btn pri" data-act="posted">' + (it.format === 'Live TikTok' ? 'Live selesai, simpan hasil' : 'Sudah tayang') + '</button>');
-  if (it.format === 'Live TikTok' && it.status === 'Tayang') h += '<div class="hint">Hasil live: ' + (+it.lv || 0) + ' penonton puncak · ' + (+it.lc || 0) + ' closing · ' + rpS(it.lo) + (it.team ? ' · ' + esc(it.team) : '') + '</div>';
+  if (it.status === 'Siap tayang' && resOwner) {
+    if (live) a.push('<div class="box"><h2>Hasil live</h2><div class="f2"><div class="f"><label for="i-lv">Penonton puncak</label><input id="i-lv" type="text" inputmode="decimal" data-num></div><div class="f"><label for="i-lc">Closing dari live</label><input id="i-lc" type="text" inputmode="decimal" data-num></div></div><div class="f"><label for="i-lo">Omzet dari live (Rp)</label><input id="i-lo" type="text" inputmode="decimal" data-num></div></div>' + shotsBox(it, true) + '<button class="btn pri" data-act="posted">Live selesai, simpan hasil</button>');
+    else a.push('<div class="box"><div class="f"><label for="i-plink">Link postingan (boleh menyusul)</label><input id="i-plink" placeholder="https://instagram.com/p/..."></div><button class="btn pri" data-act="posted">Sudah tayang</button></div>');
+  }
   if (it.hold && it.status !== 'Tayang') a = [];
+  if (can && it.status !== 'Tayang') a.push('<div class="acts">' + (it.hold ? '<button class="btn" data-act="unhold">Lanjutkan (lepas on hold)</button>' : '<button class="btn" data-act="hold">On hold</button>') + '</div>');
   if (a.length) h += '<div style="display:flex;flex-direction:column;gap:8px">' + a.join('') + '</div>';
   else if (it.status !== 'Tayang' && !it.hold) h += '<div class="sub">Tahap ini dikerjakan oleh <b>' + esc(w || '-') + '</b>.</div>';
+  h += '<div class="acts"><button class="btn sm" data-rep1 style="display:inline-flex;align-items:center;gap:6px">' + ic('chat', 15) + 'Salin progress konten</button>' + (can ? '<button class="btn sm warn" data-act="del">Hapus konten</button>' : '') + '</div>';
   if (it.log && it.log.length) h += '<h2>Riwayat</h2><div class="log">' + it.log.map(function (l) { return '<div><b>' + esc(l.who) + '</b> · ' + esc(l.text) + '<br><span class="sub">' + esc(l.at) + '</span></div>'; }).join('') + '</div>';
-  if (canEdit) h += '<div><button class="btn sm warn" data-act="del">Hapus konten</button></div>';
   panel(h, function (p) {
     var due = p.querySelector('#i-due'), ld = p.querySelector('#i-load');
     function upd() { if (!due || !ld) return; var n = editorLoad()[due.value] || 0; ld.textContent = n + ' dari ' + S.cap + (n >= S.cap ? ' · penuh, Head of Marketing akan melihat bentrok' : ''); ld.style.color = n >= S.cap ? BAD : ''; }
     if (due) { due.addEventListener('change', upd); upd(); }
-    var pf = p.querySelector('[data-pickfoot]'); if (pf) pf.addEventListener('change', function () { if (pf.value) p.querySelector('#i-asset').value = pf.value; });
+    wireShots(p, it);
     p.addEventListener('click', function (e) {
-      if (e.target.closest('[data-rep1]')) { read(p, it); waPanel(itemReport(it), 'Progress konten'); return; }
-      if (e.target.closest('[data-savei]')) { read(p, it); log(it, 'mengubah detail'); save(); render(); toast('Tersimpan'); return; }
+      if (e.target.closest('[data-edit]')) { openItem(it.id, true); return; }
+      if (e.target.closest('[data-rep1]')) { waPanel(itemReport(it), 'Progress konten'); return; }
       var b = e.target.closest('[data-act]'); if (!b) return;
-      var k = b.getAttribute('data-act');
-      if (canEdit || me === EDITOR) read(p, it);
+      var k = b.getAttribute('data-act'), oi = p.querySelector('#i-out');
+      if (oi) it.out = oi.value.trim();
+      if (k === 'perf') { perfForm(it); return; }
+      if (k === 'del') { if (!b.dataset.sure) { b.dataset.sure = 1; b.textContent = 'Yakin? Klik lagi untuk hapus'; return; } S.items = S.items.filter(function (x) { return x !== it; }); save(); close(); render(); toast('Konten dihapus'); return; }
       if (k === 'hold') { var bx = document.createElement('div'); bx.className = 'box'; bx.innerHTML = '<div class="f"><label for="i-holdn">Alasan on hold (boleh kosong)</label><input id="i-holdn" placeholder="Contoh: tunggu stok unit, talent sakit"></div><div class="acts"><button class="btn pri" data-act="hold2">Tandai on hold</button></div>'; b.closest('.acts').after(bx); b.remove(); bx.querySelector('input').focus(); return; }
       if (k === 'hold2') { var hn = p.querySelector('#i-holdn').value; it.hold = true; it.holdNote = (hn || '').trim(); log(it, 'on hold' + (it.holdNote ? ': ' + it.holdNote : '')); toast('Konten on hold'); }
       if (k === 'unhold') { it.hold = false; log(it, 'dilanjutkan'); toast('Konten dilanjutkan'); }
       if (k === 'toEditor') { it.mode = 'editor'; it.editDue = due.value; it.status = 'Produksi'; log(it, 'kirim ke editor, selesai ' + nice(it.editDue)); toast('Masuk antrean Editor'); }
       if (k === 'self') { it.mode = 'sendiri'; it.status = 'Produksi'; log(it, 'dikerjakan sendiri'); toast('Dikerjakan sendiri'); }
       if (k === 'takeover') { it.mode = 'sendiri'; log(it, 'ambil alih dari editor'); toast('Keluar dari antrean editor'); }
-      if (k === 'toReview') { if (it.mode === 'editor' && me === EDITOR) it.editedWeek = weekStart(0); it.status = 'Review'; log(it, 'kirim ke Head of Marketing untuk review'); toast('Masuk antrean review Head of Marketing'); }
+      if (k === 'toReview') { if (it.mode === 'editor' && me === EDITOR) it.editedWeek = weekStart(0); it.status = 'Review'; log(it, 'kirim review ke ' + rvName(rv)); toast('Masuk antrean review ' + rvName(rv)); }
       if (k === 'approve') { it.status = 'Siap tayang'; log(it, 'disetujui'); toast('Siap tayang'); }
       if (k === 'revEditor' || k === 'revPic') { var nt = p.querySelector('#i-rev').value.trim(); if (!nt) { p.querySelector('#i-rev').focus(); toast('Tulis catatan revisinya dulu'); return; } it.status = 'Revisi'; it.revTo = k === 'revEditor' ? 'editor' : 'pic'; it.revNote = nt; log(it, 'minta revisi ke ' + (it.revTo === 'editor' ? EDITOR : owner) + ': ' + nt); toast('Revisi dikirim'); }
-      if (k === 'posted') { if (it.format === 'Live TikTok') { it.lv = p.querySelector('#i-lv').value; it.lc = p.querySelector('#i-lc').value; it.lo = p.querySelector('#i-lo').value; } it.status = 'Tayang'; log(it, it.format === 'Live TikTok' ? 'live selesai, ' + (+it.lc || 0) + ' closing' : 'sudah tayang'); toast('Tercatat tayang'); }
-      if (k === 'del') { S.items = S.items.filter(function (x) { return x !== it; }); save(); close(); render(); toast('Konten dihapus'); return; }
+      if (k === 'posted') {
+        if (live) { if (ONLINE && !(it.shots || []).length) { toast('Tambahkan screenshot hasil live dulu sebagai bukti'); return; } it.lv = p.querySelector('#i-lv').value; it.lc = p.querySelector('#i-lc').value; it.lo = p.querySelector('#i-lo').value; }
+        else { var pl = p.querySelector('#i-plink'); if (pl && pl.value.trim()) { it.perf = it.perf || {}; it.perf.link = pl.value.trim(); } }
+        it.status = 'Tayang'; log(it, live ? 'live selesai, ' + (+it.lc || 0) + ' closing' : 'sudah tayang'); toast('Tercatat tayang');
+      }
       save(); close(); render();
+    });
+  });
+}
+function editItem(it) {
+  var h = '<div class="pvh"><div style="min-width:0"><span class="sub">Edit · ' + esc(it.brand) + '</span><h1>' + esc(it.title) + '</h1></div><button class="btn sm" data-close aria-label="Tutup">✕</button></div>';
+  h += '<div class="acts"><button class="btn pri" data-savei>Simpan perubahan</button><button class="btn" data-back>Kembali ke preview</button><button class="btn warn" data-deli>Hapus konten</button></div>';
+  h += fieldsHtml(it);
+  h += '<div class="acts"><button class="btn pri" data-savei>Simpan perubahan</button><button class="btn" data-back>Batal</button></div>';
+  panel(h, function (p) {
+    wireFields(p);
+    p.addEventListener('click', function (e) {
+      if (e.target.closest('[data-back]')) { openItem(it.id); return; }
+      var dl = e.target.closest('[data-deli]');
+      if (dl) { if (!dl.dataset.sure) { dl.dataset.sure = 1; dl.textContent = 'Yakin? Klik lagi untuk hapus'; return; } S.items = S.items.filter(function (x) { return x !== it; }); save(); close(); render(); toast('Konten dihapus'); return; }
+      if (!e.target.closest('[data-savei]')) return;
+      if (!p.querySelector('#i-title').value.trim()) { p.querySelector('#i-title').focus(); toast('Judul belum diisi'); return; }
+      read(p, it); log(it, 'mengubah detail'); save(); render(); toast('Tersimpan'); openItem(it.id);
     });
   });
 }
 function linkOut(u) { u = (u || '').trim(); return /^https?:\/\//.test(u) ? '<a href="' + esc(u) + '" target="_blank" rel="noopener" style="font-size:12px;font-weight:800;color:#067A70">Buka link ↗</a>' : ''; }
 function itemReport(it) {
-  var L = ['*Progress konten · ' + it.title + '*', it.brand + ' · ' + it.format + (it.ch && it.ch.length ? ' · ' + it.ch.join(', ') : ''), 'Status: ' + stage(it) + (stDetail(it) ? ' (' + stDetail(it) + ')' : '') + (it.hold && it.holdNote ? ' · ' + it.holdNote : ''), 'Tayang: ' + nice(it.date) + (it.time ? ' ' + it.time : ''), 'PIC: ' + ownerOf(it) + (it.mode === 'editor' ? ' · Editor: ' + EDITOR + (it.editDue ? ' (selesai ' + nice(it.editDue) + ')' : '') : it.mode === 'sendiri' ? ' · edit sendiri' : '')];
+  var L = ['*Progress konten · ' + it.title + '*', it.brand + ' · ' + it.format + (it.kind ? ' · ' + it.kind : '') + (it.ch && it.ch.length ? ' · ' + it.ch.join(', ') : ''), 'Status: ' + stage(it) + (stDetail(it) ? ' (' + stDetail(it) + ')' : '') + (it.hold && it.holdNote ? ' · ' + it.holdNote : ''), 'Tayang: ' + nice(it.date) + (it.time ? ' ' + it.time : ''), 'PIC: ' + ownerOf(it) + (it.mode === 'editor' ? ' · Editor: ' + EDITOR + (it.editDue ? ' (selesai ' + nice(it.editDue) + ')' : '') : it.mode === 'sendiri' ? ' · edit sendiri' : '')];
+  if (it.format !== 'Live TikTok') L.push('Review: ' + rvName(reviewer(it)) + ' · kode ' + kCode(it));
   if (who(it)) L.push('Sekarang di: ' + who(it));
   if (it.status === 'Revisi' && it.revNote) L.push('Catatan revisi: ' + it.revNote);
   if (it.ref) L.push('Referensi: ' + it.ref);
   if (it.asset) L.push('Footage: ' + it.asset);
   if (it.out) L.push('Hasil: ' + it.out);
+  if (perfHas(it)) { var p = it.perf; L.push('Hasil konten: ' + fmt(p.views) + ' views · ' + fmt(p.reach) + ' reach · ER ' + pct1(erOf(p)) + '% · ' + fmt(p.leads) + ' leads · ' + fmt(p.close) + ' closing'); }
   if (it.caption) L.push('', 'Caption:', it.caption);
   if (it.log && it.log.length) L.push('', 'Riwayat:', it.log.slice(0, 5).map(function (l) { return '• ' + l.at + ' · ' + l.who + ' ' + l.text; }).join('\n'));
   return L.join('\n');
 }
 function read(p, it) {
-  ['title', 'brand', 'format', 'date', 'time', 'pillar', 'brief', 'camp', 'tend', 'host', 'team', 'ref', 'asset', 'out', 'caption'].forEach(function (k) { var el = p.querySelector('#i-' + k); if (el && !el.disabled) it[k] = k === 'title' ? (el.value.trim() || it.title) : el.value; });
+  ['title', 'brand', 'format', 'kind', 'date', 'time', 'pillar', 'brief', 'camp', 'tend', 'host', 'team', 'ref', 'asset', 'out', 'caption'].forEach(function (k) { var el = p.querySelector('#i-' + k); if (el && !el.disabled) it[k] = k === 'title' ? (el.value.trim() || it.title) : el.value; });
   var chs = p.querySelectorAll('input[name="i-ch"]'); if (chs.length && !chs[0].disabled) it.ch = [].filter.call(chs, function (c) { return c.checked; }).map(function (c) { return c.value; });
 }
 function formNew(o) {
   o = o || {};
   if (o.kind === 'live') return liveForm(o);
+  if (role() === 'editor' || role() === 'ks') { toast('Content plan hanya bisa dilihat'); return; }
   var isIdea = o.kind === 'idea', mb = myBrands(S.me), def = o.brand || (S.brand !== 'Saya' && S.brand !== 'Semua' ? S.brand : mb[0] || BRANDS[0].k);
-  var h = '<div style="display:flex;justify-content:space-between;gap:10px"><h1>' + (isIdea ? 'Tulis ide' : o.fromIdea ? 'Pakai ide di content plan' : 'Konten baru') + '</h1><button class="btn sm" data-close aria-label="Tutup">✕</button></div>';
+  if (!isIdea) return newItem(o, def);
+  var h = '<div style="display:flex;justify-content:space-between;gap:10px"><h1>Tulis ide</h1><button class="btn sm" data-close aria-label="Tutup">✕</button></div>';
   h += '<div class="f"><label for="n-title">Judul / ide</label><input id="n-title" value="' + esc(o.title || '') + '" placeholder="Contoh: 3 hal dicek sebelum sewa motor"></div>';
   h += '<div class="f2"><div class="f"><label for="n-brand">Brand</label><select id="n-brand">' + opts(BRANDS.map(function (b) { return b.k; }), def) + '</select></div><div class="f"><label for="n-format">Format</label><select id="n-format">' + opts(FEED, o.format || 'Reels') + '</select></div></div>';
-  h += '<div class="f2"><div class="f"><label for="n-pillar">Content pillar</label><select id="n-pillar">' + opts(PILLARS, o.pillar || 'Educational') + '</select></div>';
-  h += isIdea ? '<div class="f"><label for="n-source">Sumber ide</label><select id="n-source">' + opts(SOURCES, 'Ide sendiri') + '</select></div></div>' : '<div class="f"><label for="n-date">Tanggal tayang</label><input id="n-date" type="date" value="' + esc(o.date || addDays(TODAY, 3)) + '"></div></div>';
-  if (!isIdea) h += '<div class="f"><label for="n-camp">Campaign</label><select id="n-camp">' + campOptions('', o.camp) + '</select></div>';
-  if (!isIdea) h += '<div class="f"><label>Channel upload</label><div class="chks">' + CHANNELS.map(function (c) { return '<label class="chk"><input type="checkbox" name="n-ch" value="' + c + '"' + (c === 'Instagram' ? ' checked' : '') + '>' + c + '</label>'; }).join('') + '</div></div>';
-  h += '<div class="f"><label for="n-note">' + (isIdea ? 'Catatan' : 'Brief singkat') + ' (boleh kosong)</label><textarea id="n-note">' + esc(o.note || '') + '</textarea></div>';
+  h += '<div class="f2"><div class="f"><label for="n-pillar">Content pillar</label><select id="n-pillar">' + opts(PILLARS, o.pillar || 'Educational') + '</select></div><div class="f"><label for="n-source">Sumber ide</label><select id="n-source">' + opts(SOURCES, 'Ide sendiri') + '</select></div></div>';
+  h += '<div class="f"><label for="n-note">Catatan (boleh kosong)</label><textarea id="n-note">' + esc(o.note || '') + '</textarea></div>';
   h += '<div class="f"><label for="n-ref">Referensi konten (boleh kosong)</label><input id="n-ref" value="' + esc(o.ref || '') + '" placeholder="Link contoh konten"></div>';
-  h += '<div class="acts"><button class="btn pri" data-ok>' + (isIdea ? 'Simpan ke Content bank' : 'Masukkan ke Content plan') + '</button><button class="btn" data-close>Batal</button></div>';
+  h += '<div class="acts"><button class="btn pri" data-ok>Simpan ke Content bank</button><button class="btn" data-close>Batal</button></div>';
   panel(h, function (p) {
     p.querySelector('#n-title').focus();
     p.querySelector('[data-ok]').addEventListener('click', function () {
       var v = function (id) { var el = p.querySelector('#' + id); return el ? el.value.trim() : ''; };
       if (!v('n-title')) { p.querySelector('#n-title').focus(); toast('Judul belum diisi'); return; }
-      if (isIdea) { S.ideas.unshift({ id: uid(), title: v('n-title'), brand: v('n-brand'), format: v('n-format'), pillar: v('n-pillar'), source: v('n-source'), note: v('n-note'), ref: v('n-ref'), by: S.me, at: TODAY }); toast('Ide tersimpan di Content bank'); }
-      else {
-        var it = { id: uid(), title: v('n-title'), brand: v('n-brand'), format: v('n-format'), pillar: v('n-pillar'), date: v('n-date'), camp: v('n-camp'), brief: v('n-note'), ref: v('n-ref'), ch: [].filter.call(p.querySelectorAll('input[name="n-ch"]'), function (c) { return c.checked; }).map(function (c) { return c.value; }), status: 'Brief', mode: '', log: [] };
-        log(it, o.fromIdea ? 'dibuat dari Content bank' : 'dibuat'); S.items.push(it);
-        if (o.fromIdea) { S.ideas = S.ideas.filter(function (x) { return x.id !== o.fromIdea; }); S.used = (S.used || 0) + 1; }
-        toast('Masuk Content plan ' + nice(it.date));
-      }
+      S.ideas.unshift({ id: uid(), title: v('n-title'), brand: v('n-brand'), format: v('n-format'), pillar: v('n-pillar'), source: v('n-source'), note: v('n-note'), ref: v('n-ref'), by: S.me, at: TODAY }); toast('Ide tersimpan di Content bank');
       save(); close(); render();
     });
   }, true);
+}
+function newItem(o, def) {
+  var draft = { title: o.title || '', brand: def, format: o.format || 'Reels', kind: KINDS[0], pillar: o.pillar || 'Educational', date: o.date || addDays(TODAY, 3), camp: o.camp || '', brief: o.note || '', ref: o.ref || '', ch: ['Instagram'] };
+  var h = '<div class="pvh"><h1>' + (o.fromIdea ? 'Pakai ide di content plan' : 'Konten baru') + '</h1><button class="btn sm" data-close aria-label="Tutup">✕</button></div>';
+  h += fieldsHtml(draft);
+  h += '<div class="acts"><button class="btn pri" data-ok>Masukkan ke Content plan</button><button class="btn" data-close>Batal</button></div>';
+  panel(h, function (p) {
+    wireFields(p); p.querySelector('#i-title').focus();
+    p.querySelector('[data-ok]').addEventListener('click', function () {
+      if (!p.querySelector('#i-title').value.trim()) { p.querySelector('#i-title').focus(); toast('Judul belum diisi'); return; }
+      var it = Object.assign({}, draft); read(p, it);
+      it.id = uid(); it.status = 'Brief'; it.mode = ''; it.log = [];
+      log(it, o.fromIdea ? 'dibuat dari Content bank' : 'dibuat'); S.items.push(it);
+      if (o.fromIdea) { S.ideas = S.ideas.filter(function (x) { return x.id !== o.fromIdea; }); S.used = (S.used || 0) + 1; }
+      save(); close(); render(); toast('Masuk Content plan ' + nice(it.date));
+    });
+  });
 }
 var cur;
 function panel(html, after, center) {
@@ -1218,6 +1438,152 @@ function vPapan() {
   return h;
 }
 
+/* ---------- Arahan konten mingguan (Kevin, awal minggu) ---------- */
+function dirs() { S.dirs = S.dirs || []; return S.dirs; }
+function dirOf(ws) { return dirs().filter(function (x) { return x.id === ws; })[0]; }
+function dirBox(ws) {
+  var d = dirOf(ws), head = S.me === LEAD;
+  if (!d && !head) return '';
+  return '<div class="row" style="border-color:#BFE9E3;background:#F0FBF9;align-items:flex-start"><span class="ib">' + ic('flag') + '</span><div class="grow"><strong>Arahan konten minggu ' + short(ws) + ' ' + MON[parse(ws).getMonth()] + ' · Kevin</strong><span class="m" style="white-space:pre-wrap;overflow-wrap:anywhere">' + (d ? esc(d.text) : 'Belum ada arahan. Tulis strategi minggu ini, nanti Dita menerjemahkan ke konten harian.') + '</span>' + (d ? '<span class="m">Ditulis ' + esc(d.at || '') + '</span>' : '') + '</div>' + (head ? '<button class="btn sm" data-a="dir" data-ws="' + ws + '">' + (d ? 'Ubah' : 'Tulis arahan') + '</button>' : '') + '</div>';
+}
+function dirForm(ws) {
+  var d = dirOf(ws);
+  var h = '<div class="pvh"><div><span class="sub">Strategi awal minggu · Head of Marketing</span><h1>Arahan minggu ' + short(ws) + ' ' + MON[parse(ws).getMonth()] + '</h1></div><button class="btn sm" data-close aria-label="Tutup">✕</button></div>';
+  h += '<div class="f"><label for="d-text">Arahan konten</label><textarea id="d-text" rows="8" placeholder="Fokus minggu ini, promo yang didorong, tema, akun prioritas, yang harus dihindari">' + esc(d ? d.text : '') + '</textarea></div><span class="sub">Tampil di Content plan dan Tugas saya PIC. Konten harian cukup direview Dita; campaign dan promo tetap ke Kevin.</span>';
+  h += '<div class="acts"><button class="btn pri" data-ok>Simpan arahan</button><button class="btn" data-close>Batal</button></div>';
+  panel(h, function (p) {
+    p.querySelector('[data-ok]').addEventListener('click', function () {
+      var t = p.querySelector('#d-text').value.trim();
+      if (!t) { S.dirs = dirs().filter(function (x) { return x.id !== ws; }); }
+      else if (d) { d.text = t; d.at = now(); } else dirs().push({ id: ws, text: t, at: now(), by: S.me });
+      save(); close(); render(); toast('Arahan tersimpan');
+    });
+  }, true);
+}
+
+/* ---------- Hasil per konten (tracking) ---------- */
+function vHasil() {
+  var k = aMonth(), list = S.items.filter(function (i) { return i.format !== 'Live TikTok' && i.status === 'Tayang' && monthKey(i.date) === k && brandOk(i.brand); });
+  var filled = list.filter(perfHas), sum = function (f) { return filled.reduce(function (a, i) { return a + (+(i.perf || {})[f] || 0); }, 0); };
+  var reach = sum('reach'), it2 = filled.reduce(function (a, i) { return a + inter(i.perf); }, 0);
+  var due = list.filter(function (i) { return !perfHas(i) && i.date <= addDays(TODAY, -3); });
+  var h = header('Analitik · per konten', 'Hasil per konten', 'Setiap konten yang sudah tayang: views, reach, interaksi, ER, dan leads dari kode tracking-nya. Diisi PIC H+3 sampai H+7.', monthNav());
+  h += kpis([
+    { label: 'Konten tayang', ic: 'check', val: list.length, note: monthName(k), bar: TEAL },
+    { label: 'Hasil sudah diisi', ic: 'form', val: filled.length + ' / ' + list.length, note: due.length ? due.length + ' lewat H+3 belum diisi' : 'Aman', pct: list.length ? filled.length / list.length * 100 : 0, bar: due.length ? ORG : TEAL, nc: due.length ? AMB : GOOD },
+    { label: 'Total views', ic: 'chart', val: fmt(sum('views')), note: fmt(reach) + ' reach', bar: TEAL },
+    { label: 'ER rata-rata', ic: 'review', val: reach ? pct1(it2 / reach * 100) + '%' : '—', note: 'Interaksi ÷ reach', bar: TEAL },
+    { label: 'Leads dari konten', ic: 'chat', val: fmt(sum('leads')), note: fmt(sum('close')) + ' closing · ' + rpS(sum('omzet')), bar: TEAL }
+  ]);
+  var rows = list.slice().sort(function (a, b) { var pa = a.perf || {}, pb = b.perf || {}; return ((+pb.leads || 0) - (+pa.leads || 0)) || ((+pb.views || 0) - (+pa.views || 0)); });
+  var tb = rows.length ? '<div style="overflow-x:auto"><table class="tbl"><thead><tr><th>Konten</th><th style="text-align:right">Views</th><th style="text-align:right">Reach</th><th style="text-align:right">Interaksi</th><th style="text-align:right">ER</th><th style="text-align:right">Leads</th><th style="text-align:right">Closing</th><th></th></tr></thead><tbody>' + rows.map(function (i) {
+    var p = i.perf || {}, has = perfHas(i), late3 = !has && i.date <= addDays(TODAY, -3);
+    return '<tr><td style="min-width:200px"><b>' + esc(i.title) + '</b><div class="sub"><span class="dot" style="background:' + brand(i.brand).c + ';margin-right:4px"></span>' + esc(i.brand) + ' · ' + esc(i.format) + ' · ' + short(i.date) + ' · ' + kCode(i) + '</div></td>' + (has ? '<td style="text-align:right">' + fmt(p.views) + '</td><td style="text-align:right">' + fmt(p.reach) + '</td><td style="text-align:right">' + fmt(inter(p)) + '</td><td style="text-align:right">' + pct1(erOf(p)) + '%</td><td style="text-align:right"><b>' + fmt(p.leads) + '</b></td><td style="text-align:right">' + fmt(p.close) + '</td>' : '<td colspan="6" style="text-align:center">' + (late3 ? '<span class="st" style="background:#FCEBDD;color:#9A3F0A">Belum diisi · lewat H+3</span>' : '<span class="sub">Belum diisi</span>') + '</td>') + '<td><button class="btn sm" data-open="' + i.id + '">' + (has ? 'Buka' : 'Isi') + '</button></td></tr>';
+  }).join('') + '</tbody></table></div>' : empty('Belum ada konten tayang di bulan ini.');
+  h += sec('Per konten · ' + monthName(k), 'list', 'Urut dari leads terbanyak. Klik Buka untuk melihat atau mengisi hasilnya.', '', brandChips() + tb);
+  var per = shownBrands().map(function (b) { var bi = filled.filter(function (i) { return i.brand === b.k; }), r = bi.reduce(function (a, i) { return a + (+i.perf.reach || 0); }, 0), x = bi.reduce(function (a, i) { return a + inter(i.perf); }, 0), ld = bi.reduce(function (a, i) { return a + (+i.perf.leads || 0); }, 0); return '<tr><td><span class="dot" style="background:' + b.c + ';margin-right:6px"></span><b>' + esc(b.k) + '</b></td><td style="text-align:right">' + bi.length + '</td><td style="text-align:right">' + fmt(r) + '</td><td style="text-align:right">' + (r ? pct1(x / r * 100) + '%' : '—') + '</td><td style="text-align:right">' + fmt(ld) + '</td></tr>'; }).join('');
+  h += sec('Per akun', 'insta', 'Hanya konten yang hasilnya sudah diisi.', '', '<div style="overflow-x:auto"><table class="tbl"><thead><tr><th>Akun</th><th style="text-align:right">Konten</th><th style="text-align:right">Reach</th><th style="text-align:right">ER</th><th style="text-align:right">Leads</th></tr></thead><tbody>' + per + '</tbody></table></div>');
+  return h;
+}
+
+/* ---------- Media partner: tukar jatah iklan & sewa jatah ---------- */
+var MPT = ['Tukar jatah iklan (barter)', 'Sewa jatah (berbayar)'];
+var MPS = ['Negosiasi', 'Aktif', 'Selesai'];
+function mps() { S.mps = S.mps || []; return S.mps; }
+function mpUsed(m, t) { return (m.uses || []).filter(function (u) { return u.t === t; }).reduce(function (a, u) { return a + (+u.qty || 0); }, 0); }
+function isBarter(m) { return (m.type || MPT[0]) === MPT[0]; }
+function mpBar(lbl, used, q, color) { var pc = q ? Math.min(100, used / q * 100) : 0; return '<div style="display:flex;flex-direction:column;gap:3px"><div style="display:flex;justify-content:space-between;gap:8px"><span class="sub" style="font-weight:800">' + lbl + '</span><span class="sub"><b style="color:#1D3149">' + fmt(used) + ' / ' + fmt(q) + '</b>' + (q ? ' · sisa ' + fmt(Math.max(0, q - used)) : '') + '</span></div><div class="trk"><i style="width:' + pc + '%;background:' + color + '"></i></div></div>'; }
+function mpChip(st) { var c = { Negosiasi: STC.Brief, Aktif: STC['Siap tayang'], Selesai: STC.Tayang }[st] || STC.Tayang; return '<span class="st" style="background:' + c[0] + ';color:' + c[1] + ';flex:none">' + esc(st) + '</span>'; }
+function mpEnding(m) { return m.st === 'Aktif' && m.end && m.end <= addDays(TODAY, 7) && (mpUsed(m, 'dapat') < (+m.adQ || 0) || (isBarter(m) && mpUsed(m, 'beri') < (+m.retQ || 0))); }
+function vMp() {
+  var all = mps(), list = all.filter(function (m) { return brandOk(m.brand); }), act = all.filter(function (m) { return m.st === 'Aktif'; });
+  var can = S.me === LEAD || role() === 'pic';
+  var q = act.reduce(function (a, m) { return a + (+m.adQ || 0); }, 0), u = act.reduce(function (a, m) { return a + mpUsed(m, 'dapat'); }, 0);
+  var rq = act.filter(isBarter).reduce(function (a, m) { return a + (+m.retQ || 0); }, 0), ru = act.filter(isBarter).reduce(function (a, m) { return a + mpUsed(m, 'beri'); }, 0);
+  var fee = act.filter(function (m) { return !isBarter(m); }).reduce(function (a, m) { return a + (+m.fee || 0); }, 0);
+  var h = header('Channel · kerja sama media', 'Media partner', 'Progres tukar jatah iklan (barter) dan sewa jatah (berbayar): berapa jatah tayang dari media partner yang sudah dipakai, dan berapa balasan dari kita yang sudah diberikan.', can ? '<button class="btn pri" data-a="mp">+ Media partner</button>' : '');
+  h += kpis([
+    { label: 'Media partner aktif', ic: 'users', val: act.length, note: all.filter(function (m) { return m.st === 'Negosiasi'; }).length + ' masih negosiasi', bar: TEAL },
+    { label: 'Jatah tayang dipakai', ic: 'check', val: fmt(u) + ' / ' + fmt(q), note: 'Posting / story dari media partner', pct: q ? u / q * 100 : 0, bar: TEAL },
+    { label: 'Balasan dari kita', ic: 'wait', val: fmt(ru) + ' / ' + fmt(rq), note: 'Untuk kerja sama barter', pct: rq ? ru / rq * 100 : 0, bar: rq && ru < rq ? ORG : TEAL },
+    { label: 'Biaya sewa jatah', ic: 'money', val: rpS(fee), note: 'Kerja sama berbayar yang aktif', bar: TEAL },
+    { label: 'Hampir habis periode', ic: 'alert', val: all.filter(mpEnding).length, note: 'Jatah belum habis, periode ≤ 7 hari', nc: all.filter(mpEnding).length ? AMB : '#5B6573', bar: all.filter(mpEnding).length ? ORG : TEAL }
+  ]);
+  var cards = list.length ? '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px">' + list.map(function (m) {
+    var b = brand(m.brand), bar = isBarter(m);
+    return '<button class="box mpc" data-mp="' + m.id + '" style="--c:' + b.c + '"><div style="display:flex;justify-content:space-between;gap:8px;align-items:flex-start"><div style="display:flex;flex-direction:column;min-width:0"><b style="color:#1D3149;overflow-wrap:anywhere">' + esc(m.name) + '</b><span class="sub">' + esc(m.brand) + ' · ' + (bar ? 'Barter' : 'Berbayar') + (m.start ? ' · ' + short(m.start) + (m.end ? ' – ' + short(m.end) : '') : '') + '</span></div>' + mpChip(m.st) + '</div>' +
+      mpBar('Jatah tayang dari ' + esc(m.name), mpUsed(m, 'dapat'), +m.adQ || 0, TEAL) + (bar ? mpBar('Balasan dari kita' + (m.retWhat ? ' · ' + esc(m.retWhat) : ''), mpUsed(m, 'beri'), +m.retQ || 0, ORG) : '<span class="sub">Biaya <b style="color:#1D3149">' + rpS(m.fee) + '</b> · ' + esc(m.paid || 'Belum dibayar') + '</span>') + (mpEnding(m) ? '<span class="st" style="background:#FCEBDD;color:#9A3F0A;align-self:flex-start">Periode hampir habis, jatah belum terpakai</span>' : '') + '</button>';
+  }).join('') + '</div>' : empty(can ? 'Belum ada media partner. Klik <b>+ Media partner</b>.' : 'Belum ada media partner.');
+  h += sec('Kerja sama', 'users', 'Klik kartu untuk mencatat jatah yang dipakai atau balasan yang sudah diberikan.', '', brandChips() + cards);
+  return h;
+}
+function mpForm(m) {
+  var isNew = !m, can = S.me === LEAD || role() === 'pic', dis = can ? '' : ' disabled';
+  m = m || { brand: myBrands(S.me)[0] || BRANDS[0].k, type: MPT[0], st: 'Negosiasi', start: TODAY, uses: [] };
+  var nIn = function (id, l, v, ph) { return '<div class="f"><label for="' + id + '">' + l + '</label><input id="' + id + '" type="text" inputmode="decimal" data-num value="' + esc(v == null ? '' : v) + '" placeholder="' + (ph || '') + '"' + dis + '></div>'; };
+  var h = '<div class="pvh"><div style="min-width:0"><span class="sub">' + (isNew ? 'Media partner baru' : esc(m.brand) + ' · ' + esc(m.st)) + '</span><h1>' + (isNew ? 'Tambah media partner' : esc(m.name)) + '</h1></div><button class="btn sm" data-close aria-label="Tutup">✕</button></div>';
+  h += '<div class="f"><label for="m-name">Nama media partner</label><input id="m-name" value="' + esc(m.name || '') + '" placeholder="Contoh: @infogarut"' + dis + '></div>';
+  h += '<div class="f"><label for="m-link">Link akun</label><input id="m-link" value="' + esc(m.link || '') + '" placeholder="https://instagram.com/..."' + dis + '>' + linkOut(m.link) + '</div>';
+  h += '<div class="f2"><div class="f"><label for="m-brand">Akun kita</label><select id="m-brand"' + dis + '>' + opts(BRANDS.map(function (b) { return b.k; }), m.brand) + '</select></div><div class="f"><label for="m-st">Status</label><select id="m-st"' + dis + '>' + opts(MPS, m.st) + '</select></div></div>';
+  h += '<div class="f"><label for="m-type">Jenis kerja sama</label><select id="m-type"' + dis + '>' + opts(MPT, m.type || MPT[0]) + '</select></div>';
+  h += '<div class="f2"><div class="f"><label for="m-start">Mulai</label><input id="m-start" type="date" value="' + esc(m.start || '') + '"' + dis + '></div><div class="f"><label for="m-end">Selesai</label><input id="m-end" type="date" value="' + esc(m.end || '') + '"' + dis + '></div></div>';
+  h += nIn('m-adq', 'Jatah tayang dari media partner (jumlah posting / story)', m.adQ, 'Contoh: 4');
+  h += '<div data-only="barter" class="f2">' + nIn('m-retq', 'Balasan dari kita (jumlah)', m.retQ, 'Contoh: 3') + '<div class="f"><label for="m-retw">Balasan berupa</label><input id="m-retw" value="' + esc(m.retWhat || '') + '" placeholder="Contoh: hari sewa motor gratis"' + dis + '></div></div>';
+  h += '<div data-only="sewa" class="f2">' + nIn('m-fee', 'Biaya sewa jatah (Rp)', m.fee) + '<div class="f"><label for="m-paid">Pembayaran</label><select id="m-paid"' + dis + '>' + opts(['Belum dibayar', 'DP', 'Lunas'], m.paid || 'Belum dibayar') + '</select></div></div>';
+  h += '<div class="f"><label for="m-note">Catatan (isi kesepakatan, kontak)</label><textarea id="m-note"' + dis + '>' + esc(m.note || '') + '</textarea></div>';
+  h += '<div class="acts">' + (can ? '<button class="btn pri" data-ms="save">' + (isNew ? 'Simpan' : 'Simpan perubahan') + '</button>' : '') + (can && !isNew ? '<button class="btn warn" data-ms="del">Hapus</button>' : '') + '</div>';
+  if (!isNew) {
+    h += '<div class="box"><h2>Progres</h2>' + mpBar('Jatah tayang dari media partner', mpUsed(m, 'dapat'), +m.adQ || 0, TEAL) + (isBarter(m) ? mpBar('Balasan dari kita', mpUsed(m, 'beri'), +m.retQ || 0, ORG) : '') + '</div>';
+    if (can) h += '<div class="box"><h2>Catat pemakaian</h2><div class="f2"><div class="f"><label for="u-t">Jenis</label><select id="u-t"><option value="dapat">Tayang di media partner</option>' + (isBarter(m) ? '<option value="beri">Balasan dari kita diberikan</option>' : '') + '</select></div><div class="f"><label for="u-date">Tanggal</label><input id="u-date" type="date" value="' + TODAY + '"></div></div><div class="f2"><div class="f"><label for="u-qty">Jumlah</label><input id="u-qty" type="text" inputmode="decimal" data-num value="1"></div><div class="f"><label for="u-ref">Link postingan / keterangan</label><input id="u-ref" placeholder="Link story/post, atau unit yang dipakai"></div></div><button class="btn" data-ms="use" style="align-self:flex-start">+ Catat</button></div>';
+    var us = (m.uses || []).slice().sort(function (a, b) { return (b.date || '').localeCompare(a.date || ''); });
+    h += '<h2>Riwayat pemakaian</h2>' + (us.length ? '<div class="list">' + us.map(function (x) { return '<div class="row"><span class="ib">' + ic(x.t === 'dapat' ? 'check' : 'wait') + '</span><div class="grow"><strong>' + (x.t === 'dapat' ? 'Tayang di ' + esc(m.name) : 'Balasan diberikan') + ' · ' + fmt(x.qty) + '</strong><span class="m" style="overflow-wrap:anywhere">' + nice(x.date) + (x.ref ? ' · ' + esc(x.ref) : '') + ' · ' + esc(x.by || '') + '</span></div>' + (/^https?:\/\//.test(x.ref || '') ? '<a class="btn sm" href="' + esc(x.ref) + '" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;text-decoration:none">Buka ↗</a>' : '') + (can ? '<button class="btn sm" data-udel="' + x.id + '" aria-label="Hapus catatan">✕</button>' : '') + '</div>'; }).join('') + '</div>' : '<span class="sub">Belum ada pemakaian.</span>');
+  }
+  panel(h, function (p) {
+    var ty = p.querySelector('#m-type');
+    function sw() { var bar = ty.value === MPT[0]; p.querySelectorAll('[data-only]').forEach(function (el) { el.style.display = (el.getAttribute('data-only') === 'barter') === bar ? '' : 'none'; }); }
+    ty.addEventListener('change', sw); sw();
+    p.addEventListener('click', function (e) {
+      var ud = e.target.closest('[data-udel]'); if (ud) { m.uses = (m.uses || []).filter(function (x) { return x.id !== ud.getAttribute('data-udel'); }); save(); render(); mpForm(m); return; }
+      var b = e.target.closest('[data-ms]'); if (!b) return; var x = b.getAttribute('data-ms'), v = function (id) { var el = p.querySelector('#' + id); return el ? el.value.trim() : ''; };
+      if (x === 'del') { if (!b.dataset.sure) { b.dataset.sure = 1; b.textContent = 'Yakin? Klik lagi'; return; } S.mps = mps().filter(function (y) { return y !== m; }); save(); close(); render(); toast('Media partner dihapus'); return; }
+      if (x === 'use') { var qn = +v('u-qty') || 0; if (!qn) { toast('Isi jumlahnya'); return; } m.uses = m.uses || []; m.uses.push({ id: uid(), t: v('u-t'), date: v('u-date') || TODAY, qty: qn, ref: v('u-ref'), by: S.me }); save(); render(); toast('Tercatat'); mpForm(m); return; }
+      if (!v('m-name')) { p.querySelector('#m-name').focus(); toast('Nama media partner belum diisi'); return; }
+      Object.assign(m, { name: v('m-name'), link: v('m-link'), brand: v('m-brand'), st: v('m-st'), type: v('m-type'), start: v('m-start'), end: v('m-end'), adQ: +v('m-adq') || 0, retQ: +v('m-retq') || 0, retWhat: v('m-retw'), fee: +v('m-fee') || 0, paid: v('m-paid'), note: v('m-note') });
+      if (isNew) { m.id = uid(); m.by = S.me; mps().unshift(m); }
+      save(); render(); toast('Tersimpan'); mpForm(m);
+    });
+  });
+}
+
+/* ---------- Akun saya: nama & foto profil (dipakai juga di Sistem Kerja) ---------- */
+function meName() { return WHO ? (WHO.nickname || WHO.name || '') : ''; }
+function avHtml(size) { var nm = WHO ? (WHO.nickname || WHO.name || '?') : 'U'; return WHO && WHO.photo ? '<img src="' + esc(WHO.photo) + '" alt="" style="width:' + size + 'px;height:' + size + 'px;border-radius:50%;object-fit:cover;flex:none">' : '<div aria-hidden="true" style="width:' + size + 'px;height:' + size + 'px;border-radius:50%;background:#1D3149;color:#FFFFFF;display:flex;align-items:center;justify-content:center;font-weight:900;flex:none;font-size:' + Math.round(size * .4) + 'px">' + esc(nm.charAt(0).toUpperCase()) + '</div>'; }
+function profBox() {
+  if (!WHO) return sec('Akun saya', 'user', '', '', '<span class="sub">Masuk dengan akun Sistem Kerja untuk mengubah nama dan foto profil.</span>');
+  return sec('Akun saya', 'user', 'Nama dan foto ini dipakai di dashboard marketing dan Sistem Kerja (KKH).', '<button class="btn sm pri" data-a="prof">Ubah nama &amp; foto</button>', '<div style="display:flex;align-items:center;gap:14px">' + avHtml(64) + '<div style="display:flex;flex-direction:column;min-width:0"><b style="color:#1D3149;font-size:16px">' + esc(WHO.name || '') + '</b><span class="sub">Panggilan: <b>' + esc(WHO.nickname || '-') + '</b> · ' + esc(S.me) + '</span></div></div>');
+}
+function profForm() {
+  if (!WHO) return;
+  var blob = null, clear = false;
+  var h = '<div class="pvh"><h1>Ubah nama &amp; foto</h1><button class="btn sm" data-close aria-label="Tutup">✕</button></div>';
+  h += '<div style="display:flex;align-items:center;gap:14px"><span data-prev>' + avHtml(72) + '</span><div style="display:flex;flex-direction:column;gap:6px"><label class="btn sm" style="cursor:pointer;display:inline-flex;align-items:center">Pilih foto<input type="file" accept="image/*" data-pf hidden></label>' + (WHO.photo ? '<button class="btn sm" data-pclr>Hapus foto</button>' : '') + '</div></div>';
+  h += '<div class="f"><label for="pf-name">Nama lengkap</label><input id="pf-name" value="' + esc(WHO.name || '') + '"></div><div class="f"><label for="pf-nick">Nama panggilan</label><input id="pf-nick" value="' + esc(WHO.nickname || '') + '"></div>';
+  h += '<div class="acts"><button class="btn pri" data-ok>Simpan</button><button class="btn" data-close>Batal</button></div>';
+  panel(h, function (p) {
+    var prev = p.querySelector('[data-prev]');
+    p.querySelector('[data-pf]').addEventListener('change', function (e) { var f = e.target.files[0]; if (!f) return; shrinkImg(f, 512).then(function (b) { blob = b; clear = false; prev.innerHTML = '<img src="' + URL.createObjectURL(b) + '" alt="" style="width:72px;height:72px;border-radius:50%;object-fit:cover">'; }, function () { toast('Foto tidak bisa dibaca'); }); });
+    var cl = p.querySelector('[data-pclr]'); if (cl) cl.addEventListener('click', function () { blob = null; clear = true; prev.innerHTML = '<div style="width:72px;height:72px;border-radius:50%;background:#1D3149;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:28px">' + esc((WHO.nickname || WHO.name || '?').charAt(0).toUpperCase()) + '</div>'; });
+    p.querySelector('[data-ok]').addEventListener('click', function (e) {
+      var nm = p.querySelector('#pf-name').value.trim(), nk = p.querySelector('#pf-nick').value.trim(), btn = e.target;
+      if (!nm) { toast('Nama belum diisi'); return; }
+      btn.disabled = true; btn.textContent = 'Menyimpan…';
+      var up = blob ? token().then(function (t) { var path = WHO.id + '/' + Date.now() + '.jpg'; return fetch(SB_URL + '/storage/v1/object/pk-avatar/' + path, { method: 'POST', headers: { apikey: SB_KEY, Authorization: 'Bearer ' + t, 'Content-Type': 'image/jpeg' }, body: blob }).then(function (r) { if (!r.ok) throw new Error('upload'); return SB_URL + '/storage/v1/object/public/pk-avatar/' + path; }); }) : Promise.resolve(clear ? '' : null);
+      up.then(function (photo) { return api('rpc/pk_set_profile', { method: 'POST', headers: { Prefer: 'return=representation' }, body: JSON.stringify({ p_name: nm, p_nickname: nk, p_photo: photo }) }); })
+        .then(function (r) { if (r) { WHO.name = r.name; WHO.nickname = r.nickname; WHO.photo = r.photo; } close(); render(); toast('Profil tersimpan'); }, function () { btn.disabled = false; btn.textContent = 'Simpan'; toast('Gagal menyimpan. Coba lagi.'); });
+    });
+  }, true);
+}
+
 /* ---------- Live TikTok (menu sendiri) ---------- */
 function lives() { return S.items.filter(function (i) { return i.format === 'Live TikTok'; }); }
 function liveForm(o) {
@@ -1253,7 +1619,7 @@ function vLive() {
     { label: 'Closing dari live', ic: 'money', val: tot[1], note: rpS(tot[2]) + ' omzet', bar: TEAL },
     { label: 'Belum isi hasil', ic: 'alert', val: lives().filter(function (i) { return i.status !== 'Tayang' && i.date < TODAY; }).length, note: 'Live yang sudah lewat', nc: lives().some(function (i) { return i.status !== 'Tayang' && i.date < TODAY; }) ? BAD : '#5B6573' }
   ]);
-  var sched = brandChips() + (wk.length ? '<div class="list">' + wk.map(function (i) { var past = i.status !== 'Tayang' && i.date < TODAY; return '<div class="row click" data-open="' + i.id + '"><span class="dot" style="background:' + brand(i.brand).c + '"></span><div class="grow"><strong>' + nice(i.date) + ' · ' + esc(i.time || '--:--') + '–' + esc(i.tend || '--:--') + ' · ' + esc(i.brand) + '</strong><span class="m">' + esc(i.title) + ' · host ' + esc(i.host || '-') + ' · ' + esc(i.team || 'Tim marketing') + (i.status === 'Tayang' ? ' · ' + (+i.lv || 0) + ' penonton · ' + (+i.lc || 0) + ' closing' : '') + '</span></div>' + (past ? '<span class="st" style="background:#FCEBDD;color:#9A3F0A">Isi hasil</span>' : itChip(i)) + '</div>'; }).join('') + '</div>' : empty('Belum ada jadwal live minggu ini. Tekan <b>+ Jadwal live</b>.'));
+  var sched = brandChips() + (wk.length ? '<div class="list">' + wk.map(function (i) { var past = i.status !== 'Tayang' && i.date < TODAY; return '<div class="row click" data-open="' + i.id + '"><span class="dot" style="background:' + brand(i.brand).c + '"></span><div class="grow"><strong>' + nice(i.date) + ' · ' + esc(i.time || '--:--') + '–' + esc(i.tend || '--:--') + ' · ' + esc(i.brand) + '</strong><span class="m">' + esc(i.title) + ' · host ' + esc(i.host || '-') + ' · ' + esc(i.team || 'Tim marketing') + (i.status === 'Tayang' ? ' · ' + fmt(i.lv) + ' penonton · ' + fmt(i.lc) + ' closing' + ((i.shots || []).length ? ' · 📷 ' + i.shots.length : ' · belum ada screenshot') : '') + '</span></div>' + (past ? '<span class="st" style="background:#FCEBDD;color:#9A3F0A">Isi hasil</span>' : itChip(i)) + '</div>'; }).join('') + '</div>' : empty('Belum ada jadwal live minggu ini. Tekan <b>+ Jadwal live</b>.'));
   h += sec('Jadwal minggu ini', 'cal', 'Klik jadwal untuk ubah host/jam, atau isi hasil setelah live selesai.', '', sched);
   var byT = {}; done.forEach(function (i) { var t = i.team || 'Tim marketing'; byT[t] = byT[t] || [0, 0, 0, 0]; byT[t][0]++; byT[t][1] += +i.lv || 0; byT[t][2] += +i.lc || 0; byT[t][3] += +i.lo || 0; });
   var byH = {}; done.forEach(function (i) { var t = i.host || '-'; byH[t] = byH[t] || [0, 0]; byH[t][0]++; byH[t][1] += +i.lc || 0; });
@@ -1312,7 +1678,7 @@ var SB_URL = 'https://shrvzlltysnbmgpkhjjg.supabase.co', SB_KEY = 'eyJhbGciOiJIU
 var LOCAL = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
 var ONLINE = false, DOCS = {}, LAST = '1970-01-01T00:00:00Z', SYNC = 'lokal', pushT = null, pushing = false, dirty = false;
 var PERSONAL = ['me', 'brand', 'week', 'plat', 'am', '_auto', 'lweek', 'ftype', 'fq', 'bmode', 'bwho', 'bm'];
-var ARR = ['camps', 'ideas', 'items', 'kols', 'reps', 'foot'];
+var ARR = ['camps', 'ideas', 'items', 'kols', 'reps', 'foot', 'mps', 'dirs'];
 function save() {
   var keep = {}; if (ONLINE) { PERSONAL.forEach(function (k) { keep[k] = S[k]; }); } else keep = S;
   try { localStorage.setItem(ONLINE ? KEY + '.saya' : KEY, JSON.stringify(keep)); } catch (e) {}
@@ -1384,7 +1750,7 @@ function goOnline() {
 function startOnline() {
   ONLINE = true; setSync('load');
   var keep = {}; try { keep = JSON.parse(localStorage.getItem(KEY + '.saya') || '{}'); } catch (e) {}
-  var b = blank(); S = Object.assign(b, { daily: { ig: {}, ads: {}, seo: {} }, kols: [], reps: [], foot: [], subs: [], budget: {}, pic: {}, slot: {} });
+  var b = blank(); S = Object.assign(b, { daily: { ig: {}, ads: {}, seo: {} }, kols: [], reps: [], foot: [], mps: [], dirs: [], subs: [], budget: {}, pic: {}, slot: {} });
   PERSONAL.forEach(function (k) { if (keep[k] != null) S[k] = keep[k]; });
   if (WHO && !SWITCH) S.me = mapPerson(WHO);
   if (!PEOPLE.some(function (p) { return p.n === S.me; })) S.me = LEAD;
@@ -1396,7 +1762,7 @@ function startOnline() {
 var ROLE = { 'Head of Marketing': 'head', Dita: 'pic', Nayla: 'pic', Editor: 'editor', 'Admin WA': 'cs', 'Kepala Staf': 'ks' };
 function role() { return ROLE[S.me] || 'pic'; }
 function canSee(el) { var r = el.getAttribute('data-roles'); return !r || r.split(' ').indexOf(role()) >= 0; }
-var VIEWS = { papan: vPapan, live: vLive, foot: vFoot, appr: vAppr, isi: vIsi, dash: vDash, tim: vTim, set: vSet, ig: vIg, ads: vAds, seo: vSeo, kol: vKol, wa: vAdmin, campaign: vCampaign, today: vToday, plan: vPlan, bank: vBank, editor: vEditor };
+var VIEWS = { hasil: vHasil, mp: vMp, papan: vPapan, live: vLive, foot: vFoot, appr: vAppr, isi: vIsi, dash: vDash, tim: vTim, set: vSet, ig: vIg, ads: vAds, seo: vSeo, kol: vKol, wa: vAdmin, campaign: vCampaign, today: vToday, plan: vPlan, bank: vBank, editor: vEditor };
 function view() { var v = (location.hash || '').slice(1); if (v === 'tim') v = 'papan'; return VIEWS[v] ? v : (S.me === 'Kepala Staf' ? 'dash' : 'today'); }
 var ON = 'font-weight: 800; color: #1D3149; background: #EAF8F6; box-shadow: inset 3px 0 0 #09BEAF;', OFF = 'font-weight: 600; color: #3B4250;';
 var BOT = { head: ['today', 'appr', 'plan', 'dash'], pic: ['today', 'plan', 'isi', 'dash'], editor: ['today', 'editor', 'plan', 'dash'], cs: ['today', 'wa', 'dash'], ks: ['dash', 'appr', 'plan'] };
@@ -1429,23 +1795,32 @@ function render() {
   document.body.classList.remove('nav-open');
   FULLKPI = ['dash', 'ig', 'ads', 'seo'].indexOf(v) >= 0;
   bottomNav(v, B);
+  var st0 = document.querySelector('[data-strip]'), keepX = st0 && v === 'plan' && render.lastV === 'plan' && render.lastW === S.week ? st0.scrollLeft : null;
   document.getElementById('app').innerHTML = VIEWS[v]() + '<div style="font-size:12px;color:#5B6573">' + (ONLINE ? 'Uji coba tahap 1 · data tersimpan bersama tim marketing (terpisah dari data KKH).' : 'Uji coba tahap 1 · mode lokal · data tersimpan di browser ini saja.') + '</div>';
+  var st = document.querySelector('[data-strip]'); if (st && st.scrollWidth > st.clientWidth) { if (keepX !== null) st.scrollLeft = keepX; else { var cd = st.querySelector('.day.center'); if (cd) st.scrollLeft = Math.max(0, cd.offsetLeft - st.offsetLeft - (st.clientWidth - cd.offsetWidth) / 2); } }
+  render.lastV = v; render.lastW = S.week;
 }
 window.addEventListener('hashchange', function () { close(); render(); window.scrollTo(0, 0); });
 document.addEventListener('input', function (e) { if (e.target.hasAttribute && e.target.hasAttribute('data-fq')) { S.fq = e.target.value; clearTimeout(window._fqT); window._fqT = setTimeout(function () { render(); var x = document.querySelector('[data-fq]'); if (x) { x.focus(); x.setSelectionRange(x.value.length, x.value.length); } }, 250); } });
 document.addEventListener('change', function (e) {
   var el = e.target; if (!el.hasAttribute) return;
   if (el.hasAttribute('data-me')) { if (!SWITCH) return; S.me = el.value; save(); render(); return; }
-  if (el.hasAttribute('data-dly')) { var pp = el.getAttribute('data-dly').split('|'), o = D()[pp[0]]; for (var q = 1; q < pp.length - 1; q++) { o = o[pp[q]] = o[pp[q]] || {}; } o[pp[pp.length - 1]] = el.value; save(); toast('Tersimpan'); return; }
+  if (el.hasAttribute('data-dly')) { var pp = el.getAttribute('data-dly').split('|'), o = D()[pp[0]]; for (var q = 1; q < pp.length - 1; q++) { o = o[pp[q]] = o[pp[q]] || {}; } o[pp[pp.length - 1]] = el.value; save(); return; }
   if (el.hasAttribute('data-tset') && S.me === LEAD) { var tk = el.getAttribute('data-tset'), bi = BRANDS[+el.getAttribute('data-i')]; if (tk === 'pic') { S.pic[bi.k] = el.value; } if (tk === 'slot') { S.slot[bi.k] = el.value; } if (tk === 'cap') { S.cap = Math.max(1, +el.value || 1); } applyTeam(); save(); render(); toast('Pengaturan tim tersimpan'); }
 });
 document.addEventListener('click', function (e) {
   if (e.target.closest('[data-menu]')) { document.body.classList.toggle('nav-open'); return; }
   if (e.target.closest('nav a')) document.body.classList.remove('nav-open');
   if (cur && cur.contains(e.target)) return;
-  var t = e.target.closest('[data-bmode],[data-bwho],[data-bm],[data-foot],[data-ftype],[data-lwk],[data-keepfoot],[data-apok],[data-apcamp],[data-apkol],[data-isid],[data-am],[data-plat],[data-kol],[data-rep],[data-wa],[data-camp],[data-open],[data-a],[data-new],[data-brand],[data-wk],[data-use],[data-delidea],[data-cap],[data-prio]'); if (!t) return;
+  if (e.target.closest('[data-isisub]')) { isiSubmit(e.target.closest('[data-isisub]')); return; }
+  var t = e.target.closest('[data-mp],[data-ws],[data-bmode],[data-bwho],[data-bm],[data-foot],[data-ftype],[data-lwk],[data-keepfoot],[data-apok],[data-apcamp],[data-apkol],[data-isid],[data-am],[data-plat],[data-kol],[data-rep],[data-wa],[data-camp],[data-open],[data-a],[data-new],[data-brand],[data-wk],[data-use],[data-delidea],[data-cap],[data-prio]'); if (!t) return;
   var g = function (k) { return t.getAttribute(k); };
-  if (role() === 'ks' && (t.hasAttribute('data-new') || t.hasAttribute('data-use') || t.hasAttribute('data-delidea') || t.hasAttribute('data-keepfoot') || t.hasAttribute('data-prio') || t.hasAttribute('data-cap') || ['new', 'idea', 'kol', 'rep', 'budget', 'camp', 'live', 'foot'].indexOf(g('data-a')) >= 0)) { toast('Kepala Staf hanya bisa melihat'); return; }
+  if (role() === 'ks' && (t.hasAttribute('data-new') || t.hasAttribute('data-use') || t.hasAttribute('data-delidea') || t.hasAttribute('data-keepfoot') || t.hasAttribute('data-prio') || t.hasAttribute('data-cap') || ['new', 'idea', 'kol', 'rep', 'budget', 'camp', 'live', 'foot', 'mp', 'dir'].indexOf(g('data-a')) >= 0)) { toast('Kepala Staf hanya bisa melihat'); return; }
+  if ((role() === 'editor' || role() === 'ks') && (t.hasAttribute('data-new') || g('data-a') === 'new' || g('data-a') === 'idea')) { toast('Content plan hanya bisa dilihat'); return; }
+  if (g('data-a') === 'prof') return profForm();
+  if (g('data-a') === 'dir') { if (S.me !== LEAD) { toast('Arahan ditulis Head of Marketing'); return; } return dirForm(g('data-ws') || weekStart(0)); }
+  if (g('data-a') === 'mp') return mpForm(null);
+  if (g('data-mp')) return mpForm(mps().filter(function (m) { return m.id === g('data-mp'); })[0]);
   if (g('data-am')) { var mk = aMonth().split('-'), yy = +mk[0], mm = +mk[1] + +g('data-am'); if (mm < 1) { mm = 12; yy--; } if (mm > 12) { mm = 1; yy++; } S.am = yy + '-' + (mm < 10 ? '0' : '') + mm; save(); render(); return; }
   if (g('data-apok') || g('data-apcamp') || g('data-apkol')) {
     if (S.me !== LEAD) { toast('Hanya Head of Marketing'); return; }
@@ -1488,7 +1863,7 @@ document.addEventListener('click', function (e) {
 /* siapa yang login: peran diambil dari akun Sistem Kerja; hanya CEO (dan uji lokal) yang bisa berganti peran */
 var WHO = null, SWITCH = LOCAL;
 function mapPerson(p) {
-  var n = (p.nickname || p.name || '').toLowerCase();
+  var n = [p.nickname, p.name, p.email].filter(Boolean).join(' ').toLowerCase(); /* nama panggilan bisa diganti, jadi cek juga nama lengkap & email */
   if (p.role === 'kepala_staf') return 'Kepala Staf';
   if (/kevin/.test(n)) return 'Head of Marketing';
   if (/dita/.test(n)) return 'Dita';
