@@ -76,6 +76,7 @@ code,pre{font-family:ui-monospace,Menlo,monospace;font-size:12.5px}pre{backgroun
   .ph>div{min-width:0}
 }
 .side .foot{word-break:break-word}
+.nb[hidden]{display:none}
 .tbl td .btn.sm{white-space:nowrap}
 </style>
 </head>
@@ -203,7 +204,7 @@ async function investorPanel(id) {
       ${I.holdings.length ? `<div class="list">${I.holdings.map(h => `<div class="li"><div class="t"><b>${esc(h.title)}</b><span>${esc(h.unit)} · ${JENIS[h.jenis]} · ${rp(h.principal)} · ${esc(returnLine(h))}</span></div>${pill(HST[h.status])}</div>`).join('')}</div>` : '<p class="muted small">Belum ada investasi.</p>'}</div>
     <div style="border-top:1px solid var(--line);padding-top:12px"><h3 style="margin:0 0 6px">Laporan & penarikan terakhir</h3>
       <div class="list">${I.statements.slice(0, 6).map(s => `<div class="li"><div class="t"><b>${bulan(s.period)} · ${esc(s.title)}</b><span>${KIND[s.kind]}</span></div><b>${rp(s.share)}</b>${pill(SST[s.status])}</div>`).join('')}
-      ${I.withdrawals.slice(0, 6).map(w => `<div class="li"><div class="t"><b>Penarikan ${rp(w.amount)}</b><span>${tgl(w.requested_at)} · ${esc(w.bank_snapshot)}</span></div>${pill(WST[w.status])}</div>`).join('')}</div>` : ''}`}`,
+      ${I.withdrawals.slice(0, 6).map(w => `<div class="li"><div class="t"><b>Penarikan ${rp(w.amount)}</b><span>${tgl(w.requested_at)} · ${esc(w.bank_snapshot)}</span></div>${pill(WST[w.status])}</div>`).join('')}</div></div>` : ''}`,
   (p) => {
     const fi = p.querySelector('#fi');
     if (fi) fi.onsubmit = async (e) => { e.preventDefault(); const d = Object.fromEntries(new FormData(fi)); if (id) d.id = id; if (!d.wa) delete d.wa;
