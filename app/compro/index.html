@@ -55,9 +55,10 @@ img { display: block; max-width: 100%; }
 
 /* hero */
 .hero { padding: 72px 0 88px; }
-.hero h1 { margin: 0; font-weight: 800; font-size: clamp(40px, 7.4vw, 92px); line-height: 1.02; letter-spacing: -0.035em; }
-.hero h1 .ln { display: flex; align-items: center; gap: .28em; }
-.hero h1 .ln img { width: .78em; height: .78em; object-fit: contain; flex: none; }
+.hero h1 { margin: 0; font-weight: 800; font-size: clamp(34px, 6.2vw, 78px); line-height: 1.04; letter-spacing: -0.035em; }
+.hero h1 .ln { display: flex; align-items: flex-start; gap: .28em; }
+.hero h1 .ln + .ln { margin-top: .08em; }
+.hero h1 .ln img { width: .78em; height: .78em; margin-top: .14em; object-fit: contain; flex: none; }
 .hero h1 .ln:nth-child(2) { color: var(--ink2); }
 .hero h1 .ln:nth-child(3) { color: var(--teal); }
 .hero .lead { margin: 40px 0 0; max-width: 34em; font-size: clamp(18px, 2vw, 21px); line-height: 1.55; color: var(--ink2); }
