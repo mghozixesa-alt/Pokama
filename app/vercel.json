@@ -203,7 +203,7 @@
      "value": "pokama.org"
     }
    ],
-   "destination": "/compro/index.html"
+   "destination": "/compro/index"
   },
   {
    "source": "/",
@@ -213,11 +213,19 @@
      "value": "mitra.pokama.org"
     }
    ],
-   "destination": "/mitra/index.html"
+   "destination": "/mitra/index"
   },
   {
    "source": "/affiliate",
-   "destination": "/mitra/admin.html"
+   "destination": "/mitra/admin"
+  },
+  {
+   "source": "/uji-compro",
+   "destination": "/compro/index"
+  },
+  {
+   "source": "/uji-mitra",
+   "destination": "/mitra/index"
   }
  ]
 }
