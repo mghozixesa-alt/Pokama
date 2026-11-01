@@ -418,20 +418,20 @@ end $$;
 
 create or replace function public.iv_admin_overview(p_unit text default null) returns jsonb
 language plpgsql stable security definer set search_path = public as $$
-declare cur date := public.iv_month(); m0 timestamptz; h public.iv_holdings; c jsonb; live numeric := 0; per jsonb := '{}'; k text; x jsonb;
+declare cur date := public.iv_month(); m0 timestamptz; hh public.iv_holdings; c jsonb; live numeric := 0; per jsonb := '{}'; k text; x jsonb;
   fixed30 numeric := 0;
 begin
   perform public.iv_need('view');
   m0 := cur::timestamp at time zone 'Asia/Jakarta';
-  for h in select * from public.iv_holdings where status = 'aktif' and not demo and (p_unit is null or unit_code = p_unit) loop
-    c := public.iv_calc(h.id, m0, now());
+  for hh in select * from public.iv_holdings where status = 'aktif' and not demo and (p_unit is null or unit_code = p_unit) loop
+    c := public.iv_calc(hh.id, m0, now());
     live := live + coalesce((c->>'share')::numeric, 0);
-    k := h.unit_code;
+    k := hh.unit_code;
     x := coalesce(per->k, jsonb_build_object('principal', 0, 'live', 0, 'n', 0, 'aset', 0, 'proyek', 0, 'saham', 0, 'revenue', 0));
-    x := x || jsonb_build_object('principal', (x->>'principal')::numeric + h.principal, 'live', (x->>'live')::numeric + coalesce((c->>'share')::numeric, 0),
-      'n', (x->>'n')::int + 1, h.jenis, (x->>h.jenis)::int + 1, 'revenue', (x->>'revenue')::numeric + coalesce((c->>'revenue')::numeric, 0));
+    x := x || jsonb_build_object('principal', (x->>'principal')::numeric + hh.principal, 'live', (x->>'live')::numeric + coalesce((c->>'share')::numeric, 0),
+      'n', (x->>'n')::int + 1, hh.jenis, (x->>hh.jenis)::int + 1, 'revenue', (x->>'revenue')::numeric + coalesce((c->>'revenue')::numeric, 0));
     per := per || jsonb_build_object(k, x);
-    if h.jenis = 'proyek' and h.return_model = 'imbal_tetap' then fixed30 := fixed30 + round(h.principal * h.rate_pct / 100); end if;
+    if hh.jenis = 'proyek' and hh.return_model = 'imbal_tetap' then fixed30 := fixed30 + round(hh.principal * hh.rate_pct / 100); end if;
   end loop;
   return jsonb_build_object('period', cur,
     'investors', (select count(*) from public.iv_investors where status = 'aktif' and not demo),
@@ -734,10 +734,6 @@ begin
     if h.rp_agreement_id is not null then
       update public.partner_agreements set status = 'ended', ends_on = (now() at time zone 'Asia/Jakarta')::date where id = h.rp_agreement_id;
     end if;
-  elsif p_act = 'hapus' then
-    perform public.iv_need('biz');
-    if h.status not in ('draf','ditolak') then raise exception 'Hanya draf yang bisa dihapus'; end if;
-    delete from public.iv_holdings where id = p_id;
   else raise exception 'Aksi tidak dikenal'; end if;
   perform public.iv_log('investasi_' || p_act, p_id::text, p_reason, jsonb_build_object('title', h.title, 'investor', h.investor_id));
   return jsonb_build_object('ok', true);
@@ -957,17 +953,21 @@ grant execute on function public.iv_public_interest(text, text, text, text) to a
 insert into storage.buckets(id, name, public, file_size_limit, allowed_mime_types)
 values ('iv-docs', 'iv-docs', false, 10485760, array['application/pdf','image/jpeg','image/png'])
 on conflict (id) do nothing;
-drop policy if exists iv_docs_read on storage.objects;
-create policy iv_docs_read on storage.objects for select to authenticated
-  using (bucket_id = 'iv-docs' and (public.iv_can_view()
-    or exists (select 1 from public.iv_holdings h where h.investor_id = public.iv_my_id() and h.doc_path = 'iv-docs/' || storage.objects.name)));
-drop policy if exists iv_docs_write on storage.objects;
-create policy iv_docs_write on storage.objects for insert to authenticated
-  with check (bucket_id = 'iv-docs' and (public.iv_is_biz() or public.iv_is_fin())
-    and exists (select 1 from public.iv_holdings h where h.id::text = (storage.foldername(name))[1] and h.status in ('draf','ditolak')));
-drop policy if exists iv_docs_upd on storage.objects;
-create policy iv_docs_upd on storage.objects for update to authenticated
-  using (bucket_id = 'iv-docs' and (public.iv_is_biz() or public.iv_is_fin())
-    and exists (select 1 from public.iv_holdings h where h.id::text = (storage.foldername(name))[1] and h.status in ('draf','ditolak')));
+-- dicek lewat fungsi security definer (tabel iv_* tidak bisa dibaca langsung oleh pengguna)
+create or replace function public.iv_doc_can(p_name text, p_write boolean) returns boolean
+language sql stable security definer set search_path = public as $$
+  select case when p_write then
+      (public.iv_is_biz() or public.iv_is_fin())
+      and exists (select 1 from public.iv_holdings h where h.id::text = split_part(p_name, '/', 1) and h.status in ('draf','ditolak'))
+    else
+      public.iv_can_view()
+      or exists (select 1 from public.iv_holdings h where h.investor_id = public.iv_my_id() and h.doc_path = 'iv-docs/' || p_name and h.status in ('aktif','selesai'))
+    end
+$$;
+revoke execute on function public.iv_doc_can(text, boolean) from public, anon;
+grant execute on function public.iv_doc_can(text, boolean) to authenticated;
+create policy iv_docs_read on storage.objects for select to authenticated using (bucket_id = 'iv-docs' and public.iv_doc_can(name, false));
+create policy iv_docs_write on storage.objects for insert to authenticated with check (bucket_id = 'iv-docs' and public.iv_doc_can(name, true));
+create policy iv_docs_upd on storage.objects for update to authenticated using (bucket_id = 'iv-docs' and public.iv_doc_can(name, true));
 
 commit;
