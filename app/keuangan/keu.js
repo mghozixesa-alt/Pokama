@@ -89,8 +89,8 @@ function header(title, sub, right = '') {
   const p = period();
   return `${usingDemo() ? `<div class="demo">DATA CONTOH · ${ENGINE === false ? 'mesin buku besar grup belum dipasang di database, jadi semua angka di halaman ini contoh (bukan angka sungguhan).' : 'mode data contoh dinyalakan.'}</div>` : ''}
     ${ME && ME.role === 'kepala_staf' ? '<div class="ro">Kepala Staf: lihat saja. Perubahan data keuangan oleh Keuangan atau CEO.</div>' : ''}
-    <header class="ph"><div><span class="muted small">Keuangan grup · ${esc(p.label)}</span><h1>${title}</h1><div class="sub">${sub}</div></div>
-    <div class="row gap">${right}${perSelect()}${ENGINE !== false ? `<label class="chipbtn ${S.demo ? 'on' : ''}" style="cursor:pointer"><input type="checkbox" data-demo ${S.demo ? 'checked' : ''} hidden>Data contoh</label>` : ''}</div></header>`;
+    <header class="ph"><div><span class="eyebrow">Keuangan grup · ${esc(p.label)}</span><h1>${title}</h1><div class="sub">${sub}</div></div>
+    <div class="row gap">${right}${perSelect()}${ENGINE !== false ? `<label class="chipbtn ${S.demo ? 'on' : ''}" style="height:44px"><input type="checkbox" data-demo ${S.demo ? 'checked' : ''} hidden>Data contoh</label>` : ''}</div></header>`;
 }
 const bar = (v, max, c = 'var(--navy)') => `<div class="bar"><i style="width:${Math.max(0, Math.min(100, max ? v / max * 100 : 0))}%;background:${c}"></i></div>`;
 const empty = (t) => `<p class="muted small" style="margin:0">${t}</p>`;
@@ -212,9 +212,9 @@ async function vRingkasan() {
   const p = period(), Dd = await data('dash', p), g = digest(Dd), h = Dd.health, dec = decisions(Dd, g);
   setBadges(Dd, g);
   const gm = ratio(g.G.rev - g.G.hpp, g.G.rev), nm = ratio(g.G.net, g.G.rev);
-  let o = header('Keuangan grup', 'Satu buku untuk Rentalaja, TripinAja, Niagaaja, dan Holding. Urutan baca: kas → profit → eksekusi → pertumbuhan.',
-    `<button class="btn" data-copy>Salin ringkasan</button>`);
-  o += sec('Perlu keputusan', dec.length ? dec.length + ' hal · diurutkan kas → profit → eksekusi → data' : '', dec.length ? `<div class="alerts">${dec.slice(0, 10).map(alertHtml).join('')}</div>` : '<div class="ok">Tidak ada yang perlu diputuskan hari ini.</div>');
+  cur = { Dd, g, dec };
+  let o = waShare('Keuangan grup') + header('Keuangan grup', 'Satu buku untuk Rentalaja, TripinAja, Niagaaja, dan Holding. Urutan baca: kas → profit → eksekusi → pertumbuhan.');
+  o += sec('Perlu ditindak', dec.length ? dec.length + ' hal · diurutkan kas → profit → eksekusi → data' : '', dec.length ? `<div class="alerts">${dec.slice(0, 10).map(alertHtml).join('')}</div>` : '<div class="ok">Tidak ada yang perlu diputuskan hari ini.</div>');
   o += `<div class="tiles">
     ${tile('Kas & bank', rpk(h.cash), `${g.cash.length} rekening${g.diffAcc.length ? ' · ' + g.diffAcc.length + ' selisih bank' : ' · cocok dengan bank'}`, '', '#kas')}
     ${tile('Runway', h.runway == null ? '—' : String(h.runway).replace('.', ',') + ' bln', 'biaya ' + rpk(h.burn) + '/bln (rata² 3 bln)', h.runway != null && h.runway < 3 ? 'bad' : h.runway < 6 ? 'warn' : '', '#kas')}
@@ -234,7 +234,7 @@ async function vRingkasan() {
   o += `<div class="ucards">${sorted.map((r, i) => {
     const L = leaderOf(r.code), m = ratio(r.after, r.cur.rev), st = r.after < 0 ? ['Rugi', 'red'] : m < 5 ? ['Tipis', 'yellow'] : ['Sehat', 'green'];
     const lmax = Math.max(...r.lines.map(l => l.rev), 1);
-    return `<a class="card ucard${i === 0 && r.after > 0 ? ' first' : ''}" href="#unit/${r.code}">
+    return `<a class="card ucard${i === 0 && r.after > 0 ? ' first' : ''}" style="--c:${COL[r.code]}" href="#unit/${r.code}">
       <div class="uhead"><span class="rank">#${i + 1}</span>${logo(r.code, 44)}<span class="uname"><b>${esc(r.name)}</b><small>${L ? avatar(L, 18) + '<span>Leader ' + esc(nick(L)) + '</span>' : '<span>' + (r.lines.length ? r.lines.length + ' lini' : 'satu lini') + '</span>'}</small></span>
         <span class="upts"><b class="${m < 0 ? 'red' : ''}">${pct(m)}</b><small class="muted">margin bersih</small></span></div>
       <div><div class="row between"><span class="lab">LABA SETELAH BIAYA HOLDING</span><span class="chip ${st[1]}">${st[0]}</span></div>
@@ -276,6 +276,19 @@ async function vRingkasan() {
   o += `<div class="cols3">${sec('Biaya terbesar', 'warna = unit penanggung', biaya + `<div class="legend">${['RA', 'WG', 'NA', 'HQ'].map(b => `<span>${dot(b)}${BIZN[b]}</span>`).join('')}</div>`)}${sec('Sumber pendapatan', 'per akun', mix)}${sec('Kesehatan data', 'semua angka berasal dari sumber ini', srcs)}</div>`;
   cur = { Dd, g, dec };
   return o;
+}
+/* bagikan ke WhatsApp: hanya ke nomor owner (CEO) dan Keuangan, tidak ke grup */
+let WA_TO = null;
+function waShare(title) {
+  const allowed = PEOPLE.filter(p => ['ceo', 'keuangan'].includes(p.role));
+  if (WA_TO === null) WA_TO = allowed.map(p => p.id);
+  const to = allowed.filter(p => WA_TO.includes(p.id));
+  return `<details class="wa" data-wa><summary><span>Laporan <b>${esc(title)}</b> · ${esc(period().label)} ke ${to.length ? esc(to.map(nick).join(', ')) : 'owner & Keuangan'}</span>
+    <span class="wa-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 0 1-11.8 7L4 20l1.1-4A8 8 0 1 1 20 12z"/><path d="M9 9.5c0 2.5 2 5 5 5.5l1.2-1.2-1.6-.9-.8.6c-1-.4-1.8-1.2-2.2-2.2l.6-.8-.9-1.6z"/></svg>Bagikan ke WhatsApp</span></summary>
+    <div class="wa-body"><div class="wa-prev"><div>${esc(summaryText())}</div></div>
+      <div class="wa-side"><div class="fl">Penerima<div class="chips">${allowed.length ? allowed.map(p => `<button type="button" class="rcp ${WA_TO.includes(p.id) ? 'on' : ''}" data-rcp="${esc(p.id)}">${avatar(p, 24)}${esc(nick(p))} · ${esc(ROLE[p.role])}</button>`).join('') : '<span class="muted small">Nomor owner & Keuangan diambil dari Tim & Peran.</span>'}</div></div>
+        <div class="small muted">Laporan keuangan hanya bisa dikirim ke nomor owner dan Keuangan yang terdaftar, dan tidak bisa dibagikan ke grup.</div>
+        <div class="row gap" style="flex-wrap:wrap"><button type="button" class="btn pri" data-wasend>Kirim sekarang</button><button type="button" class="btn" data-copy>Salin teks</button></div></div></div></details>`;
 }
 function summaryText() {
   if (!cur) return '';
@@ -524,16 +537,20 @@ const I = {
 };
 const svg = (k, s = 18) => `<svg aria-hidden="true" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${I[k]}</svg>`;
 const NAV = [
-  ['KEUANGAN GRUP', [['ringkasan', 'Ringkasan', 'grid'], ['unit', 'Per unit bisnis', 'trophy'], ['kas', 'Kas & bank', 'wallet', 'mutasi'], ['kewajiban', 'Kewajiban', 'clock', 'due'], ['rab', 'Belanja RAB & LPJ', 'inbox', 'lpj']]],
-  ['LAPORAN', [['labarugi', 'Laba rugi', 'coin'], ['neraca', 'Neraca', 'layers'], ['jurnal', 'Buku jurnal', 'book']]],
-  ['KELOLA', [['antrean', 'Antrean Keuangan', 'check', 'antrean'], ['sumber', 'Sumber & tutup buku', 'cog']]],
+  ['Grup', [['ringkasan', 'Ringkasan', 'grid'], ['unit', 'Per unit bisnis', 'trophy'], ['kas', 'Kas & bank', 'wallet', 'mutasi'], ['kewajiban', 'Kewajiban', 'clock', 'due'], ['rab', 'Belanja RAB & LPJ', 'inbox', 'lpj']]],
+  ['Laporan', [['labarugi', 'Laba rugi', 'coin'], ['neraca', 'Neraca', 'layers'], ['jurnal', 'Buku jurnal', 'book']]],
+  ['Kelola', [['antrean', 'Antrean Keuangan', 'check', 'antrean'], ['sumber', 'Sumber & tutup buku', 'cog']]],
 ];
 const MOBILE = [['ringkasan', 'Ringkasan', 'grid'], ['unit', 'Unit', 'trophy'], ['kas', 'Kas', 'wallet', 'mutasi'], ['antrean', 'Antrean', 'check', 'antrean']];
 const ROLE = { ceo: 'CEO', kepala_staf: 'Kepala Staf', keuangan: 'Keuangan', leader: 'Leader', staf: 'Staf' };
 function shell() {
   const me = PEOPLE.find(p => ME && (p.id === ME.id || p.email === ME.email)) || ME || {};
-  document.getElementById('side').innerHTML = `<div class="brand-row"><a class="brand" href="/"><img src="/img/pokama-logo.png" alt="Pokama"></a></div>    ${NAV.map(([sec, items]) => `<div class="nav-sec"><span class="nav-h">${sec}</span>${items.map(([k, l, ic, nb]) => `<a href="#${k}">${svg(ic)}<span>${l}</span>${nb ? `<b class="badge" data-nb="${nb}" hidden></b>` : ''}</a>`).join('')}</div>`).join('')}
-    <div class="nav-sec"><span class="nav-h">MODUL LAIN</span><a href="/">${svg('sun')}<span>Sistem Kerja</span></a><a href="/affiliate">${svg('users')}<span>Mitra Affiliate</span></a></div>
+  document.getElementById('side').innerHTML = `<a class="brand" href="/"><img src="/img/pokama-logo.png" alt="Pokama"></a>
+    <div class="side-top"><div class="side-sec">Keuangan grup</div>
+      <div class="restrict"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#09BEAF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><span>Area terbatas · CEO, Kepala Staf, Keuangan · 2FA</span></div>
+      <a class="back-link" href="/">← Sistem Kerja</a></div>
+    <nav aria-label="Menu keuangan">${NAV.map(([sec, items]) => `<div class="nav-sec"><span class="nav-h">${sec}</span>${items.map(([k, l, ic, nb]) => `<a href="#${k}">${svg(ic)}<span>${l}</span>${nb ? `<b class="badge" data-nb="${nb}" hidden></b>` : ''}</a>`).join('')}</div>`).join('')}
+    <div class="nav-sec"><span class="nav-h">Modul lain</span><a href="/affiliate">${svg('users')}<span>Mitra Affiliate</span></a></div></nav>
     <div class="side-me"><a href="/#/pengaturan" class="me">${avatar(me, 36)}<span><b>${esc(nick(me) || me.name || 'Uji lokal')}</b><small>${esc(me.title || ROLE[me.role] || '')}</small></span></a></div>`;
   document.getElementById('bottom').innerHTML = MOBILE.map(([k, l, ic, nb]) => `<a href="#${k}" data-k="${k}">${svg(ic, 22)}<span>${l}</span>${nb ? `<b class="badge" data-nb="${nb}" hidden></b>` : ''}</a>`).join('') + `<a href="#menu" data-k="menu">${svg('menu', 22)}<span>Lainnya</span></a>`;
 }
@@ -574,11 +591,21 @@ app.addEventListener('submit', (e) => {
   act(async () => { await A.rpc('pk_fin_obligation_save', { p: f }); toast('Kewajiban tersimpan'); render(); });
 });
 app.addEventListener('click', (e) => {
-  const t = e.target.closest('[data-go],[data-acc],[data-copy],[data-csv],[data-plv],[data-j],[data-void],[data-map],[data-retry],[data-ign],[data-bok],[data-bign],[data-key],[data-lock],[data-unlock]');
+  const t = e.target.closest('[data-go],[data-acc],[data-copy],[data-rcp],[data-wasend],[data-csv],[data-plv],[data-j],[data-void],[data-map],[data-retry],[data-ign],[data-bok],[data-bign],[data-key],[data-lock],[data-unlock]');
   if (!t) return;
   const d = t.dataset;
   if (d.go) { location.hash = d.go; return; }
   if (d.acc) { bankPanel(d.acc); return; }
+  if (d.rcp) { WA_TO = WA_TO.includes(d.rcp) ? WA_TO.filter(x => x !== d.rcp) : WA_TO.concat(d.rcp); t.classList.toggle('on'); return; }
+  if (d.wasend !== undefined) {
+    const to = PEOPLE.filter(p => WA_TO && WA_TO.includes(p.id) && ['ceo', 'keuangan'].includes(p.role));
+    if (!to.length) return toast('Pilih penerima dulu', true);
+    const txt = summaryText(), link = (p) => 'https://wa.me/' + String(p.phone || '').replace(/\D/g, '').replace(/^0/, '62') + '?text=' + encodeURIComponent(txt);
+    if (to.length === 1 && to[0].phone) { window.open(link(to[0]), '_blank', 'noopener'); return; }
+    panel(`<div class="row between"><h2>Kirim laporan ke WhatsApp</h2><button class="btn sm" data-close>✕</button></div><p class="muted small" style="margin:0">Buka satu per satu, lalu tekan kirim di WhatsApp.</p>
+      <div class="list">${to.map(p => `<div class="li">${avatar(p, 34)}<div class="t"><b>${esc(nick(p))}</b><span>${esc(ROLE[p.role])}${p.phone ? ' · ' + esc(p.phone) : ' · nomor belum diisi'}</span></div>${p.phone ? `<a class="btn sm pri" href="${esc(link(p))}" target="_blank" rel="noopener">Buka WhatsApp</a>` : '<span class="pill y">isi di Tim & Peran</span>'}</div>`).join('')}</div>`);
+    return;
+  }
   if (d.copy !== undefined) { navigator.clipboard.writeText(summaryText()).then(() => toast('Ringkasan disalin. Kirim hanya ke nomor owner & Keuangan, bukan ke grup.')); return; }
   if (d.csv) { csvDl((d.csv === 'pl' ? 'laba-rugi-' : 'neraca-') + period().to + '.csv', cur.csv()); return; }
   if (d.plv) { S.plv = d.plv; render(); return; }
@@ -600,7 +627,7 @@ window.addEventListener('hashchange', () => { close(); render(); app.focus(); })
 async function boot() {
   if (!LOCAL) {
     const [u, pp] = await Promise.all([A.get('pk_units?select=code,name,kind,parent,sort&is_active=eq.true&order=sort').catch(() => null),
-      A.get('pk_people?select=id,code,name,nickname,role,title,unit_code,photo,email&is_active=eq.true').catch(() => null)]);
+      A.get('pk_people?select=id,code,name,nickname,role,title,unit_code,photo,email,phone&is_active=eq.true').catch(() => null)]);
     if (Array.isArray(u) && u.length) UNITS = u; if (Array.isArray(pp)) PEOPLE = pp;
   }
   if (LOCAL && Array.isArray(window.__keuPeople)) PEOPLE = window.__keuPeople; // hanya uji lokal
