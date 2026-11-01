@@ -238,3 +238,6 @@ insert into public.pk_fin_sources(code, name, unit_code, kind, note) values
   ('bank','Mutasi bank','HQ','bank','Mutasi yang dikenali aturan bank'),
   ('manual','Jurnal penyesuaian Keuangan','HQ','sistem','Koreksi manual oleh Keuangan')
 on conflict (code) do nothing;
+
+-- sambungan Rentalaja App (018c) belum dipasang: tunggu keputusan owner
+update public.pk_fin_sources set is_active = false, note = 'Belum disambung. Rentalaja App masih memakai pembukuannya sendiri sampai sambungan 018c dipasang.' where code in ('rentalaja','niagaaja');

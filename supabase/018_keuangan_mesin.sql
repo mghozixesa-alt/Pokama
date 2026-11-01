@@ -199,7 +199,7 @@ begin
     update public.pk_fin_events set status = 'terposting', entry_id = v, error = null, need_key = null, processed_at = now(), attempts = attempts + 1 where id = p_id;
     select * into src from public.pk_fin_sources where code = e.source;
     if src.feeds_omzet and e.type in ('sale.paid','deposit.received') and u is not null then
-      insert into public.pk_omzet(unit_code, day, amount, note, source) values (u, e.event_date, amt::bigint, 'Otomatis ' || e.source || ' · ' || e.external_id, 'integrasi');
+      insert into public.pk_omzet(unit_code, day, amount, note, source) values (u, e.event_date, amt::bigint, 'Otomatis ' || e.source || ' · ' || e.external_id, 'app');
     end if;
     return 'terposting';
   exception when others then
@@ -407,6 +407,8 @@ begin
     perform public.pk_fin_process(e.id);
   end loop;
   -- Rentalaja: pengakuan pendapatan yang jatuh tempo karena waktu (trip/penginapan yang sudah mulai) dan DP hangus yang tertunda
+  -- hanya bila sambungan Rentalaja (018c) sudah dipasang dan sumbernya aktif
+  if to_regprocedure('public.pk_fin_ra_booking(uuid)') is not null and exists (select 1 from public.pk_fin_sources where code = 'rentalaja' and is_active) then
   for e in select b.id from public.bookings b
            where (b.status::text in ('active','returned','completed') or (b.line::text = 'experience' and b.status::text = 'confirmed' and b.start_at <= now()))
              and not exists (select 1 from public.pk_fin_events x where x.source = 'rentalaja' and x.external_id like 'RA-REV-' || b.code || '-%' and x.status = 'terposting')
@@ -416,12 +418,13 @@ begin
   for e in select b.id from public.bookings b where b.status::text in ('cancelled','no_show','expired') and b.updated_at > now() - interval '60 days' loop
     perform public.pk_fin_ra_cancel(e.id);
   end loop;
+  end if;
   r := r || jsonb_build_object('mutasi', public.pk_fin_bank_match(null));
   select count(*) into n from public.pk_fin_events where status = 'gagal';
   n := n + (select count(*) from public.pk_fin_bank_lines where status = 'baru');
   if n > 0 then
     for f in select id from public.pk_people where role = 'keuangan' and is_active loop
-      perform public.pk_notify(f, 'keuangan', n || ' transaksi keuangan perlu dicek', 'Akun belum dipetakan atau mutasi bank belum dikenali', '#/keuangan?tab=cek', false);
+      perform public.pk_notify(f, 'keuangan', n || ' transaksi keuangan perlu dicek', 'Akun belum dipetakan atau mutasi bank belum dikenali', '/keuangan/#antrean', false);
     end loop;
   end if;
   return r || jsonb_build_object('perlu_cek', n);
