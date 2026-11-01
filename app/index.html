@@ -16,6 +16,9 @@
 <body>
 <div id="app"><div class="loading full">Memuat…</div></div>
 <noscript>Aktifkan JavaScript untuk memakai Sistem Kerja Pokama.</noscript>
+<script>/* login Google mitra yang mendarat di halaman utama → teruskan ke portal mitra */
+try { var t = +localStorage.getItem('pokama.mitra.go') || 0; if (location.hash.indexOf('access_token=') >= 0 && Date.now() - t < 15 * 60e3) { localStorage.removeItem('pokama.mitra.go'); location.replace('/mitra/' + location.hash); } } catch (e) {}
+</script>
 <script type="module" src="app.js?v=1"></script>
 </body>
 </html>
