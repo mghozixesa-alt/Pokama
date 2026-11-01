@@ -625,12 +625,12 @@ begin
     'reward_used', rw, 'reward_budget', round(rev * bud / 100), 'reward_budget_pct', bud,
     'per_unit', (select coalesce(jsonb_agg(jsonb_build_object('unit', u.code, 'name', u.name,
         'booking', (select count(*) from _afb b where b.unit_code = u.code and public.af_month(b.booked_at) = m),
-        'revenue', (select coalesce(sum(net_amount + ext_amount), 0) from _afb b where b.unit_code = u.code and b.bk_status = 'selesai' and public.af_month(b.completed_at) = m),
+        'revenue', (select coalesce(sum(net_amount + ext_amount), 0) from _afb b where b.unit_code = u.code and b.bk_status = 'selesai' and b.comm_status in ('siap_cair','dicairkan') and public.af_month(b.completed_at) = m),
         'commission', (select coalesce(sum(commission), 0) from _afb b where b.unit_code = u.code and b.comm_status in ('siap_cair','dicairkan') and public.af_month(b.completed_at) = m)) order by u.sort), '[]'::jsonb)
       from public.af_units u where u.is_active),
     'per_cat', (select coalesce(jsonb_agg(jsonb_build_object('unit', unit_code, 'cat', cat, 'n', n, 'revenue', rv, 'commission', cm) order by rv desc), '[]'::jsonb) from (
       select unit_code, cat, count(*) n, sum(net_amount + ext_amount) rv, sum(commission) cm from _afb b
-      where b.bk_status = 'selesai' and public.af_month(b.completed_at) = m group by unit_code, cat) q),
+      where b.bk_status = 'selesai' and b.comm_status in ('siap_cair','dicairkan') and public.af_month(b.completed_at) = m group by unit_code, cat) q),
     'top', (select coalesce(jsonb_agg(q order by (q->>'done')::int desc, (q->>'commission')::numeric desc), '[]'::jsonb) from (
       select jsonb_build_object('id', x.id, 'name', coalesce(nullif(x.org, ''), x.name), 'city', x.city, 'kind', x.kind, 'tier', public.af_tier_now(x.id)->>'name',
         'booking', count(b.id) filter (where public.af_month(b.booked_at) = m),
@@ -735,8 +735,9 @@ language plpgsql security definer set search_path = public as $$
 declare v_id uuid := nullif(p->>'id', '')::uuid; m date := coalesce((p->>'month')::date, public.af_month());
 begin
   perform public.af_need(true, false);
-  if coalesce(btrim(p->>'title'), '') = '' then raise exception 'Judul tantangan wajib diisi'; end if;
   if v_id is null then
+    if coalesce(btrim(p->>'title'), '') = '' then raise exception 'Judul tantangan wajib diisi'; end if;
+    if coalesce((p->>'target')::int, 0) < 1 then raise exception 'Target minimal 1'; end if;
     if (select count(*) from public.af_challenges where month = m and is_active and demo = coalesce((p->>'demo')::boolean, false)) >= 3 then raise exception 'Maksimal 3 tantangan per bulan'; end if;
     insert into public.af_challenges(month, title, unit_code, cat, target, reward_type, reward_amount, demo, created_by)
     values (date_trunc('month', m)::date, btrim(p->>'title'), nullif(p->>'unit', ''), nullif(p->>'cat', ''), (p->>'target')::int,
@@ -746,7 +747,9 @@ begin
       select x.id, 'tantangan', 'Tantangan baru: ' || btrim(p->>'title') || '. Lihat di pokama.org/mitra.', x.demo from public.af_partners x
       where x.status = 'aktif' and not x.is_internal and x.demo = coalesce((p->>'demo')::boolean, false);
   else
-    update public.af_challenges set title = btrim(p->>'title'), unit_code = nullif(p->>'unit', ''), cat = nullif(p->>'cat', ''), target = (p->>'target')::int,
+    update public.af_challenges set title = coalesce(nullif(btrim(p->>'title'), ''), title),
+      unit_code = case when p ? 'unit' then nullif(p->>'unit', '') else unit_code end, cat = case when p ? 'cat' then nullif(p->>'cat', '') else cat end,
+      target = coalesce((p->>'target')::int, target),
       reward_type = coalesce(nullif(p->>'reward_type', ''), reward_type), reward_amount = coalesce((p->>'reward_amount')::numeric, reward_amount),
       is_active = coalesce((p->>'is_active')::boolean, is_active) where af_challenges.id = v_id;
   end if;
@@ -1051,6 +1054,21 @@ begin
   perform public.af_log('kunci_unit_baru', p_unit);
   return k;
 end $$;
+
+create or replace function public.af_unit_save(p_code text, p_ref_base text, p_active boolean) returns void
+language plpgsql security definer set search_path = public as $$
+begin
+  perform public.af_need(true, false);
+  if p_ref_base is not null and p_ref_base !~ '^https://' then raise exception 'Link harus diawali https://'; end if;
+  update public.af_units set ref_base = nullif(btrim(coalesce(p_ref_base, '')), ''), is_active = coalesce(p_active, is_active) where code = p_code;
+  perform public.af_log('unit', p_code, null, jsonb_build_object('ref_base', p_ref_base, 'aktif', p_active));
+end $$;
+
+create or replace function public.af_find_booking(p_booking_id text, p_demo boolean default false) returns jsonb
+language sql stable security definer set search_path = public as $$
+  select case when not public.af_can_view() then null else coalesce(jsonb_agg(jsonb_build_object('id', b.id, 'unit', b.unit_code, 'booking_id', b.booking_id, 'status', b.comm_status)), '[]'::jsonb) end
+  from public.af_bookings b where b.booking_id = btrim(p_booking_id) and b.demo = p_demo
+$$;
 
 create or replace function public.af_admin_misc(p_demo boolean default false) returns jsonb
 language sql stable security definer set search_path = public as $$

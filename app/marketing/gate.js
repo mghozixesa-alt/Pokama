@@ -58,7 +58,7 @@
   function showGate(note) {
     var g = document.getElementById('mk-gate');
     if (!g) { g = document.createElement('div'); g.id = 'mk-gate'; document.body.appendChild(g); }
-    g.innerHTML = '<form class="mk-gate-card" novalidate><img src="logo-pokama.png" alt="Pokama"><h1>Dashboard Marketing</h1><p>Masuk dengan akun Sistem Kerja Pokama.</p>' +
+    g.innerHTML = '<form class="mk-gate-card" novalidate><img src="/marketing/logo-pokama.png" alt="Pokama"><h1>' + (document.documentElement.dataset.gateTitle || 'Dashboard Marketing') + '</h1><p>Masuk dengan akun Sistem Kerja Pokama.</p>' +
       (note ? '<div class="mk-gate-err" role="alert">' + note + '</div>' : '') +
       '<label>Email<input id="mk-em" type="email" autocomplete="username" required></label><label>Password<input id="mk-pw" type="password" autocomplete="current-password" required></label>' +
       '<button type="submit" class="mk-gate-btn">Masuk</button><button type="button" class="mk-gate-g" id="mk-g">Masuk dengan Google</button><a href="/">Buka Sistem Kerja</a></form>';
