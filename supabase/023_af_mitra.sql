@@ -821,7 +821,7 @@ create or replace function public.af_close_month(p_month date default null, p_fo
 language plpgsql security definer set search_path = public as $$
 declare m date := coalesce(date_trunc('month', p_month)::date, (public.af_month() - interval '1 month')::date); nm date;
   rev numeric; comm numeric; rw numeric; bud numeric; minp numeric := (public.af_set('min_payout'))::text::numeric;
-  taxp numeric := coalesce((public.af_set('tax')->>'pct')::numeric, 0); r record; c record; i int; tiers jsonb := public.af_set('tiers');
+  taxp numeric := coalesce((public.af_set('tax')->>'pct')::numeric, 0); rec record; c record; i int; tiers jsonb := public.af_set('tiers');
   d3 int; st int; prevt jsonb; newt jsonb; prot boolean; mm date; npay int := 0; gross numeric; cm numeric; rv numeric;
 begin
   if auth.uid() is not null then perform public.af_need(false, true); end if;
@@ -885,23 +885,23 @@ begin
   on conflict do nothing;
 
   -- 4. tingkat untuk bulan depan (+ beruntun & perlindungan)
-  for r in select x.id from public.af_partners x where x.status = 'aktif' and x.demo = p_demo loop
-    select count(*) into d3 from public.af_bookings b where b.partner_id = r.id and public.af_done(b) and b.completed_at >= (m - interval '2 month') and public.af_month(b.completed_at) <= m;
+  for rec in select x.id from public.af_partners x where x.status = 'aktif' and x.demo = p_demo loop
+    select count(*) into d3 from public.af_bookings b where b.partner_id = rec.id and public.af_done(b) and b.completed_at >= (m - interval '2 month') and public.af_month(b.completed_at) <= m;
     st := 0; mm := m;
-    while exists (select 1 from public.af_bookings b where b.partner_id = r.id and public.af_done(b) and public.af_month(b.completed_at) = mm) and st < 36 loop
+    while exists (select 1 from public.af_bookings b where b.partner_id = rec.id and public.af_done(b) and public.af_month(b.completed_at) = mm) and st < 36 loop
       st := st + 1; mm := (mm - interval '1 month')::date;
     end loop;
     select x into newt from jsonb_array_elements(tiers) x where (x->>'min')::int <= d3 order by (x->>'min')::int desc limit 1;
-    prevt := public.af_tier_now(r.id); prot := false;
+    prevt := public.af_tier_now(rec.id); prot := false;
     if (newt->>'min')::int < (prevt->>'min')::int and st >= 3
-       and not coalesce((select protected from public.af_tiers where partner_id = r.id and month = m), false) then
+       and not coalesce((select protected from public.af_tiers where partner_id = rec.id and month = m), false) then
       newt := prevt; prot := true;
     end if;
-    insert into public.af_tiers(partner_id, month, tier, done3m, streak, protected) values (r.id, nm, newt->>'name', d3, st, prot)
+    insert into public.af_tiers(partner_id, month, tier, done3m, streak, protected) values (rec.id, nm, newt->>'name', d3, st, prot)
     on conflict (partner_id, month) do update set tier = excluded.tier, done3m = excluded.done3m, streak = excluded.streak, protected = excluded.protected;
-    if st >= 3 then insert into public.af_badges(partner_id, badge) values (r.id, 'Beruntun 3 bulan') on conflict do nothing; end if;
+    if st >= 3 then insert into public.af_badges(partner_id, badge) values (rec.id, 'Beruntun 3 bulan') on conflict do nothing; end if;
     if (newt->>'min')::int > (prevt->>'min')::int then
-      perform public.af_notify(r.id, 'naik_tingkat', 'Naik tingkat jadi ' || (newt->>'name') || ' mulai ' || to_char(nm, 'MM/YYYY') || ': komisi +' || (newt->>'bonus') || '%.');
+      perform public.af_notify(rec.id, 'naik_tingkat', 'Naik tingkat jadi ' || (newt->>'name') || ' mulai ' || to_char(nm, 'MM/YYYY') || ': komisi +' || (newt->>'bonus') || '%.');
     end if;
   end loop;
 
@@ -912,25 +912,25 @@ begin
   bud := round(rev * (public.af_set('reward_budget_pct'))::text::numeric / 100);
 
   -- 6. rekap pencairan: komisi siap cair s.d. akhir bulan + hadiah, per mitra (semua unit digabung)
-  for r in
+  for rec in
     select x.id, x.bank_name, x.bank_acct, x.bank_holder from public.af_partners x
     where x.demo = p_demo and x.status in ('aktif','nonaktif')
       and (exists (select 1 from public.af_bookings b where b.partner_id = x.id and b.comm_status = 'siap_cair' and b.payout_id is null and b.completed_at < nm)
         or exists (select 1 from public.af_rewards w where w.partner_id = x.id and w.status = 'siap_cair' and w.payout_id is null and w.month <= m))
   loop
-    select coalesce(sum(commission), 0) into cm from public.af_bookings b where b.partner_id = r.id and b.comm_status = 'siap_cair' and b.payout_id is null and b.completed_at < nm;
-    select coalesce(sum(amount), 0) into rv from public.af_rewards w where w.partner_id = r.id and w.status = 'siap_cair' and w.payout_id is null and w.month <= m;
+    select coalesce(sum(commission), 0) into cm from public.af_bookings b where b.partner_id = rec.id and b.comm_status = 'siap_cair' and b.payout_id is null and b.completed_at < nm;
+    select coalesce(sum(amount), 0) into rv from public.af_rewards w where w.partner_id = rec.id and w.status = 'siap_cair' and w.payout_id is null and w.month <= m;
     gross := cm + rv;
     if gross < minp then continue; end if;  -- dibawa ke bulan berikutnya
     insert into public.af_payouts(period, partner_id, commission, rewards, gross, tax_pct, tax, net, bank, items, demo)
-    values (m, r.id, cm, rv, gross, taxp, round(gross * taxp / 100), gross - round(gross * taxp / 100),
-      case when r.bank_acct is not null then r.bank_name || ' ' || r.bank_acct || ' a.n. ' || coalesce(r.bank_holder, '-') end,
-      (select count(*) from public.af_bookings b where b.partner_id = r.id and b.comm_status = 'siap_cair' and b.payout_id is null and b.completed_at < nm), p_demo)
+    values (m, rec.id, cm, rv, gross, taxp, round(gross * taxp / 100), gross - round(gross * taxp / 100),
+      case when rec.bank_acct is not null then rec.bank_name || ' ' || rec.bank_acct || ' a.n. ' || coalesce(rec.bank_holder, '-') end,
+      (select count(*) from public.af_bookings b where b.partner_id = rec.id and b.comm_status = 'siap_cair' and b.payout_id is null and b.completed_at < nm), p_demo)
     on conflict (period, partner_id) do nothing;
-    update public.af_bookings set payout_id = (select id from public.af_payouts where period = m and partner_id = r.id)
-     where partner_id = r.id and comm_status = 'siap_cair' and payout_id is null and completed_at < nm;
-    update public.af_rewards set payout_id = (select id from public.af_payouts where period = m and partner_id = r.id)
-     where partner_id = r.id and status = 'siap_cair' and payout_id is null and month <= m;
+    update public.af_bookings set payout_id = (select id from public.af_payouts where period = m and partner_id = rec.id)
+     where partner_id = rec.id and comm_status = 'siap_cair' and payout_id is null and completed_at < nm;
+    update public.af_rewards set payout_id = (select id from public.af_payouts where period = m and partner_id = rec.id)
+     where partner_id = rec.id and status = 'siap_cair' and payout_id is null and month <= m;
     npay := npay + 1;
   end loop;
 
