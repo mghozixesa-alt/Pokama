@@ -5,33 +5,20 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Keuangan · Pokama</title>
 <meta name="robots" content="noindex">
+<meta name="theme-color" content="#1D3149">
 <link rel="icon" href="/img/pk.png">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/marketing/gate.css">
 <script src="/marketing/gate.js"></script>
+<link rel="stylesheet" href="/style.css">
 <link rel="stylesheet" href="/keuangan/keu.css">
 </head>
 <body>
-<div id="dc-root">
-  <div class="mbar"><button class="btn sm" data-menu aria-label="Buka menu">☰</button><img src="/img/pokama-logo.png" alt="Pokama"><b id="mt">Keuangan</b></div>
-  <aside class="side" aria-label="Menu keuangan">
-    <img src="/img/pokama-logo.png" alt="Pokama">
-    <div class="grp"><span>KEUANGAN GRUP</span>
-      <a href="#ringkasan">Ringkasan</a>
-      <a href="#unit">Per unit bisnis</a>
-      <a href="#kas">Kas & bank <b class="nb" data-nb="mutasi" hidden></b></a>
-      <a href="#kewajiban">Kewajiban & jatuh tempo <b class="nb" data-nb="due" hidden></b></a>
-      <a href="#rab">Belanja (RAB & LPJ) <b class="nb" data-nb="lpj" hidden></b></a></div>
-    <div class="grp"><span>LAPORAN</span>
-      <a href="#labarugi">Laba rugi</a><a href="#neraca">Neraca</a><a href="#jurnal">Buku jurnal</a></div>
-    <div class="grp"><span>KELOLA</span>
-      <a href="#antrean">Antrean Keuangan <b class="nb" data-nb="antrean" hidden></b></a>
-      <a href="#sumber">Sumber data & tutup buku</a></div>
-    <div class="grp"><span>MODUL LAIN</span><a href="/">← Sistem Kerja</a><a href="/mitra/admin">Mitra Affiliate</a></div>
-    <div class="foot" id="me">…</div>
-  </aside>
-  <main id="app" tabindex="-1"><p class="muted">Memuat…</p></main>
-</div>
+<div id="dc-root"><div class="shell">
+  <nav class="side" aria-label="Menu keuangan" id="side"></nav>
+  <main class="main fin" id="app" tabindex="-1"><p class="loading">Memuat…</p></main>
+  <nav class="bottom" aria-label="Menu bawah" id="bottom"></nav>
+</div></div>
 <script type="module" src="/keuangan/keu.js"></script>
 </body>
 </html>
