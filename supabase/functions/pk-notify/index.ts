@@ -13,9 +13,10 @@ const RESEND = Deno.env.get("RESEND_API_KEY") || "";
 const KEY = BREVO || RESEND;
 const FROM_NAME = Deno.env.get("PK_MAIL_NAME") || "Sistem Kerja Pokama";
 const FROM_EMAIL = Deno.env.get("PK_MAIL_FROM") || "notifikasi@pokama.org";
-const APP = "https://pokama.org/";
+const APP = "https://app.pokama.org/";
+const ORIGINS = ["https://app.pokama.org", "https://pokama.org", "https://demo.pokama.org"];
 const db = createClient(URL, SERVICE, { auth: { persistSession: false } });
-const CORS: Record<string, string> = { "Access-Control-Allow-Origin": "https://pokama.org", "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type", "Access-Control-Allow-Methods": "POST, OPTIONS" };
+let CORS: Record<string, string> = { "Vary": "Origin", "Access-Control-Allow-Origin": ORIGINS[0], "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type", "Access-Control-Allow-Methods": "POST, OPTIONS" };
 const json = (b: unknown, s = 200) => new Response(JSON.stringify(b), { status: s, headers: { "Content-Type": "application/json", ...CORS } });
 const esc = (s: unknown) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]!));
 const KIND: Record<string, string> = { tugas: "Tugas", review: "Review", rab: "Belanja", kkh: "KKH", cuti: "Kehadiran", permintaan: "Permintaan" };
@@ -30,7 +31,7 @@ function shell(name: string, heading: string, inner: string) {
 <div style="font-size:12px;color:#5B6573">Sistem Kerja Harian</div></td></tr>
 <tr><td style="padding:10px 24px 4px"><div style="font-size:15px;color:#3B4250">Halo ${esc(name)},</div><h1 style="margin:6px 0 4px;font-size:19px;color:#1D3149">${esc(heading)}</h1></td></tr>
 <tr><td style="padding:6px 24px 18px">${inner}</td></tr>
-<tr><td style="padding:14px 24px 20px;border-top:1px solid #EEF0F3;font-size:12px;color:#8A94A3">Email otomatis dari pokama.org. Atur email notifikasi di menu Pengaturan.</td></tr>
+<tr><td style="padding:14px 24px 20px;border-top:1px solid #EEF0F3;font-size:12px;color:#8A94A3">Email otomatis dari app.pokama.org. Atur email notifikasi di menu Pengaturan.</td></tr>
 </table></td></tr></table></body></html>`;
 }
 const btn = (href: string, label: string) => `<a href="${esc(href)}" style="display:inline-block;background:#09BEAF;color:#1D3149;text-decoration:none;font-weight:800;font-size:14px;padding:10px 18px;border-radius:10px">${esc(label)}</a>`;
@@ -155,6 +156,8 @@ async function digest(force = false) {
 }
 
 Deno.serve(async (req) => {
+  const origin = req.headers.get("Origin") || "";
+  CORS = { ...CORS, "Access-Control-Allow-Origin": ORIGINS.includes(origin) ? origin : ORIGINS[0] };
   if (req.method === "OPTIONS") return new Response("ok", { headers: CORS });
   if (req.method !== "POST") return json({ error: "POST saja" }, 405);
   let body: any = {}; try { body = await req.json(); } catch { /* kosong */ }

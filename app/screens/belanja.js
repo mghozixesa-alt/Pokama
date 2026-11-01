@@ -99,7 +99,7 @@ export default async function belanja(el, params, reload) {
         let t = `*${r.code}* · ${ST[r.status][0]}\n*${r.title}*\n${unitName(r.unit_code)} · diajukan ${nick(r.created_by)} · butuh ${fdate(r.need_date)}\n${r.description ? '_' + r.description + '_\n' : ''}`;
         for (const [k, rows] of Object.entries(byC)) { t += `\n*${k}*${Object.keys(byC).length > 1 ? ' · ' + rp(rows.reduce((s, i) => s + i.qty * i.price, 0)) : ''}\n`;
           rows.forEach((i, n) => { t += `${n + 1}. ${i.name} — ${(+i.qty).toLocaleString('id-ID')} ${i.uom || ''} × ${rp(i.price)} = ${rp(i.qty * i.price)}${i.vendor ? ' (' + i.vendor + ')' : ''}\n`; }); }
-        t += `\n*TOTAL ${rp(r.total)}*${r.realisasi != null ? ` · realisasi ${rp(r.realisasi)}` : ''}${r.status === 'diajukan' ? `\nMenunggu persetujuan ${nick(r.chain[r.step])}` : ''}\n\npokama.org/#/belanja?r=${r.id}`;
+        t += `\n*TOTAL ${rp(r.total)}*${r.realisasi != null ? ` · realisasi ${rp(r.realisasi)}` : ''}${r.status === 'diajukan' ? `\nMenunggu persetujuan ${nick(r.chain[r.step])}` : ''}\n\napp.pokama.org/#/belanja?r=${r.id}`;
         await waReport(r.code, t); return; }
       if (a.dataset.a === 'new') ok = await rabForm();
       else if (a.dataset.a === 'approve') { ok = await modal('Setujui ' + r.code, `<p>${esc(r.title)} · <b>${rp(r.total)}</b></p>`, { submit: 'Setujui', onSubmit: () => db.rpc('pk_rab_decide', { p_id: r.id, p_action: 'approve' }) }); }

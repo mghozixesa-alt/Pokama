@@ -73,7 +73,7 @@ function shell() {
   const me = ctx.me;
   const nav = ROUTES.map(([sec, items]) => `<div class="nav-sec"><span class="nav-h">${sec}</span>${items.map(([k, l, ic]) =>
     `<a href="#/${k}" data-k="${k}">${svg(ic)}<span>${l}</span><b class="badge" data-badge="${k}" hidden></b></a>`).join('')}</div>`).join('')
-    + (['ceo', 'kepala_staf', 'keuangan'].includes(me.role) ? `<div class="nav-sec"><span class="nav-h">MODUL LAIN</span>${['ceo', 'kepala_staf'].includes(me.role) ? `<a href="/marketing/kerja.html">${svg('grid')}<span>Marketing</span></a>` : ''}<a href="/keuangan/">${svg('grid')}<span>Keuangan grup</span></a><a href="/mitra/admin">${svg('users')}<span>Mitra Affiliate</span></a></div>` : '');
+    + (['ceo', 'kepala_staf', 'keuangan'].includes(me.role) ? `<div class="nav-sec"><span class="nav-h">MODUL LAIN</span>${['ceo', 'kepala_staf'].includes(me.role) ? `<a href="/marketing/">${svg('grid')}<span>Marketing</span></a>` : ''}<a href="/keuangan/">${svg('grid')}<span>Keuangan grup</span></a><a href="/affiliate">${svg('users')}<span>Mitra Affiliate</span></a></div>` : '');
   root.innerHTML = `<div class="shell">
     <nav class="side" aria-label="Menu utama"><div class="brand-row"><a class="brand" href="#/kkh"><img src="img/pokama-logo.png" alt="Pokama"></a><button type="button" class="bell" data-bell aria-label="Notifikasi">${svg('bell', 20)}<b class="badge" data-badge="ntf" hidden></b></button></div><span class="muted small brand-sub">Sistem Kerja Harian</span>${nav}
       <div class="side-me"><a href="#/pengaturan" class="me">${avatar(me.id, 36)}<span><b>${esc(me.nickname || me.name)}</b><small>${esc(me.title || ROLE[me.role])}</small></span></a>
@@ -103,9 +103,9 @@ async function openNotifs() {
 function menuView(el) {
   el.innerHTML = `<header class="ph"><div><h1>Menu</h1><p class="muted">${esc(ctx.me.name)} · ${esc(ctx.me.title || ROLE[ctx.me.role])}</p></div></header>
     <div class="menu-list">${FLAT.map(([k, l, ic]) => `<a class="card row" href="#/${k}">${svg(ic, 22)}<b>${l}</b><span style="flex:1"></span>›</a>`).join('')}
-    ${['ceo', 'kepala_staf'].includes(ctx.me.role) ? `<a class="card row" href="/marketing/kerja.html">${svg('grid', 22)}<b>Marketing</b><span style="flex:1"></span>›</a>` : ''}
+    ${['ceo', 'kepala_staf'].includes(ctx.me.role) ? `<a class="card row" href="/marketing/">${svg('grid', 22)}<b>Marketing</b><span style="flex:1"></span>›</a>` : ''}
     ${['ceo', 'kepala_staf', 'keuangan'].includes(ctx.me.role) ? `<a class="card row" href="/keuangan/">${svg('grid', 22)}<b>Keuangan grup</b><span style="flex:1"></span>›</a>` : ''}
-    ${['ceo', 'kepala_staf', 'keuangan'].includes(ctx.me.role) ? `<a class="card row" href="/mitra/admin">${svg('users', 22)}<b>Mitra Affiliate</b><span style="flex:1"></span>›</a>` : ''}
+    ${['ceo', 'kepala_staf', 'keuangan'].includes(ctx.me.role) ? `<a class="card row" href="/affiliate">${svg('users', 22)}<b>Mitra Affiliate</b><span style="flex:1"></span>›</a>` : ''}
     <button class="card row danger-t" type="button" id="lo2">Keluar</button></div>`;
   el.querySelector('#lo2').onclick = () => signOut();
 }

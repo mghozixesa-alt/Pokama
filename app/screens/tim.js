@@ -74,7 +74,7 @@ document.addEventListener('click', async (e) => {
   if (!email) { out.textContent = ' Isi email dulu.'; return; }
   e.target.disabled = true; out.textContent = ' Membuat…';
   try { const r = await callFn('pk-account', { action: p.user_id ? 'reset' : 'create', person_id: p.id, email });
-    out.innerHTML = `<br>Kirim ke ${esc(r.name)} lewat WhatsApp:<br><code class="copy">Email: ${esc(r.email)}<br>Password: ${esc(r.password)}<br>Masuk di https://pokama.org</code><br><small>Minta ganti password setelah masuk (menu Pengaturan).</small>`;
+    out.innerHTML = `<br>Kirim ke ${esc(r.name)} lewat WhatsApp:<br><code class="copy">Email: ${esc(r.email)}<br>Password: ${esc(r.password)}<br>Masuk di https://app.pokama.org</code><br><small>Minta ganti password setelah masuk (menu Pengaturan).</small>`;
   } catch (er) { out.textContent = ' ' + er.message; }
   e.target.disabled = false;
 });

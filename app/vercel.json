@@ -1,1 +1,223 @@
-{"headers": [{"source": "/(.*)", "headers": [{"key": "X-Frame-Options", "value": "DENY"}, {"key": "X-Content-Type-Options", "value": "nosniff"}, {"key": "Referrer-Policy", "value": "strict-origin-when-cross-origin"}, {"key": "Cache-Control", "value": "no-cache"}]}], "cleanUrls": true}
+{
+ "headers": [
+  {
+   "source": "/(.*)",
+   "headers": [
+    {
+     "key": "X-Frame-Options",
+     "value": "DENY"
+    },
+    {
+     "key": "X-Content-Type-Options",
+     "value": "nosniff"
+    },
+    {
+     "key": "Referrer-Policy",
+     "value": "strict-origin-when-cross-origin"
+    },
+    {
+     "key": "Cache-Control",
+     "value": "no-cache"
+    }
+   ]
+  }
+ ],
+ "cleanUrls": true,
+ "redirects": [
+  {
+   "source": "/mitra/admin",
+   "has": [
+    {
+     "type": "host",
+     "value": "pokama.org"
+    }
+   ],
+   "destination": "https://app.pokama.org/affiliate",
+   "permanent": true
+  },
+  {
+   "source": "/mitra",
+   "has": [
+    {
+     "type": "host",
+     "value": "pokama.org"
+    }
+   ],
+   "destination": "https://mitra.pokama.org/",
+   "permanent": true
+  },
+  {
+   "source": "/mitra/",
+   "has": [
+    {
+     "type": "host",
+     "value": "pokama.org"
+    }
+   ],
+   "destination": "https://mitra.pokama.org/",
+   "permanent": true
+  },
+  {
+   "source": "/marketing/kerja",
+   "has": [
+    {
+     "type": "host",
+     "value": "pokama.org"
+    }
+   ],
+   "destination": "https://app.pokama.org/marketing/",
+   "permanent": true
+  },
+  {
+   "source": "/marketing/:path*",
+   "has": [
+    {
+     "type": "host",
+     "value": "pokama.org"
+    }
+   ],
+   "destination": "https://app.pokama.org/marketing/:path*",
+   "permanent": true
+  },
+  {
+   "source": "/keuangan/:path*",
+   "has": [
+    {
+     "type": "host",
+     "value": "pokama.org"
+    }
+   ],
+   "destination": "https://app.pokama.org/keuangan/:path*",
+   "permanent": true
+  },
+  {
+   "source": "/affiliate",
+   "has": [
+    {
+     "type": "host",
+     "value": "pokama.org"
+    }
+   ],
+   "destination": "https://app.pokama.org/affiliate",
+   "permanent": true
+  },
+  {
+   "source": "/privasi",
+   "has": [
+    {
+     "type": "host",
+     "value": "pokama.org"
+    }
+   ],
+   "destination": "https://app.pokama.org/privasi",
+   "permanent": true
+  },
+  {
+   "source": "/admin",
+   "has": [
+    {
+     "type": "host",
+     "value": "mitra.pokama.org"
+    }
+   ],
+   "destination": "https://app.pokama.org/affiliate",
+   "permanent": true
+  },
+  {
+   "source": "/mitra",
+   "has": [
+    {
+     "type": "host",
+     "value": "mitra.pokama.org"
+    }
+   ],
+   "destination": "/",
+   "permanent": true
+  },
+  {
+   "source": "/mitra/",
+   "has": [
+    {
+     "type": "host",
+     "value": "mitra.pokama.org"
+    }
+   ],
+   "destination": "/",
+   "permanent": true
+  },
+  {
+   "source": "/(marketing|keuangan|affiliate|privasi)(.*)",
+   "has": [
+    {
+     "type": "host",
+     "value": "mitra.pokama.org"
+    }
+   ],
+   "destination": "https://app.pokama.org/$1$2",
+   "permanent": true
+  },
+  {
+   "source": "/mitra",
+   "has": [
+    {
+     "type": "host",
+     "value": "app.pokama.org"
+    }
+   ],
+   "destination": "https://mitra.pokama.org/",
+   "permanent": true
+  },
+  {
+   "source": "/mitra/",
+   "has": [
+    {
+     "type": "host",
+     "value": "app.pokama.org"
+    }
+   ],
+   "destination": "https://mitra.pokama.org/",
+   "permanent": true
+  },
+  {
+   "source": "/mitra/admin",
+   "destination": "/affiliate",
+   "permanent": true
+  },
+  {
+   "source": "/marketing/kerja",
+   "destination": "/marketing/",
+   "permanent": true
+  },
+  {
+   "source": "/marketing",
+   "destination": "/marketing/",
+   "permanent": false
+  }
+ ],
+ "rewrites": [
+  {
+   "source": "/",
+   "has": [
+    {
+     "type": "host",
+     "value": "pokama.org"
+    }
+   ],
+   "destination": "/compro/index.html"
+  },
+  {
+   "source": "/",
+   "has": [
+    {
+     "type": "host",
+     "value": "mitra.pokama.org"
+    }
+   ],
+   "destination": "/mitra/index.html"
+  },
+  {
+   "source": "/affiliate",
+   "destination": "/mitra/admin.html"
+  }
+ ]
+}

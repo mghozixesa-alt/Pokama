@@ -1,4 +1,4 @@
-/* Panel Keuangan grup Pokama — pokama.org/keuangan
+/* Panel Keuangan grup Pokama — app.pokama.org/keuangan
    Satu buku untuk semua unit bisnis: Rentalaja, TripinAja, Niagaaja, dan Holding.
    Data dari fungsi database pk_fin_* (supabase/018_keuangan_*.sql). Selama mesin itu belum dipasang,
    halaman otomatis memakai data contoh (demo.js) dengan bentuk yang sama, dan menandainya dengan jelas. */

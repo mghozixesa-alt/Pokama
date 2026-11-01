@@ -6,10 +6,12 @@ import { createClient } from "npm:@supabase/supabase-js@2.45.4";
 const URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const ANON = Deno.env.get("SUPABASE_ANON_KEY")!;
-const cors = {
-  "Access-Control-Allow-Origin": "https://pokama.org",
+const ORIGINS = ["https://app.pokama.org", "https://pokama.org", "https://demo.pokama.org"];
+let cors: Record<string, string> = {
+  "Access-Control-Allow-Origin": ORIGINS[0],
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
   "Access-Control-Allow-Methods": "POST, OPTIONS",
+  "Vary": "Origin",
 };
 const json = (b: unknown, s = 200) => new Response(JSON.stringify(b), { status: s, headers: { ...cors, "Content-Type": "application/json" } });
 
@@ -20,6 +22,8 @@ function tempPassword() {
 }
 
 Deno.serve(async (req) => {
+  const origin = req.headers.get("Origin") || "";
+  cors = { ...cors, "Access-Control-Allow-Origin": ORIGINS.includes(origin) ? origin : ORIGINS[0] };
   if (req.method === "OPTIONS") return new Response("ok", { headers: cors });
   if (req.method !== "POST") return json({ error: "Metode tidak didukung" }, 405);
   const auth = req.headers.get("Authorization") || "";

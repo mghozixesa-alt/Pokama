@@ -209,7 +209,7 @@ async function tim(el, params, reload) {
       for (const p of ppl) { const rs = rows.filter(r => r.person_id === p.id).sort((a, b) => a.hour - b.hour);
         const at = attOf[p.id]; t += `\n*${p.nickname || p.name}*${at ? ` · masuk ${new Date(at.at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Jakarta' }).replace(':', '.')}${at.late_min > 0 ? ' (telat ' + fmtLate(at.late_min) + ')' : ''}${at.mode === 'wfa' ? ' WFA' : ''}` : leave[p.id] ? '' : ' · _belum absen_'}${leave[p.id] ? ' · ' + leave[p.id] : rs.length ? ` · ${rs.length} jam${rs.some(r => r.status === 'valid') ? ', ' + rs.filter(r => r.status === 'valid').length + ' ✓' : ''}` : ' · _KKH kosong_'}\n`;
         for (const r of rs.filter(r => r.note)) t += `  ${String(r.hour).padStart(2, '0')}.00 ${r.code} – ${r.note}${r.status === 'valid' ? ' ✓' : ''}\n`; }
-      await waReport('KKH ' + fdate(day, false), t + '\npokama.org'); return; }
+      await waReport('KKH ' + fdate(day, false), t + '\napp.pokama.org'); return; }
     const c = e.target.closest('.cell'); if (!c) return;
     const r = rows.find(x => x.id === c.dataset.id); const p = ctx.byId[r.person_id];
     const can = c.dataset.can === '1';

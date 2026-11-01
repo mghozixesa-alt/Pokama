@@ -145,7 +145,7 @@ export default async function unit(el, params, reload) {
         if (late.length) t += `Belum lapor: ${late.join(', ')}\n`;
         t += `\n*${fmonth(m).toUpperCase()} (s.d. hari ini)*\n`;
         for (const c of cards) t += `${c.t && c.a / c.t >= .9 ? '🟢' : c.t && c.a / c.t >= .75 ? '🟡' : c.t ? '🔴' : '⚪'} *${c.u.name}*: ${jt(c.a)}${c.t ? ` dari ${jt(c.t)} (${Math.round(c.a / c.t * 100)}%)` : ' · target belum ada'}\n`;
-        t += `\nTotal grup: *${jt(grpA)}*${grpT ? ` dari ${jt(grpT)} (${Math.round(grpA / grpT * 100)}%)` : ''}\n\npokama.org`;
+        t += `\nTotal grup: *${jt(grpA)}*${grpT ? ` dari ${jt(grpT)} (${Math.round(grpA / grpT * 100)}%)` : ''}\n\napp.pokama.org`;
         await waReport('Omzet ' + fdate(day, false), t); return;
       }
       if (a && a.dataset.a === 'liga') {
