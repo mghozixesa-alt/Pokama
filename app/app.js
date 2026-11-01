@@ -1,4 +1,5 @@
-import { ctx, hasSession, takeSessionFromUrl, signInPassword, signInGoogle, loadContext, signOut, esc, avatar, ROLE, toast } from './core.js';
+import { ctx, hasSession, takeSessionFromUrl, signInPassword, signInGoogle, loadContext, signOut, esc, avatar, ROLE, toast, reloadSession } from './core.js';
+import { ensureMfa, idleGuard, idleExpired } from './mfa.js';
 import kerja from './screens/kerja.js';
 import tugas from './screens/tugas.js';
 import belanja from './screens/belanja.js';
@@ -154,6 +155,8 @@ async function badges() {
 async function boot() {
   root.innerHTML = '<div class="loading full">Memuat…</div>';
   let ok = false;
+  // verifikasi 2 langkah wajib untuk semua staf (server juga menolak sesi tanpa 2 langkah)
+  try { const m = await ensureMfa(); if (!m) { loginView(); return; } reloadSession(); } catch (e) { loginView(e.message); return; }
   try { ok = await loadContext(); } catch (e) { loginView(e.message); return; }
   if (!ok) { await import('./core.js').then(m => { try { localStorage.removeItem('pokama.session'); } catch (e) {} });
     loginView('Akun ini belum terdaftar di Sistem Kerja Pokama. Minta Kepala Staf menambahkan Anda di Tim & Peran.'); return; }
@@ -164,7 +167,9 @@ async function boot() {
 }
 
 takeSessionFromUrl();
+if (hasSession() && idleExpired()) { try { localStorage.removeItem('pokama.session'); } catch (e) {} reloadSession(); }
 if (hasSession()) boot(); else loginView();
+idleGuard(() => { if (hasSession()) signOut(); });
 
 // Data diperbarui otomatis: badge tiap 60 detik, halaman saat aplikasi dibuka kembali (kalau tidak sedang mengisi form)
 const busy = () => document.querySelector('.modal-wrap') || (document.activeElement && /INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName));

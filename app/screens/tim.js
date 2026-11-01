@@ -47,7 +47,7 @@ async function personForm(p = null) {
     field('Mulai bekerja', `<input type="date" name="joined_on" class="inp" value="${esc(p.joined_on || '')}">`) + field('Jatah cuti / tahun', `<input type="number" name="leave_quota" class="inp" value="${p.leave_quota ?? 12}">`) +
     field('Foto (tautan gambar, opsional)', `<input name="photo" class="inp" value="${esc(p.photo || '')}">`) + `</div>` +
     (isNew ? '' : `<label class="chk"><input type="checkbox" name="is_active" ${p.is_active ? 'checked' : ''}> Aktif</label>`) +
-    (isNew ? '' : `<div class="note"><b>Akun login:</b> ${p.user_id ? 'sudah tersambung' : p.email ? 'email terdaftar' : 'belum ada'}. <button type="button" class="btn sm" id="mkacc">${p.user_id ? 'Buat password baru' : 'Buat akun'}</button><span id="accout"></span></div>`),
+    (isNew ? '' : `<div class="note"><b>Akun login:</b> ${p.user_id ? 'sudah tersambung' : p.email ? 'email terdaftar' : 'belum ada'}. <button type="button" class="btn sm" id="mkacc">${p.user_id ? 'Buat password baru' : 'Buat akun'}</button>${p.user_id ? ' <button type="button" class="btn sm" id="mfareset">Reset verifikasi 2 langkah</button>' : ''}<span id="accout"></span></div>`),
     { wide: true, onSubmit: async (f) => {
       need(f.name, 'Isi nama'); need(f.code, 'Isi kode/inisial');
       const ks = ctx.people.find(x => x.role === 'kepala_staf');
@@ -59,6 +59,15 @@ async function personForm(p = null) {
     } });
   return res;
 }
+document.addEventListener('click', async (e) => {
+  if (e.target.id !== 'mfareset') return; const form = e.target.closest('form'); const out = form.querySelector('#accout');
+  const p = ctx.people.find(x => x.code === form.querySelector('[name=code]').value);
+  if (!confirm('Reset verifikasi 2 langkah ' + (p.nickname || p.name) + '? Ia harus memindai QR baru saat masuk berikutnya.')) return;
+  e.target.disabled = true;
+  try { await db.rpc('pk_mfa_reset', { p_person: p.id }); out.textContent = ' Direset. Minta ' + (p.nickname || p.name) + ' masuk lagi dan memindai QR baru.'; }
+  catch (er) { out.textContent = ' ' + er.message; }
+  e.target.disabled = false;
+});
 document.addEventListener('click', async (e) => {
   if (e.target.id !== 'mkacc') return; const form = e.target.closest('form'); const out = form.querySelector('#accout');
   const name = form.querySelector('[name=code]').value; const p = ctx.people.find(x => x.code === name); const email = form.querySelector('[name=email]').value.trim();

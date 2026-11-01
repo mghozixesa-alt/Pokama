@@ -67,16 +67,24 @@
       e.preventDefault();
       var b = f.querySelector('.mk-gate-btn'); b.disabled = true; b.textContent = 'Memeriksa…';
       auth('token?grant_type=password', { email: f.querySelector('#mk-em').value.trim(), password: f.querySelector('#mk-pw').value })
-        .then(save).then(me).then(function (person) { if (!person) { save(null); showGate('Akun ini belum terdaftar di Sistem Kerja. Minta Kepala Staf menambahkan.'); } else open(person); })
+        .then(save).then(mfa).then(me).then(function (person) { if (!person) { save(null); showGate('Akun ini belum terdaftar di Sistem Kerja. Minta Kepala Staf menambahkan.'); } else open(person); })
         .catch(function (err) { showGate(err.message === 'expired' ? 'Sesi habis. Silakan masuk lagi.' : err.message); });
     };
     g.querySelector('#mk-g').onclick = function () { location.href = SB_URL + '/auth/v1/authorize?provider=google&redirect_to=' + encodeURIComponent(location.origin + location.pathname); };
   }
 
+  // verifikasi 2 langkah wajib (lihat /mfa.js); sesi tanpa 2 langkah ditolak server
+  function mfa(s) {
+    return import('/mfa.js').then(function (m) {
+      if (m.idleExpired()) { save(null); throw new Error('expired'); }
+      m.idleGuard(function () { save(null); location.reload(); });
+      return m.ensureMfa().then(function (v) { if (!v) throw new Error('Keluar'); return v; });
+    });
+  }
   function start() {
     var s = load();
     if (!s || !s.access_token) return showGate();
-    check(s).then(function (person) { if (person) open(person); else { save(null); showGate('Akun ini belum terdaftar di Sistem Kerja. Minta Kepala Staf menambahkan.'); } })
+    fresh(s).then(mfa).then(check).then(function (person) { if (person) open(person); else { save(null); showGate('Akun ini belum terdaftar di Sistem Kerja. Minta Kepala Staf menambahkan.'); } })
       .catch(function () { save(null); showGate('Sesi habis. Silakan masuk lagi.'); });
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();

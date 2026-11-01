@@ -146,9 +146,10 @@ async function vPendaftar() {
   const L = (await A.rpc('af_admin_partners', { p_status: 'menunggu', p_demo: S.demo })) || [];
   let h = header('Pendaftar', 'Cek data, hubungi lewat WA, lalu setujui dengan kode unik (4–8 huruf besar/angka) atau tolak dengan alasan.', `<label class="pill ${S.demo ? 'y' : ''}" style="height:38px;padding:0 12px;cursor:pointer;gap:6px"><input type="checkbox" data-demo ${S.demo ? 'checked' : ''}>Data demo</label>`);
   h += `<section class="card"><div class="list">${L.length ? L.map(p => `<div class="li"><div class="t"><b>${esc(p.org || p.name)}</b><span>${esc(p.name)} · ${esc(KIND[p.kind] || p.kind)} · ${esc(p.city)} · daftar ${tgl(p.created_at)} · ${esc(p.email)}</span></div>
-    <a class="btn sm" href="${esc(waLink(p.wa, 'Halo ' + p.name + ', kami dari Rentalaja terkait pendaftaran Program Mitra ' + (p.org || '') + '.'))}" target="_blank" rel="noopener">WA +${esc(p.wa)}</a>
+    ${p.wa_verified ? '<span class="pill g">WA terverifikasi</span>' : '<span class="pill y">WA belum diverifikasi</span>'}
+    ${MISC.is_biz ? `<a class="btn sm" href="${esc(waLink(p.wa, 'Halo ' + p.name + ', kami dari Rentalaja terkait pendaftaran Program Mitra ' + (p.org || '') + '.'))}" target="_blank" rel="noopener">WA +${esc(p.wa)}</a>
     <input class="inp" style="width:110px;text-transform:uppercase" maxlength="8" value="${esc(suggest(p))}" data-code="${p.id}" aria-label="Kode mitra">
-    <button class="btn sm pri" data-approve="${p.id}">Setujui</button><button class="btn sm warn" data-reject="${p.id}">Tolak</button></div>`).join('') : '<p class="muted">Tidak ada pendaftar yang menunggu.</p>'}</div></section>`;
+    <button class="btn sm pri" data-approve="${p.id}">Setujui</button><button class="btn sm warn" data-reject="${p.id}">Tolak</button>` : ''}</div>`).join('') : '<p class="muted">Tidak ada pendaftar yang menunggu.</p>'}</div></section>`;
   return h;
 }
 async function vMitra() {
@@ -165,7 +166,9 @@ async function partnerPanel(id) {
   const rate = (u, c) => (p.rates.find(r => r.unit === u && r.cat === c) || {}).pct;
   let h = `<div style="display:flex;justify-content:space-between;gap:10px"><div><span class="muted small">${esc(KIND[p.kind] || p.kind)} · ${esc(p.city)}</span><h2 style="font-size:20px">${esc(p.org || p.name)}</h2></div><button class="btn sm" data-close>✕</button></div>
     <div class="kv"><div><span>Kode</span><b>${esc(p.code || '—')}</b></div><div><span>Status</span><b>${esc(p.status)}</b></div><div><span>PIC</span><b>${esc(p.name)}</b></div><div><span>WhatsApp</span><b><a href="${esc(waLink(p.wa, 'Halo ' + p.name + ','))}" target="_blank" rel="noopener">+${esc(p.wa)}</a></b></div>
-      <div><span>Email</span><b>${esc(p.email)}</b></div><div><span>Tingkat</span><b>${esc(p.tier)} · ${p.done3m} selesai/3 bln</b></div><div><span>Rekening</span><b>${esc(p.bank || '—')}</b></div><div><span>NIK</span><b>${p.nik_set ? 'tersimpan' : 'belum'}</b></div>
+      <div><span>Email</span><b>${esc(p.email)}</b></div><div><span>Tingkat</span><b>${esc(p.tier)} · ${p.done3m} selesai/3 bln</b></div><div><span>Rekening</span><b>${esc(p.bank || '—')}${p.bank_pending ? ' · <span class="pill y">ganti menunggu konfirmasi WA</span>' : ''}${p.bank_hold_until && new Date(p.bank_hold_until) > new Date() ? ' · <span class="pill y">ditahan s.d. ' + tgl(p.bank_hold_until) + '</span>' : ''}</b>${MISC.is_fin && p.bank ? '<button class="btn sm" data-reveal="rekening">Buka penuh</button>' : ''}</div>
+      <div><span>NIK / NPWP</span><b>${p.nik_set ? 'NIK tersimpan' : 'NIK belum'} · ${p.npwp_set ? 'NPWP tersimpan' : 'NPWP belum'}</b>${MISC.is_fin && p.nik_set ? '<button class="btn sm" data-reveal="nik">Buka NIK</button>' : ''}${MISC.is_fin && p.npwp_set ? ' <button class="btn sm" data-reveal="npwp">Buka NPWP</button>' : ''}</div>
+      <div><span>WhatsApp</span><b>${p.wa_verified ? 'terverifikasi' : 'belum diverifikasi'}</b></div>
       <div style="grid-column:1/-1"><span>Alamat antar/jemput</span><b>${esc(p.address || '—')}</b></div></div>
     ${p.reason ? `<div class="alert"><span>${esc(p.reason)}</span></div>` : ''}`;
   if (MISC.is_biz) {
@@ -185,6 +188,8 @@ async function partnerPanel(id) {
       } catch (er) { toast(er.message, true); }
     });
     pn.addEventListener('click', async (e) => {
+      const rv = e.target.closest('[data-reveal]');
+      if (rv) { try { const v = await A.rpc('af_reveal', { p_partner: id, p_field: rv.dataset.reveal }); rv.outerHTML = '<code>' + esc(v || '—') + '</code> <span class="muted small">(tercatat di log)</span>'; } catch (er) { toast(er.message, true); } return; }
       const b = e.target.closest('[data-pstatus],[data-viol]'); if (!b) return;
       try {
         if (b.dataset.pstatus) { const r = b.dataset.pstatus === 'aktif' ? '' : prompt('Alasan menonaktifkan mitra ini:'); if (r === null) return; await A.rpc('af_set_status', { p_id: id, p_status: b.dataset.pstatus, p_reason: r }); toast('Status diubah'); close(); render(); }
@@ -218,7 +223,7 @@ async function vTantangan() {
 async function vWa() {
   const N = MISC.notifs;
   let h = header('Kirim WA ke mitra', 'Pesan disiapkan otomatis (disetujui, booking baru, komisi siap cair, transfer, tantangan, naik tingkat, 3 besar). Klik Kirim untuk membuka WhatsApp, lalu kirim.', `<label class="pill ${S.demo ? 'y' : ''}" style="height:38px;padding:0 12px;cursor:pointer;gap:6px"><input type="checkbox" data-demo ${S.demo ? 'checked' : ''}>Data demo</label>`);
-  h += `<section class="card"><div style="display:flex;justify-content:space-between;align-items:center"><b>${N.length} pesan belum dikirim</b>${N.length ? '<button class="btn sm" data-sentall>Tandai semua terkirim</button>' : ''}</div><div class="list">${N.map(n => `<div class="li"><div class="t"><b>${esc(n.name)} · <span class="pill">${esc(n.kind.replace('_', ' '))}</span></b><span>${esc(n.text)}</span></div><a class="btn sm pri" href="${esc(waLink(n.wa, 'Halo ' + n.name + ', ' + n.text))}" target="_blank" rel="noopener" data-sent="${n.id}">Kirim</a></div>`).join('') || '<p class="muted">Semua pesan sudah dikirim.</p>'}</div></section>
+  h += `<section class="card"><div style="display:flex;justify-content:space-between;align-items:center"><b>${N.length} pesan belum dikirim</b>${N.length && (MISC.is_biz || MISC.is_fin) ? '<button class="btn sm" data-sentall>Tandai semua terkirim</button>' : ''}</div><div class="list">${N.map(n => `<div class="li"><div class="t"><b>${esc(n.name)} · <span class="pill">${esc(n.kind.replace('_', ' '))}</span></b><span>${esc(n.text)}</span></div>${MISC.is_biz || MISC.is_fin ? `<a class="btn sm pri" href="${esc(waLink(n.wa, 'Halo ' + n.name + ', ' + n.text))}" target="_blank" rel="noopener" data-sent="${n.id}">Kirim</a>` : ''}</div>`).join('') || '<p class="muted">Semua pesan sudah dikirim.</p>'}</div></section>
     <p class="muted small">Pengiriman otomatis lewat WA API bisa disambungkan nanti tanpa mengubah alur ini.</p>`;
   return h;
 }
@@ -246,15 +251,15 @@ async function vCair() {
   const rows = P.rows, tot = rows.filter(r => r.status !== 'ditolak').reduce((a, r) => a + +r.net, 0), open = rows.filter(r => r.status === 'diajukan');
   const fin = P.is_fin, tax = P.tax || {};
   const right = `<div class="filters">${P.periods.length ? `<select class="sel" data-f="period">${P.periods.map(p => `<option value="${p}"${p === per ? ' selected' : ''}>Komisi ${bulan(p)}</option>`).join('')}</select>` : ''}
-    ${fin ? '<button class="btn" data-close-month>Buat rekap bulan lalu</button>' : ''}${rows.length ? '<button class="btn" data-csv="cair">Unduh daftar transfer (CSV)</button>' : ''}<label class="pill ${S.demo ? 'y' : ''}" style="height:38px;padding:0 12px;cursor:pointer;gap:6px"><input type="checkbox" data-demo ${S.demo ? 'checked' : ''}>Data demo</label></div>`;
+    ${fin ? '<button class="btn" data-close-month>Buat rekap bulan lalu</button>' : ''}${rows.length && fin ? '<button class="btn" data-transfer>Unduh daftar transfer (CSV)</button>' : ''}<label class="pill ${S.demo ? 'y' : ''}" style="height:38px;padding:0 12px;cursor:pointer;gap:6px"><input type="checkbox" data-demo ${S.demo ? 'checked' : ''}>Data demo</label></div>`;
   let h = header('Pencairan komisi mitra', 'Rekap otomatis tiap tanggal 1 (komisi + hadiah siap cair bulan lalu, semua unit digabung per mitra). Setujui, transfer paling lambat tanggal 10, lalu unggah bukti.', right);
   h += `<div class="tiles">${tile('Total diajukan', rp(tot), per ? 'komisi ' + bulan(per) : 'belum ada rekap')}${tile('Mitra', rows.length, open.length + ' menunggu persetujuan')}${tile('Sewa', rows.reduce((a, r) => a + r.items, 0), 'booking dalam rekap')}${tile('Dibekukan', P.frozen.length, 'perlu dicek', P.frozen.length ? 'warn' : '')}</div>`;
   if (P.close && P.close.over_budget) h += `<div class="alert"><span><b>Hadiah melewati anggaran</b>: ${rp(P.close.reward_used)} dari ${rp(P.close.reward_budget)} (2% pendapatan affiliate). Tolak hadiah yang tidak disetujui sebelum menyetujui pencairan.</span></div>`;
   h += `<p class="muted small">${P.carried.length ? P.carried.length + ' mitra di bawah ' + rp(P.min_payout) + ' dibawa ke bulan berikutnya. ' : ''}Potongan pajak: ${esc(tax.kind || '-')} (${pct(tax.pct || 0)}).</p>`;
   h += `<section class="card"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap"><h2>Daftar pencairan</h2>${fin && open.length ? `<button class="btn pri" data-approve-sel>Setujui yang dicentang</button>` : ''}</div><div class="scroll"><table class="tbl" id="cair"><thead><tr>${fin ? '<th><input type="checkbox" data-all aria-label="Pilih semua"></th>' : ''}<th>Mitra</th><th>Rekening</th><th class="r">Sewa</th><th class="r">Komisi</th><th class="r">Hadiah</th><th class="r">Pajak</th><th class="r">Ditransfer</th><th>Status</th><th></th></tr></thead><tbody>
-    ${rows.map(r => `<tr>${fin ? `<td>${r.status === 'diajukan' ? `<input type="checkbox" data-sel="${r.id}" aria-label="Pilih ${esc(r.name)}">` : ''}</td>` : ''}<td><b>${esc(r.name)}</b>${r.frozen ? `<br><span class="pill y">${r.frozen} booking dibekukan</span>` : ''}${!r.nik ? '<br><span class="pill r">NIK belum ada</span>' : ''}</td><td class="small">${esc(r.bank || 'belum diisi')}</td><td class="r">${r.items}</td><td class="r">${rp(r.commission)}</td><td class="r">${rp(r.rewards)}</td><td class="r">${rp(r.tax)}</td><td class="r"><b>${rp(r.net)}</b></td>
+    ${rows.map(r => `<tr>${fin ? `<td>${r.status === 'diajukan' && !r.mine ? `<input type="checkbox" data-sel="${r.id}" aria-label="Pilih ${esc(r.name)}">` : r.mine && r.status === 'diajukan' ? '<span class="pill" title="Rekap ini Anda buat; disetujui orang lain">diajukan Anda</span>' : ''}</td>` : ''}<td><b>${esc(r.name)}</b>${r.hold ? '<br><span class="pill y">rekening baru, ditahan' + (r.hold_until ? ' s.d. ' + tgl(r.hold_until) : '') + '</span>' : ''}${r.frozen ? `<br><span class="pill y">${r.frozen} booking dibekukan</span>` : ''}${!r.nik ? '<br><span class="pill r">NIK belum ada</span>' : ''}</td><td class="small">${esc(r.bank || 'belum diisi')}</td><td class="r">${r.items}</td><td class="r">${rp(r.commission)}</td><td class="r">${rp(r.rewards)}</td><td class="r">${rp(r.tax)}</td><td class="r"><b>${rp(r.net)}</b></td>
       <td><span class="pill ${{ diajukan: 'y', disetujui: 'b', ditransfer: 'g', ditolak: 'r' }[r.status]}">${r.status}</span></td>
-      <td style="white-space:nowrap"><button class="btn sm" data-pay="${r.id}">Rincian</button>${fin && r.status === 'disetujui' ? ` <button class="btn sm pri" data-paid="${r.id}">Sudah ditransfer</button>` : ''}${r.proof_url ? ` <button class="btn sm" data-proof="${esc(r.proof_url)}">Bukti</button>` : ''}</td></tr>`).join('') || `<tr><td colspan="10" class="muted">Belum ada rekap. ${fin ? 'Rekap dibuat otomatis tanggal 1, atau tekan "Buat rekap bulan lalu".' : ''}</td></tr>`}</tbody></table></div></section>`;
+      <td style="white-space:nowrap"><button class="btn sm" data-pay="${r.id}">Rincian</button>${fin && r.status === 'disetujui' && !r.hold ? ` <button class="btn sm pri" data-paid="${r.id}">Sudah ditransfer</button>` : ''}${r.proof_url ? ` <button class="btn sm" data-proof="${esc(r.proof_url)}">Bukti</button>` : ''}</td></tr>`).join('') || `<tr><td colspan="10" class="muted">Belum ada rekap. ${fin ? 'Rekap dibuat otomatis tanggal 1, atau tekan "Buat rekap bulan lalu".' : ''}</td></tr>`}</tbody></table></div></section>`;
   h += `<div class="cols"><section class="card"><h2>Komisi dibekukan</h2><p class="muted small">Otomatis bila NIK/HP pemesan sama dengan mitra, atau dibekukan Keuangan. Alasan tercatat di riwayat.</p><div class="list">${P.frozen.map(f => `<div class="li"><div class="t"><b>${esc(f.partner)} · ${esc(f.booking_id)}</b><span>${esc(unitName(f.unit))} · ${rp(f.amount)} · ${esc(f.reason || '')}</span></div>${fin ? `<button class="btn sm" data-unfreeze="${f.id}">Lepas</button><button class="btn sm warn" data-viol="${f.partner_id}">Pelanggaran</button>` : ''}</div>`).join('') || '<p class="muted">Tidak ada.</p>'}</div>
       ${fin ? '<div class="g2"><input class="inp" data-freeze-id placeholder="ID booking unit (mis. RA-2611-0021)"><button class="btn" data-freeze>Bekukan booking</button></div>' : ''}</section>
     <section class="card"><h2>Hadiah menunggu pencairan</h2><div class="list">${P.rewards_open.map(w => `<div class="li"><div class="t"><b>${esc(w.name)}</b><span>${esc(w.title)} · ${rp(w.amount)}</span></div>${fin ? `<button class="btn sm warn" data-rwreject="${w.id}">Tolak</button>` : ''}</div>`).join('') || '<p class="muted">Tidak ada.</p>'}</div></section></div>`;
@@ -294,7 +299,7 @@ async function vAtur() {
   let h = header('Pengaturan & API', 'Tarif per unit × kategori, aturan program, dan kunci API untuk aplikasi unit.');
   h += `<section class="card"><h2>Unit & tarif dasar</h2><div class="list">${MISC.units.map(u => `<div style="display:flex;flex-direction:column;gap:8px;padding:10px 0;border-top:1px solid var(--line2)">
       <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><img src="${esc(u.logo || '/img/pk.png')}" alt="" style="height:24px"><b style="font-size:15px">${esc(u.name)}</b> ${u.is_active ? '<span class="pill g">aktif</span>' : '<span class="pill">belum aktif</span>'}
-        <span class="muted small">Kunci API: ${u.key_hint ? '••••' + esc(u.key_hint) + ' · dibuat ' + tgl(u.key_at) : 'belum ada'}</span>${ceoFin ? `<button class="btn sm" data-newkey="${u.code}">${u.key_hint ? 'Ganti kunci' : 'Buat kunci'}</button>` : ''}</div>
+        <span class="muted small">Kunci API: ${u.key_id ? '<code>' + esc(u.key_id) + '</code> · rahasia ••••' + esc(u.key_hint) + ' · dibuat ' + tgl(u.key_at) + (u.revoked ? ' · <b style="color:var(--red)">dicabut</b>' : '') : 'belum ada'}</span>${ceoFin ? `<button class="btn sm" data-newkey="${u.code}">${u.key_id ? 'Ganti kunci' : 'Buat kunci'}</button>${u.key_id && !u.revoked ? ` <button class="btn sm warn" data-revoke="${u.code}">Cabut</button>` : ''}` : ''}</div>
       ${biz ? `<div class="g2"><label class="f">Link referral (diakhiri ?ref=)<input class="inp" data-refbase="${u.code}" value="${esc(u.ref_base || '')}" placeholder="https://…/?ref="></label><label class="f" style="flex-direction:row;align-items:center;gap:8px;margin-top:18px"><input type="checkbox" data-uactive="${u.code}" ${u.is_active ? 'checked' : ''}>Tampil di portal mitra</label></div>` : `<span class="small">Link: ${esc(u.ref_base || '—')}</span>`}
       <div class="scroll"><table class="tbl"><thead><tr><th>Kategori (kode)</th><th>Label</th><th class="r">Tarif dasar</th></tr></thead><tbody>${u.rates.map(r => `<tr><td><code>${esc(r.cat)}</code></td><td>${esc(r.label)}</td><td class="r">${biz ? `<input class="inp" style="width:80px;text-align:right" type="number" step="0.5" min="0" max="50" value="${r.pct}" data-baserate="${u.code}|${r.cat}|${esc(r.label)}">` : pct(r.pct)}</td></tr>`).join('') || '<tr><td colspan="3" class="muted">Belum ada kategori.</td></tr>'}</tbody></table></div>
       ${biz ? `<div style="display:flex;gap:6px;flex-wrap:wrap"><input class="inp" style="width:140px" placeholder="kode kategori" data-newcat="${u.code}"><input class="inp" style="width:160px" placeholder="Label" data-newlabel="${u.code}"><input class="inp" style="width:90px" type="number" step="0.5" placeholder="%" data-newpct="${u.code}"><button class="btn sm" data-addcat="${u.code}">Tambah kategori</button></div>` : ''}</div>`).join('')}</div></section>`;
@@ -309,22 +314,34 @@ async function vAtur() {
       <p class="muted small">Tingkat: ${(st.tiers || []).map(t => esc(t.name) + ' ' + t.min + '+ (+' + t.bonus + '%)').join(' · ')}. Dievaluasi tiap tanggal 1 dari booking selesai 3 bulan terakhir.</p>
       <h2 style="margin-top:6px">Pengelola mitra (BizDev)</h2><p class="muted small">Selain CEO dan Kepala Staf. Keuangan selalu bisa membuka panel ini.</p>
       <div style="display:flex;flex-wrap:wrap;gap:6px">${MISC.people.map(p => `<label class="pill ${(st.bizdev_ids || []).includes(p.id) ? 'g' : ''}" style="cursor:pointer;gap:6px;height:30px"><input type="checkbox" data-biz="${p.id}" ${(st.bizdev_ids || []).includes(p.id) ? 'checked' : ''} ${biz ? '' : 'disabled'}>${esc(p.name)}</label>`).join('')}</div></section>
-    <section class="card"><h2>API untuk aplikasi unit</h2><p class="muted small">Header wajib: <code>x-unit-key: &lt;kunci unit&gt;</code>. Kunci hanya tampil sekali saat dibuat.</p>
-      <pre>GET  ${base}/codes      (tiap 15 menit, cache di unit)
-POST ${base}/events     (satu event atau array, idempoten)
-GET  ${base}/featured   (Mitra Unggulan bulan lalu)</pre>
-      <pre>{ "booking_id": "RA-2611-0021", "kode": "VKTEH",
-  "kategori": "iphone", "produk": "iPhone 13 · 1 hari",
-  "nilai_bersih": 200000, "pelanggan_lama": false,
-  "hash_nik": "&lt;sha256 16 digit NIK&gt;", "hash_hp": "&lt;sha256 62xxx&gt;",
-  "status": "dibayar|selesai|batal|refund|perpanjang",
-  "waktu": "2026-11-03T10:00:00+07:00",
-  "sumber": "web|app|ota", "nama_tamu": "Rina", "ada_masalah": false }</pre>
+    <section class="card"><h2>API untuk aplikasi unit</h2><p class="muted small">Setiap permintaan wajib ditandatangani. Event lebih dari 5 menit, tanda tangan salah, atau permintaan ulang ditolak. Batas 120 permintaan/menit; cek kode 60/menit, lebih dari 30 kode salah dalam 10 menit = diblokir 30 menit.</p>
+      <pre>x-key-id     : &lt;id kunci&gt;
+x-timestamp  : &lt;detik unix&gt;
+x-signature  : hex(HMAC-SHA256(rahasia,
+               "&lt;timestamp&gt;.&lt;METODE&gt;.&lt;path&gt;.&lt;body&gt;"))
+
+GET  ${base}/codes
+GET  ${base}/code?kode=VKTEH
+POST ${base}/events
+GET  ${base}/featured</pre>
+      <pre>// Node.js
+const ts = Math.floor(Date.now()/1000).toString();
+const body = JSON.stringify(events);
+const sig = crypto.createHmac('sha256', SECRET)
+  .update(ts + '.POST./events.' + body).digest('hex');
+fetch(BASE + '/events', { method: 'POST', body, headers: {
+  'x-key-id': KEY_ID, 'x-timestamp': ts, 'x-signature': sig,
+  'content-type': 'application/json' } });</pre>
       <h2 style="margin-top:6px">Kejadian terakhir</h2><div class="list">${MISC.events.slice(0, 12).map(e => `<div class="li"><div class="t"><b>${esc(e.unit)} · ${esc(e.booking_id)} · ${esc(e.status)}</b><span>${esc(e.result || '')} · ${tgl(e.at)} ${new Date(e.at).toTimeString().slice(0, 5)}</span></div></div>`).join('') || '<p class="muted">Belum ada event masuk.</p>'}</div></section></div>`;
-  h += `<section class="card"><h2>Riwayat tindakan</h2><div class="scroll"><table class="tbl"><thead><tr><th>Waktu</th><th>Oleh</th><th>Tindakan</th><th>Alasan</th></tr></thead><tbody>${MISC.audit.filter(a => a.action !== 'kirim_kode').slice(0, 40).map(a => `<tr><td class="small">${tgl(a.at)} ${new Date(a.at).toTimeString().slice(0, 5)}</td><td>${esc(a.by)}</td><td>${esc(a.action.replace(/_/g, ' '))}</td><td class="small">${esc(a.reason || '')}</td></tr>`).join('')}</tbody></table></div></section>`;
+  h += `<section class="card"><h2>Log audit</h2><p class="muted small">Semua perubahan tarif, status komisi, persetujuan, pencairan, dan pembukaan data pribadi. Tidak bisa diubah atau dihapus.</p><div class="scroll"><table class="tbl"><thead><tr><th>Waktu</th><th>Oleh</th><th>Tindakan</th><th>Alasan</th></tr></thead><tbody>${MISC.audit.filter(a => a.action !== 'kirim_kode').slice(0, 60).map(a => `<tr><td class="small">${tgl(a.at)} ${new Date(a.at).toTimeString().slice(0, 5)}</td><td>${esc(a.by)}</td><td>${esc(a.action.replace(/_/g, ' '))}</td><td class="small">${esc(a.reason || '')}${diff(a.data)}</td></tr>`).join('')}</tbody></table></div></section>`;
   return h;
 }
 
+function diff(d) {
+  if (!d || !d.sebelum || !d.sesudah) return '';
+  const k = Object.keys(d.sesudah).filter(x => JSON.stringify(d.sebelum[x]) !== JSON.stringify(d.sesudah[x]) && !['updated_at'].includes(x)).slice(0, 4);
+  return k.length ? '<br>' + k.map(x => '<code>' + esc(x) + '</code>: ' + esc(JSON.stringify(d.sebelum[x])) + ' → ' + esc(JSON.stringify(d.sesudah[x]))).join('<br>') : '';
+}
 /* ---------- kerangka ---------- */
 function panel(html, after) { close(); cur = document.createElement('div'); cur.className = 'scrim'; cur.innerHTML = `<div class="panel" role="dialog" aria-modal="true">${html}</div>`; document.body.appendChild(cur); cur.addEventListener('click', (e) => { if (e.target === cur || e.target.closest('[data-close]')) close(); }); if (after) after(cur.querySelector('.panel')); }
 function close() { if (cur) { cur.remove(); cur = null; } }
@@ -364,7 +381,7 @@ document.addEventListener('change', async (e) => {
 document.addEventListener('click', async (e) => {
   if (e.target.closest('[data-menu]')) { document.body.classList.toggle('nav-open'); return; }
   if (cur && cur.contains(e.target)) return;
-  const t = e.target.closest('[data-pid],[data-approve],[data-reject],[data-chtoggle],[data-saveprize],[data-sent],[data-sentall],[data-csv],[data-pay],[data-paid],[data-proof],[data-approve-sel],[data-close-month],[data-unfreeze],[data-freeze],[data-viol],[data-rwreject],[data-newkey],[data-addcat]'); if (!t) return;
+  const t = e.target.closest('[data-transfer],[data-revoke],[data-pid],[data-approve],[data-reject],[data-chtoggle],[data-saveprize],[data-sent],[data-sentall],[data-csv],[data-pay],[data-paid],[data-proof],[data-approve-sel],[data-close-month],[data-unfreeze],[data-freeze],[data-viol],[data-rwreject],[data-newkey],[data-addcat]'); if (!t) return;
   const d = t.dataset;
   try {
     if (d.pid) return partnerPanel(d.pid);
@@ -374,7 +391,12 @@ document.addEventListener('click', async (e) => {
     if (d.saveprize !== undefined) { await A.rpc('af_prizes_save', { p_month: S.month, p_amounts: [1, 2, 3].map(i => +document.querySelector(`[data-prize="${i}"]`).value || 0) }); toast('Nominal juara tersimpan'); return; }
     if (d.sent) { setTimeout(async () => { await A.rpc('af_notif_sent', { p_ids: [+d.sent] }); render(); }, 400); return; }
     if (d.sentall !== undefined) { if (!confirm('Tandai semua pesan sudah dikirim?')) return; await A.rpc('af_notif_sent', { p_ids: MISC.notifs.map(n => n.id) }); return render(); }
-    if (d.csv) return csv(d.csv, d.csv === 'cair' ? 'daftar-transfer-mitra' : 'laporan-mitra');
+    if (d.csv) return csv(d.csv, 'laporan-mitra');
+    if (d.transfer !== undefined) { if (!confirm('Unduh daftar transfer berisi nomor rekening lengkap? Pembukaan data ini tercatat di log audit.')) return;
+      const per = S.period || (S._payout.periods[0] || ''); const L = await A.rpc('af_payout_transfer_list', { p_period: per, p_demo: S.demo });
+      const q = (v) => '"' + String(v ?? '').replace(/"/g, '""') + '"';
+      const rows = [['Nama', 'Bank', 'Rekening', 'Atas nama', 'Jumlah', 'Status', 'Ditahan']].concat(L.map(r => [r.nama, r.bank, r.rekening, r.atas_nama, r.jumlah, r.status, r.ditahan ? 'ya' : '']));
+      const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(['\ufeff' + rows.map(r => r.map(q).join(',')).join('\n')], { type: 'text/csv' })); a.download = 'daftar-transfer-mitra-' + per + '.csv'; a.click(); return; }
     if (d.pay) return payoutPanel(d.pay);
     if (d.paid) return paidPanel(d.paid);
     if (d.proof) return A.openFile(d.proof);
@@ -385,8 +407,10 @@ document.addEventListener('click', async (e) => {
     if (d.viol) { const r = prompt('Pelanggaran apa? (wajib)'); if (!r) return; const o = await A.rpc('af_violation', { p_partner: d.viol, p_reason: r }); toast('Pelanggaran ke-' + o.ke + (o.nonaktif ? ', mitra dinonaktifkan' : '')); return render(); }
     if (d.rwreject) { const r = prompt('Alasan menolak hadiah:'); if (!r) return; await A.rpc('af_reward_reject', { p_id: d.rwreject, p_reason: r }); toast('Hadiah ditolak'); return render(); }
     if (d.newkey) { if (!confirm('Buat kunci baru untuk ' + unitName(d.newkey) + '? Kunci lama langsung tidak berlaku.')) return; const k = await A.rpc('af_unit_key_new', { p_unit: d.newkey });
-      panel(`<div style="display:flex;justify-content:space-between"><h2 style="font-size:20px">Kunci API ${esc(unitName(d.newkey))}</h2><button class="btn sm" data-close>✕</button></div><div class="ok">Salin sekarang. Kunci ini tidak bisa ditampilkan lagi.</div><pre>${esc(k)}</pre><button class="btn pri" id="ck">Salin kunci</button><p class="muted small">Kirim ke tim aplikasi lewat jalur pribadi (bukan grup). Simpan di server aplikasi unit sebagai rahasia, jangan di aplikasi HP atau kode web.</p>`, (pn) => { pn.querySelector('#ck').onclick = async () => { try { await navigator.clipboard.writeText(k); toast('Tersalin'); } catch (x) {} }; });
+      panel(`<div style="display:flex;justify-content:space-between"><h2 style="font-size:20px">Kunci API ${esc(unitName(d.newkey))}</h2><button class="btn sm" data-close>✕</button></div><div class="ok">Salin sekarang. Rahasia ini tidak bisa ditampilkan lagi.</div><pre>x-key-id : ${esc(k.key_id)}
+rahasia  : ${esc(k.secret)}</pre><button class="btn pri" id="ck">Salin keduanya</button><p class="muted small">Kirim ke tim aplikasi lewat jalur pribadi (bukan grup). Simpan rahasia di server aplikasi unit sebagai secret, jangan di aplikasi HP atau kode web. Kunci lama langsung tidak berlaku.</p>`, (pn) => { pn.querySelector('#ck').onclick = async () => { try { await navigator.clipboard.writeText('x-key-id: ' + k.key_id + '\nrahasia: ' + k.secret); toast('Tersalin'); } catch (x) {} }; });
       return; }
+    if (d.revoke) { if (!confirm('Cabut kunci API ' + unitName(d.revoke) + '? Aplikasi unit langsung tidak bisa mengirim data sampai diberi kunci baru.')) return; await A.rpc('af_unit_key_revoke', { p_unit: d.revoke }); toast('Kunci dicabut'); return render(); }
     if (d.addcat) { const u = d.addcat, c = document.querySelector(`[data-newcat="${u}"]`).value.trim().toLowerCase(), l = document.querySelector(`[data-newlabel="${u}"]`).value.trim(), p = +document.querySelector(`[data-newpct="${u}"]`).value; if (!c || !l || !p) return toast('Isi kode, label, dan tarif', true); await A.rpc('af_rate_base_set', { p_unit: u, p_cat: c, p_label: l, p_pct: p }); toast('Kategori ditambah'); return render(); }
   } catch (er) { toast(er.message, true); }
 });

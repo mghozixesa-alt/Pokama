@@ -11,6 +11,7 @@ function saveSession(s) {
   try { s ? localStorage.setItem(SKEY, JSON.stringify(session)) : localStorage.removeItem(SKEY); } catch (e) {}
 }
 export const hasSession = () => !!(session && session.access_token);
+export function reloadSession() { try { session = JSON.parse(localStorage.getItem(SKEY) || 'null'); } catch (e) { session = null; } }
 
 async function authFetch(path, body, method = 'POST', token) {
   const r = await fetch(SB_URL + '/auth/v1/' + path, {

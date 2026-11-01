@@ -103,18 +103,19 @@ const svg = (k, n = 22, c = 'currentColor') => `<svg width="${n}" height="${n}" 
 let ME = null, VIEW = 'beranda', KF = 'semua', KT = 'komisi';
 
 /* ---------- halaman depan & daftar ---------- */
+const GBTN = `<svg width="20" height="20" viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.1-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>`;
+function google() { location.href = SB_URL + '/auth/v1/authorize?provider=google&redirect_to=' + encodeURIComponent(location.origin + '/mitra/'); }
 async function landing(note) {
   let rates = [];
-  try { rates = await A.get('af_rates?unit_code=eq.RA&order=sort', true); } catch (e) {}
-  const tiers = [0, 3];
-  const rows = rates.map(r => `<span>${esc(r.label)}</span><span class="r">${pct(r.pct)}</span><span class="r t">${pct(+r.pct + tiers[1])}</span>`).join('');
+  try { rates = await A.rpc('af_public_rates', {}, true) || []; } catch (e) {}
+  const rows = rates.map(r => `<span>${esc(r.label)}</span><span class="r">${pct(r.pct)}</span><span class="r t">${pct(+r.pct + 3)}</span>`).join('');
   app.innerHTML = `
   <header class="hero">
-    <div class="topbar"><img class="logo" src="/img/pokama-logo.png" alt="Pokama"><a href="#masuk" style="color:#fff;font-weight:800;font-size:14px;text-decoration:none">Masuk</a></div>
+    <div class="topbar"><img class="logo" src="/img/pokama-logo.png" alt="Pokama"><button data-google style="background:none;border:0;color:#fff;font-weight:800;font-size:14px;cursor:pointer">Masuk</button></div>
     <div style="display:flex;flex-direction:column;gap:8px"><span class="eyebrow">Program Mitra · Rentalaja</span>
       <h1>Rekomendasikan Rentalaja, dapat komisi tiap sewa selesai</h1>
       <p class="lead">Untuk hotel, villa, homestay, travel, komunitas, organisasi kampus, dan kreator di Garut, Bandung, dan Ciputat.</p></div>
-    <a class="cta" href="#daftar">Daftar sekarang, gratis</a>
+    <button class="cta" data-google>${GBTN}&nbsp; Daftar dengan Google, gratis</button>
   </header>
   <main>
     ${note ? `<div class="ok">${esc(note)}</div>` : ''}
@@ -127,29 +128,11 @@ async function landing(note) {
       <div class="rates"><span class="h">Kategori</span><span class="h r">Awal</span><span class="h r">Utama</span>${rows}</div>
       <p class="note">Dihitung dari harga setelah diskon, tanpa ongkir, deposit, dan denda. Sah setelah unit kembali, tamu check-out, atau trip selesai. Pelanggan yang pernah sewa: setengah komisi.</p>
     </section>
-    <section class="card"><h2>Cara kerjanya</h2><ol class="steps"><li><b>1</b>Tempel QR atau bagikan link dan kode Anda</li><li><b>2</b>Tamu booking dan sewanya selesai</li><li><b>3</b>Komisi masuk, cair awal bulan berikutnya</li></ol></section>
-    <form class="card" id="daftar" novalidate><h2>Formulir pendaftaran</h2>
-      <label class="f">Nama lengkap<input class="inp" name="name" placeholder="Sesuai KTP" autocomplete="name" required></label>
-      <label class="f">Nama usaha atau organisasi<input class="inp" name="org" placeholder="Contoh: nama villa, himpunan, komunitas"></label>
-      <div class="g2"><label class="f">Jenis mitra<select class="inp" name="kind">${Object.entries(KIND).map(([k, v]) => `<option value="${k}">${v}</option>`).join('')}</select></label>
-        <label class="f">Kota<select class="inp" name="city"><option>Garut</option><option>Bandung</option><option>Ciputat</option></select></label></div>
-      <label class="f">Nomor WhatsApp<input class="inp" name="wa" type="tel" inputmode="tel" placeholder="08xx" autocomplete="tel" required></label>
-      <label class="f">Email<input class="inp" name="email" type="email" inputmode="email" placeholder="untuk kode masuk portal" autocomplete="email" required></label>
-      <label class="chk"><input type="checkbox" name="agree"><span>Saya setuju dengan <a href="#syarat">syarat program mitra</a>, termasuk larangan memakai kode untuk sewa sendiri.</span></label>
-      <div id="ferr"></div>
-      <button class="btn pri" style="height:50px;font-size:16px" type="submit">Kirim pendaftaran</button>
-      <p class="note" style="text-align:center">Tim kami menghubungi Anda lewat WhatsApp setelah pendaftaran dicek. Rekening diisi setelah disetujui.</p>
-    </form>
+    <section class="card"><h2>Cara kerjanya</h2><ol class="steps"><li><b>1</b>Daftar dengan akun Google, lalu verifikasi nomor WhatsApp</li><li><b>2</b>Setelah disetujui, tempel QR atau bagikan link dan kode Anda</li><li><b>3</b>Tamu booking, sewa selesai, komisi cair awal bulan berikutnya</li></ol>
+      <button class="btn pri" data-google style="height:50px">${GBTN} Daftar / masuk dengan Google</button></section>
     ${terms()}
   </main>`;
-  const f = app.querySelector('#daftar');
-  f.onsubmit = async (e) => {
-    e.preventDefault(); const d = Object.fromEntries(new FormData(f)); d.agree = !!f.agree.checked;
-    const b = f.querySelector('button[type=submit]'); b.disabled = true; b.textContent = 'Mengirim…';
-    try { await A.rpc('af_register', { p: d }, true); localStorage.setItem('pokama.mitra.email', d.email); landing('Terima kasih! Pendaftaran terkirim. Tim kami mengecek dan menghubungi Anda lewat WhatsApp. Setelah disetujui, masuk dengan email Anda.'); scrollTo(0, 0); }
-    catch (er) { f.querySelector('#ferr').innerHTML = `<div class="err">${esc(er.message)}</div>`; b.disabled = false; b.textContent = 'Kirim pendaftaran'; }
-  };
-  if (location.hash === '#daftar' || location.hash === '#syarat') setTimeout(() => document.querySelector(location.hash)?.scrollIntoView(), 50);
+  if (location.hash === '#syarat') setTimeout(() => document.querySelector('#syarat')?.scrollIntoView(), 50);
 }
 function terms() {
   return `<section class="card" id="syarat"><h2>Syarat program mitra</h2><ul class="note" style="padding-left:18px;margin:0;display:flex;flex-direction:column;gap:6px;font-size:13px">
@@ -162,40 +145,51 @@ function terms() {
   <li>Pencairan tiap tanggal 1–10 untuk komisi yang siap cair bulan sebelumnya, minimal Rp50.000. Potongan pajak mengikuti aturan yang berlaku.</li></ul></section>`;
 }
 
-/* ---------- masuk dengan kode email ---------- */
-function login(msg) {
-  const em = localStorage.getItem('pokama.mitra.email') || '';
-  app.innerHTML = `<header class="plain"><a href="#" aria-label="Kembali" class="btn sm" style="border:0;padding:0 6px">${svg('back')}</a><h1>Masuk mitra</h1></header>
-  <main><form class="card" id="f1" novalidate><img src="/img/pokama-logo.png" alt="Pokama" style="height:28px;align-self:flex-start">
-    <p class="note" style="font-size:14px">Masukkan email yang dipakai saat mendaftar. Kami kirim kode 6 digit ke email itu.</p>
-    ${msg ? `<div class="err">${esc(msg)}</div>` : ''}
-    <label class="f">Email<input class="inp" name="email" type="email" inputmode="email" autocomplete="email" value="${esc(em)}" required></label>
-    <div id="e1"></div><button class="btn pri" type="submit">Kirim kode</button>
-    <p class="note">Belum jadi mitra? <a href="#daftar">Daftar di sini</a>.</p></form></main>`;
-  const f = app.querySelector('#f1');
+/* ---------- daftar (setelah masuk Google) & kode WhatsApp ---------- */
+function plain(title, inner) { return `<header class="plain"><img src="/img/pokama-logo.png" alt="Pokama" style="height:24px"><h1 style="margin-left:6px">${title}</h1></header><main>${inner}</main>`; }
+function register(msg) {
+  const s = sess.load() || {}; const em = s.email || '';
+  app.innerHTML = plain('Daftar jadi mitra', `<form class="card" id="daftar" novalidate>
+      ${msg ? `<div class="err">${esc(msg)}</div>` : ''}
+      <p class="note" style="font-size:14px">Masuk sebagai <b>${esc(em)}</b>. Lengkapi data di bawah, lalu verifikasi nomor WhatsApp.</p>
+      <label class="f">Nama lengkap<input class="inp" name="name" placeholder="Sesuai KTP" autocomplete="name" value="${esc(s.full_name || '')}" required></label>
+      <label class="f">Nama usaha atau organisasi<input class="inp" name="org" placeholder="Contoh: nama villa, himpunan, komunitas"></label>
+      <div class="g2"><label class="f">Jenis mitra<select class="inp" name="kind">${Object.entries(KIND).map(([k, v]) => `<option value="${k}">${v}</option>`).join('')}</select></label>
+        <label class="f">Kota<select class="inp" name="city"><option>Garut</option><option>Bandung</option><option>Ciputat</option></select></label></div>
+      <label class="f">Nomor WhatsApp<input class="inp" name="wa" type="tel" inputmode="tel" placeholder="08xx" autocomplete="tel" required></label>
+      <label class="chk"><input type="checkbox" name="agree"><span>Saya setuju dengan <a href="#syarat">syarat program mitra</a>, termasuk larangan memakai kode untuk sewa sendiri.</span></label>
+      <div id="ferr"></div>
+      <button class="btn pri" style="height:50px;font-size:16px" type="submit">Daftar & kirim kode WhatsApp</button>
+      <button class="btn" type="button" data-out>Pakai akun Google lain</button></form>${terms()}`);
+  const f = app.querySelector('#daftar');
   f.onsubmit = async (e) => {
-    e.preventDefault(); const email = f.email.value.trim().toLowerCase(); const b = f.querySelector('button'); b.disabled = true; b.textContent = 'Mengirim…';
-    try { const r = await A.fn('af-login', { email }); localStorage.setItem('pokama.mitra.email', email); code(email, r.mode); }
-    catch (er) { f.querySelector('#e1').innerHTML = `<div class="err">${esc(er.message)}</div>`; b.disabled = false; b.textContent = 'Kirim kode'; }
+    e.preventDefault(); const d = Object.fromEntries(new FormData(f)); d.agree = !!f.agree.checked;
+    const b = f.querySelector('button[type=submit]'); b.disabled = true; b.textContent = 'Mengirim…';
+    try { await A.rpc('af_register', { p: d }); await otp('login'); }
+    catch (er) { f.querySelector('#ferr').innerHTML = `<div class="err">${esc(er.message)}</div>`; b.disabled = false; b.textContent = 'Daftar & kirim kode WhatsApp'; }
   };
 }
-function code(email, mode) {
-  app.innerHTML = `<header class="plain"><a href="#masuk" aria-label="Kembali" class="btn sm" style="border:0;padding:0 6px">${svg('back')}</a><h1>Cek email Anda</h1></header>
-  <main><form class="card" id="f2" novalidate>
-    <p class="note" style="font-size:14px">${mode === 'link' ? 'Kami kirim email masuk ke <b>' + esc(email) + '</b>. Klik link di email itu, atau ketik kodenya di sini bila ada.' : 'Kode 6 digit sudah dikirim ke <b>' + esc(email) + '</b>. Cek juga folder spam.'}</p>
-    <label class="f">Kode<input class="inp otp" name="otp" inputmode="numeric" autocomplete="one-time-code" maxlength="8" required></label>
-    <div id="e2"></div><button class="btn pri" type="submit">Masuk</button></form></main>`;
-  const f = app.querySelector('#f2'); f.otp.focus();
+async function otp(purpose, info) {
+  let sent = null, err = null;
+  try { sent = await A.rpc('af_otp_send', { p_purpose: purpose }); } catch (er) { err = er.message; }
+  const title = purpose === 'bank' ? 'Konfirmasi ganti rekening' : 'Verifikasi WhatsApp';
+  app.innerHTML = plain(title, `<form class="card" id="fo" novalidate>
+    <p class="note" style="font-size:14px">${purpose === 'bank' ? 'Demi keamanan, perubahan rekening harus dikonfirmasi dengan kode yang dikirim ke WhatsApp terdaftar. Setelah dikonfirmasi, rekening baru dipakai 3 hari kemudian.' : 'Kami kirim kode 6 angka ke WhatsApp terdaftar. Verifikasi dibutuhkan saat masuk dari perangkat baru, berlaku 30 hari.'}</p>
+    ${sent ? `<div class="ok">Kode dikirim ke ${esc(sent.wa_masked)}.</div>` : ''}${err ? `<div class="err">${esc(err)}</div>` : ''}${info ? `<div class="ok">${esc(info)}</div>` : ''}
+    <label class="f">Kode dari WhatsApp<input class="inp otp" name="otp" inputmode="numeric" autocomplete="one-time-code" maxlength="6" required></label>
+    <div id="eo"></div><button class="btn pri" type="submit">Verifikasi</button>
+    <button class="btn" type="button" id="again">Kirim ulang kode</button>
+    <button class="btn" type="button" data-out>Keluar</button></form>`);
+  const f = app.querySelector('#fo'); f.otp.focus();
+  app.querySelector('#again').onclick = () => otp(purpose);
   f.onsubmit = async (e) => {
-    e.preventDefault(); const b = f.querySelector('button'); b.disabled = true; b.textContent = 'Memeriksa…';
-    const token = f.otp.value.replace(/\D/g, '');
-    let s = null, err = null;
-    for (const type of ['email', 'magiclink']) {
-      const r = await fetch(SB_URL + '/auth/v1/verify', { method: 'POST', headers: { apikey: SB_KEY, 'Content-Type': 'application/json' }, body: JSON.stringify({ type, email, token }) });
-      const j = await r.json().catch(() => ({})); if (r.ok && j.access_token) { s = j; break; } err = j.msg || j.error_description || 'Kode salah atau sudah kedaluwarsa';
-    }
-    if (!s) { f.querySelector('#e2').innerHTML = `<div class="err">${esc(/expired|invalid/i.test(err) ? 'Kode salah atau sudah kedaluwarsa. Minta kode baru.' : err)}</div>`; b.disabled = false; b.textContent = 'Masuk'; return; }
-    sess.save(s); location.hash = '#beranda'; boot();
+    e.preventDefault(); const b = f.querySelector('button[type=submit]'); b.disabled = true; b.textContent = 'Memeriksa…';
+    try {
+      const r = await A.rpc('af_otp_verify', { p_purpose: purpose, p_code: f.otp.value });
+      if (!r.ok) { f.querySelector('#eo').innerHTML = `<div class="err">${esc(r.error)}</div>`; b.disabled = false; b.textContent = 'Verifikasi'; return; }
+      if (purpose === 'bank') { toast('Rekening baru dikonfirmasi, dipakai 3 hari lagi'); location.hash = '#akun'; }
+      boot();
+    } catch (er) { f.querySelector('#eo').innerHTML = `<div class="err">${esc(er.message)}</div>`; b.disabled = false; b.textContent = 'Verifikasi'; }
   };
 }
 
@@ -248,7 +242,7 @@ function vKomisi() {
   const F = { semua: () => true, siap_cair: b => b.status === 'siap_cair', tertunda: b => b.status === 'tertunda', dicairkan: b => b.status === 'dicairkan', hangus: b => ['hangus', 'dibekukan', 'nol'].includes(b.status) };
   const list = ME.bookings.filter(F[KF]);
   const groups = {}; list.forEach(b => { const k = (b.at || '').slice(0, 7); (groups[k] = groups[k] || []).push(b); });
-  const bank = P.bank_acct ? esc(P.bank_name) + ' •••• ' + esc(P.bank_acct.slice(-4)) + ' · a.n. ' + esc(P.bank_holder || '-') : 'Rekening belum diisi';
+  const bank = P.bank_last4 ? esc(P.bank_name) + ' •••• ' + esc(P.bank_last4) + ' · a.n. ' + esc(P.bank_holder || '-') : 'Rekening belum diisi';
   const body = KT === 'komisi'
     ? `<div class="chips" role="group" aria-label="Saring status">${[['semua', 'Semua'], ['siap_cair', 'Siap cair'], ['tertunda', 'Tertunda'], ['dicairkan', 'Dicairkan'], ['hangus', 'Hangus']].map(([k, l]) => `<button data-kf="${k}" aria-pressed="${KF === k}">${l}</button>`).join('')}</div>
       ${Object.keys(groups).length ? Object.keys(groups).sort().reverse().map(k => `<section class="card list"><div class="sechead"><span>${bulan(k + '-01')}</span><span>${rp(groups[k].filter(b => !['hangus', 'nol'].includes(b.status)).reduce((a, b) => a + +b.commission, 0))}</span></div>
@@ -294,11 +288,15 @@ function vAkun() {
       <div style="display:flex;flex-direction:column"><strong>${esc(pname())}</strong><span class="small">${esc(P.name)} · ${esc(KIND[P.kind] || P.kind)} · ${esc(P.city)}</span><span class="small">${esc(P.email)} · +${esc(P.wa)}</span></div></div>
       <span class="small">Kode mitra <b>${esc(P.code || '-')}</b>. Untuk mengubah nama, kota, atau jenis, hubungi tim kami.</span></section>
     <form class="card" id="fa" novalidate><h2>Rekening pencairan</h2>
-      <div class="g2"><label class="f">Bank<input class="inp" name="bank_name" value="${esc(P.bank_name || '')}" placeholder="BCA, BRI, …"></label><label class="f">Nomor rekening<input class="inp" name="bank_acct" inputmode="numeric" value="${esc(P.bank_acct || '')}"></label></div>
-      <label class="f">Nama pemilik rekening<input class="inp" name="bank_holder" value="${esc(P.bank_holder || '')}" placeholder="Sesuai buku tabungan"></label>
+      ${P.bank_last4 ? `<div class="note" style="font-size:14px">Rekening aktif: <b>${esc(P.bank_name)} •••• ${esc(P.bank_last4)}</b> a.n. ${esc(P.bank_holder || '-')}${P.bank_hold_until && new Date(P.bank_hold_until) > new Date() ? `<br><span class="pill" style="background:var(--ambbg);color:var(--amb)">baru diganti · dipakai mulai ${tgl(P.bank_hold_until)}</span>` : ''}</div>` : '<p class="note">Rekening belum diisi.</p>'}
+      ${P.bank_pending ? `<div class="err" style="background:var(--ambbg);color:var(--amb)">Ganti rekening ke ${esc(P.bank_new)} menunggu konfirmasi kode WhatsApp. <a href="#" data-bankotp>Masukkan kode</a></div>` : ''}
+      <p class="note">${P.bank_last4 ? 'Isi bila ingin mengganti rekening. Perubahan dikonfirmasi lewat WhatsApp dan ditahan 3 hari.' : 'Rekening dikonfirmasi lewat kode WhatsApp, lalu dipakai 3 hari kemudian.'}</p>
+      <div class="g2"><label class="f">Bank<input class="inp" name="bank_name" placeholder="BCA, BRI, …"></label><label class="f">Nomor rekening<input class="inp" name="bank_acct" inputmode="numeric" autocomplete="off"></label></div>
+      <label class="f">Nama pemilik rekening<input class="inp" name="bank_holder" placeholder="Sesuai buku tabungan"></label>
       <h2 style="margin-top:6px">Data pajak</h2>
       <label class="f">NIK ${P.nik_set ? '<small style="font-weight:600;color:var(--mut2)">tersimpan, akhiran ' + esc(P.nik_tail) + ' · isi lagi untuk mengganti</small>' : ''}<input class="inp" name="nik" inputmode="numeric" maxlength="16" placeholder="16 digit"></label>
-      <label class="f">NPWP (bila ada)<input class="inp" name="npwp" value="${esc(P.npwp || '')}"></label>
+      <label class="f">NPWP (bila ada) ${P.npwp_tail ? '<small style="font-weight:600;color:var(--mut2)">tersimpan, akhiran ' + esc(P.npwp_tail) + '</small>' : ''}<input class="inp" name="npwp" inputmode="numeric" autocomplete="off"></label>
+      <p class="note">NIK, NPWP, dan rekening disimpan terenkripsi dan selalu tampil tersamar.</p>
       <h2 style="margin-top:6px">Lokasi antar / jemput</h2>
       <label class="f">Alamat<textarea class="inp" name="address" placeholder="Alamat lengkap tempat unit diantar">${esc(P.address || '')}</textarea></label>
       <label class="f">Link Google Maps<input class="inp" name="maps_url" value="${esc(P.maps_url || '')}" placeholder="https://maps.app.goo.gl/…"></label>
@@ -319,9 +317,11 @@ function render() {
   if (fa) fa.onsubmit = async (e) => {
     e.preventDefault(); const d = Object.fromEntries(new FormData(fa)); d.guest_discount = fa.guest_discount.checked;
     const b = fa.querySelector('button[type=submit]'); b.disabled = true;
-    try { await A.rpc('af_me_update', { p: d }); toast('Tersimpan'); await refresh(); } catch (er) { fa.querySelector('#ea').innerHTML = `<div class="err">${esc(er.message)}</div>`; b.disabled = false; }
+    if (!d.bank_acct) { delete d.bank_name; delete d.bank_holder; }
+    try { const r = await A.rpc('af_me_update', { p: d }); if (r && r.bank_pending) { ME = null; await otp('bank'); return; } toast('Tersimpan'); await refresh(); } catch (er) { fa.querySelector('#ea').innerHTML = `<div class="err">${esc(er.message)}</div>`; b.disabled = false; }
   };
-  const out = app.querySelector('#out'); if (out) out.onclick = () => { sess.save(null); location.hash = ''; boot(); };
+  const out = app.querySelector('#out'); if (out) out.onclick = logout;
+  const bo = app.querySelector('[data-bankotp]'); if (bo) bo.onclick = (e) => { e.preventDefault(); otp('bank'); };
 }
 app.addEventListener('click', async (e) => {
   const t = e.target.closest('[data-copy],[data-qr],[data-kf],[data-kt],[data-proof]'); if (!t) return;
@@ -338,33 +338,48 @@ app.addEventListener('click', async (e) => {
 });
 window.addEventListener('hashchange', () => {
   if (ME) { render(); scrollTo(0, 0); return; }
-  if (location.hash === '#masuk') login(); else if (!location.hash || location.hash === '#daftar' || location.hash === '#syarat') landing();
+  if (location.hash.includes('access_token=')) { boot(); return; }
+  if (location.hash === '#syarat') document.querySelector('#syarat')?.scrollIntoView();
 });
 async function refresh() { ME = await A.rpc('af_me'); render(); }
 
+function logout() { try { fetch(SB_URL + '/auth/v1/logout', { method: 'POST', headers: { apikey: SB_KEY, Authorization: 'Bearer ' + (sess.load() || {}).access_token } }); } catch (e) {} sess.save(null); ME = null; history.replaceState(null, '', location.pathname); landing(); }
+// sesi mitra berakhir otomatis setelah 7 hari tidak dipakai
+const IDLE = 7 * 864e5, act = () => { try { localStorage.setItem('pokama.mitra.active', String(Date.now())); } catch (e) {} };
+function idle() { let t = 0; try { t = +localStorage.getItem('pokama.mitra.active') || 0; } catch (e) {} return t && Date.now() - t > IDLE; }
+['click', 'keydown', 'touchstart'].forEach(ev => document.addEventListener(ev, act, { passive: true }));
+document.addEventListener('click', (e) => { if (e.target.closest('[data-google]')) google(); if (e.target.closest('[data-out]')) logout(); });
+
 async function boot() {
-  // kembali dari link email (mode tanpa kode)
   if (location.hash.includes('access_token=')) {
     const p = new URLSearchParams(location.hash.slice(1));
-    sess.save({ access_token: p.get('access_token'), refresh_token: p.get('refresh_token'), expires_in: +p.get('expires_in') || 3600 });
-    history.replaceState(null, '', location.pathname + '#beranda');
+    let full = ''; try { full = JSON.parse(atob(p.get('access_token').split('.')[1].replace(/-/g, '+').replace(/_/g, '/'))).user_metadata?.full_name || ''; } catch (e) {}
+    const em = (() => { try { return JSON.parse(atob(p.get('access_token').split('.')[1].replace(/-/g, '+').replace(/_/g, '/'))).email; } catch (e) { return ''; } })();
+    sess.save({ access_token: p.get('access_token'), refresh_token: p.get('refresh_token'), expires_in: +p.get('expires_in') || 3600, email: em });
+    try { const s = sess.load(); s.full_name = full; localStorage.setItem('pokama.mitra', JSON.stringify(s)); } catch (e) {}
+    act(); history.replaceState(null, '', location.pathname + '#beranda');
   }
+  if (sess.load() && idle()) { logout(); return; }
   const t = await sess.token();
-  if (!t) { ME = null; if (location.hash === '#masuk') login(); else landing(); return; }
+  if (!t) { ME = null; landing(); return; }
+  act();
   try {
     const l = await A.rpc('af_link_me');
-    if (!l.found) { sess.save(null); login('Email ini belum terdaftar sebagai mitra. Daftar dulu, atau masuk dengan email yang dipakai saat mendaftar.'); return; }
-    if (l.status !== 'aktif') {
-      const M = { menunggu: ['Pendaftaran sedang dicek', 'Tim kami mengecek data Anda dan menghubungi lewat WhatsApp. Setelah disetujui, kode, link, dan QR muncul di sini.'],
-        ditolak: ['Pendaftaran belum bisa diterima', l.reason || 'Hubungi tim kami untuk informasi.'], nonaktif: ['Akun mitra nonaktif', l.reason || 'Hubungi tim kami untuk informasi.'] }[l.status];
-      app.innerHTML = `<header class="hero"><div class="topbar"><img class="logo" src="/img/pokama-logo.png" alt="Pokama"></div><h1>${esc(M[0])}</h1><p class="lead">${esc(M[1])}</p></header><main><button class="btn" id="out">Keluar</button></main>`;
-      app.querySelector('#out').onclick = () => { sess.save(null); boot(); }; return;
+    if (l.need_google) { sess.save(null); landing('Portal mitra hanya bisa dibuka dengan tombol Masuk dengan Google.'); return; }
+    if (!l.found) { register(); return; }
+    if (l.status === 'ditolak' || l.status === 'nonaktif') {
+      const M = { ditolak: ['Pendaftaran belum bisa diterima', l.reason || 'Hubungi tim kami untuk informasi.'], nonaktif: ['Akun mitra nonaktif', l.reason || 'Hubungi tim kami untuk informasi.'] }[l.status];
+      app.innerHTML = `<header class="hero"><div class="topbar"><img class="logo" src="/img/pokama-logo.png" alt="Pokama"></div><h1>${esc(M[0])}</h1><p class="lead">${esc(M[1])}</p></header><main><button class="btn" data-out>Keluar</button></main>`; return;
+    }
+    if (!l.verified) { await otp('login'); return; }
+    if (l.status === 'menunggu') {
+      app.innerHTML = `<header class="hero"><div class="topbar"><img class="logo" src="/img/pokama-logo.png" alt="Pokama"></div><h1>Pendaftaran sedang dicek</h1><p class="lead">Nomor WhatsApp Anda sudah terverifikasi. Tim kami mengecek data dan menghubungi Anda. Setelah disetujui, kode, link, dan QR muncul di sini.</p></header><main><button class="btn" data-out>Keluar</button></main>`; return;
     }
     if (!location.hash || location.hash === '#masuk') history.replaceState(null, '', '#beranda');
     await refresh();
   } catch (er) {
-    if (er.status === 401) { sess.save(null); login('Sesi habis, silakan masuk lagi.'); return; }
-    app.innerHTML = `<main><div class="err">${esc(er.message)}</div><button class="btn" onclick="location.reload()">Coba lagi</button></main>`;
+    if (er.status === 401) { logout(); return; }
+    app.innerHTML = `<main><div class="err">${esc(er.message)}</div><button class="btn" onclick="location.reload()">Coba lagi</button><button class="btn" data-out>Keluar</button></main>`;
   }
 }
 boot();
