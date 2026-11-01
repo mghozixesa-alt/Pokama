@@ -25,6 +25,11 @@
  "cleanUrls": true,
  "redirects": [
   {
+   "source": "/sistem",
+   "destination": "/",
+   "permanent": false
+  },
+  {
    "source": "/mitra/admin",
    "has": [
     {
@@ -218,6 +223,10 @@
   {
    "source": "/affiliate",
    "destination": "/mitra/admin"
+  },
+  {
+   "source": "/",
+   "destination": "/sistem"
   }
  ]
 }
