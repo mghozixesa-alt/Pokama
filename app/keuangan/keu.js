@@ -1,4 +1,4 @@
-/* Panel Keuangan grup Pokama — pokama.org/keuangan
+/* Panel Keuangan grup Pokama — app.pokama.org/keuangan
    Satu buku untuk semua unit bisnis: Rentalaja, TripinAja, Niagaaja, dan Holding.
    Data dari fungsi database pk_fin_* (supabase/018_keuangan_*.sql). Selama mesin itu belum dipasang,
    halaman otomatis memakai data contoh (demo.js) dengan bentuk yang sama, dan menandainya dengan jelas. */
@@ -533,14 +533,14 @@ const ROLE = { ceo: 'CEO', kepala_staf: 'Kepala Staf', keuangan: 'Keuangan', lea
 function shell() {
   const me = PEOPLE.find(p => ME && (p.id === ME.id || p.email === ME.email)) || ME || {};
   document.getElementById('side').innerHTML = `<div class="brand-row"><a class="brand" href="/"><img src="/img/pokama-logo.png" alt="Pokama"></a></div>    ${NAV.map(([sec, items]) => `<div class="nav-sec"><span class="nav-h">${sec}</span>${items.map(([k, l, ic, nb]) => `<a href="#${k}">${svg(ic)}<span>${l}</span>${nb ? `<b class="badge" data-nb="${nb}" hidden></b>` : ''}</a>`).join('')}</div>`).join('')}
-    <div class="nav-sec"><span class="nav-h">MODUL LAIN</span><a href="/">${svg('sun')}<span>Sistem Kerja</span></a><a href="/mitra/admin">${svg('users')}<span>Mitra Affiliate</span></a></div>
+    <div class="nav-sec"><span class="nav-h">MODUL LAIN</span><a href="/">${svg('sun')}<span>Sistem Kerja</span></a><a href="/affiliate">${svg('users')}<span>Mitra Affiliate</span></a></div>
     <div class="side-me"><a href="/#/pengaturan" class="me">${avatar(me, 36)}<span><b>${esc(nick(me) || me.name || 'Uji lokal')}</b><small>${esc(me.title || ROLE[me.role] || '')}</small></span></a></div>`;
   document.getElementById('bottom').innerHTML = MOBILE.map(([k, l, ic, nb]) => `<a href="#${k}" data-k="${k}">${svg(ic, 22)}<span>${l}</span>${nb ? `<b class="badge" data-nb="${nb}" hidden></b>` : ''}</a>`).join('') + `<a href="#menu" data-k="menu">${svg('menu', 22)}<span>Lainnya</span></a>`;
 }
 async function vMenu() {
   return `<header class="ph"><div><span class="muted small">Keuangan grup</span><h1>Menu</h1></div></header>
     <div class="menu-list">${NAV.flatMap(([, it]) => it).map(([k, l, ic, nb]) => `<a class="card row" href="#${k}">${svg(ic, 22)}<b>${l}</b><span style="flex:1"></span>${nb ? `<b class="badge" data-nb="${nb}" hidden></b>` : ''}›</a>`).join('')}
-    <a class="card row" href="/">${svg('sun', 22)}<b>Sistem Kerja</b><span style="flex:1"></span>›</a><a class="card row" href="/mitra/admin">${svg('users', 22)}<b>Mitra Affiliate</b><span style="flex:1"></span>›</a></div>`;
+    <a class="card row" href="/">${svg('sun', 22)}<b>Sistem Kerja</b><span style="flex:1"></span>›</a><a class="card row" href="/affiliate">${svg('users', 22)}<b>Mitra Affiliate</b><span style="flex:1"></span>›</a></div>`;
 }
 
 /* ---------- kerangka ---------- */

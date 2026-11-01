@@ -11,7 +11,7 @@ export function waTask(t, pts = []) {
   const open = pts.filter(p => p.status !== 'accepted');
   if (open.length) x += `\n*Poin revisi (${open.length})*\n` + open.map((p, i) => `${i + 1}. ${p.text}${p.answer ? ' — _' + p.answer + '_' : ''}`).join('\n') + '\n';
   if (t.last_link) x += `\nHasil: ${t.last_link}\n`;
-  return x + `\npokama.org/#/review?tab=semua&t=${t.id}`;
+  return x + `\napp.pokama.org/#/review?tab=semua&t=${t.id}`;
 }
 export const ST = {
   todo: ['Belum mulai', '#C9CED6', '#1F2933'], doing: ['Dikerjakan', '#2F6FDB', '#fff'], review: ['Menunggu review', '#F2B33D', '#1F2933'],
@@ -100,7 +100,7 @@ async function board(el, params, reload) {
         x += `\n📁 *${p.name}* — ${pct}% (${all.filter(t => t.status === 'done').length}/${all.length} selesai) · PJ ${nick(p.owner_id)}${p.due ? ' · tenggat ' + fdate(p.due) : ''}\n` + rows.map(waLine).join('\n') + (rows.length ? '\n' : ''); }
       const loose = act.filter(t => !t.project_id || !ps.some(p => p.id === t.project_id));
       if (loose.length) x += `\n*Tugas lepas*\n` + loose.map(waLine).join('\n') + '\n';
-      await waReport('Proyek & Tugas', x + '\npokama.org/#/tugas'); return; }
+      await waReport('Proyek & Tugas', x + '\napp.pokama.org/#/tugas'); return; }
     if (a && a.dataset.a === 'new') { if (await taskForm({}, projects)) { toast('Tugas dibuat'); reload(); } return; }
     if (a && a.dataset.a === 'proj') { if (await projForm()) reload(); return; }
     const np = e.target.closest('[data-np]'); if (np) { const p0 = proj[np.dataset.np]; if (await taskForm({ project_id: p0.id, unit_code: p0.unit_code }, projects)) { toast('Tugas ditambahkan ke ' + p0.name); reload(); } return; }
@@ -194,7 +194,7 @@ async function review(el, params, reload) {
       if (rv.length) x += `\n*🔴 SEDANG REVISI*\n` + rv.map(t => { const ps = P(t.id); return `• ${t.title} — ${nick(t.pic_id)} · ${ps.filter(p => p.status === 'accepted').length}/${ps.length} poin beres · tenggat ${t.revise_due ? fdate(t.revise_due) : '-'}${late(t) ? ' *(LEWAT)*' : ''}`; }).join('\n') + '\n';
       const done = tasks.filter(t => t.status === 'done' && t.done_at && t.done_at.slice(0, 10) >= addDays(today(), -7));
       if (done.length) x += `\n*✅ SELESAI 7 HARI TERAKHIR*\n` + done.map(t => `• ${t.title} — ${nick(t.pic_id)}`).join('\n') + '\n';
-      return waReport('Review & Revisi', x + '\npokama.org/#/review');
+      return waReport('Review & Revisi', x + '\napp.pokama.org/#/review');
     }
     const b = e.target.closest('[data-r]'); if (!b) return;
     const t = sel; const act = b.dataset.r;

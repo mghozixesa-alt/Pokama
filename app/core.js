@@ -244,6 +244,6 @@ export async function signedPhoto(bucket, path) {
 export function getLocation() {
   return new Promise((res, rej) => { if (!navigator.geolocation) return rej(new Error('Perangkat tidak mendukung lokasi'));
     navigator.geolocation.getCurrentPosition((p) => res({ lat: p.coords.latitude, lng: p.coords.longitude, acc: p.coords.accuracy }),
-      (e) => rej(new Error(e.code === 1 ? 'Izin lokasi ditolak. Aktifkan lokasi untuk pokama.org di pengaturan browser, atau absen dengan foto.' : 'Lokasi tidak terbaca. Coba lagi di tempat terbuka, atau absen dengan foto.')),
+      (e) => rej(new Error(e.code === 1 ? 'Izin lokasi ditolak. Aktifkan lokasi untuk app.pokama.org di pengaturan browser, atau absen dengan foto.' : 'Lokasi tidak terbaca. Coba lagi di tempat terbuka, atau absen dengan foto.')),
       { enableHighAccuracy: true, timeout: 15000, maximumAge: 60000 }); });
 }

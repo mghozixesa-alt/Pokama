@@ -1,6 +1,6 @@
 # Panel Keuangan grup
 
-Modul Keuangan Pokama di `pokama.org/keuangan`. Satu buku untuk semua unit bisnis (Rentalaja, TripinAja, Niagaaja) dan Holding.
+Modul Keuangan Pokama di `app.pokama.org/keuangan`. Satu buku untuk semua unit bisnis (Rentalaja, TripinAja, Niagaaja) dan Holding.
 
 - Akses: CEO, Kepala Staf (lihat saja), Keuangan. Masuk memakai akun & sesi Sistem Kerja (`/marketing/gate.js`, wajib 2 langkah).
 - Data dari fungsi database `pk_fin_*` (`supabase/018_keuangan_*.sql`). **Selama 018 belum diterapkan**, halaman otomatis memakai data contoh dari `demo.js` (bentuknya sama persis dengan hasil fungsi database) dan menampilkan pita "DATA CONTOH". Begitu 018 diterapkan, halaman langsung memakai data sungguhan tanpa perubahan kode.
