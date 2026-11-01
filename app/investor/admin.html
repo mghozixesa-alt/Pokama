@@ -1,0 +1,475 @@
+<!doctype html>
+<html lang="id" data-gate-title="Investor">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Investor · Pokama</title>
+<link rel="icon" href="/img/pk.png">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/marketing/gate.css">
+<script src="/marketing/gate.js"></script>
+<style>
+:root{--navy:#1D3149;--teal:#09BEAF;--teal-d:#067A70;--mint:#DDF5F2;--bg:#F3F5F8;--line:#E3E6EB;--line2:#EEF0F3;--ink:#1F2933;--mut:#5B6573;--red:#9A3F0A;--redbg:#FCEBDD;--yel:#7A5200;--yelbg:#FDF3D7;--blue:#1E5AA8;--bluebg:#E5EEF9}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.45 Nunito,system-ui,-apple-system,sans-serif}
+a{color:var(--teal-d)}
+button,input,select,textarea{font:inherit;color:inherit}
+#dc-root{display:flex;min-height:100vh}
+.side{width:236px;flex:none;background:#fff;border-right:1px solid var(--line);padding:20px 12px;display:flex;flex-direction:column;gap:14px;position:sticky;top:0;height:100vh;overflow-y:auto}
+.side img{width:112px;margin:0 10px}
+.side .grp{display:flex;flex-direction:column;gap:2px}.side .grp>span{font-size:10.5px;font-weight:800;letter-spacing:.1em;color:#8A94A3;padding:0 10px 4px}
+.side a{display:flex;align-items:center;gap:10px;min-height:36px;padding:0 10px;border-radius:9px;text-decoration:none;font-weight:600;color:#3B4250;font-size:13.5px}
+.side a[aria-current="page"]{font-weight:800;color:var(--navy);background:#EAF8F6;box-shadow:inset 3px 0 0 var(--teal)}
+.side a .nb{margin-left:auto}
+.side .foot{margin-top:auto;border-top:1px solid var(--line);padding:12px 10px 0;font-size:12px;color:var(--mut)}
+main{flex:1;min-width:0;padding:26px 32px 60px;display:flex;flex-direction:column;gap:18px}
+h1{margin:0;font-size:25px;font-weight:900;color:var(--navy)}h2{margin:0;font-size:17px;font-weight:900;color:var(--navy)}
+.ph{display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:flex-end}.ph .sub{font-size:13.5px;color:var(--mut)}
+.filters{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.sel,.inp{height:38px;border:1px solid #D3D7DE;border-radius:10px;padding:0 10px;background:#fff;font-weight:700}
+.inp{font-weight:600}textarea.inp{height:70px;padding:8px 10px}
+.card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px 20px;display:flex;flex-direction:column;gap:12px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
+.tile{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 16px;display:flex;flex-direction:column;gap:2px;border-top:4px solid var(--teal)}
+.tile span{font-size:12px;color:var(--mut);font-weight:700}.tile b{font-size:24px;font-weight:900;color:var(--navy)}.tile small{color:var(--mut);font-weight:700;font-size:12px}
+.tile.warn{border-top-color:#F2A33A}.tile.bad{border-top-color:#C2410C}.tile.bad small{color:var(--red)}
+.cols{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:18px;align-items:start}
+.tbl{width:100%;border-collapse:collapse}.tbl th{text-align:left;font-size:12px;color:var(--mut);font-weight:800;padding:8px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+.tbl td{padding:9px 10px;border-bottom:1px solid var(--line2);vertical-align:middle}.tbl .r{text-align:right}.tbl tr.click{cursor:pointer}.tbl tr.click:hover td{background:#FAFBFC}
+.scroll{overflow-x:auto}
+.btn{height:38px;padding:0 14px;border-radius:10px;border:1px solid #C9D1DB;background:#fff;color:var(--navy);font-weight:800;cursor:pointer;display:inline-flex;align-items:center;gap:6px;text-decoration:none;white-space:nowrap}
+.btn.pri{background:var(--teal);border-color:var(--teal)}.btn.sm{height:32px;padding:0 10px;font-size:12.5px}.btn.warn{color:var(--red);border-color:#E9B999}.btn:disabled{opacity:.55;cursor:default}
+.pill{display:inline-flex;align-items:center;font-size:11.5px;font-weight:800;padding:2px 8px;border-radius:999px;background:#EEF0F3;color:#3B4250;white-space:nowrap}
+.pill.g{background:var(--mint);color:var(--teal-d)}.pill.y{background:var(--yelbg);color:var(--yel)}.pill.r{background:var(--redbg);color:var(--red)}.pill.b{background:var(--bluebg);color:var(--blue)}
+.nb{min-width:20px;height:20px;border-radius:10px;background:#C2410C;color:#fff;font-size:11px;font-weight:800;display:inline-flex;align-items:center;justify-content:center;padding:0 6px}
+.list{display:flex;flex-direction:column}.li{display:flex;gap:12px;align-items:center;padding:10px 0;border-top:1px solid var(--line2)}.li:first-child{border-top:0}.li .t{flex:1;min-width:0;display:flex;flex-direction:column}.li .t span{font-size:12.5px;color:var(--mut)}
+.alert{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border-radius:12px;background:#FFFBF8;border:1px solid #E9B999}.alert b{color:var(--red)}
+.ok{background:var(--mint);color:var(--teal-d);border-radius:10px;padding:10px 12px;font-weight:700}
+.muted{color:var(--mut)}.small{font-size:12.5px}
+.f{display:flex;flex-direction:column;gap:4px;font-size:12.5px;font-weight:800;color:#3B4250}
+.g2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.demo{background:#FFF6E0;color:#7A4B00;border:1px solid #F2D58A;border-radius:10px;padding:8px 12px;font-weight:800;font-size:13px}
+.scrim{position:fixed;inset:0;background:rgba(29,49,73,.45);z-index:60;display:flex;justify-content:flex-end}
+.panel{background:#fff;width:min(560px,100%);height:100%;overflow:auto;padding:22px;display:flex;flex-direction:column;gap:14px}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:22px;background:var(--navy);color:#fff;padding:10px 16px;border-radius:12px;font-weight:800;z-index:90}.toast.err{background:#9A3F0A}
+.kv{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.kv>div{background:var(--bg);border-radius:10px;padding:8px 10px;display:flex;flex-direction:column}.kv span{font-size:11px;font-weight:800;color:var(--mut);text-transform:uppercase;letter-spacing:.04em}
+code,pre{font-family:ui-monospace,Menlo,monospace;font-size:12.5px}pre{background:#0F1B2B;color:#D7E3F1;padding:12px;border-radius:10px;overflow:auto;white-space:pre-wrap;margin:0}
+.mbar{display:none}
+@media (max-width:900px){
+  .side{position:fixed;left:0;top:0;bottom:0;z-index:70;transform:translateX(-102%);transition:transform .2s;width:260px}
+  body.nav-open .side{transform:none;box-shadow:0 0 40px rgba(29,49,73,.25)}
+  .mbar{display:flex;position:sticky;top:0;z-index:50;background:#fff;border-bottom:1px solid var(--line);height:52px;align-items:center;gap:10px;padding:0 12px}
+  .mbar img{width:80px}.mbar b{flex:1;text-align:right;font-weight:900;color:var(--navy)}
+  #dc-root{flex-direction:column}
+  main{padding:14px 12px 50px}
+  .cols,.g3{grid-template-columns:minmax(0,1fr)}
+  .cols>*{min-width:0}
+  .tiles{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .li{flex-wrap:wrap}.li .t{flex:1 1 100%}
+  .tile b{font-size:19px;overflow-wrap:anywhere}
+  .g2{grid-template-columns:minmax(0,1fr)}
+  .card{padding:14px}
+  .filters .sel{flex:1 1 140px;min-width:0}
+  .inp{max-width:100%}
+  pre{font-size:11px}
+  main{max-width:100vw}
+  .ph>div{min-width:0}
+}
+.side .foot{word-break:break-word}
+.nb[hidden]{display:none}
+.tbl td .btn.sm{white-space:nowrap}
+</style>
+</head>
+<body>
+<div id="dc-root">
+  <div class="mbar"><button class="btn sm" data-menu aria-label="Buka menu">☰</button><img src="/img/pokama-logo.png" alt="Pokama"><b id="mt">Investor</b></div>
+  <aside class="side" aria-label="Menu investor">
+    <img src="/img/pokama-logo.png" alt="Pokama">
+    <div class="grp"><span>INVESTOR</span>
+      <a href="#ringkasan">Ringkasan</a><a href="#investor">Investor <b class="nb" data-nb="kyc_wait" hidden></b></a><a href="#investasi">Investasi & perjanjian <b class="nb" data-nb="hold_wait" hidden></b></a><a href="#peluang">Peluang & minat <b class="nb" data-nb="leads" hidden></b></a></div>
+    <div class="grp"><span>KEUANGAN</span><a href="#bagihasil">Bagi hasil bulanan <b class="nb" data-nb="st_wait" hidden></b></a><a href="#penarikan">Penarikan dana <b class="nb" data-nb="wd" hidden></b></a></div>
+    <div class="grp"><span>LAINNYA</span><a href="#log">Log audit</a><a href="/">← Sistem Kerja</a><a href="/keuangan/">Keuangan grup</a><a href="https://investor.pokama.org" target="_blank" rel="noopener">Portal investor ↗</a></div>
+    <div class="foot" id="me">…</div>
+  </aside>
+  <main id="app"><p class="muted">Memuat…</p></main>
+</div>
+<script type="module">
+import { makeSession, api, esc, rp, rpk, pct, tgl, bulan, monthKey, toast, waLink } from '/mitra/af.js';
+const A = api(makeSession('pokama.session'));
+const app = document.getElementById('app');
+const PAGES = { ringkasan: 'Ringkasan', investor: 'Investor', investasi: 'Investasi & perjanjian', bagihasil: 'Bagi hasil bulanan', penarikan: 'Penarikan dana', peluang: 'Peluang & minat', log: 'Log audit' };
+const view = () => { const v = (location.hash || '#ringkasan').slice(1).split('/')[0]; return PAGES[v] ? v : 'ringkasan'; };
+const S = { unit: '', hstatus: '', period: '', q: '' };
+let M = null, cur = null;
+const JENIS = { aset: 'Aset sewa', proyek: 'Proyek / modal', saham: 'Saham' };
+const SCHEME = { per_unit: 'Per unit', vendor: 'Portofolio vendor', flat: 'Flat bulanan', location: 'Kemitraan lokasi' };
+const HST = { draf: ['Draf', ''], menunggu: ['Menunggu CEO', 'y'], aktif: ['Aktif', 'g'], selesai: ['Selesai', ''], ditolak: ['Ditolak', 'r'] };
+const WST = { diminta: ['Menunggu CEO', 'y'], disetujui: ['Siap ditransfer', 'b'], dibayar: ['Ditransfer', 'g'], ditolak: ['Ditolak', 'r'], gagal: ['Gagal', 'r'] };
+const SST = { draf: ['Draf', ''], diajukan: ['Diajukan', 'y'], terkunci: ['Terkunci', 'g'] };
+const KYC = { menunggu: ['KYC menunggu', 'y'], terverifikasi: ['Terverifikasi', 'g'], ditolak: ['KYC ditolak', 'r'] };
+const LST = { baru: ['Baru', 'y'], dihubungi: ['Dihubungi', 'b'], jadi_investor: ['Jadi investor', 'g'], batal: ['Batal', ''] };
+const KIND = { hasil: 'Bagi hasil', dividen: 'Dividen', modal: 'Pengembalian modal' };
+const pill = (a) => `<span class="pill ${a[1]}">${esc(a[0])}</span>`;
+const pc = (n) => n == null ? '—' : String(Math.round(+n * 100) / 100).replace('.', ',') + '%';
+const num = (s) => +String(s ?? '').replace(/[^\d,-]/g, '').replace(',', '.') || 0;
+const unitName = (c) => ((M && M.units.find(u => u.code === c)) || {}).name || c;
+const months = () => { const o = []; const d = new Date(); d.setDate(1); for (let i = 0; i < 13; i++) { o.push(monthKey(d)); d.setMonth(d.getMonth() - 1); } return o; };
+const header = (title, sub, right = '') => `<div class="ph"><div><h1>${title}</h1><div class="sub">${sub}</div></div>${right}</div>`;
+const tile = (l, v, s, cls = '') => `<div class="tile ${cls}"><span>${l}</span><b>${v}</b><small>${s}</small></div>`;
+const unitSel = (k = 'unit', all = 'Semua unit') => `<select class="sel" data-f="${k}" aria-label="Unit"><option value="">${all}</option>${M.units.map(u => `<option value="${u.code}"${u.code === S[k] ? ' selected' : ''}>${esc(u.name)}</option>`).join('')}</select>`;
+const can = { biz: () => M.is_biz || M.is_fin, fin: () => M.is_fin, owner: () => M.is_owner };
+function returnLine(h) {
+  if (h.jenis === 'aset') return h.rp_scheme === 'flat' ? rp(h.rp_flat) + '/bln' : pc(h.rate_pct) + ' ' + (h.rp_scheme === 'per_unit' ? 'laba unit' : h.rp_basis === 'gross' ? 'pendapatan' : 'laba') + (h.rp_ops_pct ? ' · biaya kelola ' + pc(h.rp_ops_pct) : '');
+  if (h.jenis === 'proyek') return h.return_model === 'imbal_tetap' ? pc(h.rate_pct) + '/bln dari modal' : pc(h.rate_pct) + ' laba proyek';
+  return pc(h.rate_pct) + ' kepemilikan';
+}
+
+/* ---------- Ringkasan ---------- */
+async function vRingkasan() {
+  const O = await A.rpc('iv_admin_overview', { p_unit: S.unit || null });
+  const yearly = +O.principal ? (+O.last_month || +O.month_live) * 12 / +O.principal * 100 : null;
+  let h = header('Ringkasan investor', 'Semua unit bisnis dalam satu tempat. Angka bulan berjalan dihitung langsung dari transaksi; final setelah tutup buku.', `<div class="filters">${unitSel()}</div>`);
+  h += `<div class="tiles">
+    ${tile('Dana investor dikelola', rpk(O.principal), O.investors_active + ' investor aktif · ' + O.investors + ' terdaftar')}
+    ${tile('Bagi hasil berjalan', rpk(O.month_live), bulan(O.period) + ' · estimasi')}
+    ${tile('Bagi hasil bulan lalu', rpk(O.last_month), yearly != null ? 'setara ' + pc(yearly) + '/tahun dari modal' : 'belum ada')}
+    ${tile('Dibagikan tahun ini', rpk(O.ytd), 'laporan terkunci, tanpa pengembalian modal')}
+    ${tile('Kewajiban ke investor', rpk(O.payable), 'saldo yang bisa ditarik investor', +O.payable > 0 ? 'warn' : '')}
+    ${tile('Penarikan diproses', rpk(O.wd_pending), (M.counts.wd_wait + M.counts.wd_pay) + ' permintaan', +O.wd_pending ? 'warn' : '')}
+    ${tile('Imbal tetap per bulan', rpk(O.fixed_next), 'kas keluar rutin proyek imbal tetap')}
+    ${tile('Modal jatuh tempo 90 hari', rpk(O.due_90.reduce((a, d) => a + (d.back === 'akhir' ? +d.principal : 0), 0)), O.due_90.length + ' investasi', O.due_90.length ? 'bad' : '')}
+  </div>`;
+  const att = [];
+  if (M.counts.hold_wait) att.push(`<div class="alert"><span><b>${M.counts.hold_wait} perjanjian menunggu persetujuan CEO</b>. <a href="#investasi">Buka Investasi</a></span></div>`);
+  if (M.counts.wd_wait) att.push(`<div class="alert"><span><b>${M.counts.wd_wait} penarikan menunggu persetujuan CEO</b>. <a href="#penarikan">Buka Penarikan</a></span></div>`);
+  if (M.counts.wd_pay) att.push(`<div class="alert"><span><b>${M.counts.wd_pay} penarikan siap ditransfer Keuangan</b>. <a href="#penarikan">Buka Penarikan</a></span></div>`);
+  if (+O.last_unlocked) att.push(`<div class="alert"><span><b>${O.last_unlocked} investasi belum ditutup buku ${bulan(months()[1])}</b>. Hitung, ajukan, lalu kunci di <a href="#bagihasil">Bagi hasil</a>.</span></div>`);
+  if (M.counts.st_wait) att.push(`<div class="alert"><span><b>${M.counts.st_wait} laporan diajukan</b> menunggu dikunci. <a href="#bagihasil">Buka</a></span></div>`);
+  if (M.counts.kyc_wait) att.push(`<div class="alert"><span><b>${M.counts.kyc_wait} investor belum KYC</b>: belum bisa menarik dana. <a href="#investor">Buka Investor</a></span></div>`);
+  if (M.counts.leads) att.push(`<div class="alert" style="border-color:var(--line);background:#fff"><span><b style="color:var(--navy)">${M.counts.leads} minat baru</b> calon investor. <a href="#peluang">Hubungi</a></span></div>`);
+  const per = O.per_unit.length ? `<table class="tbl"><thead><tr><th>Unit</th><th class="r">Investasi</th><th class="r">Modal</th><th class="r">Bagi hasil berjalan</th><th class="r">Pendapatan aset</th><th class="r">% modal/bln</th></tr></thead><tbody>${O.per_unit.map(u => `<tr><td><b>${esc(u.name)}</b><br><span class="muted small">${[u.aset ? u.aset + ' aset' : '', u.proyek ? u.proyek + ' proyek' : '', u.saham ? u.saham + ' saham' : ''].filter(Boolean).join(' · ')}</span></td><td class="r">${u.n}</td><td class="r">${rp(u.principal)}</td><td class="r">${rp(u.live)}</td><td class="r">${+u.revenue ? rp(u.revenue) : '—'}</td><td class="r">${+u.principal ? pc(u.live / u.principal * 100) : '—'}</td></tr>`).join('')}</tbody></table>` : '<p class="muted">Belum ada investasi aktif.</p>';
+  const BJ = O.by_jenis || {}, tj = Object.values(BJ).reduce((a, x) => a + +x.principal, 0) || 1, CJ = { aset: '#09BEAF', proyek: '#1D3149', saham: '#E0A82E' };
+  const komp = `<div style="display:flex;height:14px;border-radius:7px;overflow:hidden;background:var(--line)">${Object.entries(BJ).map(([k, x]) => `<i style="width:${x.principal / tj * 100}%;background:${CJ[k]}"></i>`).join('')}</div>
+    <div class="g3">${['aset', 'proyek', 'saham'].map(k => `<div><span class="muted small"><i style="display:inline-block;width:9px;height:9px;border-radius:5px;background:${CJ[k]}"></i> ${JENIS[k]}</span><br><b>${rpk((BJ[k] || {}).principal || 0)}</b> <span class="muted small">${(BJ[k] || {}).n || 0} inv.</span></div>`).join('')}</div>`;
+  const tr = O.trend, mx = Math.max(1, ...tr.map(t => +t.share));
+  const trend = tr.length ? `<div style="display:flex;align-items:flex-end;gap:6px;height:110px">${tr.map(t => `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px" title="${bulan(t.period)}: ${rp(t.share)}"><i style="display:block;width:100%;max-width:30px;height:${t.share / mx * 86}px;min-height:3px;background:var(--teal);border-radius:6px 6px 2px 2px"></i><span class="muted" style="font-size:10px">${bulan(t.period).slice(0, 3)}</span></div>`).join('')}</div>` : '<p class="muted small">Tren muncul setelah ada laporan bulanan terkunci.</p>';
+  const due = O.due_90.length ? `<table class="tbl"><thead><tr><th>Jatuh tempo</th><th>Investasi</th><th class="r">Modal</th><th>Kembali</th></tr></thead><tbody>${O.due_90.map(d => `<tr><td>${tgl(d.ends_on)} ${new Date(d.ends_on).getFullYear()}</td><td><b>${esc(d.title)}</b><br><span class="muted small">${esc(d.investor)} · ${esc(d.unit)}</span></td><td class="r">${rp(d.principal)}</td><td>${esc({ akhir: 'Di akhir', cicil: 'Dicicil', tidak: 'Tidak' }[d.back] || '—')}</td></tr>`).join('')}</tbody></table>` : '<p class="muted small">Tidak ada yang jatuh tempo 90 hari ke depan.</p>';
+  const top = O.top_assets.length ? `<table class="tbl"><thead><tr><th>Unit aset</th><th>Investor</th><th class="r">Sewa bln ini</th><th class="r">Laba</th><th class="r">Bagian investor</th><th class="r">Terpakai 30h</th><th class="r">Harga beli</th></tr></thead><tbody>${O.top_assets.slice(0, 20).map(u => `<tr><td><b>${esc(u.name)}</b><br><span class="muted small">${esc(u.branch)}</span></td><td>${esc(u.investor)}</td><td class="r">${rp(u.revenue)}</td><td class="r">${rp(u.net)}</td><td class="r">${rp(u.share)}</td><td class="r">${pc((+u.util30 || 0) * (u.util30 <= 1 ? 100 : 1))}</td><td class="r">${u.purchase_price ? rpk(u.purchase_price) : '—'}</td></tr>`).join('')}</tbody></table>` : '<p class="muted small">Belum ada aset sewa milik investor.</p>';
+  h += `<div class="cols"><div style="display:flex;flex-direction:column;gap:18px">
+      <section class="card"><h2>Per unit bisnis</h2><div class="scroll">${per}</div></section>
+      <section class="card"><h2>Aset sewa investor · ${bulan(O.period)}</h2><div class="scroll">${top}</div><p class="muted small">Dari mesin bagi hasil Rentalaja: pendapatan lunas − servis − biaya kelola cabang.</p></section></div>
+    <div style="display:flex;flex-direction:column;gap:18px">
+      <section class="card"><h2>Perlu tindakan</h2>${att.join('') || '<p class="muted">Tidak ada yang perlu ditindak.</p>'}</section>
+      <section class="card"><h2>Komposisi dana</h2>${komp}</section>
+      <section class="card"><h2>Bagi hasil 12 bulan</h2>${trend}</section>
+      <section class="card"><h2>Jatuh tempo 90 hari</h2><div class="scroll">${due}</div></section></div></div>`;
+  return h;
+}
+
+/* ---------- Investor ---------- */
+async function vInvestor() {
+  const L = await A.rpc('iv_admin_investors', { p_q: S.q || null });
+  const right = `<div class="filters"><input class="inp" data-q placeholder="Cari nama / email" value="${esc(S.q)}" style="height:38px;width:220px">${can.biz() ? '<button class="btn pri" data-newinv>+ Investor</button>' : ''}</div>`;
+  let h = header('Investor', 'Akun investor dibuat di sini setelah perjanjian. Investor masuk ke investor.pokama.org dengan email Google yang didaftarkan.', right);
+  h += `<section class="card"><div class="scroll"><table class="tbl"><thead><tr><th>Investor</th><th>Unit</th><th class="r">Modal aktif</th><th class="r">Diterima</th><th class="r">Saldo</th><th>KYC</th><th>Akun</th></tr></thead><tbody>
+    ${L.length ? L.map(i => `<tr class="click" data-inv="${i.id}"><td><b>${esc(i.name)}</b>${i.status !== 'aktif' ? ' ' + pill(['Nonaktif', 'r']) : ''}<br><span class="muted small">${esc(i.email)}${i.city ? ' · ' + esc(i.city) : ''}</span></td>
+      <td>${(i.units || []).map(u => `<span class="pill">${esc(unitName(u))}</span>`).join(' ') || '<span class="muted">—</span>'}</td><td class="r">${rp(i.principal)}<br><span class="muted small">${i.holdings} investasi</span></td>
+      <td class="r">${rp(i.earned)}</td><td class="r">${rp(i.balance)}</td><td>${pill(KYC[i.kyc_status])}</td><td>${i.linked ? pill(['Sudah masuk', 'g']) : pill(['Belum masuk', ''])}</td></tr>`).join('') : '<tr><td colspan="7" class="muted">Belum ada investor.</td></tr>'}</tbody></table></div></section>`;
+  return h;
+}
+async function investorPanel(id) {
+  const I = id ? await A.rpc('iv_admin_investor', { p_id: id }) : { kind: 'perorangan', status: 'aktif', holdings: [], withdrawals: [], statements: [], balance: {} };
+  const ro = !can.biz();
+  panel(`<div style="display:flex;justify-content:space-between;align-items:center"><h2 style="font-size:20px">${id ? esc(I.name) : 'Investor baru'}</h2><button class="btn sm" data-close>✕</button></div>
+    ${id ? `<div class="kv"><div><span>Saldo bisa ditarik</span><b>${rp(I.balance.withdrawable)}</b></div><div><span>Sudah ditransfer</span><b>${rp(I.balance.paid)}</b></div><div><span>Status KYC</span><b>${esc(KYC[I.kyc_status][0])}</b></div><div><span>Akun Google</span><b>${I.linked ? 'Sudah masuk' : 'Belum pernah masuk'}</b></div></div>` : ''}
+    <form id="fi" style="display:flex;flex-direction:column;gap:10px"><h3 style="margin:6px 0 0">Profil</h3>
+      <label class="f">Nama lengkap (sesuai KTP / akta)<input class="inp" name="name" value="${esc(I.name || '')}" ${ro ? 'disabled' : ''} required></label>
+      <label class="f">Email Google untuk masuk<input class="inp" name="email" type="email" value="${esc(I.email || '')}" ${ro ? 'disabled' : ''} required></label>
+      <div class="g2"><label class="f">WhatsApp<input class="inp" name="wa" placeholder="${esc(I.wa || '08xx')}" ${ro ? 'disabled' : ''}></label>
+        <label class="f">Jenis<select class="inp" name="kind" ${ro ? 'disabled' : ''}><option value="perorangan"${I.kind === 'perorangan' ? ' selected' : ''}>Perorangan</option><option value="badan_usaha"${I.kind === 'badan_usaha' ? ' selected' : ''}>Badan usaha</option></select></label></div>
+      <div class="g2"><label class="f">Kota<input class="inp" name="city" value="${esc(I.city || '')}" ${ro ? 'disabled' : ''}></label>
+        ${id && can.owner() ? `<label class="f">Status<select class="inp" name="status"><option value="aktif"${I.status === 'aktif' ? ' selected' : ''}>Aktif</option><option value="nonaktif"${I.status === 'nonaktif' ? ' selected' : ''}>Nonaktif</option></select></label>` : '<span></span>'}</div>
+      <label class="f">Catatan internal<textarea class="inp" name="note" ${ro ? 'disabled' : ''}>${esc(I.note || '')}</textarea></label>
+      ${id ? '<p class="muted small">WhatsApp tersimpan tersamar; isi lagi hanya bila ingin mengganti.</p>' : ''}
+      <div id="fe"></div>${ro ? '' : `<button class="btn pri" type="submit">${id ? 'Simpan profil' : 'Buat investor'}</button>`}</form>
+    ${id ? `<form id="fk" style="display:flex;flex-direction:column;gap:10px;border-top:1px solid var(--line);padding-top:12px"><h3 style="margin:0">KYC & rekening ${can.fin() ? '' : '<span class="muted small">(Keuangan)</span>'}</h3>
+      <div class="kv"><div><span>NIK</span><b>${esc(I.nik || '—')} ${I.nik && can.fin() ? '<button class="btn sm" type="button" data-reveal="nik">Buka</button>' : ''}</b></div><div><span>NPWP</span><b>${esc(I.npwp || '—')} ${I.npwp && can.fin() ? '<button class="btn sm" type="button" data-reveal="npwp">Buka</button>' : ''}</b></div>
+        <div style="grid-column:1/-1"><span>Rekening</span><b>${esc((I.bank_name || '—') + ' ' + (I.bank || ''))} ${I.bank_holder ? 'a.n. ' + esc(I.bank_holder) : ''} ${I.bank && can.fin() ? '<button class="btn sm" type="button" data-reveal="rekening">Buka</button>' : ''}</b></div></div>
+      ${can.fin() ? `<div class="g2"><label class="f">NIK baru (16 digit)<input class="inp" name="nik" inputmode="numeric" autocomplete="off"></label><label class="f">NPWP baru<input class="inp" name="npwp" inputmode="numeric" autocomplete="off"></label></div>
+      <div class="g3"><label class="f">Bank<input class="inp" name="bank_name" value="${esc(I.bank_name || '')}"></label><label class="f">No. rekening baru<input class="inp" name="bank_acct" inputmode="numeric" autocomplete="off"></label><label class="f">Atas nama<input class="inp" name="bank_holder" value="${esc(I.bank_holder || '')}"></label></div>
+      <div class="g2"><label class="f">Status KYC<select class="inp" name="kyc_status">${Object.entries(KYC).map(([k, v]) => `<option value="${k}"${k === I.kyc_status ? ' selected' : ''}>${v[0]}</option>`).join('')}</select></label><label class="f">Catatan KYC<input class="inp" name="kyc_note" value="${esc(I.kyc_note || '')}"></label></div>
+      <p class="muted small">Rekening wajib atas nama investor sendiri. Nomor lengkap disimpan terenkripsi; membuka data tercatat di log audit. Rekening tidak bisa diganti saat ada penarikan berjalan.</p>
+      <div id="ke"></div><button class="btn pri" type="submit">Simpan KYC & rekening</button>` : ''}</form>
+    <div style="border-top:1px solid var(--line);padding-top:12px;display:flex;flex-direction:column;gap:8px"><div style="display:flex;justify-content:space-between;align-items:center"><h3 style="margin:0">Investasi</h3>${can.biz() ? `<button class="btn sm" data-newhold="${id}">+ Investasi</button>` : ''}</div>
+      ${I.holdings.length ? `<div class="list">${I.holdings.map(h => `<div class="li"><div class="t"><b>${esc(h.title)}</b><span>${esc(h.unit)} · ${JENIS[h.jenis]} · ${rp(h.principal)} · ${esc(returnLine(h))}</span></div>${pill(HST[h.status])}</div>`).join('')}</div>` : '<p class="muted small">Belum ada investasi.</p>'}</div>
+    <div style="border-top:1px solid var(--line);padding-top:12px"><h3 style="margin:0 0 6px">Laporan & penarikan terakhir</h3>
+      <div class="list">${I.statements.slice(0, 6).map(s => `<div class="li"><div class="t"><b>${bulan(s.period)} · ${esc(s.title)}</b><span>${KIND[s.kind]}</span></div><b>${rp(s.share)}</b>${pill(SST[s.status])}</div>`).join('')}
+      ${I.withdrawals.slice(0, 6).map(w => `<div class="li"><div class="t"><b>Penarikan ${rp(w.amount)}</b><span>${tgl(w.requested_at)} · ${esc(w.bank_snapshot)}</span></div>${pill(WST[w.status])}</div>`).join('')}</div></div>` : ''}`,
+  (p) => {
+    const fi = p.querySelector('#fi');
+    if (fi) fi.onsubmit = async (e) => { e.preventDefault(); const d = Object.fromEntries(new FormData(fi)); if (id) d.id = id; if (!d.wa) delete d.wa;
+      try { const nid = await A.rpc('iv_admin_investor_save', { p: d }); toast(id ? 'Profil tersimpan' : 'Investor dibuat. Beri tahu investor untuk masuk ke investor.pokama.org dengan email ini.'); render(); investorPanel(nid); }
+      catch (er) { fi.querySelector('#fe').innerHTML = `<div class="alert"><b>${esc(er.message)}</b></div>`; } };
+    const fk = p.querySelector('#fk');
+    if (fk && can.fin()) fk.onsubmit = async (e) => { e.preventDefault(); const d = Object.fromEntries(new FormData(fk));
+      try { await A.rpc('iv_admin_kyc', { p_id: id, p: d }); toast('KYC tersimpan'); render(); investorPanel(id); } catch (er) { fk.querySelector('#ke').innerHTML = `<div class="alert"><b>${esc(er.message)}</b></div>`; } };
+    p.querySelectorAll('[data-reveal]').forEach(b => b.onclick = async () => { if (!confirm('Buka ' + b.dataset.reveal + ' lengkap? Tercatat di log audit.')) return;
+      try { const v = await A.rpc('iv_admin_reveal', { p_id: id, p_field: b.dataset.reveal }); b.replaceWith(Object.assign(document.createElement('code'), { textContent: v || '—' })); } catch (er) { toast(er.message, true); } });
+  });
+}
+
+/* ---------- Investasi ---------- */
+async function vInvestasi() {
+  const L = await A.rpc('iv_admin_holdings', { p_status: S.hstatus || null, p_unit: S.unit || null });
+  const right = `<div class="filters"><select class="sel" data-f="hstatus"><option value="">Semua status</option>${Object.entries(HST).map(([k, v]) => `<option value="${k}"${k === S.hstatus ? ' selected' : ''}>${v[0]}</option>`).join('')}</select>${unitSel()}${can.biz() ? '<button class="btn pri" data-newhold="">+ Investasi</button>' : ''}</div>`;
+  let h = header('Investasi & perjanjian', 'Draf → unggah perjanjian → ajukan → disetujui CEO → aktif. Aset Rentalaja otomatis tersambung ke mesin bagi hasil per unit.', right);
+  h += `<section class="card"><div class="scroll"><table class="tbl"><thead><tr><th>Investasi</th><th>Investor</th><th>Jenis</th><th class="r">Modal</th><th>Ketentuan</th><th class="r">Bulan ini</th><th class="r">Total dibagi</th><th>Status</th><th></th></tr></thead><tbody>
+    ${L.length ? L.map(x => {
+      const acts = [];
+      if (['draf', 'ditolak'].includes(x.status) && can.biz()) { acts.push(`<button class="btn sm" data-edithold="${x.id}">Ubah</button>`, `<label class="btn sm" style="cursor:pointer">${x.has_doc ? 'Ganti' : 'Unggah'} perjanjian<input type="file" accept="application/pdf,image/*" data-upload="${x.id}" hidden></label>`); if (x.has_doc) acts.push(`<button class="btn sm pri" data-hact="ajukan" data-id="${x.id}">Ajukan</button>`); }
+      if (x.status === 'menunggu' && !x.submitted_by_me && (M.is_owner || (M.role === 'keuangan' && x.submitter_ceo))) acts.push(`<button class="btn sm pri" data-hact="setujui" data-id="${x.id}">Setujui</button>`, `<button class="btn sm warn" data-hact="tolak" data-id="${x.id}">Tolak</button>`);
+      if (x.status === 'menunggu' && x.submitted_by_me) acts.push('<span class="muted small">menunggu orang lain</span>');
+      if (x.status === 'aktif' && M.is_owner) acts.push(`<button class="btn sm warn" data-hact="akhiri" data-id="${x.id}">Akhiri</button>`);
+      if (x.has_doc) acts.push(`<button class="btn sm" data-hdoc="${x.id}">Dokumen</button>`);
+      return `<tr><td><b>${esc(x.title)}</b><br><span class="muted small">${esc(x.unit)}${x.unit_count ? ' · ' + x.unit_count + ' unit' : ''} · mulai ${tgl(x.started_on)}${x.ends_on ? ' s.d. ' + tgl(x.ends_on) + ' ' + new Date(x.ends_on).getFullYear() : ''}</span>${x.reject_reason ? `<br><span class="small" style="color:var(--red)">Ditolak: ${esc(x.reject_reason)}</span>` : ''}</td>
+        <td><a href="#" data-inv="${x.investor_id}">${esc(x.investor)}</a></td><td>${JENIS[x.jenis]}${x.rp_scheme ? '<br><span class="muted small">' + SCHEME[x.rp_scheme] + '</span>' : ''}</td><td class="r">${rp(x.principal)}</td><td class="small">${esc(returnLine(x))}</td>
+        <td class="r">${x.month ? (x.month.auto ? rp(x.month.share) : '<span class="muted small">input bulanan</span>') : '—'}</td><td class="r">${rp(x.earned)}</td><td>${pill(HST[x.status])}<br><span class="muted small">oleh ${esc(x.created_by || '—')}</span></td><td><div style="display:flex;gap:6px;flex-wrap:wrap">${acts.join('')}</div></td></tr>`; }).join('') : '<tr><td colspan="9" class="muted">Belum ada investasi.</td></tr>'}</tbody></table></div>
+    <p class="muted small">Perubahan ketentuan investasi aktif tidak diizinkan: akhiri lalu buat perjanjian baru, supaya laporan lama tidak berubah. Pengaju tidak bisa menyetujui pengajuannya sendiri; bila CEO yang mengajukan, Keuangan yang menyetujui.</p></section>`;
+  return h;
+}
+let REFS = null;
+async function holdingPanel(invId, edit) {
+  const [inv, refs] = await Promise.all([A.rpc('iv_admin_investors', { p_q: null }), REFS || A.rpc('iv_admin_rp_refs')]); REFS = refs;
+  const H = edit || { jenis: 'aset', unit_code: 'RA', rp_scheme: 'per_unit', rp_basis: 'net', return_model: 'imbal_tetap', principal_back: 'akhir', investor_id: invId, rp_unit_ids: [], rp_branch_ids: [], rp_product_ids: [], started_on: new Date().toISOString().slice(0, 10) };
+  const sel = new Set(H.rp_unit_ids || []);
+  panel(`<div style="display:flex;justify-content:space-between;align-items:center"><h2 style="font-size:20px">${edit ? 'Ubah investasi' : 'Investasi baru'}</h2><button class="btn sm" data-close>✕</button></div>
+    <form id="fh" style="display:flex;flex-direction:column;gap:10px">
+      <label class="f">Investor<select class="inp" name="investor_id" required><option value="">Pilih investor</option>${inv.filter(i => i.status === 'aktif').map(i => `<option value="${i.id}"${i.id === H.investor_id ? ' selected' : ''}>${esc(i.name)} · ${esc(i.email)}</option>`).join('')}</select></label>
+      <div class="g2"><label class="f">Jenis<select class="inp" name="jenis">${Object.entries(JENIS).map(([k, v]) => `<option value="${k}"${k === H.jenis ? ' selected' : ''}>${v}</option>`).join('')}</select></label>
+        <label class="f">Unit bisnis<select class="inp" name="unit_code">${M.units.map(u => `<option value="${u.code}"${u.code === H.unit_code ? ' selected' : ''}>${esc(u.name)}</option>`).join('')}</select></label></div>
+      <label class="f">Nama investasi (tampil ke investor)<input class="inp" name="title" value="${esc(H.title || '')}" placeholder="Contoh: 2 Honda PCX Garut, Modal stok Laptopaja Q1" required></label>
+      <div class="g3"><label class="f">Modal (Rp)<input class="inp" name="principal" inputmode="numeric" value="${H.principal ? Math.round(H.principal).toLocaleString('id-ID') : ''}"></label>
+        <label class="f">Mulai berlaku<input class="inp" type="date" name="started_on" value="${esc(H.started_on || '')}"></label><label class="f">Berakhir (opsional)<input class="inp" type="date" name="ends_on" value="${esc(H.ends_on || '')}"></label></div>
+      <div data-show="aset" style="display:flex;flex-direction:column;gap:10px;border:1px solid var(--line);border-radius:12px;padding:12px">
+        <b>Aset sewa Rentalaja</b>
+        <div class="g2"><label class="f">Skema<select class="inp" name="rp_scheme">${Object.entries(SCHEME).map(([k, v]) => `<option value="${k}"${k === H.rp_scheme ? ' selected' : ''}>${v}</option>`).join('')}</select></label>
+          <label class="f" data-noflat>Dasar hitung<select class="inp" name="rp_basis"><option value="net"${H.rp_basis !== 'gross' ? ' selected' : ''}>Laba bersih</option><option value="gross"${H.rp_basis === 'gross' ? ' selected' : ''}>Pendapatan kotor</option></select></label></div>
+        <div class="g3"><label class="f" data-noflat>Porsi investor (%)<input class="inp" name="rate_pct_a" inputmode="decimal" value="${H.jenis === 'aset' && H.rate_pct ? H.rate_pct : ''}" placeholder="mis. 60"></label>
+          <label class="f" data-noflat>Biaya kelola cabang (% pendapatan)<input class="inp" name="rp_ops_pct" inputmode="decimal" value="${H.rp_ops_pct ?? ''}" placeholder="opsional"></label>
+          <label class="f" data-flat>Nominal per bulan (Rp)<input class="inp" name="rp_flat" inputmode="numeric" value="${H.rp_flat ? Math.round(H.rp_flat).toLocaleString('id-ID') : ''}"></label>
+          <label class="f">Tanggal bayar<input class="inp" name="pay_day" inputmode="numeric" value="${H.pay_day ?? ''}" placeholder="1–28"></label></div>
+        <div data-units><label class="f">Unit yang dimiliki investor<input class="inp" data-usearch placeholder="Cari: PCX, iPhone, kode, pelat, cabang"></label>
+          <div id="ulist" class="list" style="max-height:260px;overflow:auto;border:1px solid var(--line);border-radius:10px;padding:0 10px;margin-top:6px"><p class="muted small">Ketik untuk mencari unit.</p></div>
+          <p class="muted small" id="ucount">${sel.size} unit dipilih</p></div>
+        <div data-loc><label class="f">Lokasi / cabang<select class="inp" name="rp_branch_ids" multiple size="4">${refs.branches.map(b => `<option value="${b.id}"${(H.rp_branch_ids || []).includes(b.id) ? ' selected' : ''}>${esc(b.name)}</option>`).join('')}</select></label>
+          <label class="f" style="margin-top:8px">Produk (kosongkan = semua produk di lokasi)<select class="inp" name="rp_product_ids" multiple size="5">${refs.products.map(p => `<option value="${p.id}"${(H.rp_product_ids || []).includes(p.id) ? ' selected' : ''}>${esc(p.name)}</option>`).join('')}</select></label></div>
+        <p class="muted small">Bagian investor dihitung otomatis dari pembayaran lunas − servis − biaya kelola cabang, per hari dan per bulan.</p></div>
+      <div data-show="proyek" style="display:flex;flex-direction:column;gap:10px;border:1px solid var(--line);border-radius:12px;padding:12px">
+        <b>Proyek / modal kerja</b>
+        <div class="g3"><label class="f">Imbal hasil<select class="inp" name="return_model"><option value="imbal_tetap"${H.return_model !== 'bagi_laba' ? ' selected' : ''}>Imbal tetap / bulan</option><option value="bagi_laba"${H.return_model === 'bagi_laba' ? ' selected' : ''}>Bagi laba proyek</option></select></label>
+          <label class="f"><span data-rlabel>% per bulan dari modal</span><input class="inp" name="rate_pct_p" inputmode="decimal" value="${H.jenis === 'proyek' && H.rate_pct ? H.rate_pct : ''}"></label>
+          <label class="f">Modal kembali<select class="inp" name="principal_back"><option value="akhir"${H.principal_back === 'akhir' ? ' selected' : ''}>Di akhir</option><option value="cicil"${H.principal_back === 'cicil' ? ' selected' : ''}>Dicicil</option><option value="tidak"${H.principal_back === 'tidak' ? ' selected' : ''}>Tidak</option></select></label></div>
+        <p class="muted small" data-est></p></div>
+      <div data-show="saham" style="display:flex;flex-direction:column;gap:10px;border:1px solid var(--line);border-radius:12px;padding:12px">
+        <b>Saham</b><label class="f">Kepemilikan (%)<input class="inp" name="rate_pct_s" inputmode="decimal" value="${H.jenis === 'saham' && H.rate_pct ? H.rate_pct : ''}"></label>
+        <p class="muted small">Dividen diisi Keuangan di Bagi hasil saat laba dibagikan: bagian investor = laba dibagikan × kepemilikan.</p></div>
+      <label class="f">Catatan internal<textarea class="inp" name="note">${esc(H.note || '')}</textarea></label>
+      <div id="he"></div><button class="btn pri" type="submit">Simpan draf</button>
+      <p class="muted small">Setelah disimpan: unggah dokumen perjanjian bertanda tangan, lalu ajukan ke CEO.</p></form>`,
+  (p) => {
+    const f = p.querySelector('#fh');
+    const sync = () => { const j = f.jenis.value; p.querySelectorAll('[data-show]').forEach(el => el.style.display = el.dataset.show === j ? 'flex' : 'none');
+      if (j === 'aset') f.unit_code.value = 'RA'; f.unit_code.disabled = j === 'aset';
+      const sc = f.rp_scheme.value; p.querySelectorAll('[data-noflat]').forEach(el => el.style.display = sc === 'flat' ? 'none' : ''); p.querySelector('[data-flat]').style.display = sc === 'flat' ? '' : 'none';
+      p.querySelector('[data-units]').style.display = sc === 'location' ? 'none' : ''; p.querySelector('[data-loc]').style.display = ['location', 'vendor'].includes(sc) ? '' : 'none';
+      p.querySelector('[data-rlabel]').textContent = f.return_model.value === 'imbal_tetap' ? '% per bulan dari modal' : '% bagian dari laba proyek';
+      const pr = num(f.principal.value), r = num(f.rate_pct_p.value); p.querySelector('[data-est]').textContent = f.return_model.value === 'imbal_tetap' && pr && r ? `Perkiraan imbal ${rp(pr * r / 100)}/bulan · ${pc(r * 12)}/tahun. Dihitung harian otomatis.` : f.return_model.value === 'bagi_laba' ? 'Keuangan mengisi pendapatan & biaya proyek tiap tutup buku.' : ''; };
+    f.addEventListener('change', sync); f.addEventListener('input', sync); sync();
+    ['principal', 'rp_flat'].forEach(n => f[n].addEventListener('input', () => { const v = num(f[n].value); f[n].value = v ? Math.round(v).toLocaleString('id-ID') : ''; }));
+    const ul = p.querySelector('#ulist'), uc = p.querySelector('#ucount'); let UNITS = [];
+    const draw = () => { ul.innerHTML = UNITS.length ? UNITS.map(u => `<label class="li" style="cursor:pointer"><input type="checkbox" data-u="${u.id}" ${sel.has(u.id) ? 'checked' : ''} ${u.owned_by && !sel.has(u.id) ? 'disabled' : ''}><div class="t"><b>${esc(u.name)}</b><span>${esc(u.branch)}${u.serial ? ' · ' + esc(u.serial) : ''}${u.price ? ' · beli ' + rpk(u.price) : ''}${u.owned_by ? ' · milik ' + esc(u.owned_by) : ''}</span></div></label>`).join('') : '<p class="muted small">Tidak ada unit cocok.</p>';
+      ul.querySelectorAll('[data-u]').forEach(c => c.onchange = () => { c.checked ? sel.add(c.dataset.u) : sel.delete(c.dataset.u); uc.textContent = sel.size + ' unit dipilih'; }); };
+    let tq; p.querySelector('[data-usearch]').oninput = (e) => { clearTimeout(tq); tq = setTimeout(async () => { UNITS = (await A.rpc('iv_admin_rp_units', { p_q: e.target.value.trim() || null })).slice(0, 80); draw(); }, 300); };
+    if (sel.size) A.rpc('iv_admin_rp_units', { p_q: null }).then(all => { UNITS = all.filter(u => sel.has(u.id)); draw(); });
+    f.onsubmit = async (e) => {
+      e.preventDefault(); const d = Object.fromEntries(new FormData(f)); const j = f.jenis.value;
+      const body = { id: edit ? edit.id : '', investor_id: d.investor_id, jenis: j, unit_code: j === 'aset' ? 'RA' : f.unit_code.value, title: d.title, principal: num(d.principal), started_on: d.started_on, ends_on: d.ends_on, note: d.note,
+        rate_pct: j === 'aset' ? num(d.rate_pct_a) : j === 'proyek' ? num(d.rate_pct_p) : num(d.rate_pct_s), return_model: d.return_model, principal_back: d.principal_back,
+        rp_scheme: d.rp_scheme, rp_basis: d.rp_basis, rp_ops_pct: d.rp_ops_pct === '' ? '' : num(d.rp_ops_pct), rp_flat: num(d.rp_flat) || '', pay_day: d.pay_day,
+        rp_unit_ids: [...sel], rp_branch_ids: [...f.rp_branch_ids.selectedOptions].map(o => o.value), rp_product_ids: [...f.rp_product_ids.selectedOptions].map(o => o.value) };
+      if (j === 'aset' && d.rp_scheme === 'location') body.rp_unit_ids = [];
+      try { await A.rpc('iv_admin_holding_save', { p: body }); toast('Draf tersimpan. Unggah perjanjian lalu ajukan.'); close(); location.hash = '#investasi'; render(); }
+      catch (er) { p.querySelector('#he').innerHTML = `<div class="alert"><b>${esc(er.message)}</b></div>`; }
+    };
+  });
+}
+
+/* ---------- Bagi hasil ---------- */
+async function vBagiHasil() {
+  if (!S.period) S.period = months()[1];
+  const R = await A.rpc('iv_admin_statements', { p_period: S.period });
+  const rows = R.rows || [];
+  const all = rows.flatMap(r => (r.st || []));
+  const sum = (st) => all.filter(s => !st || s.status === st).reduce((a, s) => a + +s.share, 0);
+  const right = `<div class="filters"><select class="sel" data-f="period">${months().map(m => `<option value="${m}"${m === S.period ? ' selected' : ''}>${bulan(m)}${m === months()[0] ? ' (berjalan)' : ''}</option>`).join('')}</select>
+    ${can.fin() && R.closed ? '<button class="btn" data-compute>Hitung otomatis</button><button class="btn" data-sact="ajukan">Ajukan semua draf</button>' : ''}
+    ${(M.is_owner || M.role === 'keuangan') && R.closed ? '<button class="btn pri" data-sact="kunci">Kunci yang diajukan</button>' : ''}</div>`;
+  let h = header('Bagi hasil bulanan', 'Aset sewa dan imbal tetap dihitung otomatis. Bagi laba proyek dan dividen saham diisi Keuangan. Alur: hitung/isi → ajukan → dikunci orang lain → masuk saldo investor.', right);
+  h += `<div class="tiles">${tile('Total bagian investor', rpk(sum()), all.length + ' laporan')}${tile('Draf', rpk(sum('draf')), all.filter(s => s.status === 'draf').length + ' laporan')}${tile('Diajukan', rpk(sum('diajukan')), all.filter(s => s.status === 'diajukan').length + ' menunggu dikunci', all.some(s => s.status === 'diajukan') ? 'warn' : '')}${tile('Terkunci', rpk(sum('terkunci')), 'sudah masuk saldo investor')}
+    ${tile('Belum ada laporan', rows.filter(r => !(r.st || []).length).length, 'investasi', rows.some(r => !(r.st || []).length) && R.closed ? 'bad' : '')}</div>`;
+  if (!R.closed) h += `<div class="alert"><span><b>Bulan berjalan</b>: angka di bawah masih estimasi dan belum bisa ditutup. Tutup buku setelah bulan selesai.</span></div>`;
+  h += `<section class="card"><div class="scroll"><table class="tbl"><thead><tr><th>Investasi</th><th>Investor</th><th class="r">${R.closed ? 'Hitungan sistem' : 'Estimasi'}</th><th>Laporan</th><th class="r">Bagian investor</th><th>Status</th><th></th></tr></thead><tbody>
+    ${rows.length ? rows.map(r => {
+      const sts = r.st || [], live = r.live || {};
+      const inputBtn = can.fin() && R.closed ? (r.jenis === 'saham' ? `<button class="btn sm" data-input="${r.holding_id}" data-kind="dividen">Isi dividen</button>` : r.jenis === 'proyek' ? `${r.return_model === 'bagi_laba' ? `<button class="btn sm" data-input="${r.holding_id}" data-kind="hasil">Isi laba</button>` : ''}<button class="btn sm" data-input="${r.holding_id}" data-kind="modal">Modal kembali</button>` : '') : '';
+      return `<tr><td><b>${esc(r.title)}</b><br><span class="muted small">${esc(r.unit)} · ${JENIS[r.jenis]}${r.rp_scheme ? ' · ' + SCHEME[r.rp_scheme] : ''}</span></td><td>${esc(r.investor)}</td>
+        <td class="r">${live.auto ? rp(live.share) + (+live.revenue ? `<br><span class="muted small">pendapatan ${rpk(live.revenue)}</span>` : '') : '<span class="muted small">perlu input</span>'}</td>
+        <td>${sts.map(s => `<div class="small">${KIND[s.kind]}${s.source === 'input' ? ' · input' : ''}${+s.revenue ? ' · ' + rpk(s.revenue) + ' − ' + rpk(s.costs) : s.kind === 'dividen' ? ' · laba dibagi ' + rpk(s.base) : ''}${s.note ? ' · ' + esc(s.note) : ''}</div>`).join('') || '<span class="muted small">—</span>'}</td>
+        <td class="r">${sts.length ? sts.map(s => `<div>${rp(s.share)}</div>`).join('') : '—'}</td><td>${sts.map(s => `<div>${pill(SST[s.status])}${s.status === 'diajukan' && s.by_me ? ' <span class="muted small">oleh Anda</span>' : ''}</div>`).join('') || pill(['Belum', 'r'])}</td>
+        <td><div style="display:flex;gap:6px;flex-wrap:wrap">${inputBtn}</div></td></tr>`; }).join('') : '<tr><td colspan="7" class="muted">Tidak ada investasi aktif di bulan ini.</td></tr>'}</tbody></table></div>
+    <p class="muted small">Laporan terkunci tidak bisa diubah. Pengaju tidak bisa mengunci ajuannya sendiri: Keuangan mengajukan, CEO mengunci (atau sebaliknya). Setelah terkunci, investor bisa menarik bagiannya.</p></section>`;
+  return h;
+}
+function inputPanel(hid, kind) {
+  const T = { hasil: 'Isi laba proyek', dividen: 'Isi dividen', modal: 'Pengembalian modal' }[kind];
+  panel(`<div style="display:flex;justify-content:space-between;align-items:center"><h2 style="font-size:20px">${T} · ${bulan(S.period)}</h2><button class="btn sm" data-close>✕</button></div>
+    <form id="fs" style="display:flex;flex-direction:column;gap:10px">
+      ${kind === 'hasil' ? `<div class="g2"><label class="f">Pendapatan proyek (Rp)<input class="inp" name="rev" inputmode="numeric" required></label><label class="f">Biaya proyek (Rp)<input class="inp" name="cost" inputmode="numeric" required></label></div><p class="muted small">Bagian investor = (pendapatan − biaya) × porsi. Rugi tidak dibagikan (bagian nol).</p>`
+        : kind === 'dividen' ? `<label class="f">Laba yang dibagikan unit (Rp)<input class="inp" name="amt" inputmode="numeric" required></label><p class="muted small">Bagian investor = laba dibagikan × persen kepemilikan.</p>`
+        : `<label class="f">Nominal modal dikembalikan (Rp)<input class="inp" name="amt" inputmode="numeric" required></label><p class="muted small">Masuk saldo investor setelah dikunci, lalu ditarik seperti bagi hasil.</p>`}
+      <label class="f">Catatan / sumber angka<input class="inp" name="note" placeholder="mis. Laba rugi Niagaaja Okt, buku besar"></label>
+      <div id="se"></div><button class="btn pri" type="submit">Simpan sebagai draf</button></form>`,
+  (p) => { const f = p.querySelector('#fs');
+    f.querySelectorAll('input[inputmode=numeric]').forEach(i => i.oninput = () => { const v = num(i.value); i.value = v ? Math.round(v).toLocaleString('id-ID') : ''; });
+    f.onsubmit = async (e) => { e.preventDefault();
+      try { await A.rpc('iv_admin_statement_input', { p_holding: hid, p_period: S.period, p_kind: kind, p_revenue: f.rev ? num(f.rev.value) : 0, p_costs: f.cost ? num(f.cost.value) : 0, p_amount: f.amt ? num(f.amt.value) : 0, p_note: f.note.value || null });
+        toast('Tersimpan sebagai draf'); close(); render(); } catch (er) { p.querySelector('#se').innerHTML = `<div class="alert"><b>${esc(er.message)}</b></div>`; } }; });
+}
+
+/* ---------- Penarikan ---------- */
+async function vPenarikan() {
+  const L = await A.rpc('iv_admin_withdrawals', { p_status: null });
+  let h = header('Penarikan dana', 'Investor mengajukan dari portal. CEO menyetujui, lalu Keuangan mentransfer di luar sistem dan mengisi nomor referensi. Yang menyetujui tidak bisa sekaligus menandai transfer.');
+  const s = (st) => L.filter(w => st.includes(w.status)).reduce((a, w) => a + +w.amount, 0);
+  h += `<div class="tiles">${tile('Menunggu CEO', rpk(s(['diminta'])), L.filter(w => w.status === 'diminta').length + ' permintaan', s(['diminta']) ? 'warn' : '')}${tile('Siap ditransfer', rpk(s(['disetujui'])), L.filter(w => w.status === 'disetujui').length + ' permintaan', s(['disetujui']) ? 'warn' : '')}${tile('Sudah ditransfer', rpk(s(['dibayar'])), 'sepanjang waktu')}</div>`;
+  h += `<section class="card"><div class="scroll"><table class="tbl"><thead><tr><th>Diminta</th><th>Investor</th><th class="r">Nominal</th><th>Rekening</th><th>Status</th><th></th></tr></thead><tbody>
+    ${L.length ? L.map(w => { const a = [];
+      if (w.status === 'diminta' && M.is_owner) a.push(`<button class="btn sm pri" data-wact="setujui" data-id="${w.id}">Setujui</button>`, `<button class="btn sm warn" data-wact="tolak" data-id="${w.id}">Tolak</button>`);
+      if (w.status === 'disetujui' && (M.role === 'keuangan' || M.is_owner) && !w.decided_by_me) a.push(`<button class="btn sm pri" data-wact="dibayar" data-id="${w.id}">Tandai ditransfer</button>`, `<button class="btn sm warn" data-wact="gagal" data-id="${w.id}">Gagal</button>`);
+      if (w.status === 'disetujui' && w.decided_by_me) a.push('<span class="muted small">transfer oleh Keuangan</span>');
+      return `<tr><td>${tgl(w.requested_at)} ${new Date(w.requested_at).getFullYear()}</td><td><a href="#" data-inv="${w.investor_id}">${esc(w.investor)}</a>${w.kyc !== 'terverifikasi' ? ' ' + pill(['KYC belum', 'r']) : ''}</td><td class="r"><b>${rp(w.amount)}</b></td><td class="small">${esc(w.bank)}</td>
+        <td>${pill(WST[w.status])}<br><span class="muted small">${w.decided_by ? 'disetujui ' + esc(w.decided_by) : ''}${w.paid_by ? ' · ' + esc(w.paid_by) : ''}${w.ref ? ' · ref ' + esc(w.ref) : ''}${w.reason ? ' · ' + esc(w.reason) : ''}</span></td><td><div style="display:flex;gap:6px">${a.join('')}</div></td></tr>`; }).join('') : '<tr><td colspan="6" class="muted">Belum ada penarikan.</td></tr>'}</tbody></table></div>
+    <p class="muted small">Nomor rekening lengkap dibuka Keuangan dari profil investor (tercatat di log audit). Transfer hanya ke rekening atas nama investor.</p></section>`;
+  return h;
+}
+
+/* ---------- Peluang & minat ---------- */
+async function vPeluang() {
+  const R = await A.rpc('iv_admin_offers');
+  let h = header('Peluang & minat', 'Peluang hanya terlihat oleh investor yang sudah masuk (bukan penawaran umum). Minat datang dari halaman depan investor.pokama.org dan dari investor yang sudah ada.', can.biz() ? '<button class="btn pri" data-newoffer>+ Peluang</button>' : '');
+  h += `<div class="cols"><section class="card"><h2>Minat calon & investor</h2><div class="scroll"><table class="tbl"><thead><tr><th>Masuk</th><th>Nama</th><th>Minat</th><th>Status</th><th></th></tr></thead><tbody>
+    ${R.leads.length ? R.leads.map(l => `<tr><td class="small">${tgl(l.created_at)}<br><span class="muted">${l.source === 'publik' ? 'halaman depan' : 'investor'}</span></td><td><b>${esc(l.name)}</b>${l.investor_id ? ' ' + pill(['Investor', 'g']) : ''}<br><span class="muted small">${l.wa ? '+' + esc(l.wa) : ''}</span></td>
+      <td class="small">${esc(l.offer || l.unit || 'Umum')}${l.amount_hint ? ' · ' + rpk(l.amount_hint) : ''}${l.note ? '<br><span class="muted">' + esc(l.note) + '</span>' : ''}</td>
+      <td>${can.biz() ? `<select class="sel" data-lead="${l.id}" style="height:32px">${Object.entries(LST).map(([k, v]) => `<option value="${k}"${k === l.status ? ' selected' : ''}>${v[0]}</option>`).join('')}</select>` : pill(LST[l.status])}${l.handled_by ? `<br><span class="muted small">${esc(l.handled_by)}</span>` : ''}</td>
+      <td>${l.wa ? `<a class="btn sm" target="_blank" rel="noopener" href="${waLink(l.wa, 'Halo ' + l.name + ', terima kasih sudah tertarik berinvestasi di unit bisnis Pokama. ')}">WA</a>` : ''}</td></tr>`).join('') : '<tr><td colspan="5" class="muted">Belum ada minat.</td></tr>'}</tbody></table></div></section>
+    <section class="card"><h2>Peluang dibuka</h2>${R.offers.length ? `<div class="list">${R.offers.map(o => `<div class="li"><div class="t"><b>${esc(o.title)}</b><span>${esc(o.unit)} · ${JENIS[o.jenis]}${o.target_amount ? ' · butuh ' + rpk(o.target_amount) : ''}${o.min_amount ? ' · min ' + rpk(o.min_amount) : ''}${o.est_return ? ' · ' + esc(o.est_return) : ''} · ${o.leads} minat</span></div>${pill(o.status === 'dibuka' ? ['Dibuka', 'g'] : ['Ditutup', ''])}${can.biz() ? `<button class="btn sm" data-editoffer='${esc(JSON.stringify(o))}'>Ubah</button>` : ''}</div>`).join('')}</div>` : '<p class="muted small">Belum ada peluang. Contoh: "Tambah 5 iPhone 15 Garut", "Modal stok Laptopaja Q1".</p>'}
+      <p class="muted small">Angka estimasi ambil dari data operasional (utilisasi & pendapatan unit sejenis), bukan janji hasil. Membuka untuk publik perlu kajian izin OJK.</p></section></div>`;
+  return h;
+}
+function offerPanel(o) {
+  o = o || { status: 'dibuka', unit_code: 'RA', jenis: 'aset' };
+  panel(`<div style="display:flex;justify-content:space-between;align-items:center"><h2 style="font-size:20px">${o.id ? 'Ubah peluang' : 'Peluang baru'}</h2><button class="btn sm" data-close>✕</button></div>
+    <form id="fo" style="display:flex;flex-direction:column;gap:10px">
+      <div class="g2"><label class="f">Unit bisnis<select class="inp" name="unit_code">${M.units.map(u => `<option value="${u.code}"${u.code === o.unit_code ? ' selected' : ''}>${esc(u.name)}</option>`).join('')}</select></label>
+        <label class="f">Jenis<select class="inp" name="jenis">${Object.entries(JENIS).map(([k, v]) => `<option value="${k}"${k === o.jenis ? ' selected' : ''}>${v}</option>`).join('')}</select></label></div>
+      <label class="f">Judul<input class="inp" name="title" value="${esc(o.title || '')}" required></label>
+      <label class="f">Ringkasan (kenapa dibutuhkan, dari data apa)<textarea class="inp" name="summary">${esc(o.summary || '')}</textarea></label>
+      <div class="g3"><label class="f">Kebutuhan dana<input class="inp" name="target_amount" inputmode="numeric" value="${o.target_amount ? Math.round(o.target_amount) : ''}"></label><label class="f">Minimal<input class="inp" name="min_amount" inputmode="numeric" value="${o.min_amount ? Math.round(o.min_amount) : ''}"></label><label class="f">Tenor (bulan)<input class="inp" name="tenor_months" inputmode="numeric" value="${o.tenor_months || ''}"></label></div>
+      <label class="f">Estimasi hasil (teks)<input class="inp" name="est_return" value="${esc(o.est_return || '')}" placeholder="mis. Rp1,2–1,6 jt/bulan per unit dari data 6 bulan"></label>
+      <label class="f">Status<select class="inp" name="status"><option value="dibuka"${o.status === 'dibuka' ? ' selected' : ''}>Dibuka</option><option value="ditutup"${o.status === 'ditutup' ? ' selected' : ''}>Ditutup</option></select></label>
+      <div id="oe"></div><button class="btn pri" type="submit">Simpan</button></form>`,
+  (p) => { const f = p.querySelector('#fo'); f.onsubmit = async (e) => { e.preventDefault(); const d = Object.fromEntries(new FormData(f)); if (o.id) d.id = o.id; ['target_amount', 'min_amount'].forEach(k => d[k] = num(d[k]) || '');
+    try { await A.rpc('iv_admin_offer_save', { p: d }); toast('Peluang tersimpan'); close(); render(); } catch (er) { p.querySelector('#oe').innerHTML = `<div class="alert"><b>${esc(er.message)}</b></div>`; } }; });
+}
+
+/* ---------- Log ---------- */
+async function vLog() {
+  const L = await A.rpc('iv_admin_audit', { p_limit: 300 });
+  const nice = (a) => ({ investor_baru: 'Investor dibuat', investor_ubah: 'Profil investor diubah', kyc_ubah: 'KYC / rekening diubah', buka_data: 'Data pribadi dibuka', investasi_baru: 'Investasi dibuat', investasi_ubah: 'Investasi diubah',
+    investasi_ajukan: 'Investasi diajukan', investasi_setujui: 'Investasi disetujui', investasi_tolak: 'Investasi ditolak', investasi_akhiri: 'Investasi diakhiri', dokumen: 'Dokumen diunggah', hitung: 'Bagi hasil dihitung',
+    laporan_ajukan: 'Laporan diajukan', laporan_kunci: 'Laporan dikunci', laporan_kembalikan: 'Laporan dikembalikan', tarik_diminta: 'Penarikan diminta', tarik_setujui: 'Penarikan disetujui', tarik_tolak: 'Penarikan ditolak',
+    tarik_dibayar: 'Penarikan ditransfer', tarik_gagal: 'Penarikan gagal', peluang: 'Peluang disimpan', minat: 'Status minat', tautan_akun: 'Investor masuk pertama kali', input_hasil: 'Laba proyek diisi', input_dividen: 'Dividen diisi', input_modal: 'Modal kembali diisi' }[a] || a);
+  return header('Log audit', 'Semua perubahan investor, perjanjian, laporan, rekening, dan penarikan. Tidak bisa diubah atau dihapus.') +
+    `<section class="card"><div class="scroll"><table class="tbl"><thead><tr><th>Waktu</th><th>Oleh</th><th>Kejadian</th><th>Keterangan</th></tr></thead><tbody>${L.map(a => `<tr><td class="small" style="white-space:nowrap">${new Date(a.at).toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' })}</td><td>${esc(a.by)}</td><td><b>${esc(nice(a.action))}</b></td><td class="small">${esc(a.reason || '')}${a.data && a.data.amount ? ' · ' + rp(a.data.amount) : ''}${a.data && a.data.n ? ' · ' + a.data.n + ' baris' : ''}</td></tr>`).join('') || '<tr><td colspan="4" class="muted">Belum ada catatan.</td></tr>'}</tbody></table></div></section>`;
+}
+
+/* ---------- kerangka ---------- */
+function panel(html, after) { close(); cur = document.createElement('div'); cur.className = 'scrim'; cur.innerHTML = `<div class="panel" role="dialog" aria-modal="true">${html}</div>`; document.body.appendChild(cur); cur.addEventListener('click', (e) => { if (e.target === cur || e.target.closest('[data-close]')) close(); }); if (after) after(cur.querySelector('.panel')); }
+function close() { if (cur) { cur.remove(); cur = null; } }
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
+const V = { ringkasan: vRingkasan, investor: vInvestor, investasi: vInvestasi, bagihasil: vBagiHasil, penarikan: vPenarikan, peluang: vPeluang, log: vLog };
+async function render() {
+  const v = view();
+  document.querySelectorAll('.side a[href^="#"]').forEach(a => { if (a.getAttribute('href') === '#' + v) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); });
+  document.getElementById('mt').textContent = PAGES[v]; document.body.classList.remove('nav-open');
+  try {
+    M = await A.rpc('iv_admin_meta');
+    app.innerHTML = (M.is_biz || M.is_fin ? '' : '<div class="demo">Mode lihat saja · Kepala Staf</div>') + await V[v]();
+    const c = M.counts; document.querySelectorAll('[data-nb]').forEach(b => { const n = b.dataset.nb === 'wd' ? (M.is_owner ? c.wd_wait : 0) + (M.role === 'keuangan' || M.is_owner ? c.wd_pay : 0) : c[b.dataset.nb]; b.textContent = n; b.hidden = !n; });
+  } catch (er) {
+    app.innerHTML = /akses/i.test(er.message) ? '<div class="card"><h2>Tidak punya akses</h2><p class="muted">Panel investor untuk CEO, Kepala Staf (lihat saja), BizDev, dan Keuangan.</p></div>'
+      : `<div class="card"><h2>Gagal memuat</h2><p class="muted">${esc(er.message)}</p><button class="btn" onclick="location.reload()">Coba lagi</button></div>`;
+  }
+}
+document.addEventListener('change', async (e) => {
+  const t = e.target;
+  if (cur && cur.contains(t)) return;
+  if (t.dataset.f) { S[t.dataset.f] = t.value; render(); return; }
+  try {
+    if (t.dataset.lead) { await A.rpc('iv_admin_lead_set', { p_id: t.dataset.lead, p_status: t.value }); toast('Status minat tersimpan'); }
+    if (t.dataset.upload) { const file = t.files[0]; if (!file) return; if (file.size > 10 * 1048576) return toast('Maksimal 10 MB', true);
+      const ext = (file.name.split('.').pop() || 'pdf').toLowerCase().replace(/[^a-z0-9]/g, ''); const path = await A.upload('iv-docs', t.dataset.upload + '/perjanjian-' + Date.now() + '.' + ext, file);
+      await A.rpc('iv_admin_holding_doc', { p_id: t.dataset.upload, p_path: path }); toast('Perjanjian terunggah'); render(); }
+  } catch (er) { toast(er.message, true); }
+});
+let tq; document.addEventListener('input', (e) => { if (e.target.hasAttribute('data-q')) { clearTimeout(tq); tq = setTimeout(() => { S.q = e.target.value.trim(); render().then(() => { const q = document.querySelector('[data-q]'); if (q) { q.focus(); q.setSelectionRange(q.value.length, q.value.length); } }); }, 350); } });
+document.addEventListener('click', async (e) => {
+  if (e.target.closest('[data-menu]')) { document.body.classList.toggle('nav-open'); return; }
+  if (cur && cur.contains(e.target)) return;
+  const t = e.target.closest('[data-inv],[data-newinv],[data-newhold],[data-edithold],[data-hact],[data-hdoc],[data-compute],[data-sact],[data-input],[data-wact],[data-newoffer],[data-editoffer]'); if (!t) return;
+  const d = t.dataset; e.preventDefault();
+  try {
+    if (d.inv) return investorPanel(d.inv);
+    if (d.newinv !== undefined) return investorPanel(null);
+    if (d.newhold !== undefined) return holdingPanel(d.newhold || '');
+    if (d.edithold) { const L = await A.rpc('iv_admin_holdings', { p_status: null, p_unit: null }); return holdingPanel(null, L.find(x => x.id === d.edithold)); }
+    if (d.hdoc) { const p = await A.rpc('iv_doc_path', { p_h: d.hdoc }); return A.openFile(p); }
+    if (d.hact) {
+      let reason = null;
+      if (d.hact === 'tolak') { reason = prompt('Alasan penolakan (terlihat oleh pengaju):'); if (!reason) return; }
+      if (d.hact === 'akhiri') { reason = prompt('Keterangan pengakhiran (mis. unit dijual, modal dikembalikan):'); if (!reason) return; }
+      if (d.hact === 'setujui' && !confirm('Setujui investasi ini? Bagi hasil mulai dihitung sejak tanggal mulai.')) return;
+      if (d.hact === 'ajukan' && !confirm('Ajukan ke CEO? Setelah diajukan, ketentuan tidak bisa diubah.')) return;
+      await A.rpc('iv_admin_holding_act', { p_id: d.id, p_act: d.hact, p_reason: reason }); toast({ ajukan: 'Diajukan ke CEO', setujui: 'Disetujui · investasi aktif', tolak: 'Ditolak', akhiri: 'Investasi diakhiri' }[d.hact]); return render();
+    }
+    if (d.compute !== undefined) { const r = await A.rpc('iv_admin_compute', { p_period: S.period }); toast(r.computed + ' laporan otomatis dihitung'); return render(); }
+    if (d.sact) { if (!confirm(d.sact === 'kunci' ? 'Kunci semua laporan yang diajukan orang lain? Setelah dikunci masuk saldo investor dan tidak bisa diubah.' : 'Ajukan semua draf bulan ini untuk dikunci?')) return;
+      const n = await A.rpc('iv_admin_statements_act', { p_period: S.period, p_act: d.sact, p_ids: null }); toast(n + ' laporan ' + (d.sact === 'kunci' ? 'dikunci' : 'diajukan')); return render(); }
+    if (d.input) return inputPanel(d.input, d.kind);
+    if (d.wact) {
+      let note = null;
+      if (d.wact === 'tolak') { note = prompt('Alasan menolak (terlihat investor):'); if (!note) return; }
+      if (d.wact === 'dibayar') { note = prompt('Nomor referensi / berita transfer:'); if (!note) return; }
+      if (d.wact === 'gagal') { note = prompt('Kenapa gagal? (terlihat investor)'); if (!note) return; }
+      if (d.wact === 'setujui' && !confirm('Setujui penarikan ini?')) return;
+      await A.rpc('iv_admin_withdrawal_act', { p_id: d.id, p_act: d.wact, p_note: note }); toast('Tersimpan'); return render();
+    }
+    if (d.newoffer !== undefined) return offerPanel(null);
+    if (d.editoffer) return offerPanel(JSON.parse(d.editoffer));
+  } catch (er) { toast(er.message, true); }
+});
+window.addEventListener('hashchange', () => { close(); render(); scrollTo(0, 0); });
+const wait = setInterval(() => { const p = window.mkPerson; if (p || location.hostname === 'localhost') { clearInterval(wait); document.getElementById('me').textContent = p ? (p.nickname || p.name) + ' · ' + (p.title || p.role) : 'uji lokal'; render(); } }, 200);
+</script>
+</body>
+</html>
