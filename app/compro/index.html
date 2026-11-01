@@ -1,0 +1,340 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pokama · Induk Rentalaja, TripinAja, dan Niagaaja</title>
+<meta name="description" content="Pokama (PT Popo Karya Investama) adalah perusahaan induk Rentalaja, TripinAja, dan Niagaaja: sewa, perjalanan, dan jual beli di Garut, Bandung, dan Ciputat.">
+<meta name="theme-color" content="#1F2B4D">
+<meta property="og:title" content="Pokama">
+<meta property="og:description" content="Perusahaan induk Rentalaja, TripinAja, dan Niagaaja.">
+<meta property="og:image" content="https://pokama.org/img/pokama-logo.png">
+<link rel="icon" href="/img/pk.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script>
+/* Tautan lama Sistem Kerja (pokama.org/#/...) dan login yang mendarat di sini → teruskan ke app.pokama.org */
+(function () {
+  var h = location.hash || '';
+  if (h.indexOf('#/') === 0 || h.indexOf('access_token=') >= 0 || h.indexOf('error_description=') >= 0) location.replace('https://app.pokama.org/' + h);
+})();
+</script>
+<style>
+:root {
+  --ink: #1F2B4D; --ink2: #3B4660; --mut: #5B6573;
+  --teal: #077A70; --teal2: #09BEAF; --mint: #E3F7F5;
+  --bg: #F4F6F9; --paper: #FFFFFF; --line: #E2E6EC;
+  --wrap: 1120px; --gut: 24px;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 400 17px/1.6 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif; -webkit-font-smoothing: antialiased; }
+a { color: var(--teal); }
+img { display: block; max-width: 100%; }
+:focus-visible { outline: 3px solid var(--teal2); outline-offset: 3px; border-radius: 6px; }
+.wrap { max-width: var(--wrap); margin: 0 auto; padding: 0 var(--gut); }
+.skip { position: absolute; left: -999px; top: 8px; background: var(--ink); color: #fff; padding: 8px 12px; border-radius: 8px; z-index: 50; }
+.skip:focus { left: 8px; }
+
+/* header */
+.top { position: sticky; top: 0; z-index: 20; background: rgba(244, 246, 249, .92); backdrop-filter: saturate(1.4) blur(10px); border-bottom: 1px solid transparent; transition: border-color .2s; }
+.top.scrolled { border-bottom-color: var(--line); }
+.top .wrap { display: flex; align-items: center; gap: 28px; height: 72px; }
+.top .logo img { height: 30px; width: auto; }
+.top nav { display: flex; gap: 22px; margin-left: auto; }
+.top nav a { color: var(--ink2); text-decoration: none; font-weight: 600; font-size: 15px; }
+.top nav a:hover { color: var(--teal); }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 46px; padding: 0 20px; border-radius: 12px; font: 700 15px/1 'Plus Jakarta Sans', sans-serif; text-decoration: none; border: 1.5px solid transparent; cursor: pointer; white-space: nowrap; }
+.btn-line { color: var(--ink); border-color: #C9D0DA; background: transparent; }
+.btn-line:hover { border-color: var(--ink); }
+.btn-solid { background: var(--teal2); color: var(--ink); }
+.btn-solid:hover { background: #12CDBD; }
+.btn-white { background: #fff; color: var(--teal); }
+.top .btn { height: 40px; padding: 0 16px; font-size: 14px; }
+
+/* hero */
+.hero { padding: 72px 0 88px; }
+.hero h1 { margin: 0; font-weight: 800; font-size: clamp(40px, 7.4vw, 92px); line-height: 1.02; letter-spacing: -0.035em; }
+.hero h1 .ln { display: flex; align-items: center; gap: .28em; }
+.hero h1 .ln img { width: .78em; height: .78em; object-fit: contain; flex: none; }
+.hero h1 .ln:nth-child(2) { color: var(--ink2); }
+.hero h1 .ln:nth-child(3) { color: var(--teal); }
+.hero .lead { margin: 40px 0 0; max-width: 34em; font-size: clamp(18px, 2vw, 21px); line-height: 1.55; color: var(--ink2); }
+.hero .lead b { color: var(--ink); font-weight: 700; }
+.hero .acts { margin-top: 32px; display: flex; flex-wrap: wrap; gap: 12px; }
+@media (prefers-reduced-motion: no-preference) {
+  .hero h1 .ln { opacity: 0; transform: translateY(18px); animation: rise .7s cubic-bezier(.2, .7, .2, 1) forwards; }
+  .hero h1 .ln:nth-child(2) { animation-delay: .14s; }
+  .hero h1 .ln:nth-child(3) { animation-delay: .28s; }
+  @keyframes rise { to { opacity: 1; transform: none; } }
+}
+
+/* section shell */
+section.s { padding: 88px 0; border-top: 1px solid var(--line); }
+.s h2 { margin: 0 0 16px; font-weight: 800; font-size: clamp(28px, 3.6vw, 40px); line-height: 1.12; letter-spacing: -0.02em; max-width: 20em; }
+.s .intro { margin: 0; max-width: 38em; color: var(--ink2); font-size: 18px; }
+
+/* tentang */
+.about { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: 56px; align-items: start; }
+.about p { margin: 0 0 16px; color: var(--ink2); max-width: 36em; }
+.facts { margin: 0; padding: 0; list-style: none; border-top: 2px solid var(--ink); }
+.facts li { display: grid; grid-template-columns: 9.5em minmax(0, 1fr); gap: 16px; padding: 16px 0; border-bottom: 1px solid var(--line); font-size: 16px; }
+.facts li span:first-child { color: var(--mut); font-weight: 600; }
+.facts li span:last-child { color: var(--ink); font-weight: 600; }
+
+/* unit */
+.units { margin-top: 48px; display: grid; gap: 20px; }
+.unit { display: grid; grid-template-columns: 76px minmax(0, 1fr) minmax(0, 15em); gap: 28px; align-items: start; background: var(--paper); border-radius: 20px; padding: 32px; }
+.unit .mk { width: 76px; height: 76px; border-radius: 18px; background: var(--bg); display: flex; align-items: center; justify-content: center; }
+.unit .mk img { width: 46px; height: 46px; object-fit: contain; }
+.unit h3 { margin: 0; font-size: 26px; font-weight: 800; letter-spacing: -0.015em; }
+.unit .what { margin: 4px 0 14px; font-weight: 600; color: var(--teal); }
+.unit p { margin: 0; color: var(--ink2); max-width: 34em; }
+.unit .tags { margin: 16px 0 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 8px; }
+.unit .tags li { font-size: 14px; font-weight: 600; color: var(--ink2); background: var(--bg); border-radius: 999px; padding: 6px 12px; }
+.unit .side { font-size: 15px; color: var(--mut); border-left: 1px solid var(--line); padding-left: 24px; }
+.unit .side b { display: block; color: var(--ink); font-weight: 700; margin-bottom: 2px; }
+.unit .side div + div { margin-top: 14px; }
+.unit .side a { font-weight: 700; text-decoration: none; }
+.unit .side a:hover { text-decoration: underline; }
+
+/* cara memutuskan */
+.order { margin: 48px 0 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; counter-reset: o; }
+.order li { counter-increment: o; position: relative; padding: 0 24px 0 0; }
+.order li::before { content: counter(o); display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; background: var(--ink); color: #fff; font-weight: 800; font-size: 16px; position: relative; z-index: 1; }
+.order li::after { content: ""; position: absolute; left: 40px; right: 0; top: 19px; height: 2px; background: var(--line); }
+.order li:last-child::after { display: none; }
+.order h3 { margin: 18px 0 6px; font-size: 20px; font-weight: 800; }
+.order p { margin: 0; color: var(--ink2); font-size: 16px; }
+
+/* mitra */
+.mitra { background: var(--teal); color: #fff; border-top: 0; }
+.mitra .grid { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: 56px; align-items: center; }
+.mitra h2 { color: #fff; }
+.mitra .intro { color: #D4F3EF; }
+.mitra .who { margin: 28px 0 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 8px; }
+.mitra .who li { border: 1.5px solid rgba(255, 255, 255, .35); border-radius: 999px; padding: 6px 14px; font-size: 15px; font-weight: 600; }
+.rate { background: rgba(255, 255, 255, .08); border: 1.5px solid rgba(255, 255, 255, .22); border-radius: 22px; padding: 32px; }
+.rate .big { font-size: clamp(54px, 7vw, 76px); font-weight: 800; line-height: 1; letter-spacing: -0.03em; }
+.rate p { margin: 12px 0 24px; color: #D4F3EF; font-size: 16px; }
+
+/* kontak */
+.contact { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 56px; align-items: start; }
+.paths { margin: 0; padding: 0; list-style: none; border-top: 2px solid var(--ink); }
+.paths li { padding: 18px 0; border-bottom: 1px solid var(--line); display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 16px; align-items: center; }
+.paths b { display: block; font-size: 17px; }
+.paths span { color: var(--mut); font-size: 15px; }
+.paths a { font-weight: 700; text-decoration: none; white-space: nowrap; }
+.paths a:hover { text-decoration: underline; }
+
+/* footer */
+footer { background: var(--ink); color: #C9D1E2; padding: 56px 0 40px; font-size: 15px; }
+footer .wrap { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 32px; align-items: end; }
+footer .mark { height: 34px; width: auto; background: #fff; border-radius: 10px; padding: 6px 12px; margin-bottom: 20px; }
+footer p { margin: 0; }
+footer .legal { color: #fff; font-weight: 700; }
+footer nav { display: flex; gap: 20px; flex-wrap: wrap; }
+footer a { color: #fff; text-decoration: none; font-weight: 600; }
+footer a:hover { text-decoration: underline; }
+footer .small { margin-top: 28px; color: #8C97AE; font-size: 14px; }
+
+@media (max-width: 900px) {
+  .top nav { display: none; }
+  .top .btn { margin-left: auto; }
+  .about, .mitra .grid, .contact { grid-template-columns: minmax(0, 1fr); gap: 36px; }
+  .unit { grid-template-columns: 60px minmax(0, 1fr); padding: 24px; gap: 18px; }
+  .unit .mk { width: 60px; height: 60px; border-radius: 14px; }
+  .unit .mk img { width: 36px; height: 36px; }
+  .unit .side { grid-column: 1 / -1; border-left: 0; padding-left: 0; border-top: 1px solid var(--line); padding-top: 18px; display: flex; flex-wrap: wrap; gap: 14px 32px; }
+  .unit .side div + div { margin-top: 0; }
+  .order { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .order li { display: grid; grid-template-columns: 40px minmax(0, 1fr); column-gap: 18px; padding: 0 0 28px; }
+  .order li::before { grid-row: span 2; }
+  .order li::after { left: 19px; right: auto; top: 40px; bottom: 0; width: 2px; height: auto; }
+  .order h3 { margin: 6px 0 4px; }
+  footer .wrap { grid-template-columns: minmax(0, 1fr); align-items: start; }
+}
+@media (max-width: 560px) {
+  :root { --gut: 16px; }
+  body { font-size: 16px; }
+  .hero { padding: 40px 0 64px; }
+  .hero .lead { margin-top: 28px; }
+  section.s { padding: 64px 0; }
+  .facts li { grid-template-columns: minmax(0, 1fr); gap: 2px; }
+  .rate { padding: 24px; }
+  .paths li { grid-template-columns: minmax(0, 1fr); gap: 6px; }
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#isi">Lewati ke isi</a>
+
+<header class="top" id="top">
+  <div class="wrap">
+    <a class="logo" href="/" aria-label="Pokama, ke awal halaman"><img src="/img/pokama-logo.png" alt="Pokama" width="150" height="30"></a>
+    <nav aria-label="Menu utama">
+      <a href="#tentang">Tentang</a>
+      <a href="#unit">Unit bisnis</a>
+      <a href="#mitra">Program mitra</a>
+      <a href="#kontak">Kontak</a>
+    </nav>
+    <a class="btn btn-line" href="https://app.pokama.org/">Masuk staf</a>
+  </div>
+</header>
+
+<main id="isi">
+  <section class="hero" aria-labelledby="judul">
+    <div class="wrap">
+      <h1 id="judul">
+        <span class="ln"><img src="/img/ra.png" alt="" width="64" height="64">Sewa saat butuh.</span>
+        <span class="ln"><img src="/img/tr.png" alt="" width="64" height="64">Jalan-jalan tanpa ribet.</span>
+        <span class="ln"><img src="/img/na.png" alt="" width="64" height="64">Jual beli yang jelas.</span>
+      </h1>
+      <p class="lead"><b>Pokama</b> adalah perusahaan induk dari <b>Rentalaja</b>, <b>TripinAja</b>, dan <b>Niagaaja</b>: unit bisnis yang melayani kebutuhan sehari-hari warga dan wisatawan di Garut, Bandung, dan Ciputat.</p>
+      <div class="acts">
+        <a class="btn btn-solid" href="#unit">Lihat unit bisnis</a>
+        <a class="btn btn-line" href="https://mitra.pokama.org/">Gabung program mitra</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="s" id="tentang" aria-labelledby="h-tentang">
+    <div class="wrap about">
+      <div>
+        <h2 id="h-tentang">Berangkat dari Garut, dibangun untuk kebutuhan sehari-hari</h2>
+      </div>
+      <div>
+        <p>Banyak hal yang orang butuhkan tidak harus dimiliki: motor untuk seminggu, kamera untuk satu acara, atau paket liburan yang sudah diurus dari jemput sampai pulang. Pokama membangun dan menjalankan unit bisnis yang membuat hal-hal itu mudah diakses.</p>
+        <p>Setiap unit punya tim, target, dan laporannya sendiri. Pokama mengurus yang dipakai bersama: keuangan, aset, pemasaran, dan pengembangan bisnis, supaya unit bisa fokus melayani pelanggan.</p>
+        <ul class="facts">
+          <li><span>Badan usaha</span><span>PT Popo Karya Investama dan PT Karya Kreasi Investama</span></li>
+          <li><span>Unit bisnis</span><span>Rentalaja, TripinAja, Niagaaja</span></li>
+          <li><span>Kota</span><span>Garut, Bandung, Ciputat</span></li>
+          <li><span>Fungsi bersama</span><span>Keuangan, BizDev, Marketing, Aset</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="s" id="unit" aria-labelledby="h-unit">
+    <div class="wrap">
+      <h2 id="h-unit">Tiga unit bisnis</h2>
+      <p class="intro">Masing-masing menjawab satu kebutuhan, dan saling terhubung: tamu TripinAja bisa menyewa dari Rentalaja, dan barang dari Niagaaja bisa masuk armada sewa.</p>
+      <div class="units">
+        <article class="unit">
+          <div class="mk"><img src="/img/ra.png" alt="" width="46" height="46"></div>
+          <div>
+            <h3>Rentalaja</h3>
+            <p class="what">Sewa saat butuh</p>
+            <p>Sewa motor, iPhone, kamera, alat camping, dan perlengkapan lain, bisa diantar ke hotel atau rumah. Rentalaja juga menjalankan trip Jeep dan penginapan lewat Rentalaja Experience.</p>
+            <ul class="tags" aria-label="Kategori">
+              <li>Motor</li><li>iPhone &amp; gadget</li><li>Kamera</li><li>Alat camping</li><li>Jeep trip</li><li>Penginapan</li>
+            </ul>
+          </div>
+          <div class="side">
+            <div><b>Lokasi</b>Garut, Bandung, Ciputat</div>
+            <div><b>Situs</b><a href="https://rentalaja.co.id" rel="noopener">rentalaja.co.id</a></div>
+          </div>
+        </article>
+        <article class="unit">
+          <div class="mk"><img src="/img/tr.png" alt="" width="46" height="46"></div>
+          <div>
+            <h3>TripinAja</h3>
+            <p class="what">Tour &amp; travel</p>
+            <p>Paket wisata dan perjalanan rombongan yang diurus menyeluruh: transportasi, penginapan, destinasi, aktivitas, pemandu, sampai dokumentasi. Wisata Garut adalah brand destinasi pertamanya.</p>
+            <ul class="tags" aria-label="Layanan">
+              <li>Paket wisata</li><li>Trip rombongan</li><li>Pemandu lokal</li><li>Wisata Garut</li>
+            </ul>
+          </div>
+          <div class="side">
+            <div><b>Basis</b>Garut</div>
+          </div>
+        </article>
+        <article class="unit">
+          <div class="mk"><img src="/img/na.png" alt="" width="46" height="46"></div>
+          <div>
+            <h3>Niagaaja</h3>
+            <p class="what">Jual beli yang jelas</p>
+            <p>Jual beli laptop dan kamera bekas yang sudah dicek kondisinya, lewat Laptopaja. Barang yang layak bisa juga masuk armada sewa Rentalaja.</p>
+            <ul class="tags" aria-label="Kategori">
+              <li>Laptop</li><li>Kamera</li><li>Laptopaja</li>
+            </ul>
+          </div>
+          <div class="side">
+            <div><b>Basis</b>Garut</div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="s" id="cara" aria-labelledby="h-cara">
+    <div class="wrap">
+      <h2 id="h-cara">Cara kami memutuskan</h2>
+      <p class="intro">Saat pilihan bertabrakan, urutannya selalu sama.</p>
+      <ol class="order">
+        <li><h3>Kas</h3><p>Bisnis harus tetap bisa membayar kewajibannya hari ini.</p></li>
+        <li><h3>Profitabilitas</h3><p>Setiap unit dan cabang harus menghasilkan, bukan sekadar ramai.</p></li>
+        <li><h3>Kapasitas eksekusi</h3><p>Tim dan sistem siap menjalankan sebelum kami menambah beban.</p></li>
+        <li><h3>Pertumbuhan</h3><p>Kota, kategori, dan unit baru menyusul setelah tiga hal di atas sehat.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="s mitra" id="mitra" aria-labelledby="h-mitra">
+    <div class="wrap grid">
+      <div>
+        <h2 id="h-mitra">Rekomendasikan kami, dapat komisi tiap sewa selesai</h2>
+        <p class="intro">Program mitra terbuka untuk siapa saja yang sering ditanya tamu atau temannya soal sewa motor, kamera, atau trip. Bagikan link dan kode Anda, unit kami yang mengantar dan melayani.</p>
+        <ul class="who" aria-label="Siapa yang bisa bergabung">
+          <li>Hotel &amp; villa</li><li>Homestay</li><li>Travel &amp; sopir</li><li>Komunitas</li><li>Organisasi kampus</li><li>Kreator</li>
+        </ul>
+      </div>
+      <div class="rate">
+        <div class="big">5–10%</div>
+        <p>Komisi dari nilai sewa, naik otomatis sesuai jumlah booking. Dicairkan tiap bulan.</p>
+        <a class="btn btn-white" href="https://mitra.pokama.org/">Daftar jadi mitra</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="s" id="kontak" aria-labelledby="h-kontak">
+    <div class="wrap contact">
+      <div>
+        <h2 id="h-kontak">Hubungi kami</h2>
+        <p class="intro">Pilih jalur yang paling sesuai dengan keperluan Anda.</p>
+      </div>
+      <ul class="paths">
+        <li><div><b>Sewa barang atau trip Jeep</b><span>Pesan langsung dan cek ketersediaan</span></div><a href="https://rentalaja.co.id" rel="noopener">rentalaja.co.id</a></li>
+        <li><div><b>Jadi mitra</b><span>Hotel, komunitas, kreator, dan lainnya</span></div><a href="https://mitra.pokama.org/">mitra.pokama.org</a></li>
+      </ul>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div>
+      <img class="mark" src="/img/pokama-logo.png" alt="Pokama" width="150" height="34">
+      <p class="legal">PT Popo Karya Investama</p>
+      <p>PT Karya Kreasi Investama</p>
+      <p>Garut, Jawa Barat</p>
+    </div>
+    <nav aria-label="Tautan footer">
+      <a href="https://rentalaja.co.id" rel="noopener">Rentalaja</a>
+      <a href="https://mitra.pokama.org/">Program mitra</a>
+      <a href="https://app.pokama.org/">Masuk staf</a>
+      <a href="https://app.pokama.org/privasi">Privasi</a>
+    </nav>
+    <p class="small">© <span id="y">2026</span> Pokama</p>
+  </div>
+</footer>
+
+<script>
+document.getElementById('y').textContent = new Date().getFullYear();
+var bar = document.getElementById('top');
+addEventListener('scroll', function () { bar.classList.toggle('scrolled', scrollY > 8); }, { passive: true });
+</script>
+</body>
+</html>
