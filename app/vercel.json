@@ -218,14 +218,6 @@
   {
    "source": "/affiliate",
    "destination": "/mitra/admin"
-  },
-  {
-   "source": "/uji-compro",
-   "destination": "/compro/index"
-  },
-  {
-   "source": "/uji-mitra",
-   "destination": "/mitra/index"
   }
  ]
 }
