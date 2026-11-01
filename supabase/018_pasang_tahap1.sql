@@ -744,7 +744,7 @@ begin
   select coalesce(sum(rev), 0) into rev3 from _pl where per = 'cur' and biz in ('RA','WG','NA');
   select coalesce(sum(debit - credit), 0) into cash_total from _fl f join public.pk_fin_accounts a on a.code = f.acc and a.is_cash;
   -- biaya tunai rata-rata 3 bulan (penyusutan tidak mengeluarkan uang, jadi tidak dihitung)
-  select coalesce(sum(case when left(acc, 1) in ('5','6','8') and acc <> '5-50001' and a.name not ilike '%penyusutan%' then debit - credit else 0 end), 0) / 3 into burn
+  select coalesce(sum(case when left(acc, 1) in ('5','6','8') and acc <> '5-50001' and coalesce(a.name, '') not ilike '%penyusutan%' then debit - credit else 0 end), 0) / 3 into burn
     from _fl left join public.pk_fin_accounts a on a.code = _fl.acc where d >= (date_trunc('month', t) - interval '3 months')::date and d < date_trunc('month', t)::date;
 
   out := jsonb_build_object(
