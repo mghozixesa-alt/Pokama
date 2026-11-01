@@ -341,6 +341,7 @@ begin
   return jsonb_build_object('ok', true);
 end $$;
 
+drop function if exists public.af_me_update(jsonb);
 create or replace function public.af_me_update(p jsonb) returns jsonb
 language plpgsql security definer set search_path = public as $$
 declare pid uuid := public.af_my_partner(); x public.af_partners; nk text; acct text; npwp text; pending boolean := false;
@@ -441,6 +442,7 @@ alter table public.af_api_hits enable row level security;
 alter table public.af_api_blocks enable row level security;
 revoke all on public.af_api_nonces, public.af_api_hits, public.af_api_blocks from anon, authenticated;
 
+drop function if exists public.af_unit_key_new(text);
 create or replace function public.af_unit_key_new(p_unit text) returns jsonb
 language plpgsql security definer set search_path = public, extensions as $$
 declare kid text := lower(p_unit) || '_' || encode(extensions.gen_random_bytes(5), 'hex'); sec text := 'afs_' || encode(extensions.gen_random_bytes(32), 'hex');
