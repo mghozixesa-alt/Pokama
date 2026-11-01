@@ -100,14 +100,6 @@ section.s { padding: 88px 0; border-top: 1px solid var(--line); }
 .unit .side a { font-weight: 700; text-decoration: none; }
 .unit .side a:hover { text-decoration: underline; }
 
-/* cara memutuskan */
-.order { margin: 48px 0 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; counter-reset: o; }
-.order li { counter-increment: o; position: relative; padding: 0 24px 0 0; }
-.order li::before { content: counter(o); display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; background: var(--ink); color: #fff; font-weight: 800; font-size: 16px; position: relative; z-index: 1; }
-.order li::after { content: ""; position: absolute; left: 40px; right: 0; top: 19px; height: 2px; background: var(--line); }
-.order li:last-child::after { display: none; }
-.order h3 { margin: 18px 0 6px; font-size: 20px; font-weight: 800; }
-.order p { margin: 0; color: var(--ink2); font-size: 16px; }
 
 /* mitra */
 .mitra { background: var(--teal); color: #fff; border-top: 0; }
@@ -149,11 +141,6 @@ footer .small { margin-top: 28px; color: #8C97AE; font-size: 14px; }
   .unit .mk img { width: 36px; height: 36px; }
   .unit .side { grid-column: 1 / -1; border-left: 0; padding-left: 0; border-top: 1px solid var(--line); padding-top: 18px; display: flex; flex-wrap: wrap; gap: 14px 32px; }
   .unit .side div + div { margin-top: 0; }
-  .order { grid-template-columns: minmax(0, 1fr); gap: 0; }
-  .order li { display: grid; grid-template-columns: 40px minmax(0, 1fr); column-gap: 18px; padding: 0 0 28px; }
-  .order li::before { grid-row: span 2; }
-  .order li::after { left: 19px; right: auto; top: 40px; bottom: 0; width: 2px; height: auto; }
-  .order h3 { margin: 6px 0 4px; }
   footer .wrap { grid-template-columns: minmax(0, 1fr); align-items: start; }
 }
 @media (max-width: 560px) {
@@ -270,18 +257,6 @@ footer .small { margin-top: 28px; color: #8C97AE; font-size: 14px; }
     </div>
   </section>
 
-  <section class="s" id="cara" aria-labelledby="h-cara">
-    <div class="wrap">
-      <h2 id="h-cara">Cara kami memutuskan</h2>
-      <p class="intro">Saat pilihan bertabrakan, urutannya selalu sama.</p>
-      <ol class="order">
-        <li><h3>Kas</h3><p>Bisnis harus tetap bisa membayar kewajibannya hari ini.</p></li>
-        <li><h3>Profitabilitas</h3><p>Setiap unit dan cabang harus menghasilkan, bukan sekadar ramai.</p></li>
-        <li><h3>Kapasitas eksekusi</h3><p>Tim dan sistem siap menjalankan sebelum kami menambah beban.</p></li>
-        <li><h3>Pertumbuhan</h3><p>Kota, kategori, dan unit baru menyusul setelah tiga hal di atas sehat.</p></li>
-      </ol>
-    </div>
-  </section>
 
   <section class="s mitra" id="mitra" aria-labelledby="h-mitra">
     <div class="wrap grid">

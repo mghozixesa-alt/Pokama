@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /sistem
+Disallow: /marketing/
+Disallow: /keuangan/
+Disallow: /mitra/
+Disallow: /affiliate
+Sitemap: https://pokama.org/sitemap.xml

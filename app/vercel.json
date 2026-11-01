@@ -201,6 +201,30 @@
  ],
  "rewrites": [
   {
+   "source": "/robots.txt",
+   "has": [
+    {
+     "type": "host",
+     "value": "pokama.org"
+    }
+   ],
+   "destination": "/compro/robots.txt"
+  },
+  {
+   "source": "/sitemap.xml",
+   "has": [
+    {
+     "type": "host",
+     "value": "pokama.org"
+    }
+   ],
+   "destination": "/compro/sitemap.xml"
+  },
+  {
+   "source": "/robots.txt",
+   "destination": "/robots-tutup.txt"
+  },
+  {
    "source": "/",
    "has": [
     {
