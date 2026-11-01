@@ -25,6 +25,83 @@
  "cleanUrls": true,
  "redirects": [
   {
+   "source": "/investor",
+   "has": [
+    {
+     "type": "host",
+     "value": "pokama.org"
+    }
+   ],
+   "destination": "https://investor.pokama.org/",
+   "permanent": true
+  },
+  {
+   "source": "/investor/:path*",
+   "has": [
+    {
+     "type": "host",
+     "value": "pokama.org"
+    }
+   ],
+   "destination": "https://investor.pokama.org/",
+   "permanent": true
+  },
+  {
+   "source": "/admin",
+   "has": [
+    {
+     "type": "host",
+     "value": "investor.pokama.org"
+    }
+   ],
+   "destination": "https://app.pokama.org/investor",
+   "permanent": true
+  },
+  {
+   "source": "/investor/admin",
+   "has": [
+    {
+     "type": "host",
+     "value": "investor.pokama.org"
+    }
+   ],
+   "destination": "https://app.pokama.org/investor",
+   "permanent": true
+  },
+  {
+   "source": "/(marketing|keuangan|affiliate|privasi|mitra)(.*)",
+   "has": [
+    {
+     "type": "host",
+     "value": "investor.pokama.org"
+    }
+   ],
+   "destination": "https://app.pokama.org/$1$2",
+   "permanent": true
+  },
+  {
+   "source": "/investor/",
+   "has": [
+    {
+     "type": "host",
+     "value": "app.pokama.org"
+    }
+   ],
+   "destination": "/investor",
+   "permanent": false
+  },
+  {
+   "source": "/investor/admin",
+   "destination": "/investor",
+   "permanent": false,
+   "has": [
+    {
+     "type": "host",
+     "value": "app.pokama.org"
+    }
+   ]
+  },
+  {
    "source": "/mitra/admin",
    "has": [
     {
@@ -216,8 +293,28 @@
    "destination": "/mitra/index"
   },
   {
+   "source": "/",
+   "has": [
+    {
+     "type": "host",
+     "value": "investor.pokama.org"
+    }
+   ],
+   "destination": "/investor/index"
+  },
+  {
    "source": "/affiliate",
    "destination": "/mitra/admin"
+  },
+  {
+   "source": "/investor",
+   "has": [
+    {
+     "type": "host",
+     "value": "app.pokama.org"
+    }
+   ],
+   "destination": "/investor/admin"
   }
  ]
 }
