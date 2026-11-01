@@ -110,7 +110,7 @@ create table if not exists public.af_bookings (
   product text,
   net_amount numeric(14,2) not null default 0,
   ext_amount numeric(14,2) not null default 0,
-  returning boolean not null default false,
+  repeat_cust boolean not null default false,
   source text,                                        -- web / app / ota / dll
   cust_nik_hash text, cust_wa_hash text,
   guest text,                                         -- nama tamu yang sudah disamarkan
@@ -335,7 +335,7 @@ begin
     if base is null then select pct into base from public.af_rates where unit_code = b.unit_code and cat = b.cat; end if;
     base := coalesce(base, 0);
     tr := public.af_tier_now(pr.id); bonus := coalesce((tr->>'bonus')::numeric, 0);
-    fin := (base + bonus) * case when b.returning then retf else 1 end - case when b.guest_disc then gd else 0 end;
+    fin := (base + bonus) * case when b.repeat_cust then retf else 1 end - case when b.guest_disc then gd else 0 end;
     fin := greatest(fin, 0);
     comm := round((b.net_amount + b.ext_amount) * fin / 100);
     if b.frozen then st := 'dibekukan'; note := b.frozen_reason;
@@ -380,7 +380,7 @@ begin
       update public.af_events set result = 'tanpa kode, diabaikan' where event_key = k;
       return jsonb_build_object('booking_id', bid, 'status', st, 'result', 'tanpa kode, diabaikan');
     end if;
-    insert into public.af_bookings(unit_code, booking_id, partner_id, code, cat, product, net_amount, returning, source, cust_nik_hash, cust_wa_hash,
+    insert into public.af_bookings(unit_code, booking_id, partner_id, code, cat, product, net_amount, repeat_cust, source, cust_nik_hash, cust_wa_hash,
       guest, guest_disc, bk_status, booked_at, completed_at, blacklist, issue, demo)
     values (p_unit, bid, pr.id, v_code, lower(nullif(ev->>'kategori', '')), nullif(ev->>'produk', ''), coalesce(amt, 0),
       coalesce((ev->>'pelanggan_lama')::boolean, false), lower(nullif(ev->>'sumber', '')),
@@ -399,7 +399,7 @@ begin
       update public.af_bookings set bk_status = st,
         net_amount = case when st in ('dibayar','selesai') and amt is not null then amt else net_amount end,
         completed_at = case when st = 'selesai' then t else completed_at end,
-        returning = coalesce((ev->>'pelanggan_lama')::boolean, returning),
+        repeat_cust = coalesce((ev->>'pelanggan_lama')::boolean, repeat_cust),
         cust_nik_hash = coalesce(lower(nullif(ev->>'hash_nik', '')), cust_nik_hash),
         cust_wa_hash = coalesce(lower(nullif(ev->>'hash_hp', '')), cust_wa_hash),
         blacklist = blacklist or coalesce((ev->>'daftar_hitam')::boolean, false),
@@ -545,7 +545,7 @@ begin
     'bookings', (select coalesce(jsonb_agg(x order by x->>'at' desc), '[]'::jsonb) from (
       select jsonb_build_object('id', b.id, 'unit', b.unit_code, 'booking_id', b.booking_id, 'cat', b.cat, 'product', coalesce(b.product, r.label, b.cat),
         'guest', b.guest, 'amount', b.net_amount + b.ext_amount, 'rate', b.rate_final, 'commission', b.commission, 'status', b.comm_status,
-        'bk_status', b.bk_status, 'note', b.comm_note, 'returning', b.returning, 'at', coalesce(b.completed_at, b.booked_at), 'completed_at', b.completed_at) x
+        'bk_status', b.bk_status, 'note', b.comm_note, 'returning', b.repeat_cust, 'at', coalesce(b.completed_at, b.booked_at), 'completed_at', b.completed_at) x
       from public.af_bookings b left join public.af_rates r on r.unit_code = b.unit_code and r.cat = b.cat
       where b.partner_id = pid order by coalesce(b.completed_at, b.booked_at) desc limit 200) q),
     'rewards', (select coalesce(jsonb_agg(jsonb_build_object('title', w.title, 'amount', w.amount, 'status', w.status, 'month', w.month, 'type', w.reward_type) order by w.created_at desc), '[]'::jsonb)
@@ -877,7 +877,7 @@ begin
       case when count(*) >= 50 then '50 booking' end,
       case when count(*) filter (where b.cat = 'penginapan') >= 1 then 'Penjelajah' end,
       case when count(*) filter (where b.cat = 'jeep') >= 10 then 'Raja Jeep' end,
-      case when count(*) filter (where b.returning) >= 5 then 'Tamu setia' end], null)) bd
+      case when count(*) filter (where b.repeat_cust) >= 5 then 'Tamu setia' end], null)) bd
     from public.af_bookings b where public.af_done(b) and b.demo = p_demo and b.partner_id is not null group by b.partner_id) q
   on conflict do nothing;
 
