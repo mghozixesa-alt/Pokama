@@ -130,6 +130,7 @@ do $m$ begin
 end $m$;
 alter table public.af_payouts add column if not exists created_by uuid;
 alter table public.af_audit add column if not exists actor uuid;
+alter table public.af_unit_keys add column if not exists key_id text unique, add column if not exists secret_enc bytea, add column if not exists revoked_at timestamptz;
 
 -- tambal fungsi lama yang membaca kolom polos (sebelum kolom polos dihapus)
 do $p$
