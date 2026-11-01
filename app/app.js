@@ -72,7 +72,7 @@ const googleIcon = '<svg width="18" height="18" viewBox="0 0 48 48" aria-hidden=
 function shell() {
   const me = ctx.me;
   const nav = ROUTES.map(([sec, items]) => `<div class="nav-sec"><span class="nav-h">${sec}</span>${items.map(([k, l, ic]) =>
-    `<a href="#/${k}" data-k="${k}">${svg(ic)}<span>${l}</span><b class="badge" data-badge="${k}" hidden></b></a>`).join('')}</div>`).join('
+    `<a href="#/${k}" data-k="${k}">${svg(ic)}<span>${l}</span><b class="badge" data-badge="${k}" hidden></b></a>`).join('')}</div>`).join('')
     + (['ceo', 'kepala_staf', 'keuangan'].includes(me.role) ? `<div class="nav-sec"><span class="nav-h">MODUL LAIN</span>${['ceo', 'kepala_staf'].includes(me.role) ? `<a href="/marketing/kerja.html">${svg('grid')}<span>Marketing</span></a>` : ''}<a href="/mitra/admin">${svg('users')}<span>Mitra Affiliate</span></a></div>` : '');
   root.innerHTML = `<div class="shell">
     <nav class="side" aria-label="Menu utama"><div class="brand-row"><a class="brand" href="#/kkh"><img src="img/pokama-logo.png" alt="Pokama"></a><button type="button" class="bell" data-bell aria-label="Notifikasi">${svg('bell', 20)}<b class="badge" data-badge="ntf" hidden></b></button></div><span class="muted small brand-sub">Sistem Kerja Harian</span>${nav}
