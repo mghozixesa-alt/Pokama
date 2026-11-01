@@ -1,4 +1,4 @@
-import { ctx, hasSession, takeSessionFromUrl, signInPassword, signInGoogle, loadContext, signOut, esc, avatar, ROLE, toast, reloadSession } from './core.js';
+import { ctx, hasSession, takeSessionFromUrl, signInPassword, signInGoogle, loadContext, signOut, esc, avatar, ROLE, toast, reloadSession, modal, field, db } from './core.js';
 import { ensureMfa, idleGuard, idleExpired } from './mfa.js';
 import kerja from './screens/kerja.js';
 import tugas from './screens/tugas.js';
@@ -167,6 +167,17 @@ async function boot() {
   if (!location.hash || location.hash === '#/' ) location.hash = window.matchMedia('(max-width: 760px)').matches ? '#/kkh' : (ctx.me.role === 'kepala_staf' ? '#/review' : ctx.me.role === 'keuangan' ? '#/belanja' : '#/kkh');
   window.onhashchange = route;
   route();
+  askPhone();
+}
+
+// nomor WA dipakai untuk peringatan keamanan & notifikasi; minta sekali bila belum ada
+async function askPhone() {
+  if (ctx.me.phone) return;
+  try { const k = 'pokama.askwa'; if (+localStorage.getItem(k) > Date.now() - 20 * 3600e3) return; localStorage.setItem(k, String(Date.now())); } catch (e) {}
+  const r = await modal('Isi nomor WhatsApp Anda', `<p class="muted small">Dipakai untuk peringatan keamanan akun dan notifikasi Sistem Kerja. Hanya terlihat oleh Anda, Kepala Staf, dan CEO.</p>`
+    + field('Nomor WhatsApp', '<input name="wa" class="inp" inputmode="tel" autocomplete="tel" placeholder="0812 3456 7890" required>'),
+    { submit: 'Simpan nomor', onSubmit: async (f) => { const ph = await db.rpc('pk_set_phone', { p_phone: f.wa }); ctx.me.phone = ph; if (ctx.byId[ctx.me.id]) ctx.byId[ctx.me.id].phone = ph; } });
+  if (r) toast('Nomor WA tersimpan');
 }
 
 takeSessionFromUrl();
