@@ -166,12 +166,13 @@ create table if not exists public.af_rank_prizes (
 );
 create table if not exists public.af_ranks (
   month date not null,
+  demo boolean not null default false,
   city text not null,
   kind text not null,
   rank int not null,
   partner_id uuid not null references public.af_partners(id) on delete cascade,
   done int not null,
-  primary key (month, city, kind, rank)
+  primary key (month, demo, city, kind, rank)
 );
 create table if not exists public.af_rewards (
   id uuid primary key default gen_random_uuid(),
@@ -196,7 +197,8 @@ create table if not exists public.af_badges (
   primary key (partner_id, badge)
 );
 create table if not exists public.af_month_close (
-  month date primary key,
+  month date not null,
+  demo boolean not null default false,
   revenue numeric(14,2) not null default 0,
   commission numeric(14,2) not null default 0,
   reward_budget numeric(14,2) not null default 0,
@@ -204,7 +206,8 @@ create table if not exists public.af_month_close (
   over_budget boolean not null default false,
   payouts int not null default 0,
   closed_by uuid,
-  closed_at timestamptz not null default now()
+  closed_at timestamptz not null default now(),
+  primary key (month, demo)
 );
 create table if not exists public.af_audit (
   id bigserial primary key,
@@ -457,12 +460,12 @@ begin
   return jsonb_build_object('unit', p_unit, 'results', out);
 end $$;
 create or replace function public.af_api_featured(p_unit text default null) returns jsonb language sql stable security definer set search_path = public as $$
-  with m as (select max(month) mm from public.af_ranks r join public.af_partners p on p.id = r.partner_id where not p.demo)
+  with m as (select max(month) mm from public.af_ranks r where not r.demo)
   select jsonb_build_object('bulan', to_char((select mm from m), 'YYYY-MM'), 'mitra', coalesce(jsonb_agg(jsonb_build_object(
     'peringkat', r.rank, 'nama', coalesce(nullif(p.org, ''), p.name), 'jenis', r.kind, 'kota', r.city, 'kode', p.code, 'alamat', p.address
   ) order by r.city, r.kind, r.rank), '[]'::jsonb))
   from public.af_ranks r join public.af_partners p on p.id = r.partner_id
-  where r.month = (select mm from m) and p.status = 'aktif' and not p.demo
+  where r.month = (select mm from m) and not r.demo and p.status = 'aktif' and not p.demo
 $$;
 
 -- ================= pendaftaran publik =================
@@ -824,7 +827,7 @@ begin
   if auth.uid() is not null then perform public.af_need(false, true); end if;
   nm := (m + interval '1 month')::date;
   if nm > public.af_month() and not p_force then raise exception 'Bulan % belum selesai', to_char(m, 'YYYY-MM'); end if;
-  if exists (select 1 from public.af_month_close where month = m) and not p_force then
+  if exists (select 1 from public.af_month_close where month = m and demo = p_demo) and not p_force then
     return jsonb_build_object('skipped', true, 'month', m);
   end if;
   if p_force then
@@ -832,7 +835,7 @@ begin
     update public.af_bookings set payout_id = null where payout_id in (select id from public.af_payouts where period = m and status = 'diajukan' and demo = p_demo);
     update public.af_rewards set payout_id = null where payout_id in (select id from public.af_payouts where period = m and status = 'diajukan' and demo = p_demo);
     delete from public.af_payouts where period = m and status = 'diajukan' and demo = p_demo;
-    delete from public.af_month_close where month = m;
+    delete from public.af_month_close where month = m and demo = p_demo;
   end if;
 
   -- 1. tantangan tercapai
@@ -851,8 +854,8 @@ begin
 
   -- 2. peringkat per kota x jenis
   delete from public.af_ranks where month = m and partner_id in (select id from public.af_partners where demo = p_demo);
-  insert into public.af_ranks(month, city, kind, rank, partner_id, done)
-  select m, city, kind, rk, pid, dn from (
+  insert into public.af_ranks(month, demo, city, kind, rank, partner_id, done)
+  select m, p_demo, city, kind, rk, pid, dn from (
     select x.city, x.kind, x.id pid, count(*) dn, row_number() over (partition by x.city, x.kind order by count(*) desc, min(b.completed_at)) rk
     from public.af_bookings b join public.af_partners x on x.id = b.partner_id
     where public.af_done(b) and public.af_month(b.completed_at) = m and b.demo = p_demo and x.status = 'aktif' and not x.is_internal
@@ -931,9 +934,9 @@ begin
     npay := npay + 1;
   end loop;
 
-  insert into public.af_month_close(month, revenue, commission, reward_budget, reward_used, over_budget, payouts, closed_by)
-  values (m, rev, comm, bud, rw, rw > bud, npay, public.pk_me())
-  on conflict (month) do update set revenue = excluded.revenue, commission = excluded.commission, reward_budget = excluded.reward_budget,
+  insert into public.af_month_close(month, demo, revenue, commission, reward_budget, reward_used, over_budget, payouts, closed_by)
+  values (m, p_demo, rev, comm, bud, rw, rw > bud, npay, public.pk_me())
+  on conflict (month, demo) do update set revenue = excluded.revenue, commission = excluded.commission, reward_budget = excluded.reward_budget,
     reward_used = excluded.reward_used, over_budget = excluded.over_budget, payouts = excluded.payouts, closed_at = now();
   perform public.af_log('tutup_bulan', m::text, null, jsonb_build_object('payouts', npay, 'revenue', rev, 'reward', rw, 'budget', bud, 'demo', p_demo));
   return jsonb_build_object('month', m, 'payouts', npay, 'revenue', rev, 'commission', comm, 'reward_used', rw, 'reward_budget', bud, 'over_budget', rw > bud);
@@ -944,7 +947,7 @@ create or replace function public.af_payouts_list(p_period date default null, p_
 language sql stable security definer set search_path = public as $$
   select case when not public.af_is_fin() and not public.af_is_biz() then null else jsonb_build_object(
     'periods', (select coalesce(jsonb_agg(distinct period order by period desc), '[]'::jsonb) from public.af_payouts where demo = p_demo),
-    'close', (select to_jsonb(c) from public.af_month_close c where c.month = coalesce(p_period, (select max(period) from public.af_payouts where demo = p_demo))),
+    'close', (select to_jsonb(c) from public.af_month_close c where c.demo = p_demo and c.month = coalesce(p_period, (select max(period) from public.af_payouts where demo = p_demo))),
     'rows', (select coalesce(jsonb_agg(jsonb_build_object('id', o.id, 'period', o.period, 'partner_id', o.partner_id, 'name', coalesce(nullif(x.org, ''), x.name), 'holder', x.bank_holder,
         'wa', x.wa, 'bank', o.bank, 'commission', o.commission, 'rewards', o.rewards, 'gross', o.gross, 'tax', o.tax, 'net', o.net, 'items', o.items, 'status', o.status,
         'proof_url', o.proof_url, 'transferred_at', o.transferred_at, 'npwp', x.npwp is not null, 'nik', x.nik is not null,
@@ -1137,3 +1140,18 @@ grant execute on function public.af_register(jsonb) to anon, authenticated;
 -- ================= jadwal: tanggal 1, 07.35 WIB =================
 select cron.unschedule('af-close-month') where exists (select 1 from cron.job where jobname = 'af-close-month');
 select cron.schedule('af-close-month', '35 0 1 * *', $c$select public.af_close_month(null, false, false)$c$);
+
+-- ================= bukti transfer (bucket privat) =================
+insert into storage.buckets(id, name, public, file_size_limit, allowed_mime_types)
+values ('af-bukti', 'af-bukti', false, 5242880, array['image/jpeg','image/png','image/webp','application/pdf'])
+on conflict (id) do nothing;
+do $p$ begin
+  if not exists (select 1 from pg_policies where schemaname = 'storage' and tablename = 'objects' and policyname = 'af_bukti_r') then
+    create policy af_bukti_r on storage.objects for select to authenticated
+      using (bucket_id = 'af-bukti' and (public.af_can_view() or (storage.foldername(name))[1] = public.af_my_partner()::text));
+  end if;
+  if not exists (select 1 from pg_policies where schemaname = 'storage' and tablename = 'objects' and policyname = 'af_bukti_w') then
+    create policy af_bukti_w on storage.objects for insert to authenticated
+      with check (bucket_id = 'af-bukti' and public.af_is_fin());
+  end if;
+end $p$;
