@@ -335,3 +335,7 @@ table.kkh th .att{display:flex;align-items:center;gap:4px;justify-content:center
 .blue-t{color:var(--blue)}.btn.big{min-height:46px;font-size:15px}
 .gap6{gap:6px}
 @media (max-width:900px){.split2{grid-template-columns:minmax(0,1fr)}.opsteps{grid-template-columns:repeat(5,minmax(0,1fr));gap:4px}.opsteps li{flex-direction:column;padding:8px 4px;text-align:center}.opsteps li b{font-size:10.5px;line-height:1.2}}
+
+/* KKH Tim: kolom rapi saat anggota sedikit, dan keadaan kosong */
+table.kkh.few{min-width:0;width:auto;align-self:flex-start;justify-self:start;margin-right:auto}table.kkh.few thead th:not(.sticky),table.kkh.few td{width:170px;min-width:170px}table.kkh .sticky{width:64px}
+.empty-kkh{display:flex;flex-direction:column;gap:4px;padding:22px;text-align:center;align-items:center}
