@@ -40,6 +40,8 @@ export function signInGoogle() {
 export function takeSessionFromUrl() {
   if (!location.hash.includes('access_token=')) return false;
   const p = new URLSearchParams(location.hash.slice(1));
+  // dibuka dari Sistem Kerja (sudah lolos 2 langkah di sana): sesi ini dianggap setara 2 langkah selama 12 jam
+  try { if (p.get('sso') === 'pokama') { const c = JSON.parse(atob(p.get('access_token').split('.')[1].replace(/-/g, '+').replace(/_/g, '/'))); localStorage.setItem('pokama.sso', JSON.stringify({ sid: c.session_id, until: Date.now() + 12 * 3600e3 })); } } catch (e) {}
   saveSession({ access_token: p.get('access_token'), refresh_token: p.get('refresh_token'), expires_in: +p.get('expires_in') || 3600 });
   history.replaceState(null, '', location.pathname + '#/');
   return true;

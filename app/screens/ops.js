@@ -161,7 +161,7 @@ async function team(el, params, reload) {
   el.innerHTML = `
   <header class="ph"><div><span class="muted small">Penugasan, mutasi, jadwal, lembur, dan ceklis staf lapangan Rentalaja</span><h1>Tim Operasional</h1></div>
     <div class="row gap wrap"><a class="btn" href="#/ops?d=${addDays(day, -1)}">‹</a><b>${fdate(day)}${isToday ? ' · hari ini' : ''}</b><a class="btn" href="#/ops?d=${addDays(day, 1)}">›</a>
-    <button class="btn" data-a="otas">Tugaskan lembur</button><button class="btn pri" data-a="add">+ Staf lapangan</button></div></header>
+    <a class="btn" href="https://ops.pokama.org/" data-sso="pk_ops" target="_blank" rel="noopener">Kerja Lapangan ↗</a><button class="btn" data-a="otas">Tugaskan lembur</button><button class="btn pri" data-a="add">+ Staf lapangan</button></div></header>
   <div class="tiles">
     <div class="tile"><span>Staf bertugas</span><b>${assigned.length}</b><small>${BR.length ? Object.keys(byBr).length + ' cabang' : ''}${free.length ? ' · ' + free.length + ' belum ditugaskan' : ''}</small></div>
     <div class="tile"><span>Sudah absen</span><b>${inN} / ${schN || assigned.length}</b><small>${schN ? 'dari yang terjadwal' : 'jadwal belum diatur'}</small></div>

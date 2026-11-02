@@ -33,9 +33,9 @@ const I = {
   box: '<path d="M21 8 12 3 3 8v8l9 5 9-5z"/><path d="M3 8l9 5 9-5M12 13v8"/>',
   ext: '<path d="M14 4h6v6M20 4l-9 9"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/>',
 };
-const MODIC = { ops: 'gauge', pokama: 'sun', marketing: 'mega', keuangan: 'bank', affiliate: 'link', investor: 'trend', ra_mgmt: 'gauge', ra_aset: 'box' };
+const MODIC = { pk_ops: 'clock', ops: 'gauge', pokama: 'sun', marketing: 'mega', keuangan: 'bank', affiliate: 'link', investor: 'trend', ra_mgmt: 'gauge', ra_aset: 'box' };
 /* warna khas tiap modul: [warna ikon, latar] */
-const MODCOL = { ops: ['#0F766E', '#DDF5F2'], pokama: ['#1D3149', '#E4E9F1'], ra_mgmt: ['#1D3149', '#E4E9F1'], ra_cs: ['#0A8F86', '#DDF5F2'], ra_lap: ['#2563EB', '#E6EFFD'], ra_aset: ['#C2410C', '#FCEBDD'], ra_tek: ['#6B4F2A', '#F3ECE2'], ra_grt: ['#0F766E', '#DDF5F2'], ra_wnr: ['#0F766E', '#DDF5F2'], ra_bdg: ['#0F766E', '#DDF5F2'], ra_mpt: ['#B0466B', '#FBE7EF'], marketing: ['#7A3FD1', '#F1EAFD'], keuangan: ['#0B8A5E', '#E3F6EE'], affiliate: ['#1F63D8', '#E6EFFD'], investor: ['#B7791F', '#FDF3DF'] };
+const MODCOL = { pk_ops: ['#09BEAF', '#E3F7F5'], ops: ['#0F766E', '#DDF5F2'], pokama: ['#1D3149', '#E4E9F1'], ra_mgmt: ['#1D3149', '#E4E9F1'], ra_cs: ['#0A8F86', '#DDF5F2'], ra_lap: ['#2563EB', '#E6EFFD'], ra_aset: ['#C2410C', '#FCEBDD'], ra_tek: ['#6B4F2A', '#F3ECE2'], ra_grt: ['#0F766E', '#DDF5F2'], ra_wnr: ['#0F766E', '#DDF5F2'], ra_bdg: ['#0F766E', '#DDF5F2'], ra_mpt: ['#B0466B', '#FBE7EF'], marketing: ['#7A3FD1', '#F1EAFD'], keuangan: ['#0B8A5E', '#E3F6EE'], affiliate: ['#1F63D8', '#E6EFFD'], investor: ['#B7791F', '#FDF3DF'] };
 const modIc = (m, s = 18, t = 30) => { const c = MODCOL[m.k] || ['#1D3149', '#EEF0F3'];
   if (/^ra_/.test(m.k)) return `<span class="modi ra" style="--mc:${c[0]};--mb:${c[1]};width:${t}px;height:${t}px"><img src="/img/ra.png" alt="" style="width:${Math.round(t * .62)}px;height:${Math.round(t * .62)}px"><i>${({ ra_mgmt: 'O', ra_cs: 'CS', ra_lap: 'L', ra_aset: 'A', ra_tek: 'T', ra_grt: 'GK', ra_wnr: 'WR', ra_bdg: 'BD', ra_mpt: 'MP' })[m.k] || ''}</i></span>`;
   return `<span class="modi" style="--mc:${c[0]};--mb:${c[1]};width:${t}px;height:${t}px">${svg(MODIC[m.k] || 'grid', s)}</span>`; };
@@ -172,7 +172,7 @@ async function loadModules() {
   if (OPS_HOST) ctx.modules = ctx.me.role === 'lapangan' ? [] : [{ k: 'pokama', name: 'Sistem Kerja Pokama', href: 'https://app.pokama.org/', note: 'KKH, tugas, belanja, modul', n: 0 }];
   else { try { const { db } = await import('./core.js'); ctx.modules = (await db.rpc('pk_modules')) || []; } catch (e) { ctx.modules = ctx.modules || []; }
     const o = ctx.ops || {};
-    if (o.field && ctx.me.role !== 'lapangan') ctx.modules = [{ k: 'ops', name: 'Kerja Lapangan', href: OPS_URL, note: 'ops.pokama.org · absen, pengajuan, panel kerja', n: 0, ext: true }].concat(ctx.modules); }
+    if ((o.field || o.mgr) && ctx.me.role !== 'lapangan') ctx.modules = [{ k: 'pk_ops', name: 'Kerja Lapangan', href: OPS_URL, note: 'ops.pokama.org · absen, pengajuan, panel kerja petugas', n: 0, ext: true, sso: true }].concat(ctx.modules); }
   const nav = document.getElementById('modnav');
   if (nav) { nav.hidden = !ctx.modules.length; const navIt = (m => `<a href="${esc(m.href)}"${m.sso ? ` data-sso="${esc(m.k)}"` : ''}${m.ext ? ' target="_blank" rel="noopener"' : ''} title="${esc(m.note || '')}">${modIc(m, 16, 28)}<span>${esc(m.name)}</span>${m.n ? `<b class="badge${m.urgent ? '' : ' soft'}">${m.n}</b>` : ''}</a>`);
     const pm = ctx.modules.filter(m => !/^ra_/.test(m.k)), rm = ctx.modules.filter(m => /^ra_/.test(m.k));
@@ -183,7 +183,7 @@ async function loadModules() {
 // Dashboard Manajemen & Aset: masuk Rentalaja App memakai sesi Sistem Kerja (tanpa login & 2 langkah lagi)
 async function openSSO(k) {
   const w = window.open('', '_blank');
-  try { if (w) w.document.write('<p style="font:600 15px system-ui;padding:24px;color:#1D3149">Membuka Rentalaja…</p>'); } catch (e) {}
+  try { if (w) w.document.write('<p style="font:600 15px system-ui;padding:24px;color:#1D3149">Membuka…</p>'); } catch (e) {}
   try {
     const { callFn } = await import('./core.js');
     const r = await callFn('pk-ra-sso', { target: k });

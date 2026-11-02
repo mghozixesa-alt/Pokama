@@ -50,7 +50,7 @@ function shell() {
   root.querySelectorAll('[data-out]').forEach(b => b.onclick = async () => { if (await confirmBox('Keluar dari Kerja Lapangan?', 'Keluar')) signOut(); });
 }
 
-let H = null;
+let H = null, WHO = {};
 async function route() {
   let k = location.hash.replace(/^#\/?/, '').split('?')[0];
   if (k === 'shift' || !TABS.some(t => t[0] === k)) k = 'absen';
@@ -87,6 +87,7 @@ async function vAbsen(el) {
       <div style="text-align:right"><div style="font-weight:800">${sch ? esc(sch.shift || 'Shift') + ' ' + hm(sch.starts) + '–' + hm(sch.ends) : 'Belum ada jadwal'}</div><small>${sch && sch.branch ? esc(sch.branch) : 'jadwal dari Operasional'}</small></div></div>
     <div class="row">${A.map(a => `<span class="ra-pill">${esc(a.pos.label)} · ${esc(a.branch)}</span>`).join('') || '<span class="ra-pill warn">Belum ada penugasan. Hubungi Operasional.</span>'}
       <span class="ra-pill ${isOut ? '' : isIn ? 'ok' : 'warn'}">${isOut ? 'Shift selesai' : isIn ? 'Sedang bertugas' : 'Belum absen'}</span></div></section>
+  ${!A.length && WHO.mgr ? `<section class="card absen"><h2>Coba sebagai petugas</h2><p class="muted small" style="margin-top:0">Anda masuk sebagai Operasional. Pilih posisi dan cabang untuk mencoba alur petugas: absen, ceklis, lalu buka panel. Penugasan coba ini bisa diakhiri di Tim Operasional.</p><button class="btn pri ra-big" data-a="try">Pilih posisi & cabang</button></section>` : ''}
   ${!A.length ? '' : !isIn ? `<section class="card stack"><h2>Absen masuk</h2><p class="muted small" style="margin:0">Selfie di cabang dan izinkan lokasi HP.</p>
       ${brs.length > 1 ? field('Cabang', `<select class="inp" id="abr">${brs.map(a => `<option value="${a.branch_id}">${esc(a.branch)}</option>`).join('')}</select>`) : `<input type="hidden" id="abr" value="${brs[0].branch_id}">`}
       <label class="ra-shot" id="shot"><span id="selt">📷 Ketuk untuk selfie</span><input type="file" accept="image/*" capture="user" id="self" hidden></label>
@@ -115,6 +116,10 @@ async function vAbsen(el) {
     try { await db.rpc('ops_check_save', { p_phase: f.dataset.ck, p_items: [...f.querySelectorAll('input:checked')].map(i => i.name) }); toast('Ceklis ' + f.dataset.ck + ' tersimpan'); reload(); } catch (er) { toast(er.message, 'err'); } };
   el.onclick = async (e) => { const a = e.target.closest('[data-a]'); if (!a) return;
     try {
+      if (a.dataset.a === 'try') { const br = await db.get('branches', 'select=id,name,is_active&is_active=eq.true&order=sort');
+        const r = await modal('Coba sebagai petugas', `<div class="g2">${field('Posisi', `<select name="pos" class="inp">${[['kasir', 'Kasir'], ['cs', 'CS'], ['runner', 'Runner'], ['sopir', 'Sopir jeep'], ['qc', 'QC'], ['teknisi', 'Teknisi'], ['kepala_cabang', 'Kepala cabang']].map(([v, l]) => `<option value="${v}">${l}</option>`).join('')}</select>`)}${field('Cabang', `<select name="br" class="inp">${br.map(b => `<option value="${b.id}">${esc(b.name)}</option>`).join('')}</select>`)}</div>`,
+          { submit: 'Mulai coba', onSubmit: async (f) => { await db.rpc('ops_assign', { p_person: ctx.me.id, p_position: f.pos, p_branch: f.br, p_start: today(), p_reason: 'Coba alur petugas', p_mode: 'tambahan' }); } });
+        if (r) { toast('Penugasan coba aktif'); reload(); } return; }
       if (a.dataset.a === 'in') { if (!photo) return toast('Ambil selfie dulu', 'err'); a.disabled = true;
         const r = await db.rpc('clock_in', { p_branch: el.querySelector('#abr').value, p_selfie: photo, p_lat: loc ? loc.lat : null, p_lng: loc ? loc.lng : null });
         toast(r.late_minutes > 0 ? 'Masuk ' + clock(r.clock_in) + ' · telat ' + jam(r.late_minutes) : 'Masuk ' + clock(r.clock_in) + ' · tepat waktu', r.late_minutes > 0 ? 'err' : undefined); return reload(); }
@@ -204,7 +209,8 @@ async function boot() {
   let ok = false; try { ok = await loadContext(); } catch (e) { loginView(e.message); return; }
   if (!ok) { try { localStorage.removeItem('pokama.session'); } catch (e) {} loginView('Akun ini belum terdaftar sebagai petugas operasional. Minta Operasional mendaftarkan email Anda.'); return; }
   let o = {}; try { o = await db.rpc('ops_whoami'); } catch (e) {}
-  if (ctx.me.role !== 'lapangan' && !o.field) {
+  WHO = o || {};
+  if (ctx.me.role !== 'lapangan' && !o.field && !o.mgr) {
     gate('Halaman ini untuk petugas operasional', 'Kerja Lapangan dipakai kasir, CS, runner, sopir, QC, teknisi, dan kepala cabang untuk absen, pengajuan, performa, dan membuka panel kerja. Panel manajemen ada di <a href="https://app.pokama.org/">Sistem Kerja Pokama</a> dan <a href="https://demo.rentalaja.co.id/">Rentalaja App</a>.'); return;
   }
   shell(); window.onhashchange = route; if (!location.hash || location.hash === '#/') location.hash = '#/absen'; route();

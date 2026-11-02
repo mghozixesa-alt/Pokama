@@ -51,6 +51,7 @@ const CSS = `.mfa-wrap{position:fixed;inset:0;z-index:600;background:#F3F5F8;dis
 export async function ensureMfa() {
   let s = load(); if (!s || !s.access_token) return null;
   if (claims(s.access_token).aal === 'aal2') return s;
+  try { const x = JSON.parse(localStorage.getItem('pokama.sso') || 'null'); if (x && x.until > Date.now() && x.sid && x.sid === claims(s.access_token).session_id) return s; } catch (e) {}
   if (!document.getElementById('mfa-css')) { const st = document.createElement('style'); st.id = 'mfa-css'; st.textContent = CSS; document.head.appendChild(st); }
   const wrap = document.createElement('div'); wrap.className = 'mfa-wrap'; document.body.appendChild(wrap);
   return new Promise((resolve) => {
