@@ -28,8 +28,8 @@ function shell(name: string, heading: string, inner: string) {
   return `<!doctype html><html><body style="margin:0;background:#F3F5F8;font-family:Segoe UI,Helvetica,Arial,sans-serif;color:#1F2933">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#F3F5F8;padding:24px 12px"><tr><td align="center">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;background:#ffffff;border:1px solid #E3E6EB;border-radius:16px">
-<tr><td style="padding:22px 24px 6px"><span style="font-size:20px;font-weight:900;color:#1D3149">poka<span style="color:#09BEAF">ma</span></span>
-<div style="font-size:12px;color:#5B6573">Sistem Kerja Harian</div></td></tr>
+<tr><td style="padding:22px 24px 6px"><img src="https://pokama.org/img/pokama-logo.png" width="120" height="28" alt="Pokama" style="display:block;border:0;height:28px;width:120px">
+<div style="font-size:12px;color:#5B6573;margin-top:6px">Sistem Kerja Harian</div></td></tr>
 <tr><td style="padding:10px 24px 4px"><div style="font-size:15px;color:#3B4250">Halo ${esc(name)},</div><h1 style="margin:6px 0 4px;font-size:19px;color:#1D3149">${esc(heading)}</h1></td></tr>
 <tr><td style="padding:6px 24px 18px">${inner}</td></tr>
 <tr><td style="padding:14px 24px 20px;border-top:1px solid #EEF0F3;font-size:12px;color:#8A94A3">Email otomatis dari app.pokama.org. Atur email notifikasi di menu Pengaturan.</td></tr>
@@ -65,8 +65,8 @@ function ivShell(m: any) {
   return `<!doctype html><html><body style="margin:0;background:#F4F6F9;font-family:Segoe UI,Helvetica,Arial,sans-serif;color:#1F2B4D">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#F4F6F9;padding:24px 12px"><tr><td align="center">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;background:#ffffff;border:1px solid #E6E8EC;border-radius:16px;overflow:hidden">
-<tr><td style="background:#1F2B4D;padding:20px 24px"><span style="font-size:20px;font-weight:900;color:#ffffff">poka<span style="color:#09BEAF">ma</span></span>
-<div style="font-size:11px;font-weight:800;letter-spacing:.1em;color:#09BEAF;margin-top:2px">PORTAL INVESTOR</div></td></tr>
+<tr><td style="background:#1F2B4D;padding:20px 24px"><img src="https://pokama.org/img/pokama-logo-putih.png" width="130" height="30" alt="Pokama" style="display:block;border:0;height:30px;width:130px">
+<div style="font-size:11px;font-weight:800;letter-spacing:.1em;color:#09BEAF;margin-top:8px">PORTAL INVESTOR</div></td></tr>
 <tr><td style="padding:20px 24px 4px"><div style="font-size:15px;color:#4A5468">Halo ${esc(m.name || "")},</div><h1 style="margin:6px 0 8px;font-size:20px;color:#1F2B4D">${esc(m.heading)}</h1>
 ${m.intro ? `<p style="margin:0;font-size:14px;line-height:21px;color:#4A5468">${esc(m.intro)}</p>` : ""}</td></tr>
 ${rows ? `<tr><td style="padding:12px 24px 4px"><table role="presentation" width="100%" cellpadding="0" cellspacing="0">${rows}</table></td></tr>` : ""}
