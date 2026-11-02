@@ -1253,6 +1253,8 @@ function wireShots(p, it) {
     inp.value = '';
   });
 }
+/* kabari orang yang menerima pekerjaan lewat lonceng & email Sistem Kerja */
+function mkPing(to, title, body, urgent) { if (!ONLINE || !to || to === S.me) return; api('rpc/pk_mk_ping', { method: 'POST', body: JSON.stringify({ p_to: to, p_title: title, p_body: body || '', p_urgent: !!urgent }) }).catch(function () {}); }
 function openItem(id, edit) {
   var it = S.items.filter(function (x) { return x.id === id; })[0]; if (!it) return;
   var me = S.me, owner = ownerOf(it), can = canEditIt(it), live = it.format === 'Live TikTok', rv = reviewer(it);
@@ -1302,12 +1304,16 @@ function openItem(id, edit) {
       if (k === 'hold') { var bx = document.createElement('div'); bx.className = 'box'; bx.innerHTML = '<div class="f"><label for="i-holdn">Alasan on hold (boleh kosong)</label><input id="i-holdn" placeholder="Contoh: tunggu stok unit, talent sakit"></div><div class="acts"><button class="btn pri" data-act="hold2">Tandai on hold</button></div>'; b.closest('.acts').after(bx); b.remove(); bx.querySelector('input').focus(); return; }
       if (k === 'hold2') { var hn = p.querySelector('#i-holdn').value; it.hold = true; it.holdNote = (hn || '').trim(); log(it, 'on hold' + (it.holdNote ? ': ' + it.holdNote : '')); toast('Konten on hold'); }
       if (k === 'unhold') { it.hold = false; log(it, 'dilanjutkan'); toast('Konten dilanjutkan'); }
+      var soon = it.date && it.date <= addDays(TODAY, 1), ttl = it.title + ' (' + it.brand + ')';
+      if (k === 'toEditor') mkPing(EDITOR, 'Permintaan edit: ' + ttl, 'Dari ' + S.me + ' · selesai ' + nice(due.value) + ' · tayang ' + nice(it.date), soon);
+      if (k === 'toReview') mkPing(rv, 'Review konten: ' + ttl, 'Tayang ' + nice(it.date) + (it.out ? ' · ' + it.out : ''), soon);
+      if (k === 'approve') mkPing(it.mode === 'editor' ? EDITOR : owner, 'Disetujui, siap tayang: ' + ttl, 'Tayang ' + nice(it.date) + (it.time ? ' ' + it.time : ''), false);
       if (k === 'toEditor') { it.mode = 'editor'; it.editDue = due.value; it.status = 'Produksi'; log(it, 'kirim ke editor, selesai ' + nice(it.editDue)); toast('Masuk antrean Editor'); }
       if (k === 'self') { it.mode = 'sendiri'; it.status = 'Produksi'; log(it, 'dikerjakan sendiri'); toast('Dikerjakan sendiri'); }
       if (k === 'takeover') { it.mode = 'sendiri'; log(it, 'ambil alih dari editor'); toast('Keluar dari antrean editor'); }
       if (k === 'toReview') { if (it.mode === 'editor' && me === EDITOR) it.editedWeek = weekStart(0); it.status = 'Review'; log(it, 'kirim review ke ' + rvName(rv)); toast('Masuk antrean review ' + rvName(rv)); }
       if (k === 'approve') { it.status = 'Siap tayang'; log(it, 'disetujui'); toast('Siap tayang'); }
-      if (k === 'revEditor' || k === 'revPic') { var nt = p.querySelector('#i-rev').value.trim(); if (!nt) { p.querySelector('#i-rev').focus(); toast('Tulis catatan revisinya dulu'); return; } it.status = 'Revisi'; it.revTo = k === 'revEditor' ? 'editor' : 'pic'; it.revNote = nt; log(it, 'minta revisi ke ' + (it.revTo === 'editor' ? EDITOR : owner) + ': ' + nt); toast('Revisi dikirim'); }
+      if (k === 'revEditor' || k === 'revPic') { var nt = p.querySelector('#i-rev').value.trim(); if (!nt) { p.querySelector('#i-rev').focus(); toast('Tulis catatan revisinya dulu'); return; } it.status = 'Revisi'; it.revTo = k === 'revEditor' ? 'editor' : 'pic'; it.revNote = nt; mkPing(it.revTo === 'editor' ? EDITOR : owner, 'Revisi: ' + ttl, nt, soon); log(it, 'minta revisi ke ' + (it.revTo === 'editor' ? EDITOR : owner) + ': ' + nt); toast('Revisi dikirim'); }
       if (k === 'posted') {
         if (live) { if (ONLINE && !(it.shots || []).length) { toast('Tambahkan screenshot hasil live dulu sebagai bukti'); return; } it.lv = p.querySelector('#i-lv').value; it.lc = p.querySelector('#i-lc').value; it.lo = p.querySelector('#i-lo').value; }
         else { var pl = p.querySelector('#i-plink'); if (pl && pl.value.trim()) { it.perf = it.perf || {}; it.perf.link = pl.value.trim(); } }

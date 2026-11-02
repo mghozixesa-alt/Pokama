@@ -35,7 +35,35 @@
   function check(s) {
     return fresh(s).then(function (v) { return me(v).catch(function (e) { if (e.message !== 'expired') throw e; return auth('token?grant_type=refresh_token', { refresh_token: v.refresh_token }).then(save).then(me); }); });
   }
+  /* Pusat Kerja: tombol pindah modul di semua modul Pokama (Marketing, Keuangan, Affiliate, Investor) */
+  function hub(s) {
+    if (document.getElementById('pk-hub')) return;
+    var b = document.createElement('div'); b.id = 'pk-hub';
+    b.innerHTML = '<button type="button" class="pk-hub-btn" aria-expanded="false" aria-haspopup="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z"/></svg><span>Pusat Kerja</span><b class="pk-hub-n" hidden></b></button><div class="pk-hub-menu" role="menu" hidden></div>';
+    document.body.appendChild(b);
+    var btn = b.querySelector('button'), menu = b.querySelector('.pk-hub-menu'), here = location.pathname.replace(/\/$/, '') || '/';
+    function esc(t) { return String(t == null ? '' : t).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+    function draw(ms) {
+      var tot = 0;
+      menu.innerHTML = '<a role="menuitem" href="/#/kkh" class="pk-hub-i"><b>Sistem Kerja (KKH)</b><small>KKH, tugas, review, belanja, kehadiran</small></a>' + ms.map(function (m) {
+        var on = here.indexOf(m.href.replace(/[#?].*$/, '').replace(/\/$/, '')) === 0; tot += on ? 0 : (+m.n || 0);
+        return '<a role="menuitem" href="' + esc(m.href) + '" class="pk-hub-i' + (on ? ' on' : '') + '"><b>' + esc(m.name) + (m.n ? ' <i class="' + (m.urgent ? 'hot' : '') + '">' + m.n + '</i>' : '') + '</b><small>' + esc(m.note || '') + '</small></a>';
+      }).join('');
+      var n = b.querySelector('.pk-hub-n'); n.hidden = !tot; n.textContent = tot;
+    }
+    function load() {
+      var t = (load_s() || s || {}).access_token; if (!t) return;
+      fetch(SB_URL + '/rest/v1/rpc/pk_modules', { method: 'POST', headers: { apikey: SB_KEY, Authorization: 'Bearer ' + t, 'Content-Type': 'application/json' }, body: '{}' })
+        .then(function (r) { return r.ok ? r.json() : []; }).then(function (ms) { draw(ms || []); }, function () {});
+    }
+    draw([]); load(); setInterval(function () { if (!document.hidden) load(); }, 120000);
+    btn.onclick = function (e) { e.stopPropagation(); var o = menu.hidden; menu.hidden = !o; btn.setAttribute('aria-expanded', String(o)); if (o) load(); };
+    document.addEventListener('click', function (e) { if (!b.contains(e.target)) { menu.hidden = true; btn.setAttribute('aria-expanded', 'false'); } });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { menu.hidden = true; btn.setAttribute('aria-expanded', 'false'); } });
+  }
+  function load_s() { return load(); }
   function open(person) {
+    try { hub(load()); } catch (e) {}
     root.classList.remove('mk-locked');
     var g = document.getElementById('mk-gate'); if (g) g.remove();
     window.mkPerson = person;

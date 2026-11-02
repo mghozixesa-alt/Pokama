@@ -73,7 +73,7 @@ function shell() {
   const me = ctx.me;
   const nav = ROUTES.map(([sec, items]) => `<div class="nav-sec"><span class="nav-h">${sec}</span>${items.map(([k, l, ic]) =>
     `<a href="#/${k}" data-k="${k}">${svg(ic)}<span>${l}</span><b class="badge" data-badge="${k}" hidden></b></a>`).join('')}</div>`).join('')
-    + (['ceo', 'kepala_staf', 'keuangan'].includes(me.role) ? `<div class="nav-sec"><span class="nav-h">MODUL LAIN</span>${['ceo', 'kepala_staf'].includes(me.role) ? `<a href="/marketing/">${svg('grid')}<span>Marketing</span></a>` : ''}<a href="/keuangan/">${svg('grid')}<span>Keuangan grup</span></a><a href="/affiliate">${svg('users')}<span>Mitra Affiliate</span></a></div>` : '');
+    + `<div class="nav-sec" id="modnav" hidden></div>`;
   root.innerHTML = `<div class="shell">
     <nav class="side" aria-label="Menu utama"><div class="brand-row"><a class="brand" href="#/kkh"><img src="img/pokama-logo.png" alt="Pokama"></a><button type="button" class="bell" data-bell aria-label="Notifikasi">${svg('bell', 20)}<b class="badge" data-badge="ntf" hidden></b></button></div><span class="muted small brand-sub">Sistem Kerja Harian</span>${nav}
       <div class="side-me"><a href="#/pengaturan" class="me">${avatar(me.id, 36)}<span><b>${esc(me.nickname || me.name)}</b><small>${esc(me.title || ROLE[me.role])}</small></span></a>
@@ -90,11 +90,12 @@ async function openNotifs() {
   const { db, modal, esc, ftime, toast } = await import('./core.js');
   const list = await db.get('pk_notifications', `select=*&person_id=eq.${ctx.me.id}&order=created_at.desc&limit=40`);
   const unread = list.filter(n => !n.read_at);
-  const KIND = { tugas: 'Tugas', review: 'Review', rab: 'Belanja', kkh: 'KKH', cuti: 'Kehadiran', permintaan: 'Permintaan' };
+  const KIND = { marketing: 'Marketing', keuangan: 'Keuangan', affiliate: 'Affiliate', investor: 'Investor', tugas: 'Tugas', review: 'Review', rab: 'Belanja', kkh: 'KKH', cuti: 'Kehadiran', permintaan: 'Permintaan' };
   const onOpen = (ev) => { document.removeEventListener('modal:open', onOpen); ev.detail.addEventListener('click', async (e) => {
     const a = e.target.closest('[data-n]'); if (!a) return; e.preventDefault();
     try { await db.update('pk_notifications', 'id=eq.' + a.dataset.n, { read_at: new Date().toISOString() }); } catch (er) {}
-    document.querySelector('.modal-wrap')?.remove(); location.hash = a.getAttribute('href') || '#/kkh'; route(); }); };
+    const href = a.getAttribute('href') || '#/kkh'; document.querySelector('.modal-wrap')?.remove();
+    if (!href.startsWith('#')) { location.href = href.startsWith('/') ? href : '/' + href; return; } location.hash = href; route(); }); };
   document.addEventListener('modal:open', onOpen);
   const r = await modal('Notifikasi', list.length ? `<div class="ntf-list">${list.map(n => `<a class="ntf${n.read_at ? '' : ' new'}" data-n="${n.id}" href="${esc(n.link || '#/kkh')}"><small>${esc(KIND[n.kind] || n.kind)} · ${ftime(n.created_at)}</small><b>${esc(n.title)}</b>${n.body ? `<span>${esc(n.body)}</span>` : ''}</a>`).join('')}</div>` : '<p class="muted">Belum ada notifikasi.</p>',
     { submit: unread.length ? 'Tandai semua sudah dibaca' : null, onSubmit: async () => { await db.update('pk_notifications', `person_id=eq.${ctx.me.id}&read_at=is.null`, { read_at: new Date().toISOString() }); } });
@@ -103,9 +104,7 @@ async function openNotifs() {
 function menuView(el) {
   el.innerHTML = `<header class="ph"><div><h1>Menu</h1><p class="muted">${esc(ctx.me.name)} · ${esc(ctx.me.title || ROLE[ctx.me.role])}</p></div></header>
     <div class="menu-list">${FLAT.map(([k, l, ic]) => `<a class="card row" href="#/${k}">${svg(ic, 22)}<b>${l}</b><span style="flex:1"></span>›</a>`).join('')}
-    ${['ceo', 'kepala_staf'].includes(ctx.me.role) ? `<a class="card row" href="/marketing/">${svg('grid', 22)}<b>Marketing</b><span style="flex:1"></span>›</a>` : ''}
-    ${['ceo', 'kepala_staf', 'keuangan'].includes(ctx.me.role) ? `<a class="card row" href="/keuangan/">${svg('grid', 22)}<b>Keuangan grup</b><span style="flex:1"></span>›</a>` : ''}
-    ${['ceo', 'kepala_staf', 'keuangan'].includes(ctx.me.role) ? `<a class="card row" href="/affiliate">${svg('users', 22)}<b>Mitra Affiliate</b><span style="flex:1"></span>›</a>` : ''}
+    ${(ctx.modules || []).length ? `<span class="nav-h" style="margin-top:8px">MODUL</span>` + ctx.modules.map(m => `<a class="card row" href="${esc(m.href)}">${svg(m.ic || 'grid', 22)}<span class="col" style="gap:2px;flex:1;min-width:0"><b>${esc(m.name)}</b><small class="muted" style="font-weight:600">${esc(m.note || '')}</small></span>${m.n ? `<b class="badge">${m.n}</b>` : ''}›</a>`).join('') : ''}
     <button class="card row danger-t" type="button" id="lo2">Keluar</button></div>`;
   el.querySelector('#lo2').onclick = () => signOut();
 }
@@ -120,6 +119,7 @@ async function route() {
   const k = (location.hash.replace(/^#\/?/, '').split('?')[0] || 'kkh');
   const view = document.getElementById('view'); if (!view) return;
   const el = document.createElement('div'); el.className = 'route'; view.replaceChildren(el);
+  if (k === 'kkh' && (ctx.modules || []).length) { const t = document.createElement('div'); t.innerHTML = modStrip(); view.prepend(t.firstElementChild); }
   new MutationObserver(() => labelTables(el)).observe(el, { childList: true, subtree: true });
   document.querySelectorAll('[data-k]').forEach(a => a.classList.toggle('on', a.dataset.k === k));
   const r = FLAT.find(x => x[0] === k);
@@ -139,7 +139,20 @@ async function route() {
   }
   badges();
 }
+// ---------- Pusat Kerja: modul Pokama sesuai peran (daftar & angka dari fungsi pk_modules) ----------
+async function loadModules() {
+  try { const { db } = await import('./core.js'); ctx.modules = (await db.rpc('pk_modules')) || []; } catch (e) { ctx.modules = ctx.modules || []; }
+  const nav = document.getElementById('modnav');
+  if (nav) { nav.hidden = !ctx.modules.length; nav.innerHTML = `<span class="nav-h">MODUL</span>` + ctx.modules.map(m => `<a href="${esc(m.href)}" title="${esc(m.note || '')}">${svg(m.ic || 'grid')}<span>${esc(m.name)}</span>${m.n ? `<b class="badge${m.urgent ? '' : ' soft'}">${m.n}</b>` : ''}</a>`).join(''); }
+  const st = document.getElementById('modstrip'); if (st) st.outerHTML = modStrip();
+  return ctx.modules;
+}
+function modStrip() {
+  const ms = ctx.modules || []; if (!ms.length) return '<div id="modstrip" hidden></div>';
+  return `<section id="modstrip" class="modstrip" aria-label="Modul">${ms.map(m => `<a class="modc${m.urgent ? ' hot' : ''}" href="${esc(m.href)}"><span class="modc-h">${svg(m.ic || 'grid', 18)}<b>${esc(m.name)}</b>${m.n ? `<b class="badge${m.urgent ? '' : ' soft'}">${m.n}</b>` : ''}</span><small>${esc(m.note || '')}</small></a>`).join('')}</section>`;
+}
 async function badges() {
+  loadModules();
   try {
     const { db } = await import('./core.js');
     const me = ctx.me.id;
@@ -165,6 +178,7 @@ async function boot() {
   if (!ok) { await import('./core.js').then(m => { try { localStorage.removeItem('pokama.session'); } catch (e) {} });
     loginView('Akun ini belum terdaftar di Sistem Kerja Pokama. Minta Kepala Staf menambahkan Anda di Tim & Peran.'); return; }
   shell();
+  await loadModules();
   if (!location.hash || location.hash === '#/' ) location.hash = window.matchMedia('(max-width: 760px)').matches ? '#/kkh' : (ctx.me.role === 'kepala_staf' ? '#/review' : ctx.me.role === 'keuangan' ? '#/belanja' : '#/kkh');
   window.onhashchange = route;
   route();

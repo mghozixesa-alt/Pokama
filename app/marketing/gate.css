@@ -13,3 +13,21 @@ html.mk-locked #dc-root { visibility: hidden; }
 .mk-gate-g { border: 1px solid #E3E6EB; background: #FFF; color: #1D3149; }
 .mk-gate-card a { text-align: center; font-size: 13px; font-weight: 700; color: #067A70; }
 .mk-gate-err { background: #FCEBDD; color: #9A3F0A; font-size: 13px; font-weight: 700; padding: 10px 12px; border-radius: 10px; }
+
+/* Pusat Kerja: pindah modul */
+#pk-hub{position:fixed;right:16px;bottom:16px;z-index:70;font-family:'Nunito',system-ui,sans-serif}
+.pk-hub-btn{display:inline-flex;align-items:center;gap:7px;height:40px;padding:0 14px;border-radius:999px;border:1px solid #D5DAE1;background:#1D3149;color:#FFFFFF;font:inherit;font-size:13.5px;font-weight:800;cursor:pointer;box-shadow:0 6px 18px rgba(29,49,73,.22)}
+.pk-hub-btn:hover{background:#25406A}
+.pk-hub-n{min-width:20px;height:20px;border-radius:10px;background:#F2A33A;color:#1D3149;font-size:11.5px;display:inline-flex;align-items:center;justify-content:center;padding:0 5px}
+.pk-hub-menu{position:absolute;right:0;bottom:48px;width:300px;max-width:calc(100vw - 32px);max-height:70vh;overflow:auto;background:#FFFFFF;border:1px solid #E3E6EB;border-radius:14px;box-shadow:0 14px 40px rgba(29,49,73,.22);padding:6px;display:flex;flex-direction:column;gap:2px}
+.pk-hub-menu[hidden]{display:none}
+.pk-hub-i{display:flex;flex-direction:column;gap:2px;padding:9px 10px;border-radius:10px;text-decoration:none;color:#1D3149}
+.pk-hub-i:hover{background:#F3F5F8}
+.pk-hub-i.on{background:#EAF8F6}
+.pk-hub-i b{font-size:14px;font-weight:800}
+.pk-hub-i small{font-size:12px;color:#5B6573;line-height:1.35}
+.pk-hub-i i{font-style:normal;font-size:11.5px;background:#EAF8F6;color:#067A70;border-radius:9px;padding:1px 7px;margin-left:4px}
+.pk-hub-i i.hot{background:#FCEBDD;color:#9A3F0A}
+html.mk-locked #pk-hub{display:none}
+@media (max-width:860px){#pk-hub{bottom:78px;right:12px}.pk-hub-btn{height:36px;padding:0 12px;font-size:12.5px}}
+@media print{#pk-hub{display:none}}

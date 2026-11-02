@@ -1,0 +1,4 @@
+-- Applied via Supabase MCP: pk_023_pusat_kerja_modul, pk_023b_marketing_link, pk_023c_marketing_link_rel
+-- pk_modules(): daftar modul Pokama untuk orang yang login + angka pekerjaan (akses memakai pk_fin_can_read, af_can_view, iv_can_view, pk_mk_role).
+-- pk_mk_role(p), pk_mk_counts(role): peran marketing & hitungan tugas konten dari mku_docs.
+-- pk_mk_ping(to, title, body, urgent): notifikasi dari modul Marketing ke lonceng/email Sistem Kerja (link marketing/#today).

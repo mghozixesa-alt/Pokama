@@ -291,3 +291,13 @@ table.kkh th .att{display:flex;align-items:center;gap:4px;justify-content:center
 .ntf{display:flex;flex-direction:column;gap:2px;padding:10px 12px;border-radius:10px;text-decoration:none;color:var(--ink);border-bottom:1px solid var(--line2)}
 .ntf:hover{background:var(--bg)}.ntf small{color:var(--mut);font-size:11px;font-weight:700}.ntf span{font-size:13px;color:var(--mut)}
 .ntf.new{background:#F1FBFA}.ntf.new b::before{content:'';display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--teal);margin-right:6px;vertical-align:middle}
+
+/* Pusat Kerja: kartu modul di KKH */
+.modstrip{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-bottom:14px}
+.modc{display:flex;flex-direction:column;gap:4px;padding:12px 14px;border:1px solid var(--line);border-radius:14px;background:#fff;text-decoration:none;color:var(--ink);min-width:0}
+.modc:hover{border-color:#BFE9E3;background:#F7FDFC}
+.modc.hot{border-color:#F2C9A8;background:#FFFAF5}
+.modc-h{display:flex;align-items:center;gap:8px}.modc-h b:first-of-type{flex:1;color:var(--navy)}
+.modc small{color:var(--mut);font-size:12.5px;line-height:1.35;overflow-wrap:anywhere}
+.badge.soft{background:var(--mint);color:var(--navy)}
+@media (max-width:760px){.modstrip{grid-template-columns:1fr 1fr;gap:8px;margin-top:46px}.modc{padding:10px 12px}.modc small{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}}
