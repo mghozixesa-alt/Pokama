@@ -23,7 +23,7 @@ html.mk-locked #dc-root { visibility: hidden; }
 .pk-hub-n{min-width:20px;height:20px;border-radius:10px;background:#F2A33A;color:#1D3149;font-size:11.5px;display:inline-flex;align-items:center;justify-content:center;padding:0 5px}
 .pk-hub-menu{position:absolute;right:0;bottom:48px;width:300px;max-width:calc(100vw - 32px);max-height:70vh;overflow:auto;background:#FFFFFF;border:1px solid #E3E6EB;border-radius:14px;box-shadow:0 14px 40px rgba(29,49,73,.22);padding:6px;display:flex;flex-direction:column;gap:2px}
 .pk-hub-menu[hidden]{display:none}
-.pk-hub-i{display:flex;flex-direction:column;gap:2px;padding:9px 10px;border-radius:10px;text-decoration:none;color:#1D3149}
+.pk-hub-i{display:flex;flex-direction:row;align-items:flex-start;gap:10px;padding:9px 10px;border-radius:10px;text-decoration:none;color:#1D3149}
 .pk-hub-i:hover{background:#F3F5F8}
 .pk-hub-i.on{background:#EAF8F6}
 .pk-hub-i b{font-size:14px;font-weight:800}
@@ -43,3 +43,5 @@ html.mk-locked #pk-hub{display:none}
 .pk-back small{font-size:11px;font-weight:600;color:#C9D3E0}
 .pk-back-m{margin-left:auto;display:inline-flex;align-items:center;gap:4px;height:30px;padding:0 10px;border-radius:999px;background:#1D3149;color:#FFFFFF !important;text-decoration:none !important;font:800 12px 'Nunito',system-ui,sans-serif;white-space:nowrap;flex:none}
 .pk-back-m svg{color:#09BEAF}
+
+.pk-hub-i svg{flex:none;margin-top:2px;color:#067A70}.pk-hub-i > span{display:flex;flex-direction:column;gap:2px;min-width:0}

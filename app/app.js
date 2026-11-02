@@ -23,7 +23,12 @@ const I = {
   book: '<path d="M4 4h5v16H4zM10 4h4v16h-4z"/><path d="m15 5 4-1 2 15-4 1z"/>',
   cog: '<path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/>',
   menu: '<path d="M4 7h16M4 12h16M4 17h16"/>',
+  mega: '<path d="M3 11v2a1 1 0 0 0 1 1h3l5 4V6L7 10H4a1 1 0 0 0-1 1z"/><path d="M16 8a5 5 0 0 1 0 8M19 5a9 9 0 0 1 0 14"/>',
+  bank: '<path d="M3 10l9-6 9 6M5 10v8M10 10v8M14 10v8M19 10v8M3 21h18"/>',
+  link: '<path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/>',
+  trend: '<path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/>',
 };
+const MODIC = { marketing: 'mega', keuangan: 'bank', affiliate: 'link', investor: 'trend' };
 const svg = (k, s = 18) => `<svg aria-hidden="true" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${I[k]}</svg>`;
 
 const ROUTES = [
@@ -104,7 +109,7 @@ async function openNotifs() {
 function menuView(el) {
   el.innerHTML = `<header class="ph"><div><h1>Menu</h1><p class="muted">${esc(ctx.me.name)} · ${esc(ctx.me.title || ROLE[ctx.me.role])}</p></div></header>
     <div class="menu-list">${FLAT.map(([k, l, ic]) => `<a class="card row" href="#/${k}">${svg(ic, 22)}<b>${l}</b><span style="flex:1"></span>›</a>`).join('')}
-    ${(ctx.modules || []).length ? `<span class="nav-h" style="margin-top:8px">MODUL</span>` + ctx.modules.map(m => `<a class="card row" href="${esc(m.href)}">${svg(m.ic || 'grid', 22)}<span class="col" style="gap:2px;flex:1;min-width:0"><b>${esc(m.name)}</b><small class="muted" style="font-weight:600">${esc(m.note || '')}</small></span>${m.n ? `<b class="badge">${m.n}</b>` : ''}›</a>`).join('') : ''}
+    ${(ctx.modules || []).length ? `<span class="nav-h" style="margin-top:8px">MODUL</span>` + ctx.modules.map(m => `<a class="card row" href="${esc(m.href)}">${svg(MODIC[m.k] || 'grid', 22)}<span class="col" style="gap:2px;flex:1;min-width:0"><b>${esc(m.name)}</b><small class="muted" style="font-weight:600">${esc(m.note || '')}</small></span>${m.n ? `<b class="badge">${m.n}</b>` : ''}›</a>`).join('') : ''}
     <button class="card row danger-t" type="button" id="lo2">Keluar</button></div>`;
   el.querySelector('#lo2').onclick = () => signOut();
 }
@@ -143,13 +148,13 @@ async function route() {
 async function loadModules() {
   try { const { db } = await import('./core.js'); ctx.modules = (await db.rpc('pk_modules')) || []; } catch (e) { ctx.modules = ctx.modules || []; }
   const nav = document.getElementById('modnav');
-  if (nav) { nav.hidden = !ctx.modules.length; nav.innerHTML = `<span class="nav-h">MODUL</span>` + ctx.modules.map(m => `<a href="${esc(m.href)}" title="${esc(m.note || '')}">${svg(m.ic || 'grid')}<span>${esc(m.name)}</span>${m.n ? `<b class="badge${m.urgent ? '' : ' soft'}">${m.n}</b>` : ''}</a>`).join(''); }
+  if (nav) { nav.hidden = !ctx.modules.length; nav.innerHTML = `<span class="nav-h">MODUL</span>` + ctx.modules.map(m => `<a href="${esc(m.href)}" title="${esc(m.note || '')}">${svg(MODIC[m.k] || 'grid')}<span>${esc(m.name)}</span>${m.n ? `<b class="badge${m.urgent ? '' : ' soft'}">${m.n}</b>` : ''}</a>`).join(''); }
   const st = document.getElementById('modstrip'); if (st) st.outerHTML = modStrip();
   return ctx.modules;
 }
 function modStrip() {
   const ms = ctx.modules || []; if (!ms.length) return '<div id="modstrip" hidden></div>';
-  return `<section id="modstrip" class="modstrip" aria-label="Modul">${ms.map(m => `<a class="modc${m.urgent ? ' hot' : ''}" href="${esc(m.href)}"><span class="modc-h">${svg(m.ic || 'grid', 18)}<b>${esc(m.name)}</b>${m.n ? `<b class="badge${m.urgent ? '' : ' soft'}">${m.n}</b>` : ''}</span><small>${esc(m.note || '')}</small></a>`).join('')}</section>`;
+  return `<section id="modstrip" class="modstrip" aria-label="Modul">${ms.map(m => `<a class="modc${m.urgent ? ' hot' : ''}" href="${esc(m.href)}"><span class="modc-h">${svg(MODIC[m.k] || 'grid', 18)}<b>${esc(m.name)}</b>${m.n ? `<b class="badge${m.urgent ? '' : ' soft'}">${m.n}</b>` : ''}</span><small>${esc(m.note || '')}</small></a>`).join('')}</section>`;
 }
 async function badges() {
   loadModules();
