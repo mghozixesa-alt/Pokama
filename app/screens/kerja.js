@@ -41,7 +41,7 @@ async function saya(el, params, reload) {
   const taskName = Object.fromEntries(tasks.map(t => [t.id, t.title]));
   const off = leave[me];
   el.innerHTML = `
-  <header class="ph"><div><span class="muted small">${fdate(day)} · ${day === today() ? 'hari ini' : ''} isi sebelum 08.00, valuer menandai selesai</span><h1>KKH Saya</h1></div>
+  <header class="ph"><div><span class="muted small">${fdate(day)} · ${day === today() ? 'hari ini' : ''} isi sebelum ${String(+ctx.settings.work_start || 8).padStart(2, '0')}.00, valuer menandai selesai</span><h1>KKH Saya</h1></div>
     <div class="row gap"><a class="btn" href="#/kkh?d=${addDays(day, -1)}" aria-label="Hari sebelumnya">‹</a><input type="date" class="inp" id="dpick" value="${day}"><a class="btn" href="#/kkh?d=${addDays(day, 1)}" aria-label="Hari berikutnya">›</a></div></header>
   ${off ? `<div class="note warn">Hari ini Anda ${off === 'cuti' ? 'cuti' : 'libur'} (sudah disetujui). Slot tidak dihitung ke disiplin KKH.</div>` : ''}
   ${day === today() && !off ? (att ? `<section class="card absen ok"><div class="row gap wrap"><b>✓ Sudah absen</b>${attChip(att)}${att.lat ? `<a class="small" href="https://maps.google.com/?q=${att.lat},${att.lng}" target="_blank" rel="noopener">lihat lokasi ↗</a>` : ''}${att.photo ? '<span class="small muted">· foto tersimpan</span>' : ''}</div></section>`
