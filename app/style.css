@@ -311,7 +311,3 @@ table.kkh th .att{display:flex;align-items:center;gap:4px;justify-content:center
 .modc:hover .modi{background:var(--mc);color:#fff}
 .nav-sec a span.modi,.menu-list span.modi,.modc span.modi{flex:0 0 auto}
 
-/* halaman Rentalaja App */
-.ra-links{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:8px}
-.ra-link{display:flex;align-items:center;gap:10px;padding:11px 13px;border:1px solid var(--line);border-left:4px solid var(--mc);border-radius:12px;text-decoration:none;color:var(--ink);background:#fff}
-.ra-link:hover{background:#F2FBFA}.ra-link small{font-size:12.5px;line-height:1.35}.ra-link svg{flex:none;color:var(--mut)}
