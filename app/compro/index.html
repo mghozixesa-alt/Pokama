@@ -135,6 +135,53 @@ section.s { padding: 88px 0; border-top: 1px solid var(--line); }
 .paths a { font-weight: 700; text-decoration: none; white-space: nowrap; }
 .paths a:hover { text-decoration: underline; }
 
+/* visi */
+.visi { margin: 28px 0 0; padding: 24px 28px; background: var(--paper); border-radius: 18px; border-left: 4px solid var(--teal2); }
+.visi .lbl { font-size: 13px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--teal); }
+.visi p { margin: 6px 0 0; color: var(--ink); font-size: 19px; font-weight: 700; line-height: 1.45; max-width: none; }
+/* angka */
+.stats { margin: 48px 0 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+.stats li { background: var(--paper); border-radius: 20px; padding: 28px 24px; }
+.stats .n { display: block; font-size: clamp(40px, 5vw, 56px); font-weight: 800; line-height: 1; letter-spacing: -0.03em; color: var(--ink); }
+.stats .n small { font-size: .5em; color: var(--teal); margin-left: 2px; }
+.stats .t { display: block; margin-top: 12px; font-weight: 700; }
+.stats .d { display: block; margin-top: 4px; color: var(--mut); font-size: 14px; line-height: 1.45; }
+.asof { margin: 16px 0 0; color: var(--mut); font-size: 14px; }
+/* tim */
+.team { margin: 48px 0 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.team li { background: var(--paper); border-radius: 20px; padding: 24px; }
+.team .ph { width: 88px; height: 88px; border-radius: 50%; background: var(--mint); color: var(--teal); display: grid; place-items: center; font-size: 30px; font-weight: 800; letter-spacing: -0.02em; overflow: hidden; }
+.team .ph img { width: 100%; height: 100%; object-fit: cover; }
+.team b { display: block; margin-top: 18px; font-size: 18px; line-height: 1.3; }
+.team .role { display: block; margin-top: 4px; color: var(--teal); font-weight: 700; font-size: 15px; }
+.team .scope { display: block; margin-top: 8px; color: var(--mut); font-size: 14px; line-height: 1.5; }
+.team li.lead { grid-column: span 2; display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 24px; align-items: center; background: var(--ink); color: #fff; }
+.team li.lead .ph { width: 120px; height: 120px; font-size: 40px; background: rgba(255,255,255,.1); color: var(--teal2); }
+.team li.lead b { margin-top: 0; font-size: 22px; }
+.team li.lead .role { color: var(--teal2); }
+.team li.lead .scope { color: #C9D1E2; }
+/* investasi & kerja sama */
+.ways { margin: 48px 0 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.way { background: var(--paper); border-radius: 20px; padding: 28px; display: flex; flex-direction: column; }
+.way .k { font-size: 13px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--teal); }
+.way h3 { margin: 8px 0 10px; font-size: 22px; font-weight: 800; letter-spacing: -0.015em; line-height: 1.25; }
+.way p { margin: 0; color: var(--ink2); font-size: 16px; }
+.way ul { margin: 16px 0 0; padding: 0; list-style: none; display: grid; gap: 8px; font-size: 15px; color: var(--ink2); }
+.way ul li { display: grid; grid-template-columns: 18px minmax(0, 1fr); gap: 8px; }
+.way ul li::before { content: ""; width: 8px; height: 8px; margin-top: 8px; border-radius: 50%; background: var(--teal2); }
+.way .acts { margin-top: auto; padding-top: 24px; display: flex; flex-wrap: wrap; gap: 10px; }
+.way .btn { height: 42px; font-size: 14px; padding: 0 16px; }
+.way.dark { background: var(--ink); color: #fff; }
+.way.dark h3 { color: #fff; }
+.way.dark .k { color: var(--teal2); }
+.way.dark p, .way.dark ul { color: #C9D1E2; }
+.way.dark .btn-line { color: #fff; border-color: rgba(255,255,255,.35); }
+.way.dark .btn-line:hover { border-color: #fff; }
+.todo { background: #FFF4D6; color: #7A5600; border-radius: 6px; padding: 1px 6px; font-size: .9em; font-weight: 700; }
+/* kontak tambahan */
+.office { margin-top: 28px; padding: 20px 24px; background: var(--paper); border-radius: 16px; font-size: 16px; color: var(--ink2); }
+.office b { display: block; color: var(--ink); margin-bottom: 4px; }
+.office a { font-weight: 700; text-decoration: none; }
 /* footer */
 footer { background: var(--ink); color: #C9D1E2; padding: 56px 0 40px; font-size: 15px; }
 footer .wrap { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 32px; align-items: end; }
@@ -150,6 +197,9 @@ footer .small { margin-top: 28px; color: #8C97AE; font-size: 14px; }
   .top nav { display: none; }
   .top .masuk { margin-left: auto; }
   .about, .mitra .grid, .contact { grid-template-columns: minmax(0, 1fr); gap: 36px; }
+  .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .ways { grid-template-columns: minmax(0, 1fr); }
+  .team { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .unit { grid-template-columns: 60px minmax(0, 1fr); padding: 24px; gap: 18px; }
   .unit .mk { width: 60px; height: 60px; border-radius: 14px; }
   .unit .mk img { width: 36px; height: 36px; }
@@ -166,6 +216,12 @@ footer .small { margin-top: 28px; color: #8C97AE; font-size: 14px; }
   .facts li { grid-template-columns: minmax(0, 1fr); gap: 2px; }
   .rate { padding: 24px; }
   .paths li { grid-template-columns: minmax(0, 1fr); gap: 6px; }
+  .stats li { padding: 22px 18px; }
+  .team { grid-template-columns: minmax(0, 1fr); }
+  .team li.lead { grid-column: auto; grid-template-columns: minmax(0, 1fr); gap: 16px; }
+  .team li { display: grid; grid-template-columns: 72px minmax(0, 1fr); gap: 16px; align-items: center; }
+  .team .ph { width: 72px; height: 72px; font-size: 24px; }
+  .team b { margin-top: 0; }
 }
 </style>
 </head>
@@ -178,7 +234,8 @@ footer .small { margin-top: 28px; color: #8C97AE; font-size: 14px; }
     <nav aria-label="Menu utama">
       <a href="#tentang">Tentang</a>
       <a href="#unit">Unit bisnis</a>
-      <a href="#mitra">Program mitra</a>
+      <a href="#tim">Tim</a>
+      <a href="#kerja-sama">Kerja sama &amp; investasi</a>
       <a href="#kontak">Kontak</a>
     </nav>
     <details class="masuk" id="masuk">
@@ -214,17 +271,37 @@ footer .small { margin-top: 28px; color: #8C97AE; font-size: 14px; }
     <div class="wrap about">
       <div>
         <h2 id="h-tentang">Berangkat dari Garut, dibangun untuk kebutuhan sehari-hari</h2>
+        <div class="visi">
+          <div class="lbl">Visi</div>
+          <p>Membuat apa yang orang butuhkan mudah diakses, tanpa harus dimiliki, dari Garut untuk Jawa Barat dan kota-kota lain di Indonesia.</p>
+        </div>
       </div>
       <div>
+        <p><b>Pokama adalah perusahaan induk yang membangun dan menjalankan unit bisnis layanan di Garut dan Jawa Barat.</b></p>
         <p>Banyak hal yang orang butuhkan tidak harus dimiliki: motor untuk seminggu, kamera untuk satu acara, atau paket liburan yang sudah diurus dari jemput sampai pulang. Pokama membangun dan menjalankan unit bisnis yang membuat hal-hal itu mudah diakses.</p>
         <p>Setiap unit punya tim, target, dan laporannya sendiri. Pokama mengurus yang dipakai bersama: keuangan, aset, pemasaran, dan pengembangan bisnis, supaya unit bisa fokus melayani pelanggan.</p>
         <ul class="facts">
           <li><span>Badan usaha</span><span>PT Popo Karya Investama dan PT Karya Kreasi Investama</span></li>
           <li><span>Unit bisnis</span><span>Rentalaja, TripinAja, Niagaaja</span></li>
           <li><span>Kota</span><span>Garut, Bandung, Ciputat</span></li>
+          <li><span>Kantor pusat</span><span>Jl. Cimanuk No. 24, Garut, Jawa Barat</span></li>
           <li><span>Fungsi bersama</span><span>Keuangan, BizDev, Marketing, Aset</span></li>
         </ul>
       </div>
+    </div>
+  </section>
+
+  <section class="s" id="angka" aria-labelledby="h-angka">
+    <div class="wrap">
+      <h2 id="h-angka">Pokama dalam angka</h2>
+      <p class="intro">Yang sudah berjalan hari ini, bukan rencana.</p>
+      <ul class="stats">
+        <li><span class="n">3</span><span class="t">Unit bisnis</span><span class="d">Rentalaja, TripinAja, Niagaaja</span></li>
+        <li><span class="n">5</span><span class="t">Titik layanan</span><span class="d">Garut Kota, Wanaraja, Bandung Hub, Bandung Jackal, Ciputat</span></li>
+        <li><span class="n">60<small>+</small></span><span class="t">Unit motor sewa</span><span class="d">Belum termasuk iPhone, kamera, alat camping, dan Jeep</span></li>
+        <li><span class="n">79<small>+</small></span><span class="t">Trip rombongan</span><span class="d">Diselenggarakan TripinAja sejak 2025</span></li>
+      </ul>
+      <p class="asof">Data per November 2026.</p>
     </div>
   </section>
 
@@ -260,6 +337,7 @@ footer .small { margin-top: 28px; color: #8C97AE; font-size: 14px; }
           </div>
           <div class="side">
             <div><b>Basis</b>Garut</div>
+            <div><b>Brand destinasi</b>Wisata Garut</div>
           </div>
         </article>
         <article class="unit">
@@ -274,12 +352,75 @@ footer .small { margin-top: 28px; color: #8C97AE; font-size: 14px; }
           </div>
           <div class="side">
             <div><b>Basis</b>Garut</div>
+            <div><b>Brand</b>Laptopaja</div>
           </div>
         </article>
       </div>
     </div>
   </section>
 
+
+  <section class="s" id="tim" aria-labelledby="h-tim">
+    <div class="wrap">
+      <h2 id="h-tim">Tim pimpinan</h2>
+      <p class="intro">Orang-orang yang menjalankan unit bisnis Pokama setiap hari, dibantu tim bersama di Keuangan, BizDev, Marketing, dan Aset.</p>
+      <ul class="team">
+        <li class="lead"><div class="ph" aria-hidden="true">GA</div><div><b>M Ghozy Burhanudin Arabani</b><span class="role">Founder &amp; CEO</span><span class="scope">Memimpin arah grup, pendanaan, dan pengembangan unit bisnis baru.</span></div></li>
+        <li><div class="ph" aria-hidden="true">II</div><div><b>Intifa Ilmi</b><span class="role">Kepala Staf</span><span class="scope">Menjaga eksekusi harian di ketiga unit bersama CEO.</span></div></li>
+        <li><div class="ph" aria-hidden="true">AA</div><div><b>Adrian Akbar</b><span class="role">Manajer Operasional Rentalaja</span><span class="scope">Cabang, armada, penginapan, dan trip Jeep.</span></div></li>
+        <li><div class="ph" aria-hidden="true">WN</div><div><b>Wiranata</b><span class="role">Pimpinan TripinAja</span><span class="scope">Paket wisata dan perjalanan rombongan.</span></div></li>
+        <li><div class="ph" aria-hidden="true">YF</div><div><b>Yusril Firdaus</b><span class="role">Pimpinan Niagaaja</span><span class="scope">Jual beli laptop dan kamera, serta aset grup.</span></div></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="s" id="kerja-sama" aria-labelledby="h-ks">
+    <div class="wrap">
+      <h2 id="h-ks">Kerja sama &amp; investasi</h2>
+      <p class="intro">Ada tiga cara tumbuh bersama Pokama. Pilih yang paling sesuai, tim kami yang menindaklanjuti.</p>
+      <div class="ways">
+        <article class="way dark">
+          <span class="k">Investasi</span>
+          <h3>Ikut mendanai aset dan proyek unit bisnis</h3>
+          <p>Hasil investasi dilaporkan tiap bulan dan bisa dipantau langsung di portal investor.</p>
+          <ul>
+            <li>Aset sewa: bagi hasil per unit dari pendapatan Rentalaja</li>
+            <li>Proyek atau modal kerja: imbal tetap atau bagi laba</li>
+            <li>Kepemilikan saham di unit bisnis</li>
+          </ul>
+          <div class="acts">
+            <a class="btn btn-solid" data-wa="Halo Pokama, saya tertarik berinvestasi. Boleh minta informasinya?" href="#kontak">Ajukan minat</a>
+            <a class="btn btn-line" href="https://investor.pokama.org/">Sudah investor? Masuk</a>
+          </div>
+        </article>
+        <article class="way">
+          <span class="k">Kerja sama bisnis</span>
+          <h3>Korporat, hotel, event, dan pemerintah daerah</h3>
+          <p>Sewa armada dan perangkat untuk acara, paket perjalanan rombongan, atau kemitraan pengelolaan aset dan penginapan.</p>
+          <ul>
+            <li>Sewa motor, iPhone, kamera untuk tim dan acara</li>
+            <li>Paket trip kantor, sekolah, dan komunitas</li>
+            <li>Kemitraan villa dan penginapan</li>
+          </ul>
+          <div class="acts">
+            <a class="btn btn-line" data-wa="Halo Pokama, saya ingin membahas kerja sama bisnis." href="#kontak">Hubungi BizDev</a>
+          </div>
+        </article>
+        <article class="way">
+          <span class="k">Mitra affiliate</span>
+          <h3>Rekomendasikan, dapat komisi 5–10%</h3>
+          <p>Untuk hotel, homestay, sopir, komunitas, dan kreator. Daftar sendiri, dapat kode, komisi dicairkan tiap bulan.</p>
+          <ul>
+            <li>Daftar dengan akun Google</li>
+            <li>Pantau booking dan komisi dari HP</li>
+          </ul>
+          <div class="acts">
+            <a class="btn btn-line" href="https://mitra.pokama.org/">Daftar di mitra.pokama.org</a>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
 
   <section class="s mitra" id="mitra" aria-labelledby="h-mitra">
     <div class="wrap grid">
@@ -303,10 +444,19 @@ footer .small { margin-top: 28px; color: #8C97AE; font-size: 14px; }
       <div>
         <h2 id="h-kontak">Hubungi kami</h2>
         <p class="intro">Pilih jalur yang paling sesuai dengan keperluan Anda.</p>
+        <div class="office">
+          <b>Kantor pusat</b>
+          PT Popo Karya Investama<br>
+          Jl. Cimanuk No. 24, Garut, Jawa Barat<br>
+          <a href="https://maps.google.com/?q=Jl.+Cimanuk+No.+24+Garut" rel="noopener">Buka di Google Maps</a>
+        </div>
       </div>
       <ul class="paths">
         <li><div><b>Sewa barang atau trip Jeep</b><span>Pesan langsung dan cek ketersediaan</span></div><a href="https://rentalaja.co.id" rel="noopener">rentalaja.co.id</a></li>
         <li><div><b>Jadi mitra</b><span>Hotel, komunitas, kreator, dan lainnya</span></div><a href="https://mitra.pokama.org/">mitra.pokama.org</a></li>
+        <li><div><b>Investasi &amp; kerja sama bisnis</b><span>WhatsApp BizDev</span></div><a data-wa="Halo Pokama, saya ingin bertanya." data-wa-label="1" href="#kontak">WhatsApp</a></li>
+        <li><div><b>Email resmi</b><span>Untuk surat, proposal, dan dokumen</span></div><a data-mail="1" href="#kontak">Email</a></li>
+        <li><div><b>Sudah investor</b><span>Laporan bulanan dan penarikan</span></div><a href="https://investor.pokama.org/">investor.pokama.org</a></li>
       </ul>
     </div>
   </section>
@@ -336,6 +486,18 @@ footer .small { margin-top: 28px; color: #8C97AE; font-size: 14px; }
 document.getElementById('y').textContent = new Date().getFullYear();
 var bar = document.getElementById('top');
 addEventListener('scroll', function () { bar.classList.toggle('scrolled', scrollY > 8); }, { passive: true });
+/* Kontak resmi: isi di sini saja. Kosong = tombol diarahkan ke bagian Kontak. */
+var KONTAK = { wa: '', email: '' };   // wa: format 628xxxxxxxxxx, email: contoh halo@pokama.org
+document.querySelectorAll('[data-wa]').forEach(function (a) {
+  if (!KONTAK.wa) { if (a.dataset.waLabel) a.innerHTML = '<span class="todo">nomor belum diisi</span>'; return; }
+  a.href = 'https://wa.me/' + KONTAK.wa + '?text=' + encodeURIComponent(a.dataset.wa);
+  a.rel = 'noopener';
+  if (a.dataset.waLabel) a.textContent = '+' + KONTAK.wa.replace(/^62/, '62 ');
+});
+document.querySelectorAll('[data-mail]').forEach(function (a) {
+  if (!KONTAK.email) { a.innerHTML = '<span class="todo">email belum diisi</span>'; return; }
+  a.href = 'mailto:' + KONTAK.email; a.textContent = KONTAK.email;
+});
 var mk = document.getElementById('masuk');
 document.addEventListener('click', function (e) { if (mk.open && !mk.contains(e.target)) mk.open = false; });
 document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && mk.open) { mk.open = false; mk.querySelector('summary').focus(); } });
