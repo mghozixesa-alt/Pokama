@@ -28,7 +28,7 @@ const KIND = { leasing: 'Leasing', pinjaman: 'Pinjaman', bagi_hasil: 'Bagi hasil
 
 const PAGES = { ringkasan: 'Ringkasan', unit: 'Per unit bisnis', target: 'Target vs realisasi', kas: 'Kas & bank', proyeksi: 'Proyeksi kas', pf: 'Profit First',
   kewajiban: 'Kewajiban & leasing', pihak: 'Piutang & hutang', rab: 'Belanja (RAB & LPJ)', labarugi: 'Laba rugi', neraca: 'Neraca', aruskas: 'Arus kas',
-  jurnal: 'Buku jurnal', antrean: 'Antrean Keuangan', akun: 'Akun & rekening', saldo: 'Saldo awal', sumber: 'Sumber data & tutup buku' };
+  jurnal: 'Buku jurnal', riwayat: 'Riwayat sistem lama', antrean: 'Antrean Keuangan', akun: 'Akun & rekening', saldo: 'Saldo awal', sumber: 'Sumber data & tutup buku' };
 const route = () => { const [v, a] = (location.hash || '#ringkasan').slice(1).split('/'); return PAGES[v] || v === 'menu' ? { v, a } : { v: 'ringkasan' }; };
 const canWrite = () => !!ME && ['ceo', 'keuangan'].includes(ME.role);
 const usingDemo = () => S.demo || ENGINE === false;
@@ -71,7 +71,7 @@ async function data(name, args = {}) {
     dash: () => X.dashboard(args.from, args.to, today()), pl: () => X.pl(args.from, args.to), bs: () => X.balanceSheet(args.to),
     jurnal: () => X.journal(args.from, args.to, args.biz, args.source, args.q), exc: () => X.exceptions(today()), bank: () => X.bankList(args.acc, today()), accs: () => X.accounts(),
     fc: () => X.forecast(today()), cf: () => X.cashflow(args.from, args.to), party: () => X.partyLines(args.to), loans: () => X.loans(), set: () => X.settings(),
-    open: () => X.opening(), tgt: () => X.targets(args.month), omz: () => [], accfull: () => X.accounts(),
+    open: () => X.opening(), legacy: () => X.legacy(args.from, args.to), tgt: () => X.targets(args.month), omz: () => [], accfull: () => X.accounts(),
   };
   if (usingDemo()) return demo[name]();
   const call = {
@@ -82,7 +82,7 @@ async function data(name, args = {}) {
     accs: () => A.get('pk_fin_accounts?select=code,name,grp,is_cash,unit_code,pos&is_active=eq.true&order=code'),
     fc: () => A.rpc('pk_fin_forecast', { p_weeks: 13 }), cf: () => A.rpc('pk_fin_cashflow', { p_from: args.from, p_to: args.to }),
     party: () => A.rpc('pk_fin_party_lines', { p_to: args.to }), loans: () => A.get('pk_fin_loans?select=*&order=created_at'),
-    set: () => A.rpc('pk_fin_settings_get'), open: () => A.rpc('pk_fin_opening_get'),
+    set: () => A.rpc('pk_fin_settings_get'), legacy: () => A.rpc('pk_fin_legacy', { p_from: args.from || null, p_to: args.to || null }), open: () => A.rpc('pk_fin_opening_get'),
     tgt: () => A.get('pk_targets?select=unit_code,month,amount,status&month=eq.' + args.month),
     omz: () => A.get('pk_omzet?select=unit_code,amount&day=gte.' + args.from + '&day=lte.' + args.to),
     accfull: () => A.get('pk_fin_accounts?select=code,name,grp,is_cash,unit_code,pos,bank,note,is_active,sort&order=code'),
@@ -94,12 +94,12 @@ async function accounts() { if (!ACCS) ACCS = await data('accs'); return ACCS; }
 
 /* ---------- potongan tampilan ---------- */
 const tile = (l, v, s, cls = '', href = '') => `<${href ? `a href="${href}"` : 'div'} class="tile ${cls}"><span>${l}</span><b title="${esc(String(v).replace(/<[^>]+>/g, ''))}">${v}</b><small>${s}</small></${href ? 'a' : 'div'}>`;
-function header(title, sub, right = '') {
-  const p = period();
+function header(title, sub, right = '', noPer = false) {
+  const p = noPer ? { label: 'Rentalaja sistem lama' } : period();
   return `${usingDemo() ? `<div class="demo">DATA CONTOH · ${ENGINE === false ? 'mesin buku besar grup belum dipasang di database, jadi semua angka di halaman ini contoh (bukan angka sungguhan).' : 'mode data contoh dinyalakan.'}</div>` : ''}
     ${ME && ME.role === 'kepala_staf' ? '<div class="ro">Kepala Staf: lihat saja. Perubahan data keuangan oleh Keuangan atau CEO.</div>' : ''}
     <header class="ph"><div><span class="eyebrow">Keuangan grup · ${esc(p.label)}</span><h1>${title}</h1><div class="sub">${sub}</div></div>
-    <div class="row gap">${right}${perSelect()}${ENGINE !== false ? `<label class="chipbtn ${S.demo ? 'on' : ''}" style="height:44px"><input type="checkbox" data-demo ${S.demo ? 'checked' : ''} hidden>Data contoh</label>` : ''}</div></header>`;
+    <div class="row gap">${right}${noPer ? '' : perSelect()}${ENGINE !== false ? `<label class="chipbtn ${S.demo ? 'on' : ''}" style="height:44px"><input type="checkbox" data-demo ${S.demo ? 'checked' : ''} hidden>Data contoh</label>` : ''}</div></header>`;
 }
 const bar = (v, max, c = 'var(--navy)') => `<div class="bar"><i style="width:${Math.max(0, Math.min(100, max ? v / max * 100 : 0))}%;background:${c}"></i></div>`;
 const empty = (t) => `<p class="muted small" style="margin:0">${t}</p>`;
@@ -722,6 +722,66 @@ async function vPihak(kind) {
 }
 
 /* --- arus kas --- */
+/* --- riwayat Rentalaja sistem lama (Sep 2024 – 31 Okt 2026), tidak masuk buku besar --- */
+const LCOL = { GK: '#1D3149', WN: '#F2A33A', BD: '#09BEAF', RA: '#A3ACB9' };
+const LGRP = [['lunas', 'Bayar lunas langsung'], ['dp', 'DP / bayar sebagian'], ['pelunasan', 'Pelunasan'], ['denda', 'Denda keterlambatan'], ['lain', 'Lain-lain'], ['refund', 'Refund ke pelanggan']];
+const HARI = ['', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
+function legacyRange(a) {
+  if (!a || a === 'semua') return { from: null, to: null, label: 'Semua data (Sep 2024 – Okt 2026)' };
+  if (/^\d{4}$/.test(a)) return { from: a + '-01-01', to: a + '-12-31', label: 'Tahun ' + a };
+  if (/^\d{4}-\d{2}$/.test(a)) return { from: a + '-01', to: a + '-' + String(dim(a)).padStart(2, '0'), label: bulan(a + '-01') };
+  return { from: null, to: null, label: 'Semua data' };
+}
+function legacyChart(monthly, sel) {
+  const ms = [...new Set(monthly.map(r => r.m))].sort(), us = ['GK', 'WN', 'BD', 'RA'].filter(u => monthly.some(r => r.unit === u));
+  const rows = ms.map(m => ({ m, v: us.map(u => sum(monthly.filter(r => r.m === m && r.unit === u), r => r.amt)) }));
+  const W = 720, H = 240, L = 46, B = 26, T = 12, max = Math.max(1, ...rows.map(r => sum(r.v, x => x))), y = (v) => T + (H - T - B) * (1 - v / max), bw = (W - L - 6) / rows.length;
+  let g = '';
+  for (let i = 0; i <= 4; i++) { const v = max * i / 4; g += `<line x1="${L}" x2="${W - 4}" y1="${y(v)}" y2="${y(v)}" stroke="#EEF0F3"/><text x="${L - 6}" y="${y(v) + 3}" text-anchor="end">${rpk(v).replace('Rp', '')}</text>`; }
+  rows.forEach((r, i) => {
+    let acc = 0; const x = L + i * bw + bw * .14, w = bw * .72, on = !sel || r.m.startsWith(sel);
+    r.v.forEach((v, j) => { g += `<rect x="${x}" y="${y(acc + v)}" width="${w}" height="${Math.max(0, y(acc) - y(acc + v))}" fill="${LCOL[us[j]]}" opacity="${on ? 1 : .28}" rx="1.5"><title>${bulan(r.m + '-01')} · ${uname(us[j])} ${rp(v)}</title></rect>`; acc += v; });
+    g += `<a href="#riwayat/${r.m}"><rect x="${L + i * bw}" y="${T}" width="${bw}" height="${H - T - B}" fill="transparent"><title>${bulan(r.m + '-01')}: ${rp(acc)} — klik untuk rincian</title></rect></a>`;
+    const [yy, mm] = r.m.split('-'); if (+mm % 3 === 1) g += `<text x="${x + w / 2}" y="${H - 8}" text-anchor="middle">${MON[+mm - 1]} ${yy.slice(2)}</text>`;
+  });
+  return `<div class="chart"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Uang masuk per bulan sistem lama">${g}</svg></div>
+    <div class="legend">${us.map(u => `<span><i class="dot" style="background:${LCOL[u]}"></i>${esc(uname(u))}</span>`).join('')}<span class="muted">klik batang untuk melihat bulan itu</span></div>`;
+}
+async function vRiwayat(a) {
+  const R = legacyRange(a), L = await data('legacy', R), T = L.total, O = L.orders || {};
+  const yrs = [...new Set(L.monthly.map(r => r.m.slice(0, 4)))].sort();
+  const opts = [['semua', 'Semua data'], ...yrs.slice().reverse().map(y => [y, 'Tahun ' + y]), ...[...new Set(L.monthly.map(r => r.m))].sort().reverse().map(m => [m, bulan(m + '-01')])];
+  const sel = `<select class="inp" data-riw aria-label="Rentang">${opts.map(([k, l]) => `<option value="${k}"${(a || 'semua') === k ? ' selected' : ''}>${l}</option>`).join('')}</select>`;
+  let o = header('Riwayat sistem lama', 'Uang masuk Rentalaja dari aplikasi kasir lama (Garut Kota, Wanaraja, Bandung), ' + tgl(L.first) + ' ' + L.first.slice(0, 4) + ' – ' + tgl(L.last) + ' ' + L.last.slice(0, 4) + '. Hanya untuk melihat tren; tidak masuk buku besar karena buku Pokama dimulai dari saldo awal.', sel + `<button class="btn" data-csv="legacy">Unduh CSV</button>`, true);
+  o += `<div class="ro">Isinya uang yang diterima kasir (pembayaran, DP, pelunasan, denda), belum dikurangi biaya. Biaya, gaji, dan cicilan sistem lama tidak tercatat di aplikasi kasir.</div>`;
+  const perDay = T.days ? T.amt / T.days : 0, canc = O.n ? O.cancel / O.n * 100 : 0;
+  // pertumbuhan: bandingkan dengan rentang yang sama tahun sebelumnya (berdasar data bulanan)
+  const mOf = (m) => sum(L.monthly.filter(r => r.m === m), r => r.amt);
+  let yoy = '';
+  if (/^\d{4}-\d{2}$/.test(a || '')) { const pm = (+a.slice(0, 4) - 1) + a.slice(4), pv = mOf(pm); if (pv) yoy = (T.amt >= pv ? '+' : '') + pct((T.amt / pv - 1) * 100) + ' vs ' + bulan(pm + '-01'); }
+  o += `<div class="tiles">${tile('Uang masuk', rpk(T.amt), esc(R.label) + (yoy ? ' · ' + yoy : ''))}${tile('Rata-rata per hari', rpk(perDay), T.days + ' hari ada transaksi')}
+    ${tile('Transaksi bayar', num(T.n), 'rata-rata ' + rpk(T.n ? T.amt / T.n : 0) + ' per transaksi')}${tile('Nilai order rata-rata', rpk(O.aov || 0), num(O.done || 0) + ' order selesai')}
+    ${tile('Order batal', pct(canc), num(O.cancel || 0) + ' dari ' + num(O.n || 0) + ' order', canc > 25 ? 'warn' : '')}${tile('Pelanggan', num(O.customers || 0), num(O.repeat || 0) + ' pelanggan sewa lebih dari sekali')}
+    ${tile('Denda keterlambatan', rpk(T.denda), pct(T.amt ? T.denda / T.amt * 100 : 0) + ' dari uang masuk')}${tile('Order selesai belum lunas', rpk(O.unpaid_amt || 0), num(O.unpaid_done || 0) + ' order · cek apakah masih bisa ditagih', O.unpaid_amt ? 'warn' : '')}</div>`;
+  o += sec('Uang masuk per bulan', 'per cabang · seluruh riwayat', legacyChart(L.monthly, /^\d{4}(-\d{2})?$/.test(a || '') ? a : ''));
+  // tabel tahun ke tahun
+  const yrows = Array.from({ length: 12 }, (_, i) => String(i + 1).padStart(2, '0'));
+  o += sec('Bulan ke bulan, tahun ke tahun', 'uang masuk semua cabang · pertumbuhan dibanding bulan yang sama tahun sebelumnya', `<div class="scroll"><table class="ftbl"><thead><tr><th>Bulan</th>${yrs.map(y => `<th class="r">${y}</th>`).join('')}${yrs.length > 1 ? `<th class="r">Tumbuh ${yrs[yrs.length - 1]}</th>` : ''}</tr></thead><tbody>
+    ${yrows.map(mm => { const v = yrs.map(y => mOf(y + '-' + mm)), a1 = v[v.length - 1], a0 = v[v.length - 2]; return `<tr><td>${MON[+mm - 1]}</td>${v.map((x, i) => `<td class="r"><a style="text-decoration:none;color:inherit" href="#riwayat/${yrs[i]}-${mm}">${x ? rpk(x) : '<span class="muted">—</span>'}</a></td>`).join('')}${yrs.length > 1 ? `<td class="r">${a0 && a1 ? `<span class="${a1 >= a0 ? 'pos' : 'neg'}">${a1 >= a0 ? '+' : ''}${pct((a1 / a0 - 1) * 100)}</span>` : '<span class="muted">—</span>'}</td>` : ''}</tr>`; }).join('')}
+    <tr class="tot"><td>Setahun</td>${yrs.map(y => `<td class="r">${rpk(sum(L.monthly.filter(r => r.m.startsWith(y)), r => r.amt))}</td>`).join('')}${yrs.length > 1 ? '<td></td>' : ''}</tr></tbody></table></div>`);
+  const mxU = Math.max(1, ...L.units.map(u => +u.amt)), mxL = Math.max(1, ...L.lines.map(u => +u.amt)), mxM = Math.max(1, ...L.methods.map(u => +u.amt));
+  o += `<div class="cols2">` + sec('Per cabang', esc(R.label), `<table class="ftbl"><tbody>${L.units.map(u => `<tr><td>${logo(u.unit, 18)} <b>${esc(uname(u.unit))}</b><br><span class="muted small">${num(u.n)} transaksi</span></td><td style="width:40%">${bar(+u.amt, mxU, LCOL[u.unit])}</td><td class="r b">${rpk(u.amt)}</td><td class="r small">${pct(T.amt ? u.amt / T.amt * 100 : 0)}</td></tr>`).join('')}</tbody></table>`)
+    + sec('Per lini sewa', 'uang masuk dibagi sesuai isi order', `<table class="ftbl"><tbody>${L.lines.map(u => `<tr><td><b>${esc(u.line)}</b></td><td style="width:40%">${bar(+u.amt, mxL, '#09BEAF')}</td><td class="r b">${rpk(u.amt)}</td><td class="r small">${pct(T.amt ? u.amt / T.amt * 100 : 0)}</td></tr>`).join('')}</tbody></table>`) + `</div>`;
+  const G = L.groups || {};
+  o += `<div class="cols2">` + sec('Cara bayar', 'tanpa refund', `<table class="ftbl"><tbody>${L.methods.map(u => `<tr><td><b>${esc(u.m)}</b><br><span class="muted small">${num(u.n)} transaksi</span></td><td style="width:40%">${bar(+u.amt, mxM, '#1D3149')}</td><td class="r b">${rpk(u.amt)}</td><td class="r small">${pct(T.amt ? u.amt / T.amt * 100 : 0)}</td></tr>`).join('')}</tbody></table>`)
+    + sec('Jenis pembayaran', '', `<table class="ftbl"><tbody>${LGRP.filter(([k]) => G[k]).map(([k, l]) => `<tr><td>${l}</td><td class="r b ${+G[k] < 0 ? 'neg' : ''}">${rpS(G[k])}</td><td class="r small">${pct(T.amt ? Math.abs(G[k]) / T.amt * 100 : 0)}</td></tr>`).join('')}<tr class="tot"><td>Bersih</td><td class="r">${rp(T.amt)}</td><td></td></tr></tbody></table>`) + `</div>`;
+  const wd = L.weekday || [], mxW = Math.max(1, ...wd.map(w => w.days ? w.amt / w.days : 0));
+  o += `<div class="cols2">` + sec('Barang paling menghasilkan', 'top 15 · ' + esc(R.label), `<div class="scroll"><table class="ftbl"><thead><tr><th>#</th><th>Barang</th><th class="r">Order</th><th class="r">Uang masuk</th></tr></thead><tbody>${L.products.map((p, i) => `<tr><td>${i + 1}</td><td><b>${esc(p.name)}</b><br><span class="muted small">${esc(p.line)}</span></td><td class="r">${num(p.orders)}</td><td class="r b">${rpk(p.amt)}</td></tr>`).join('')}</tbody></table></div>`)
+    + sec('Rata-rata per hari dalam seminggu', 'uang masuk per hari', `<table class="ftbl"><tbody>${wd.map(w => { const v = w.days ? w.amt / w.days : 0; return `<tr><td><b>${HARI[w.w]}</b></td><td style="width:50%">${bar(v, mxW, v === mxW ? '#09BEAF' : '#1D3149')}</td><td class="r b">${rpk(v)}</td></tr>`; }).join('')}</tbody></table>`) + `</div>`;
+  if (L.daily.length <= 62) o += sec('Uang masuk harian', esc(R.label), dailyChart(L.daily.map(d => ({ d: d.d, in: +d.amt, out: 0 }))));
+  cur = { csv: () => [['Bulan', 'Cabang', 'Uang masuk', 'Denda', 'Refund', 'Transaksi'], ...L.monthly.map(r => [r.m, uname(r.unit), r.amt, r.denda, r.refund, r.n])] };
+  return o;
+}
 async function vArusKas() {
   const p = period(), C = await data('cf', p);
   const cats = [['operasi', 'Aktivitas operasi', 'penjualan, biaya, pajak, piutang & hutang usaha, DP pelanggan'], ['investasi', 'Aktivitas investasi', 'beli/jual aset tetap'], ['pendanaan', 'Aktivitas pendanaan', 'leasing, pinjaman, investor, modal & prive']];
@@ -908,13 +968,14 @@ const I = {
   swap: '<path d="M7 7h13l-3-3M17 17H4l3 3"/>',
   flow: '<path d="M4 6h10M4 12h16M4 18h7"/><path d="m17 3 3 3-3 3M10 15l3 3-3 3"/>',
   bank: '<path d="M3 10 12 4l9 6M5 10v8M9.5 10v8M14.5 10v8M19 10v8M3 20h18"/>',
+  history: '<path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5M12 7v5l3 2"/>',
   open: '<path d="M4 4h16v16H4z"/><path d="M8 9h8M8 13h8M8 17h5"/>',
 };
 const svg = (k, s = 18) => `<svg aria-hidden="true" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${I[k]}</svg>`;
 const NAV = [
   ['Grup', [['ringkasan', 'Ringkasan', 'grid'], ['unit', 'Per unit bisnis', 'trophy'], ['target', 'Target vs realisasi', 'flag'], ['rab', 'Belanja RAB & LPJ', 'inbox', 'lpj']]],
   ['Kas', [['kas', 'Kas & bank', 'wallet', 'mutasi'], ['proyeksi', 'Proyeksi kas', 'trend', 'fclow'], ['pf', 'Profit First', 'pie'], ['kewajiban', 'Kewajiban & leasing', 'clock', 'due'], ['pihak', 'Piutang & hutang', 'swap']]],
-  ['Laporan', [['labarugi', 'Laba rugi', 'coin'], ['neraca', 'Neraca', 'layers'], ['aruskas', 'Arus kas', 'flow'], ['jurnal', 'Buku jurnal', 'book']]],
+  ['Laporan', [['labarugi', 'Laba rugi', 'coin'], ['neraca', 'Neraca', 'layers'], ['aruskas', 'Arus kas', 'flow'], ['jurnal', 'Buku jurnal', 'book'], ['riwayat', 'Riwayat sistem lama', 'history']]],
   ['Kelola', [['antrean', 'Antrean Keuangan', 'check', 'antrean'], ['akun', 'Akun & rekening', 'bank'], ['saldo', 'Saldo awal', 'open', 'saldo'], ['sumber', 'Sumber & tutup buku', 'cog']]],
 ];
 const MOBILE = [['ringkasan', 'Ringkasan', 'grid'], ['unit', 'Unit', 'trophy'], ['kas', 'Kas', 'wallet', 'mutasi'], ['antrean', 'Antrean', 'check', 'antrean']];
@@ -944,7 +1005,7 @@ function setBadges(Dd, g) {
 function setBadge(k, n) { document.querySelectorAll(`[data-nb="${k}"]`).forEach(b => { b.textContent = n; b.hidden = !n; }); }
 function panel(html, after) { close(); const el = document.createElement('div'); el.className = 'scrim'; el.innerHTML = `<div class="panel" role="dialog" aria-modal="true">${html}</div>`; document.body.appendChild(el); el.addEventListener('click', (e) => { if (e.target === el || e.target.closest('[data-close]')) close(); }); if (after) after(el.querySelector('.panel')); }
 function close() { document.querySelectorAll('.scrim').forEach(s => s.remove()); }
-const VIEWS = { menu: vMenu, ringkasan: vRingkasan, unit: vUnit, target: vTarget, kas: vKas, proyeksi: vProyeksi, pf: vProfitFirst, kewajiban: vKewajiban, pihak: vPihak, rab: vRab, labarugi: vLabaRugi, neraca: vNeraca, aruskas: vArusKas, jurnal: vJurnal, antrean: vAntrean, akun: vAkun, saldo: vSaldo, sumber: vSumber };
+const VIEWS = { menu: vMenu, ringkasan: vRingkasan, unit: vUnit, target: vTarget, kas: vKas, proyeksi: vProyeksi, pf: vProfitFirst, kewajiban: vKewajiban, pihak: vPihak, rab: vRab, labarugi: vLabaRugi, neraca: vNeraca, aruskas: vArusKas, jurnal: vJurnal, riwayat: vRiwayat, antrean: vAntrean, akun: vAkun, saldo: vSaldo, sumber: vSumber };
 let seq = 0;
 async function render() {
   const { v, a } = route(), my = ++seq;
@@ -962,6 +1023,7 @@ app.addEventListener('change', (e) => {
   if (t.dataset.f) { S[t.dataset.f] = t.value; if (t.dataset.f === 'per') ls('keu.per', t.value); render(); }
   if (t.hasAttribute('data-demo')) { S.demo = t.checked; ls('keu.demo', t.checked ? '1' : null); SET = null; LOANS = null; ACCS = null; render(); }
   if (t.closest('#openf')) openSum();
+  if (t.hasAttribute('data-riw')) location.hash = 'riwayat' + (t.value === 'semua' ? '' : '/' + t.value);
 });
 app.addEventListener('input', (e) => { if (e.target.closest('#openf')) openSum(); });
 const num0 = (v) => (v === '' || v == null ? null : +v);
@@ -1016,7 +1078,7 @@ app.addEventListener('click', (e) => {
     return;
   }
   if (d.copy !== undefined) { navigator.clipboard.writeText(summaryText()).then(() => toast('Ringkasan disalin. Kirim hanya ke nomor owner & Keuangan, bukan ke grup.')); return; }
-  if (d.csv) { csvDl(({ pl: 'laba-rugi-', bs: 'neraca-', cf: 'arus-kas-' }[d.csv] || 'laporan-') + period().to + '.csv', cur.csv()); return; }
+  if (d.csv) { csvDl(({ pl: 'laba-rugi-', bs: 'neraca-', cf: 'arus-kas-', legacy: 'riwayat-sistem-lama-' }[d.csv] || 'laporan-') + (d.csv === 'legacy' ? 'per-bulan' : period().to) + '.csv', cur.csv()); return; }
   if (d.plv) { S.plv = d.plv; render(); return; }
   if (d.j) { const r = app.querySelector(`[data-jl="${CSS.escape(d.j)}"]`); if (r) r.hidden = !r.hidden; return; }
   if (demoAct()) return;

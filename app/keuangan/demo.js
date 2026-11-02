@@ -335,3 +335,36 @@ export function partyLines(to) {
   add('2-20600', 'Adrian', 4, 0, 1.2, 'Kekurangan RAB'); add('2-21200', 'Investor Laptopaja', 120, 0, 0, '');
   return L;
 }
+
+/* riwayat Rentalaja sistem lama (bentuk sama dengan pk_fin_legacy) */
+export function legacy(from, to) {
+  const first = D('2024-09-26'), last = D('2026-10-31'), f = from ? D(from) : first, t = to ? D(to) : last;
+  const U = [['GK', 2.6e6, first], ['WN', .2e6, D('2025-03-30')], ['BD', .75e6, D('2026-04-18')]];
+  const monthly = [], daily = [], units = {}, wd = {}; let tot = 0, n = 0, denda = 0;
+  for (let d = new Date(first); d <= last; d = addD(d, 1)) {
+    const m = iso(d).slice(0, 7), grow = 1 + (d - first) / 864e5 / 500;
+    let dayAmt = 0;
+    U.forEach(([u, base, st]) => {
+      if (d < st) return;
+      const a = Math.round(base * grow * SEASON[d.getMonth()] * noise(u + iso(d), .45) * ([6, 7].includes(d.getDay() || 7) ? 1.35 : .9) / 1000) * 1000, k = Math.round(a / 105000);
+      let r = monthly.find(x => x.m === m && x.unit === u); if (!r) monthly.push(r = { m, unit: u, amt: 0, denda: 0, refund: 0, n: 0 });
+      r.amt += a; r.n += k; r.denda += Math.round(a * .02);
+      if (d >= f && d <= t) { dayAmt += a; units[u] = units[u] || { unit: u, amt: 0, n: 0 }; units[u].amt += a; units[u].n += k; n += k; denda += Math.round(a * .02); }
+    });
+    if (d >= f && d <= t) { tot += dayAmt; daily.push({ d: iso(d), amt: dayAmt }); const w = d.getDay() || 7; wd[w] = wd[w] || { w, amt: 0, days: 0 }; wd[w].amt += dayAmt; wd[w].days++; }
+  }
+  const LN = [['Kendaraan (Driveinaja)', .51], ['Kamera (Popocamera)', .25], ['iPhone (Iphoneaja)', .22], ['Game (Gameinaja)', .011], ['Camping (Pergipiknik)', .009]];
+  const PR = [['Honda Beat CBS New', 0, .33], ['IPHONE XR', 2, .09], ['Honda PCX', 0, .083], ['IPHONE 11', 2, .078], ['Honda Scoopy New', 0, .076], ['Kamera SONY A6000', 1, .037], ['Kamera Canon M50', 1, .033], ['IPHONE 13', 2, .03], ['Honda Vario 160', 0, .028], ['Kamera Fujifilm XA-3', 1, .025]];
+  const o = Math.round(n * .9);
+  return {
+    from: iso(f), to: iso(t), first: '2024-09-26', last: '2026-10-31', monthly,
+    total: { amt: tot, n, denda, refund: Math.round(tot * .0012), days: daily.length },
+    units: Object.values(units).sort((a, b) => b.amt - a.amt),
+    groups: { lunas: tot * .63, dp: tot * .1, pelunasan: tot * .215, denda, refund: -Math.round(tot * .0012) },
+    methods: [['Tunai', .38], ['QRIS', .36], ['Transfer bank', .13], ['QRIS BCA', .1], ['Tidak tercatat', .03]].map(([m, s]) => ({ m, amt: Math.round(tot * s), n: Math.round(n * s) })),
+    daily, weekday: Object.values(wd).sort((a, b) => a.w - b.w),
+    lines: LN.map(([line, s]) => ({ line, amt: Math.round(tot * s) })),
+    products: PR.map(([name, li, s]) => ({ name, line: LN[li][0], amt: Math.round(tot * s), orders: Math.round(o * s * 1.1) })),
+    orders: { n: o, done: Math.round(o * .66), cancel: Math.round(o * .27), open: Math.round(o * .07), unpaid_done: Math.round(o * .02), unpaid_amt: Math.round(tot * .004), aov: 138000, customers: Math.round(o * .45), repeat: Math.round(o * .09) },
+  };
+}
