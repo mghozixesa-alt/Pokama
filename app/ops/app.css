@@ -130,3 +130,14 @@ body.ra .login-card .pk-logo{width:132px}
 .gm-streak .f{width:52px;height:52px;border-radius:16px;background:#fff;display:grid;place-items:center;font-size:0}
 .gm-rank .n.g1{background:linear-gradient(150deg,#FFD978,#F5A623);color:#3D2A00}.gm-rank .n.g2{background:#DDE2EA}.gm-rank .n.g3{background:#F1CDA8;color:#5A3210}
 .ra-panel .lk{display:grid;place-items:center;width:32px;height:32px;border-radius:16px;background:rgba(0,0,0,.25)}
+/* alur satu tombol (Beranda & Selesai shift) */
+.fl .sh{font-size:18px;font-weight:800;margin-top:2px}
+.fl-btn{min-height:58px;font-size:17px!important;gap:10px}
+.fl-sub{display:block;text-align:center;margin-top:-4px}
+.fl-prog{display:flex;gap:5px}.fl-prog i{flex:1;height:5px;border-radius:3px;background:var(--line)}.fl-prog i.on{background:var(--teal)}
+.ra-pill.bad{background:var(--redbg,#FBE9E7);color:var(--red,#A12A1F)}
+.fl-step{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-top:1px solid var(--line2)}.fl-step:first-of-type{border-top:0}
+.fl-step .n{width:28px;height:28px;border-radius:14px;flex:0 0 auto;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;background:var(--mint);color:var(--teal-d)}
+.fl-step.done .n{background:var(--teal);color:var(--navy)}.fl-step.now .n{background:var(--navy);color:#fff}
+.fl-step b{display:block;font-size:15px}.fl-step:not(.now) small{display:block}
+.fl-step .chk{align-items:flex-start}.fl-step .chk>span{display:flex;flex-direction:column;gap:2px}

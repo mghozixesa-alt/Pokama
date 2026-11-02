@@ -144,21 +144,14 @@ async function vBeranda(el) {
   const g = CACHE.G, reqs = CACHE.R || [];
   const pend = (reqs || []).filter(r => r.status === 'diajukan' || r.status === 'menunggu_keuangan').length;
   el.innerHTML = `${hero(esc(nickOf()), A.length ? A.map(a => esc(a.pos.label) + ' · ' + esc(a.branch)).join(' / ') : esc(ctx.me.title || 'Petugas operasional'))}
-  <section class="ra-now att">
-    <div class="row between"><div><span class="lbl">${fdate(today())}</span><div class="sh">${sch ? esc(sch.shift || 'Shift') + ' · ' + hm(sch.starts) + ' – ' + hm(sch.ends) : 'Belum ada jadwal shift'}</div><small class="muted">${sch && sch.branch ? esc(sch.branch) : 'Jadwal diatur Operasional'}</small></div>
-      <span class="ra-pill ${isOut ? '' : isIn ? 'ok' : 'warn'}">${isOut ? 'Selesai' : isIn ? 'Bertugas' : 'Belum absen'}</span></div>
-    <div class="clk"><button class="cin${isIn ? ' done' : ''}" data-go="absen"><small>Clock In</small><b>${isIn ? clock(att.clock_in) : '--.--'}</b><i>${isIn ? (att.late > 0 ? 'telat ' + jam(att.late) : 'tepat waktu') : 'ketuk untuk absen'}</i></button>
-      <button class="cout${isOut ? ' done' : ''}" data-go="absen"><small>Clock Out</small><b>${isOut ? clock(att.clock_out) : '--.--'}</b><i>${isOut ? 'shift selesai' : isIn ? 'ketuk saat pulang' : '—'}</i></button></div>
-    ${!A.length && WHO.mgr ? `<div class="note small" style="margin:0">Anda masuk sebagai Operasional. <a href="#/coba">Coba sebagai petugas →</a></div>` : !A.length ? '<div class="note small" style="margin:0">Belum ada penugasan. Hubungi Operasional.</div>' : ''}
-  </section>
+  ${flowCard()}
   <section class="card"><div class="qm">${MENU.map(([h, e, l]) => `<a href="#/${h}" class="qi"><span>${ri(e, 24)}</span>${l}${h === 'panel' && !(isIn && !isOut) ? `<i class="lk">${ri('kunci', 12)}</i>` : ''}${h === 'ceklis' && isIn && !isOut && !B.ok ? '<i class="dot"></i>' : ''}</a>`).join('')}</div></section>
-  ${isIn && !isOut ? `<section class="card"><div class="row between"><h2>Panel kerja hari ini</h2><a class="small" href="#/ceklis">Ceklis buka ${B.ok ? '✓' : (B.done.length + '/' + B.items.length)}</a></div>${panelCards(true)}</section>` : ''}
   ${g ? `<a class="card gm-mini-card" href="#/performa"><div class="gm-badge sm"><small>Lv</small><b>${g.level}</b></div><div style="flex:1;min-width:0"><b>${esc(g.title)} · ${g.xp.toLocaleString('id-ID')} XP</b><div class="gm-bar" style="margin:6px 0"><i style="width:${Math.max(4, Math.min(100, Math.round((g.xp - g.lvl_from) / Math.max(1, g.lvl_to - g.lvl_from) * 100)))}%"></i></div><small class="muted">${g.streak}× tepat waktu beruntun · peringkat #${g.rank || '—'} bulan ini</small></div><span class="go">›</span></a>` : ''}
   <section class="card"><div class="row between"><h2>Pengajuan terbaru</h2><a class="small" href="#/pengajuan">Lihat semua${pend ? ' · ' + pend + ' menunggu' : ''}</a></div>
     <div class="list ra-list">${(reqs || []).slice(0, 3).map(reqRow).join('') || '<p class="muted small">Belum ada pengajuan.</p>'}</div></section>
   ${(H.next || []).length ? `<section class="card absen"><b>${H.next[0].kind === 'mutasi' ? 'Mutasi' : 'Penugasan'} berikutnya:</b> ${esc(H.next[0].pos.label)} · ${esc(H.next[0].branch)} mulai ${fdate(H.next[0].start_day)}${H.next[0].reason ? '<br><small class="muted">' + esc(H.next[0].reason) + '</small>' : ''}</section>` : ''}
   </div>`;
-  wirePanel(el);
+  wireCk(el); wirePanel(el);
 }
 const reqRow = (r) => { const t = TYPES[r.type] || [r.type, 'slip'];
   const what = r.type === 'lembur' ? fdate(r.day) + ' · ' + hm(r.starts) + '–' + hm(r.ends) + ' (' + jam(r.minutes) + ')' : ['reimburse', 'kasbon'].includes(r.type) ? rp(r.amount) + ' · ' + fdate(r.day) : fdate(r.day) + (r.end_day && r.end_day !== r.day ? ' – ' + fdate(r.end_day) : '');
@@ -166,6 +159,7 @@ const reqRow = (r) => { const t = TYPES[r.type] || [r.type, 'slip'];
 
 // ---------- Clock in / out ----------
 async function vAbsen(el) {
+  if (state().isIn && !state().isOut) return vSelesai(el);
   const A = H.assigns || [], sch = H.schedule, { att, isIn, isOut } = state(), T = ckDone('tutup');
   const brs = [...new Map(A.map(a => [a.branch_id, a])).values()];
   const late = !isIn && sch && sch.starts && nowHM() > String(sch.starts).slice(0, 5);
@@ -207,12 +201,64 @@ async function vAbsen(el) {
     } catch (er) { a.disabled = false; toast(er.message, 'err'); }
   };
 }
-function ckForm(ph) { const A = H.assigns || [], { items, done } = ckDone(ph), g = {};
+function ckForm(ph, lbl) { const A = H.assigns || [], { items, done } = ckDone(ph), g = {};
   items.forEach(i => { const n = i.position ? ((A.find(a => a.position === i.position) || {}).pos || {}).label || i.position : 'Semua posisi'; (g[n] = g[n] || []).push(i); });
   return `<form class="ra-ck" data-ck="${ph}">${Object.entries(g).map(([n, is]) => `<h4>${esc(n)}</h4>${is.map(i => `<label><input type="checkbox" name="${i.id}" ${done.includes(i.id) ? 'checked' : ''}><span>${esc(i.label)}</span></label>`).join('')}`).join('')}
-    <button class="btn ${ph === 'buka' ? 'pri' : ''} ra-big" type="submit" style="margin-top:10px">Simpan ceklis ${ph}</button></form>`; }
+    <button class="btn ${ph === 'buka' || lbl ? 'pri' : ''} ra-big" type="submit" style="margin-top:10px">${lbl || 'Simpan ceklis ' + ph}</button></form>`; }
 function wireCk(el) { el.onsubmit = async (e) => { const f = e.target.closest('[data-ck]'); if (!f) return; e.preventDefault();
   try { await db.rpc('ops_check_save', { p_phase: f.dataset.ck, p_items: [...f.querySelectorAll('input:checked')].map(i => i.name) }); toast('Ceklis ' + f.dataset.ck + ' tersimpan'); reload(); } catch (er) { toast(er.message, 'err'); } }; }
+
+// ---------- Alur satu tombol: absen masuk → ceklis buka → bekerja → selesai shift ----------
+const stage = () => { const { isIn, isOut } = state(), B = ckDone('buka'); return !isIn ? 1 : isOut ? 4 : (B.items.length && !B.ok) ? 2 : 3; };
+const progBar = (n) => `<div class="fl-prog">${[1, 2, 3, 4].map(i => `<i class="${i <= n ? 'on' : ''}"></i>`).join('')}</div>`;
+const pastEnd = () => { const sch = H.schedule; if (!sch || !sch.ends) return 0; const [h, m] = String(sch.ends).slice(0, 5).split(':').map(Number), [nh, nm] = nowHM().split(':').map(Number); return (nh * 60 + nm) - (h * 60 + m); };
+function flowCard() {
+  const sch = H.schedule, { att } = state(), B = ckDone('buka'), n = stage(), A = H.assigns || [];
+  const shiftTxt = sch && sch.starts ? esc(sch.shift || 'Shift') + ' · ' + hm(sch.starts) + ' – ' + hm(sch.ends) : sch ? esc(sch.shift || 'Libur') : 'Belum ada jadwal shift';
+  if (!A.length) return `<section class="ra-now"><span class="lbl">${fdate(today())}</span><div class="sh">${shiftTxt}</div>${WHO.mgr ? '<div class="note small" style="margin:0">Anda masuk sebagai Operasional. <a href="#/coba">Coba sebagai petugas →</a></div>' : '<div class="note small" style="margin:0">Belum ada penugasan. Hubungi Operasional.</div>'}</section>`;
+  if (n === 1) { const toStart = sch && sch.starts ? (() => { const [h, m] = String(sch.starts).slice(0, 5).split(':').map(Number), [nh, nm] = nowHM().split(':').map(Number); return h * 60 + m - (nh * 60 + nm); })() : null;
+    return `<section class="ra-now fl"><div class="row between"><div><span class="lbl">Shift hari ini</span><div class="sh">${shiftTxt}</div><small class="muted">${sch && sch.branch ? esc(sch.branch) : 'Jadwal diatur Operasional'}</small></div>
+      ${toStart != null ? `<span class="ra-pill ${toStart < 0 ? 'bad' : 'warn'}">${toStart < 0 ? 'telat ' + jam(-toStart) : toStart < 120 ? 'mulai ' + jam(toStart) : 'mulai ' + hm(sch.starts)}</span>` : ''}</div>
+      <button class="btn pri ra-big fl-btn" data-go="absen">${ri('kamera', 22)} Absen masuk</button><small class="muted fl-sub">Foto selfie + lokasi${sch && sch.starts ? ' · toleransi telat 5 menit' : ''}</small>${progBar(1)}</section>`; }
+  if (n === 2) return `<section class="ra-now fl"><div class="row between"><div><span class="lbl">Masuk ${clock(att.clock_in)} · ${att.late > 0 ? 'telat ' + jam(att.late) : 'tepat waktu ✓'}</span><div class="sh">Ceklis buka · ${B.done.length} dari ${B.items.length}</div></div></div>
+      ${ckForm('buka', 'Simpan & mulai kerja →')}<small class="muted fl-sub">Panel kerja terbuka setelah ceklis buka lengkap</small>${progBar(2)}</section>`;
+  if (n === 3) { const pe = pastEnd();
+    return `<section class="ra-now fl"><div class="row between"><div><span class="lbl">Bertugas sejak ${clock(att.clock_in)}</span><div class="sh">Selamat bekerja!</div><small class="muted">${shiftTxt}</small></div><span class="ra-pill ok">Bertugas</span></div>
+      ${panelCards(true)}
+      ${pe > 30 ? `<div class="note small" style="margin:0">Sudah ${jam(pe)} lewat jam pulang. Saat selesai shift, Anda bisa langsung mengajukan lembur.</div>` : ''}
+      <button class="btn ra-big ra-dark fl-btn" data-go="selesai">🏁 Selesai shift</button><small class="muted fl-sub">${sch && sch.ends ? 'Pulang dijadwalkan ' + hm(sch.ends) : 'Tutup kas → ceklis tutup → absen pulang'}</small>${progBar(3)}</section>`; }
+  return `<section class="ra-now fl"><div class="row between"><div><span class="lbl">Shift selesai</span><div class="sh">${clock(att.clock_in)} – ${clock(att.clock_out)}</div><small class="muted">Terima kasih, sampai jumpa besok 👋</small></div><span class="ra-pill">Selesai</span></div>
+    <div class="row gap"><a class="btn sm" href="#/kehadiran">Riwayat kehadiran</a><a class="btn sm" href="#/ajukan?k=lembur">Ajukan lembur</a></div>${progBar(4)}</section>`;
+}
+// Selesai shift: tutup kas → ceklis tutup → absen pulang, berurutan di satu layar
+async function vSelesai(el) {
+  const { att, isIn, isOut } = state(), T = ckDone('tutup'), A = H.assigns || [], sch = H.schedule;
+  if (!isIn || isOut) { go('beranda'); return; }
+  const kasA = A.find(a => ['kasir', 'kepala_cabang'].includes(a.position)), kasOk = !H.open_shift, ckOk = T.ok;
+  const now = !kasOk ? 1 : !ckOk ? 2 : 3, pe = pastEnd();
+  const step = (i, title, sub, body) => `<div class="fl-step${i < now ? ' done' : i === now ? ' now' : ''}"><span class="n">${i < now ? '✓' : i}</span><div style="flex:1;min-width:0"><b>${title}</b><small class="muted">${sub}</small>${i === now ? body : ''}</div></div>`;
+  el.innerHTML = `${hero('Selesai shift', fdate(today()) + ' · ' + nowHM().replace(':', '.') + (sch && sch.ends ? ' · jadwal pulang ' + hm(sch.ends) : ''), 'beranda')}
+  <section class="ra-now fl"><span class="lbl">3 langkah, berurutan</span>
+    ${step(1, 'Tutup kas', !kasA && kasOk ? 'Tidak ada kas yang perlu ditutup' : kasOk ? 'Kas shift sudah ditutup' : 'Kas shift masih terbuka', `<button class="btn pri ra-big" style="margin-top:10px" data-start="${kasA ? kasA.id : (A[0] || {}).id}">Tutup kas di panel Kasir →</button><small class="muted fl-sub">Panel terbuka di tab baru. Setelah kas ditutup, kembali ke sini.</small><button class="btn sm" style="margin-top:8px" data-a="cek">Sudah ditutup, cek lagi</button>`)}
+    ${step(2, 'Ceklis tutup', T.items.length ? (T.done.length + ' dari ' + T.items.length + (T.ok ? ' · lengkap' : '')) : 'Tidak ada ceklis tutup', T.items.length ? ckForm('tutup', 'Simpan ceklis tutup →') : '')}
+    ${step(3, 'Absen pulang', 'Jam pulang tercatat ' + nowHM().replace(':', '.'), `${pe > 30 ? `<label class="chk" style="margin-top:10px"><input type="checkbox" id="otq" checked><span><b>Ajukan lembur ${jam(pe)}</b><small class="muted">${hm(sch.ends)} – ${nowHM().replace(':', '.')} · diputuskan Operasional</small></span></label><input class="inp" id="otr" placeholder="Alasan lembur (wajib bila diajukan)" style="margin-top:6px">` : ''}<button class="btn ra-big ra-dark" style="margin-top:10px" data-a="out">Absen pulang sekarang</button>`)}
+    ${progBar(4)}</section>
+  <p class="muted small" style="margin:0;text-align:center">Lupa absen pulang? Tercatat otomatis 1 jam setelah shift berakhir.</p></div>`;
+  wireCk(el); wirePanel(el);
+  const prev = el.onclick;
+  el.onclick = async (e) => { const a = e.target.closest('[data-a]'); if (!a) return prev && prev(e);
+    try {
+      if (a.dataset.a === 'cek') return reload();
+      if (a.dataset.a === 'out') { const q = el.querySelector('#otq'), why = ((el.querySelector('#otr') || {}).value || '').trim();
+        if (q && q.checked && !why) return toast('Tulis alasan lembur, atau hapus centang lembur', 'err');
+        if (!await confirmBox('Absen pulang sekarang?', 'Absen pulang')) return; a.disabled = true;
+        await db.rpc('ops_clock_out');
+        if (q && q.checked) { try { await db.rpc('ops_ot_request', { p_day: today(), p_starts: String(sch.ends).slice(0, 5), p_ends: nowHM(), p_reason: why }); toast('Absen pulang tercatat · lembur diajukan'); } catch (er) { toast('Absen pulang tercatat, tapi lembur gagal diajukan: ' + er.message, 'err'); } }
+        else toast('Absen pulang tercatat · terima kasih!');
+        return go('beranda'); }
+    } catch (er) { a.disabled = false; toast(er.message, 'err'); }
+  };
+}
 
 // ---------- Ceklis ----------
 async function vCeklis(el) { const { isIn, isOut } = state(), B = ckDone('buka'), T = ckDone('tutup');
@@ -363,7 +409,7 @@ async function vCoba(el) {
     try { await db.rpc('ops_assign', { p_person: ctx.me.id, p_position: f.pos, p_branch: f.br, p_start: today(), p_reason: 'Coba alur petugas', p_mode: 'tambahan' }); toast('Penugasan coba aktif'); go('beranda'); } catch (er) { toast(er.message, 'err'); } };
 }
 
-const VIEWS = { beranda: vBeranda, absen: vAbsen, kehadiran: vKehadiran, pengajuan: vPengajuan, ajukan: vAjukan, akun: vAkun, slip: vSlip, jadwal: vJadwal, ceklis: vCeklis, performa: vPerforma, panel: vPanel, coba: vCoba };
+const VIEWS = { selesai: vSelesai, beranda: vBeranda, absen: vAbsen, kehadiran: vKehadiran, pengajuan: vPengajuan, ajukan: vAjukan, akun: vAkun, slip: vSlip, jadwal: vJadwal, ceklis: vCeklis, performa: vPerforma, panel: vPanel, coba: vCoba };
 
 // ---------- mulai ----------
 // konteks ringan: cukup data diri + peran (tanpa memuat seluruh daftar orang & pengaturan holding)
