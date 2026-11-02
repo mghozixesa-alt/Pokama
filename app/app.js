@@ -133,7 +133,6 @@ async function route() {
   const k = (location.hash.replace(/^#\/?/, '').split('?')[0] || 'kkh');
   const view = document.getElementById('view'); if (!view) return;
   const el = document.createElement('div'); el.className = 'route'; view.replaceChildren(el);
-  if (k === 'kkh' && (ctx.modules || []).length) { const t = document.createElement('div'); t.innerHTML = modStrip(); view.prepend(t.firstElementChild); }
   new MutationObserver(() => labelTables(el)).observe(el, { childList: true, subtree: true });
   document.querySelectorAll('[data-k]').forEach(a => a.classList.toggle('on', a.dataset.k === k));
   const r = FLAT.find(x => x[0] === k);
