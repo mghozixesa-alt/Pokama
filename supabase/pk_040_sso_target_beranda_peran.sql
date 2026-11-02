@@ -1,0 +1,4 @@
+-- pk_040 (diterapkan 3 Nov 2026): SSO Operasional dari Pokama untuk pemantau/keuangan/kepala cabang
+-- tidak lagi menuju MgmtDashboard (pensiun), tetapi beranda peran masing-masing.
+-- Isi lengkap fungsi: lihat pk_ra_sso_target di database (CREATE OR REPLACE, tanpa perubahan data).
+-- viewer → OpsBeranda · finance → KeuDasbor · branch_head → PosHariIni

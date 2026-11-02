@@ -7,7 +7,6 @@ import kehadiran from './screens/kehadiran.js';
 import unit from './screens/unit.js';
 import tim from './screens/tim.js';
 import sistem from './screens/sistem.js';
-import ops from './screens/ops.js';
 import setuju, { inboxCount } from './screens/setuju.js';
 
 const I = {
@@ -52,19 +51,12 @@ const BASE_ROUTES = [
 ];
 let ROUTES = BASE_ROUTES, FLAT = ROUTES.flatMap(([, r]) => r), MOBILE = ['kkh', 'tugas', 'review', 'belanja'];
 // Sistem Kerja Operasional punya alamat sendiri: ops.pokama.org (app.pokama.org tetap untuk Sistem Kerja holding)
-const OPS_HOST = false; // ops.pokama.org dilayani halaman terpisah (ops/index.html) untuk petugas operasional
 const OPS_URL = 'https://ops.pokama.org/';
-const SHIFT = ['shift', 'Shift Saya', 'clock', ops.shift], OPS = ['ops', 'Tim Operasional', 'gauge', ops.team];
-// Sistem Kerja Operasional: staf lapangan hanya melihat Shift Saya; Operasional mendapat Tim Operasional
 function buildRoutes() {
-  const o = ctx.ops || {}, lap = ctx.me.role === 'lapangan', set = ['pengaturan', 'Pengaturan', 'cog', sistem.pengaturan];
-  if (OPS_HOST) {
-    const items = [].concat(lap || o.field ? [SHIFT] : [], o.mgr ? [OPS] : []);
-    ROUTES = [['OPERASIONAL', items], ['SISTEM', [set]]]; MOBILE = items.map(x => x[0]).concat(['pengaturan']).slice(0, 4);
-  } else { ROUTES = BASE_ROUTES; /* manajemen Kerja lapangan ada di Rentalaja → Operasional (OpsKerja) */ MOBILE = ['kkh', 'tugas', 'review', 'belanja']; }
+  ROUTES = BASE_ROUTES; /* petugas lapangan: ops.pokama.org; manajemen Kerja lapangan: Rentalaja → Operasional (OpsKerja) */ MOBILE = ['kkh', 'tugas', 'review', 'belanja'];
   FLAT = ROUTES.flatMap(([, r]) => r);
 }
-const HOME = () => OPS_HOST ? ((ctx.me.role === 'lapangan' || (ctx.ops || {}).field) ? 'shift' : 'ops') : 'kkh';
+const HOME = () => 'kkh';
 const HIDDEN = { performa: (r) => !['ceo', 'keuangan'].includes(r) && false };
 
 const root = document.getElementById('app');
@@ -73,7 +65,7 @@ const root = document.getElementById('app');
 function loginView(msg) {
   root.innerHTML = `<main class="login"><div class="login-card">
     <img class="login-logo" src="img/pokama-logo.png" alt="Pokama">
-    <div><h1>Masuk</h1><p class="muted small">${OPS_HOST ? 'Sistem Kerja Operasional · staf lapangan Rentalaja' : 'Sistem Kerja Harian · PT Popo Karya Investama'}</p></div>
+    <div><h1>Masuk</h1><p class="muted small">Sistem Kerja Harian · PT Popo Karya Investama</p></div>
     ${msg ? `<p class="form-err">${esc(msg)}</p>` : ''}
     <button class="btn sec big" type="button" id="g">${googleIcon}Masuk dengan Google</button>
     <div class="or">atau pakai email</div>
@@ -104,7 +96,7 @@ function shell() {
     `<a href="#/${k}" data-k="${k}">${svg(ic)}<span>${l}</span><b class="badge" data-badge="${k}" hidden></b></a>`).join('')}</div>`).join('')
     + `<div class="nav-sec" id="modnav" hidden></div>`;
   root.innerHTML = `<div class="shell">
-    <nav class="side" aria-label="Menu utama"><div class="brand-row"><a class="brand" href="#/${HOME()}"><img src="img/pokama-logo.png" alt="Pokama"></a><button type="button" class="bell" data-bell aria-label="Notifikasi">${svg('bell', 20)}<b class="badge" data-badge="ntf" hidden></b></button></div><span class="muted small brand-sub">${OPS_HOST ? 'Sistem Kerja Operasional · Rentalaja' : 'Sistem Kerja Harian'}</span>${nav}
+    <nav class="side" aria-label="Menu utama"><div class="brand-row"><a class="brand" href="#/${HOME()}"><img src="img/pokama-logo.png" alt="Pokama"></a><button type="button" class="bell" data-bell aria-label="Notifikasi">${svg('bell', 20)}<b class="badge" data-badge="ntf" hidden></b></button></div><span class="muted small brand-sub">Sistem Kerja Harian</span>${nav}
       <div class="side-me"><a href="#/pengaturan" class="me">${avatar(me.id, 36)}<span><b>${esc(me.nickname || me.name)}</b><small>${esc(me.title || ROLE[me.role])}</small></span></a>
       <button class="link mute" type="button" id="logout">Keluar</button></div></nav>
     <button type="button" class="bell m-bell" data-bell aria-label="Notifikasi">${svg('bell', 22)}<b class="badge" data-badge="ntf" hidden></b></button>
@@ -171,8 +163,7 @@ async function route() {
 }
 // ---------- Pusat Kerja: modul Pokama sesuai peran (daftar & angka dari fungsi pk_modules) ----------
 async function loadModules() {
-  if (OPS_HOST) ctx.modules = ctx.me.role === 'lapangan' ? [] : [{ k: 'pokama', name: 'Sistem Kerja Pokama', href: 'https://app.pokama.org/', note: 'KKH, tugas, belanja, modul', n: 0 }];
-  else { try { const { db } = await import('./core.js'); ctx.modules = (await db.rpc('pk_modules')) || []; } catch (e) { ctx.modules = ctx.modules || []; }
+  { try { const { db } = await import('./core.js'); ctx.modules = (await db.rpc('pk_modules')) || []; } catch (e) { ctx.modules = ctx.modules || []; }
     const o = ctx.ops || {};
     if ((o.field || o.mgr) && ctx.me.role !== 'lapangan') ctx.modules = [{ k: 'pk_ops', name: 'Kerja Lapangan', href: OPS_URL, note: 'ops.pokama.org · absen, pengajuan, panel kerja petugas', n: 0, ext: true, sso: true }].concat(ctx.modules); }
   const nav = document.getElementById('modnav');
@@ -230,12 +221,11 @@ async function boot() {
     await import('./core.js').then(m => { try { localStorage.removeItem('pokama.session'); } catch (e) {} });
     loginView('Akun ini belum terdaftar di Sistem Kerja Pokama. Minta Kepala Staf menambahkan Anda di Tim & Peran.'); return; }
   try { ctx.ops = await db.rpc('ops_whoami'); } catch (e) { ctx.ops = {}; }
-  if (!OPS_HOST && ctx.me.role === 'lapangan') { location.replace(OPS_URL); return; }
-  if (OPS_HOST && ctx.me.role !== 'lapangan' && !ctx.ops.field && !ctx.ops.mgr) { loginView('Akun ini tidak punya akses Sistem Kerja Operasional. Buka Sistem Kerja Pokama di app.pokama.org.'); return; }
+  if (ctx.me.role === 'lapangan') { location.replace(OPS_URL); return; }
   buildRoutes();
   shell();
   await loadModules();
-  if (!location.hash || location.hash === '#/' ) location.hash = OPS_HOST ? '#/' + HOME() : window.matchMedia('(max-width: 760px)').matches ? '#/kkh' : (ctx.me.role === 'kepala_staf' ? '#/review' : ctx.me.role === 'keuangan' ? '#/belanja' : '#/kkh');
+  if (!location.hash || location.hash === '#/' ) location.hash = window.matchMedia('(max-width: 760px)').matches ? '#/kkh' : (ctx.me.role === 'kepala_staf' ? '#/review' : ctx.me.role === 'keuangan' ? '#/belanja' : '#/kkh');
   window.onhashchange = route;
   route();
   askPhone();

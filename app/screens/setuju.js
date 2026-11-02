@@ -1,16 +1,28 @@
 // Kotak Persetujuan · satu tempat untuk semua yang menunggu keputusan Anda:
 // review tugas, RAB/LPJ, Kerja lapangan (cuti/izin/sakit, lembur, reimburse, kasbon), gaji & klaim tahap Keuangan,
 // persetujuan Rentalaja (owner), mitra affiliate, dan investor. Diputuskan langsung di sini bila bisa; sisanya dibuka di modulnya.
-import { db, esc, fdate, modal, field, toast, chip } from '../core.js';
+import { ctx, db, esc, fdate, modal, field, toast, chip, nick } from '../core.js';
 
 const rp = (n) => 'Rp' + Math.round(+n || 0).toLocaleString('id-ID');
-const SRC = { review: ['Review', 'blue'], rab: ['Belanja', 'yellow'], ops: ['Kerja lapangan', 'green'], fin: ['Keuangan', 'yellow'], ra: ['Rentalaja', 'blue'], af: ['Mitra', 'gray'], iv: ['Investor', 'gray'] };
+const SRC = { hold: ['Kehadiran', 'green'], review: ['Review', 'blue'], rab: ['Belanja', 'yellow'], ops: ['Kerja lapangan', 'green'], fin: ['Keuangan', 'yellow'], ra: ['Rentalaja', 'blue'], af: ['Mitra', 'gray'], iv: ['Investor', 'gray'] };
 const ago = (t) => { if (!t) return ''; const m = Math.max(0, Math.round((Date.now() - new Date(t)) / 6e4)); return m < 60 ? m + ' menit' : m < 1440 ? Math.round(m / 60) + ' jam' : Math.round(m / 1440) + ' hari'; };
 
-export async function inboxCount() { try { const r = await db.rpc('pk_inbox'); return (r || []).length; } catch (e) { return 0; } }
+/* cuti, izin & WFA staf holding: diputuskan berurutan sesuai rantai atasan (chain[step]) */
+async function holdItems() {
+  try {
+    const me = ctx.me && ctx.me.id; if (!me) return [];
+    const [lv, wf] = await Promise.all([db.get('pk_leave', 'select=*&status=eq.diajukan&order=day'), db.get('pk_wfa', 'select=*&status=eq.diajukan&order=day')]);
+    const mine = (r) => r.person_id !== me && (r.chain || [])[r.step || 0] === me;
+    const name = { cuti: 'Cuti', izin: 'Izin', libur: 'Libur', sakit: 'Sakit' };
+    return lv.filter(mine).map(r => ({ src: 'hold', id: r.id, act: 'hold', t: 'leave', kind: name[r.kind] || r.kind, title: nick(r.person_id) + (r.replacement_id ? ' · pengganti ' + nick(r.replacement_id) : ''), sub: (r.end_day && r.end_day !== r.day ? 's/d ' + fdate(r.end_day) + ' · ' : '') + (r.reason || ''), day: r.day, since: r.created_at }))
+      .concat(wf.filter(mine).map(w => ({ src: 'hold', id: w.id, act: 'hold', t: 'wfa', kind: 'WFA', title: nick(w.person_id), sub: w.reason || '', day: w.day, since: w.created_at })));
+  } catch (e) { return []; }
+}
+async function inbox() { const [a, b] = await Promise.all([db.rpc('pk_inbox').catch(() => []), holdItems()]); return b.concat(a || []); }
+export async function inboxCount() { try { return (await inbox()).length; } catch (e) { return 0; } }
 
 export default async function setuju(el, params, reload) {
-  const all = (await db.rpc('pk_inbox')) || [];
+  const all = await inbox();
   const f = params.get('f') || 'semua';
   const groups = Object.keys(SRC).filter(k => all.some(x => x.src === k));
   const list = all.filter(x => f === 'semua' || x.src === f);
@@ -33,6 +45,7 @@ export default async function setuju(el, params, reload) {
       if (act === 'ops') return db.rpc(t === 'leave' ? 'ops_leave_decide' : t === 'ot' ? 'ops_ot_decide' : 'ops_claim_decide', { p_id: id, p_ok: ok, p_note: note || null });
       if (act === 'finclaim') return db.rpc('pk_fin_ops_claim_decide', { p_id: id, p_ok: ok, p_note: note || null });
       if (act === 'ra') return db.rpc('decide_approval', { p_id: id, p_approve: ok, p_note: note || null });
+      if (act === 'hold') return t === 'wfa' ? db.rpc('pk_wfa_decide', { p_id: id, p_approve: ok, ...(note ? { p_note: note } : {}) }) : db.rpc('pk_leave_decision', { p_id: id, p_approve: ok, ...(note ? { p_note: note } : {}) });
     };
     try {
       if (ok) { b.disabled = true; await call(null); toast('Disetujui'); reload(); }
