@@ -136,7 +136,7 @@ async function shift(el, params, reload) {
 // ================= Tim Operasional =================
 async function team(el, params, reload) {
   const day = params.get('d') || today();
-  const t = await db.rpc('ops_team', { p_day: day });
+  const [t, LV] = await Promise.all([db.rpc('ops_team', { p_day: day }), db.rpc('ops_leave_pending')]);
   const P = t.people || [], BR = t.branches || [], OT = t.ot || [], IT = t.items || [];
   const isToday = day === today();
   const pendOT = OT.filter(o => o.status === 'diajukan');
@@ -169,7 +169,8 @@ async function team(el, params, reload) {
     <div class="tile"><span>Lembur menunggu</span><b class="${pendOT.length ? 'red' : ''}">${pendOT.length}</b><small>${jam(OT.filter(o => o.status === 'disetujui').reduce((s, o) => s + o.minutes, 0))} disetujui bulan ini</small></div>
   </div>
   ${pendOT.length ? `<section class="card absen"><h2>Lembur menunggu keputusan</h2><div class="list">${pendOT.map(o => `<div class="li row gap wrap"><span style="flex:1"><b>${esc(o.nick)}</b> · ${fdate(o.day)} ${hm(o.starts)}–${hm(o.ends)} (${jam(o.minutes)})<br><small class="muted">${esc(o.reason || '')}</small></span><button class="btn sm pri" data-otok="${o.id}">Setujui</button><button class="btn sm" data-otno="${o.id}">Tolak</button></div>`).join('')}</div></section>` : ''}
-  ${!P.length ? `<section class="card"><h2>Belum ada staf lapangan</h2><p class="muted">Tambahkan kasir, CS, runner, sopir, QC, teknisi, atau kepala cabang. Mereka masuk Sistem Kerja dengan akun Google (email yang didaftarkan), absen dan ceklis di sini, lalu membuka panel Rentalaja sesuai penugasan tanpa login lagi.</p><button class="btn pri" data-a="add">+ Staf lapangan</button></section>` : ''}
+  ${(LV || []).length ? `<section class="card absen"><h2>Cuti, izin, sakit menunggu keputusan</h2><div class="list">${LV.map(l => `<div class="li row gap wrap"><span style="flex:1"><b>${esc(l.nick)}</b> · ${({ cuti: 'Cuti', izin: 'Izin', sakit: 'Sakit' })[l.kind] || l.kind} ${fdate(l.day)}${l.end_day && l.end_day !== l.day ? ' – ' + fdate(l.end_day) : ''}<br><small class="muted">${esc(l.reason || '')}</small></span><button class="btn sm pri" data-lvok="${l.id}">Setujui</button><button class="btn sm" data-lvno="${l.id}">Tolak</button></div>`).join('')}</div></section>` : ''}
+  ${!P.length ? `<section class="card"><h2>Belum ada staf lapangan</h2><p class="muted">Tambahkan kasir, CS, runner, sopir, QC, teknisi, atau kepala cabang. Mereka masuk ops.pokama.org dengan akun Google (email yang didaftarkan), absen dan ceklis di sini, lalu membuka panel Rentalaja sesuai penugasan tanpa login lagi.</p><button class="btn pri" data-a="add">+ Staf lapangan</button></section>` : ''}
   ${brOrder.map(n => `<section class="card pad0 scroll-x"><div class="row between" style="padding:14px 16px 4px"><h2 style="margin:0">${esc(n)}</h2><small class="muted">${byBr[n].length} orang · ${byBr[n].filter(x => x.p.att && x.p.att.in).length} sudah absen</small></div>
     <table class="tbl"><thead><tr><th>Nama</th><th>Posisi</th><th>Jadwal</th><th>Kehadiran</th><th>Ceklis</th><th>Bulan ini</th><th></th></tr></thead><tbody>${byBr[n].map(row).join('')}</tbody></table></section>`).join('')}
   ${free.length ? `<section class="card"><h2>Belum ditugaskan</h2><div class="list">${free.map(p => `<div class="li row gap wrap"><b style="flex:1">${esc(p.nick)} <small class="muted">${esc(p.email || '')}</small></b>${p.next ? `<small class="muted">mulai ${fdate(p.next.start_day, false)} sebagai ${esc(p.next.pos.label)} · ${esc(p.next.branch)}</small>` : ''}<button class="btn sm pri" data-mv="${p.id}">Tugaskan</button></div>`).join('')}</div></section>` : ''}
@@ -194,7 +195,7 @@ async function team(el, params, reload) {
           + `<div class="g2">${field('Posisi', posSel(''))}${field('Cabang', brSel(''))}</div>` + field('Mulai bertugas', `<input type="date" name="d" class="inp" value="${today()}">`),
           { submit: 'Tambahkan', onSubmit: async (f) => { need(f.name, 'Isi nama'); need(f.email, 'Isi email Google'); need(f.pos, 'Pilih posisi'); need(f.br, 'Pilih cabang');
             await db.rpc('ops_person_add', { p_name: f.name, p_nick: f.nick, p_email: f.email, p_phone: f.wa, p_position: f.pos, p_branch: f.br, p_start: f.d || today() }); } });
-        if (r) { toast('Staf ditambahkan. Minta ia masuk app.pokama.org dengan Google.'); reload(); } return;
+        if (r) { toast('Staf ditambahkan. Minta ia masuk ops.pokama.org dengan Google.'); reload(); } return;
       }
       if ((b = g('mv'))) { const p = pOf(b.dataset.mv); const cur = p.assigns[0];
         const r = await modal((p.assigns.length ? 'Mutasi · ' : 'Tugaskan · ') + p.nick, `${p.assigns.length ? `<p class="muted small" style="margin-top:0">Sekarang: ${p.assigns.map(a => esc(a.pos.label) + ' · ' + esc(a.branch)).join(', ')}</p>` : ''}`
@@ -223,6 +224,11 @@ async function team(el, params, reload) {
           { submit: 'Tugaskan', onSubmit: async (f) => { need(f.p, 'Pilih staf'); need(f.d, 'Pilih tanggal'); need(f.s, 'Isi jam mulai'); need(f.e, 'Isi jam selesai'); need((f.why || '').trim(), 'Tulis keperluan');
             await db.rpc('ops_ot_assign', { p_person: f.p, p_day: f.d, p_starts: f.s, p_ends: f.e, p_reason: f.why.trim() }); } });
         if (r) { toast('Lembur ditugaskan · staf mendapat notifikasi'); reload(); } return; }
+      if ((b = g('lvok'))) { await db.rpc('ops_leave_decide', { p_id: b.dataset.lvok, p_ok: true }); toast('Disetujui'); return reload(); }
+      if ((b = g('lvno'))) { const l = LV.find(x => x.id === b.dataset.lvno);
+        const r = await modal('Tolak pengajuan ' + l.nick, field('Alasan penolakan', '<textarea name="note" class="inp" rows="3"></textarea>'),
+          { submit: 'Tolak', onSubmit: async (f) => { need((f.note || '').trim(), 'Tulis alasan'); await db.rpc('ops_leave_decide', { p_id: l.id, p_ok: false, p_note: f.note.trim() }); } });
+        if (r) { toast('Ditolak · alasan dikirim'); reload(); } return; }
       if ((b = g('otok'))) { await db.rpc('ops_ot_decide', { p_id: b.dataset.otok, p_ok: true }); toast('Lembur disetujui'); return reload(); }
       if ((b = g('otno'))) { const o = OT.find(x => x.id === b.dataset.otno);
         const r = await modal('Tolak lembur ' + o.nick, `<p class="muted small" style="margin-top:0">${fdate(o.day)} ${hm(o.starts)}–${hm(o.ends)} · ${esc(o.reason || '')}</p>` + field('Alasan penolakan', '<textarea name="note" class="inp" rows="3"></textarea>'),

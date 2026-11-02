@@ -51,7 +51,7 @@ const BASE_ROUTES = [
 ];
 let ROUTES = BASE_ROUTES, FLAT = ROUTES.flatMap(([, r]) => r), MOBILE = ['kkh', 'tugas', 'review', 'belanja'];
 // Sistem Kerja Operasional punya alamat sendiri: ops.pokama.org (app.pokama.org tetap untuk Sistem Kerja holding)
-const OPS_HOST = /^ops\./.test(location.hostname) || (location.hostname === 'localhost' && /[?&]ops\b/.test(location.search));
+const OPS_HOST = false; // ops.pokama.org dilayani halaman terpisah (ops/index.html) untuk petugas operasional
 const OPS_URL = 'https://ops.pokama.org/';
 const SHIFT = ['shift', 'Shift Saya', 'clock', ops.shift], OPS = ['ops', 'Tim Operasional', 'gauge', ops.team];
 // Sistem Kerja Operasional: staf lapangan hanya melihat Shift Saya; Operasional mendapat Tim Operasional
@@ -60,7 +60,7 @@ function buildRoutes() {
   if (OPS_HOST) {
     const items = [].concat(lap || o.field ? [SHIFT] : [], o.mgr ? [OPS] : []);
     ROUTES = [['OPERASIONAL', items], ['SISTEM', [set]]]; MOBILE = items.map(x => x[0]).concat(['pengaturan']).slice(0, 4);
-  } else { ROUTES = BASE_ROUTES; MOBILE = ['kkh', 'tugas', 'review', 'belanja']; }
+  } else { ROUTES = BASE_ROUTES.map(([sec, items]) => [sec, items.slice()]); if (o.mgr) ROUTES[1][1].push(OPS); MOBILE = ['kkh', 'tugas', 'review', 'belanja']; }
   FLAT = ROUTES.flatMap(([, r]) => r);
 }
 const HOME = () => OPS_HOST ? ((ctx.me.role === 'lapangan' || (ctx.ops || {}).field) ? 'shift' : 'ops') : 'kkh';
@@ -154,7 +154,7 @@ async function route() {
   el.innerHTML = '<div class="loading">Memuat…</div>';
   window.scrollTo(0, 0);
   try {
-    if (!OPS_HOST && (k === 'shift' || k === 'ops')) { location.href = OPS_URL + '#/' + k; return; }
+    if (k === 'shift') { location.href = OPS_URL; return; }
     if (k === 'menu') { menuView(el); document.title = 'Menu · Pokama'; return; }
     if (!r) { location.hash = '#/' + HOME(); return; }
     document.title = r[1] + ' · Pokama';
@@ -172,8 +172,7 @@ async function loadModules() {
   if (OPS_HOST) ctx.modules = ctx.me.role === 'lapangan' ? [] : [{ k: 'pokama', name: 'Sistem Kerja Pokama', href: 'https://app.pokama.org/', note: 'KKH, tugas, belanja, modul', n: 0 }];
   else { try { const { db } = await import('./core.js'); ctx.modules = (await db.rpc('pk_modules')) || []; } catch (e) { ctx.modules = ctx.modules || []; }
     const o = ctx.ops || {};
-    if (o.mgr) ctx.modules = [{ k: 'ops', name: 'Tim Operasional', href: OPS_URL + '#/ops', note: 'ops.pokama.org · penugasan, mutasi, jadwal, lembur staf lapangan', n: 0, ext: true }].concat(ctx.modules);
-    else if (o.field) ctx.modules = [{ k: 'ops', name: 'Shift Saya', href: OPS_URL + '#/shift', note: 'ops.pokama.org · absen, ceklis, panel kerja', n: 0, ext: true }].concat(ctx.modules); }
+    if (o.field && ctx.me.role !== 'lapangan') ctx.modules = [{ k: 'ops', name: 'Kerja Lapangan', href: OPS_URL, note: 'ops.pokama.org · absen, pengajuan, panel kerja', n: 0, ext: true }].concat(ctx.modules); }
   const nav = document.getElementById('modnav');
   if (nav) { nav.hidden = !ctx.modules.length; const navIt = (m => `<a href="${esc(m.href)}"${m.sso ? ` data-sso="${esc(m.k)}"` : ''}${m.ext ? ' target="_blank" rel="noopener"' : ''} title="${esc(m.note || '')}">${modIc(m, 16, 28)}<span>${esc(m.name)}</span>${m.n ? `<b class="badge${m.urgent ? '' : ' soft'}">${m.n}</b>` : ''}</a>`);
     const pm = ctx.modules.filter(m => !/^ra_/.test(m.k)), rm = ctx.modules.filter(m => /^ra_/.test(m.k));

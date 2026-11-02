@@ -25,6 +25,17 @@
  "cleanUrls": true,
  "redirects": [
   {
+   "source": "/(sistem|marketing|keuangan|affiliate|investor|mitra|iv)(.*)",
+   "has": [
+    {
+     "type": "host",
+     "value": "ops.pokama.org"
+    }
+   ],
+   "destination": "https://app.pokama.org/$1$2",
+   "permanent": false
+  },
+  {
    "source": "/iv/admin",
    "has": [
     {
@@ -345,6 +356,16 @@
   {
    "source": "/affiliate",
    "destination": "/mitra/admin"
+  },
+  {
+   "source": "/",
+   "has": [
+    {
+     "type": "host",
+     "value": "ops.pokama.org"
+    }
+   ],
+   "destination": "/ops/index"
   },
   {
    "source": "/",
