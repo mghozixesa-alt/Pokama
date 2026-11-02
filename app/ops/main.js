@@ -16,7 +16,31 @@ const dist = (a, b, c, d) => { const R = 6371e3, r = (x) => x * Math.PI / 180; c
 const nowHM = () => new Date(Date.now() + 7 * 3600e3).toISOString().slice(11, 16);
 const ST = { diajukan: ['Menunggu', 'yellow'], disetujui: ['Disetujui', 'green'], ditolak: ['Ditolak', 'red'], batal: ['Dibatalkan', 'gray'], dibayar: ['Dibayar', 'green'] };
 const chipS = (s) => `<span class="chip ${(ST[s] || ['', 'gray'])[1]}">${(ST[s] || [s])[0]}</span>`;
-const TYPES = { cuti: ['Cuti', '🏖️'], izin: ['Izin', '🙋'], sakit: ['Sakit', '🤒'], lembur: ['Lembur', '⏱️'], reimburse: ['Reimburse', '🧾'], kasbon: ['Kasbon', '💵'] };
+// ikon garis gaya Rentalaja App (stroke, sudut membulat), dipakai di menu cepat, pengajuan, lencana
+const RI = {
+  cuti: '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/><path d="M12 13.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z"/>',
+  izin: '<path d="M6 21V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v17"/><path d="M3 21h18M14 12h.01"/>',
+  sakit: '<path d="M12 20s-8-5.2-8-11a4.5 4.5 0 0 1 8-2.8A4.5 4.5 0 0 1 20 9c0 5.8-8 11-8 11z"/><path d="M4.5 12H9l1.5-2.5 2.5 5 1.5-2.5h5"/>',
+  lembur: '<circle cx="11" cy="13" r="8"/><path d="M11 9v4l2.5 1.5M19 2v4M17 4h4"/>',
+  reimburse: '<path d="M6 3h12v18l-2.5-1.6L13 21l-2-1.6L9 21l-3-2z"/><path d="M9 8h6M9 12h6M9 16h3"/>',
+  kasbon: '<rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18"/><circle cx="16" cy="14.5" r="1.4"/>',
+  slip: '<path d="M14 3H6v18h12V7z"/><path d="M14 3v4h4M9 12h6M9 16h6"/>',
+  jadwal: '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18M9 15l2 2 4-4"/>',
+  riwayat: '<path d="M4 20V10M10 20V4M16 20v-7M2 20h20"/>',
+  ceklis: '<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8.5l1.5 1.5L12 7.5M8 14.5l1.5 1.5L12 13.5M14.5 9h2.5M14.5 15h2.5"/>',
+  performa: '<path d="M8 21h8M12 17v4M7 4h10v4a5 5 0 0 1-10 0z"/><path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/>',
+  panel: '<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>',
+  kamera: '<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>',
+  pin: '<path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/>',
+  kunci: '<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>',
+  api: '<path d="M12 3c.8 3.6 5 5 5 10a5 5 0 0 1-10 0c0-2.6 1.6-3.8 2-6.2 1.6 1.2 2.8 2.7 3 4.7"/>',
+  keluar: '<path d="M15 4h4v16h-4M10 8l-4 4 4 4M6 12h11"/>',
+  tim: '<circle cx="9" cy="8" r="3.5"/><path d="M2 20c1-3.5 3.8-5 7-5s6 1.5 7 5M16 4.5a3.5 3.5 0 0 1 0 7M18 15c2 .6 3.4 2.2 4 5"/>',
+  tepat: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>', hadir: '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18M9 15l2 2 4-4"/>',
+  kas: '<rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18"/><circle cx="16" cy="14.5" r="1.4"/>', antar: '<path d="M3 7h11v9H3zM14 10h4l3 3v3h-7"/><circle cx="7" cy="18" r="1.6"/><circle cx="17" cy="18" r="1.6"/>',
+};
+const ri = (k, s = 22, c = 'currentColor') => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${RI[k] || RI.panel}</svg>`;
+const TYPES = { cuti: ['Cuti', 'cuti'], izin: ['Izin', 'izin'], sakit: ['Sakit', 'sakit'], lembur: ['Lembur', 'lembur'], reimburse: ['Reimburse', 'reimburse'], kasbon: ['Kasbon', 'kasbon'] };
 const IC = {
   beranda: '<path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-5h4v5"/>',
   kehadiran: '<path d="M8 3v3M16 3v3"/><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18"/><path d="m9 15 2 2 4-4"/>',
@@ -26,9 +50,9 @@ const IC = {
 };
 const ico = (k, s = 22) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[k]}</svg>`;
 const NAV = [['beranda', 'Beranda'], ['kehadiran', 'Kehadiran'], ['absen', 'Absen'], ['pengajuan', 'Pengajuan'], ['akun', 'Akun']];
-const MENU = [['ajukan?k=cuti', '🏖️', 'Cuti'], ['ajukan?k=izin', '🙋', 'Izin'], ['ajukan?k=sakit', '🤒', 'Sakit'], ['ajukan?k=lembur', '⏱️', 'Lembur'],
-  ['ajukan?k=reimburse', '🧾', 'Reimburse'], ['ajukan?k=kasbon', '💵', 'Kasbon'], ['slip', '📄', 'Slip gaji'], ['jadwal', '🗓️', 'Jadwal'],
-  ['kehadiran', '📊', 'Riwayat'], ['ceklis', '✅', 'Ceklis'], ['performa', '🏆', 'Performa'], ['panel', '🧭', 'Panel kerja']];
+const MENU = [['ajukan?k=cuti', 'cuti', 'Cuti'], ['ajukan?k=izin', 'izin', 'Izin'], ['ajukan?k=sakit', 'sakit', 'Sakit'], ['ajukan?k=lembur', 'lembur', 'Lembur'],
+  ['ajukan?k=reimburse', 'reimburse', 'Reimburse'], ['ajukan?k=kasbon', 'kasbon', 'Kasbon'], ['slip', 'slip', 'Slip gaji'], ['jadwal', 'jadwal', 'Jadwal'],
+  ['kehadiran', 'riwayat', 'Riwayat'], ['ceklis', 'ceklis', 'Ceklis'], ['performa', 'performa', 'Performa'], ['panel', 'panel', 'Panel kerja']];
 const sapa = () => { const h = +nowHM().slice(0, 2); return h < 11 ? 'Selamat pagi' : h < 15 ? 'Selamat siang' : h < 18 ? 'Selamat sore' : 'Selamat malam'; };
 const nickOf = () => ctx.me.nickname || ctx.me.name;
 // header hijau ala Rentalaja; back = tombol kembali ke Beranda (halaman turunan)
@@ -64,7 +88,7 @@ function shell() {
     <aside class="ra-side"><img class="pk-logo" src="/img/pokama-logo.png" alt="Pokama"><span class="ra-grp">KERJA LAPANGAN</span>
       <nav class="ra-nav" aria-label="Menu">${NAV.map(([k, l]) => `<a href="#/${k}" data-k="${k}">${ico(k, 20)}${l === 'Absen' ? 'Clock in / out' : l}<small data-flag="${k}"></small></a>`).join('')}</nav>
       <span class="ra-grp" style="margin-top:12px">MENU</span>
-      <nav class="ra-nav ra-nav2">${MENU.slice(6).map(([h, e, l]) => `<a href="#/${h}" data-k="${h}"><span class="em">${e}</span>${l}</a>`).join('')}</nav>
+      <nav class="ra-nav ra-nav2">${MENU.slice(6).map(([h, e, l]) => `<a href="#/${h}" data-k="${h}"><span class="em">${ri(e, 19)}</span>${l}</a>`).join('')}</nav>
       <div class="ra-me"><span class="av">${ini}</span><span><b>${esc(nickOf())}</b><small>${esc(ctx.me.title || 'Petugas operasional')}</small></span><button type="button" data-out>Keluar</button></div></aside>
     <main class="ra-main" id="view"></main>
     <nav class="ra-bottom" aria-label="Menu bawah">${NAV.map(([k, l]) => k === 'absen' ? `<a href="#/absen" data-k="absen" class="fab"><span>${ico('absen', 26)}</span>${l}</a>` : `<a href="#/${k}" data-k="${k}"><span>${ico(k, 21)}</span>${l}</a>`).join('')}</nav></div>`;
@@ -111,18 +135,18 @@ async function vBeranda(el) {
       <button class="cout${isOut ? ' done' : ''}" data-go="absen"><small>Clock Out</small><b>${isOut ? clock(att.clock_out) : '--.--'}</b><i>${isOut ? 'shift selesai' : isIn ? 'ketuk saat pulang' : '—'}</i></button></div>
     ${!A.length && WHO.mgr ? `<div class="note small" style="margin:0">Anda masuk sebagai Operasional. <a href="#/coba">Coba sebagai petugas →</a></div>` : !A.length ? '<div class="note small" style="margin:0">Belum ada penugasan. Hubungi Operasional.</div>' : ''}
   </section>
-  <section class="card"><div class="qm">${MENU.map(([h, e, l]) => `<a href="#/${h}" class="qi"><span>${e}</span>${l}${h === 'panel' && !(isIn && !isOut) ? '<i class="lk">🔒</i>' : ''}${h === 'ceklis' && isIn && !isOut && !B.ok ? '<i class="dot"></i>' : ''}</a>`).join('')}</div></section>
+  <section class="card"><div class="qm">${MENU.map(([h, e, l]) => `<a href="#/${h}" class="qi"><span>${ri(e, 24)}</span>${l}${h === 'panel' && !(isIn && !isOut) ? `<i class="lk">${ri('kunci', 12)}</i>` : ''}${h === 'ceklis' && isIn && !isOut && !B.ok ? '<i class="dot"></i>' : ''}</a>`).join('')}</div></section>
   ${isIn && !isOut ? `<section class="card"><div class="row between"><h2>Panel kerja hari ini</h2><a class="small" href="#/ceklis">Ceklis buka ${B.ok ? '✓' : (B.done.length + '/' + B.items.length)}</a></div>${panelCards(true)}</section>` : ''}
-  ${g ? `<a class="card gm-mini-card" href="#/performa"><div class="gm-badge sm"><small>Lv</small><b>${g.level}</b></div><div style="flex:1;min-width:0"><b>${esc(g.title)} · ${g.xp.toLocaleString('id-ID')} XP</b><div class="gm-bar" style="margin:6px 0"><i style="width:${Math.max(4, Math.min(100, Math.round((g.xp - g.lvl_from) / Math.max(1, g.lvl_to - g.lvl_from) * 100)))}%"></i></div><small class="muted">🔥 ${g.streak}× tepat waktu · peringkat #${g.rank || '—'} bulan ini</small></div><span class="go">›</span></a>` : ''}
+  ${g ? `<a class="card gm-mini-card" href="#/performa"><div class="gm-badge sm"><small>Lv</small><b>${g.level}</b></div><div style="flex:1;min-width:0"><b>${esc(g.title)} · ${g.xp.toLocaleString('id-ID')} XP</b><div class="gm-bar" style="margin:6px 0"><i style="width:${Math.max(4, Math.min(100, Math.round((g.xp - g.lvl_from) / Math.max(1, g.lvl_to - g.lvl_from) * 100)))}%"></i></div><small class="muted">${g.streak}× tepat waktu beruntun · peringkat #${g.rank || '—'} bulan ini</small></div><span class="go">›</span></a>` : ''}
   <section class="card"><div class="row between"><h2>Pengajuan terbaru</h2><a class="small" href="#/pengajuan">Lihat semua${pend ? ' · ' + pend + ' menunggu' : ''}</a></div>
     <div class="list ra-list">${(reqs || []).slice(0, 3).map(reqRow).join('') || '<p class="muted small">Belum ada pengajuan.</p>'}</div></section>
   ${(H.next || []).length ? `<section class="card absen"><b>${H.next[0].kind === 'mutasi' ? 'Mutasi' : 'Penugasan'} berikutnya:</b> ${esc(H.next[0].pos.label)} · ${esc(H.next[0].branch)} mulai ${fdate(H.next[0].start_day)}${H.next[0].reason ? '<br><small class="muted">' + esc(H.next[0].reason) + '</small>' : ''}</section>` : ''}
   </div>`;
   wirePanel(el);
 }
-const reqRow = (r) => { const t = TYPES[r.type] || [r.type, '📄'];
+const reqRow = (r) => { const t = TYPES[r.type] || [r.type, 'slip'];
   const what = r.type === 'lembur' ? fdate(r.day) + ' · ' + hm(r.starts) + '–' + hm(r.ends) + ' (' + jam(r.minutes) + ')' : ['reimburse', 'kasbon'].includes(r.type) ? rp(r.amount) + ' · ' + fdate(r.day) : fdate(r.day) + (r.end_day && r.end_day !== r.day ? ' – ' + fdate(r.end_day) : '');
-  return `<div class="li"><span class="ty">${t[1]}</span><span><b>${t[0]}</b> ${r.assigned ? '<span class="chip blue">Ditugaskan</span>' : chipS(r.status)}<br><small>${what}</small><br><small class="muted">${esc(r.note || '')}${r.by && r.status !== 'diajukan' ? ' · ' + esc(r.by) : ''}</small>${r.reply ? `<p class="reject-note${r.status === 'ditolak' ? '' : ' ok'}">${esc(r.reply)}</p>` : ''}</span>${r.status === 'diajukan' && !r.assigned ? `<button class="btn sm" data-cancel="${r.type}:${r.id}">Batalkan</button>` : ''}</div>`; };
+  return `<div class="li"><span class="ty">${ri(t[1], 20)}</span><span><b>${t[0]}</b> ${r.assigned ? '<span class="chip blue">Ditugaskan</span>' : chipS(r.status)}<br><small>${what}</small><br><small class="muted">${esc(r.note || '')}${r.by && r.status !== 'diajukan' ? ' · ' + esc(r.by) : ''}</small>${r.reply ? `<p class="reject-note${r.status === 'ditolak' ? '' : ' ok'}">${esc(r.reply)}</p>` : ''}</span>${r.status === 'diajukan' && !r.assigned ? `<button class="btn sm" data-cancel="${r.type}:${r.id}">Batalkan</button>` : ''}</div>`; };
 
 // ---------- Clock in / out ----------
 async function vAbsen(el) {
@@ -135,8 +159,8 @@ async function vAbsen(el) {
   : isOut ? `<section class="ra-now"><div class="clk"><div class="cin done"><small>Clock In</small><b>${clock(att.clock_in)}</b></div><div class="cout done"><small>Clock Out</small><b>${clock(att.clock_out)}</b></div></div><p class="muted small" style="margin:0">Terima kasih. Lembur? <a href="#/ajukan?k=lembur">Ajukan lembur</a></p></section>`
   : !isIn ? `<section class="ra-now stack">
       ${brs.length > 1 ? `<label class="fld"><span>Lokasi kerja</span><select class="inp" id="abr">${brs.map(a => `<option value="${a.branch_id}">${esc(a.branch)}</option>`).join('')}</select></label>` : `<input type="hidden" id="abr" value="${brs[0].branch_id}"><div><span class="lbl">Lokasi kerja</span><div style="font-weight:800;font-size:16px">${esc(brs[0].branch)}</div></div>`}
-      <label class="ra-shot" id="shot"><span id="selt">📷 Ambil foto selfie</span><input type="file" accept="image/*" capture="user" id="self" hidden></label>
-      <div class="ra-loc">📍 <span id="locst" class="muted">mengambil lokasi…</span><button type="button" class="btn sm" id="locbtn">Perbarui</button></div>
+      <label class="ra-shot" id="shot"><span id="selt">${ri('kamera', 22)} Ambil foto selfie</span><input type="file" accept="image/*" capture="user" id="self" hidden></label>
+      <div class="ra-loc">${ri('pin', 18)} <span id="locst" class="muted">mengambil lokasi…</span><button type="button" class="btn sm" id="locbtn">Perbarui</button></div>
       ${late ? `<label class="fld"><span>Catatan telat (wajib)</span><textarea class="inp" id="anote" rows="2" placeholder="Contoh: ban bocor di jalan"></textarea></label>` : `<label class="fld"><span>Catatan (opsional)</span><input class="inp" id="anote" placeholder="Contoh: langsung ke lokasi tamu"></label>`}
       <button class="btn pri ra-big" data-a="in">Clock In sekarang</button></section>`
   : `<section class="ra-now stack"><div class="clk"><div class="cin done"><small>Clock In</small><b>${clock(att.clock_in)}</b><i>${att.late > 0 ? 'telat ' + jam(att.late) : 'tepat waktu'}</i></div><div class="cout"><small>Clock Out</small><b>${nowHM().replace(':', '.')}</b><i>sekarang</i></div></div>
@@ -154,7 +178,7 @@ async function vAbsen(el) {
   const sf = el.querySelector('#self'); if (sf) sf.onchange = async (e) => { const f = e.target.files[0]; if (!f) return; const t = el.querySelector('#selt'); t.textContent = 'Mengunggah…';
     try { const blob = await shrinkImage(f, 900, .8); const uid = (ctx.byId[ctx.me.id] || {}).user_id; photo = await uploadPhoto('operasional', 'absen/' + uid + '/' + today() + '.jpg', blob);
       el.querySelectorAll('#shot img').forEach(x => x.remove()); const img = document.createElement('img'); img.src = URL.createObjectURL(blob); img.alt = 'Selfie'; el.querySelector('#shot').appendChild(img); t.textContent = ''; }
-    catch (er) { photo = null; t.textContent = '📷 Ambil ulang'; toast(er.message, 'err'); } };
+    catch (er) { photo = null; t.textContent = 'Ambil ulang foto'; toast(er.message, 'err'); } };
   wireCk(el);
   el.onclick = async (e) => { const a = e.target.closest('[data-a]'); if (!a) return;
     try {
@@ -192,7 +216,7 @@ async function vKehadiran(el) {
     <div class="ra-grid3"><div class="ra-kpi"><span>Hadir</span><b>${s.hadir}${s.jadwal ? ' / ' + s.jadwal : ''}</b><small>hari</small></div><div class="ra-kpi"><span>Telat</span><b class="${s.telat ? 'red' : ''}">${s.telat}</b><small>${s.hadir ? Math.round(s.telat / s.hadir * 100) + '% dari hadir' : '—'}</small></div><div class="ra-kpi"><span>Jam kerja</span><b>${jam(s.menit)}</b><small>total</small></div></div></section>
   <section class="card"><div class="list att-list">${(R.days || []).map(d => { const a = d.att;
     const tag = a ? (a.late > 0 ? '<span class="chip yellow">Telat ' + jam(a.late) + '</span>' : '<span class="chip green">Hadir</span>') : d.leave ? `<span class="chip blue">${(TYPES[d.leave] || [d.leave])[0]}</span>` : d.sched && d.day < today() ? '<span class="chip red">Tidak hadir</span>' : d.sched ? '<span class="chip gray">Terjadwal</span>' : '<span class="chip gray">Libur</span>';
-    return `<div class="li"><span class="dd"><b>${new Date(d.day + 'T00:00:00Z').getUTCDate()}</b><small>${fdate(d.day).split(' ')[0]}</small></span><span style="flex:1;min-width:0"><div class="row between"><b>${a ? clock(a.in) + ' – ' + (a.out ? clock(a.out) : '…') : d.sched ? hm(d.sched.starts) + ' – ' + hm(d.sched.ends) : '—'}</b>${tag}</div><small class="muted">${a ? (a.branch ? esc(a.branch) : '') + (a.mins ? ' · ' + jam(a.mins) : '') + (a.inside === false ? ' · di luar area' : '') : d.sched ? esc(d.sched.shift || '') : ''}</small>${a && a.note ? `<br><small>📝 ${esc(a.note)}</small>` : ''}</span></div>`; }).join('') || '<p class="muted small">Belum ada data.</p>'}</div></section></div>`;
+    return `<div class="li"><span class="dd"><b>${new Date(d.day + 'T00:00:00Z').getUTCDate()}</b><small>${fdate(d.day).split(' ')[0]}</small></span><span style="flex:1;min-width:0"><div class="row between"><b>${a ? clock(a.in) + ' – ' + (a.out ? clock(a.out) : '…') : d.sched ? hm(d.sched.starts) + ' – ' + hm(d.sched.ends) : '—'}</b>${tag}</div><small class="muted">${a ? (a.branch ? esc(a.branch) : '') + (a.mins ? ' · ' + jam(a.mins) : '') + (a.inside === false ? ' · di luar area' : '') : d.sched ? esc(d.sched.shift || '') : ''}</small>${a && a.note ? `<br><small class="muted">Catatan: ${esc(a.note)}</small>` : ''}</span></div>`; }).join('') || '<p class="muted small">Belum ada data.</p>'}</div></section></div>`;
 }
 
 // ---------- Pengajuan ----------
@@ -200,7 +224,7 @@ async function vPengajuan(el) {
   const f = qp().get('f') || 'semua'; const all = await db.rpc('ops_requests');
   const list = all.filter(r => f === 'semua' || r.status === f);
   el.innerHTML = `${hero('Pengajuan', 'Cuti, izin, sakit, lembur, reimburse, dan kasbon')}
-  <section class="ra-now"><span class="lbl">Ajukan baru</span><div class="qm qm6">${Object.entries(TYPES).map(([k, [l, e]]) => `<a href="#/ajukan?k=${k}" class="qi"><span>${e}</span>${l}</a>`).join('')}</div></section>
+  <section class="ra-now"><span class="lbl">Ajukan baru</span><div class="qm qm6">${Object.entries(TYPES).map(([k, [l, e]]) => `<a href="#/ajukan?k=${k}" class="qi"><span>${ri(e, 24)}</span>${l}</a>`).join('')}</div></section>
   <div class="seg">${[['semua', 'Semua'], ['diajukan', 'Menunggu'], ['disetujui', 'Disetujui'], ['ditolak', 'Ditolak']].map(([k, l]) => `<a href="#/pengajuan?f=${k}" class="${f === k ? 'on' : ''}">${l}${k === 'diajukan' ? ' (' + all.filter(r => r.status === 'diajukan').length + ')' : ''}</a>`).join('')}</div>
   <section class="card"><div class="list ra-list">${list.map(reqRow).join('') || '<p class="muted small">Tidak ada pengajuan.</p>'}</div></section></div>`;
 }
@@ -214,17 +238,17 @@ async function vAjukan(el) {
     : ['reimburse', 'kasbon'].includes(k) ? `<label class="fld"><span>Tanggal</span><input type="date" class="inp" name="d1" value="${t0}"></label>
       <label class="fld"><span>Nominal (Rp)</span><input class="inp" name="amt" inputmode="numeric" placeholder="0"></label>
       ${k === 'reimburse' ? `<label class="fld"><span>Kategori</span><select class="inp" name="cat"><option>Bensin / transport</option><option>Parkir & tol</option><option>Makan tugas</option><option>Perlengkapan kerja</option><option>Lainnya</option></select></label>
-      <label class="ra-shot" id="shot" style="min-height:110px"><span id="selt">🧾 Foto nota / bukti (wajib)</span><input type="file" accept="image/*" capture="environment" id="nota" hidden></label>` : ''}
+      <label class="ra-shot" id="shot" style="min-height:110px"><span id="selt">${ri('kamera', 22)} Foto nota / bukti (wajib)</span><input type="file" accept="image/*" capture="environment" id="nota" hidden></label>` : ''}
       <label class="fld"><span>Keterangan</span><textarea class="inp" name="why" rows="3" placeholder="${k === 'kasbon' ? 'Contoh: keperluan keluarga, dipotong gaji bulan ini' : 'Contoh: bensin antar unit ke Cipanas'}"></textarea></label>`
     : `<div class="g2"><label class="fld"><span>Mulai</span><input type="date" class="inp" name="d1" value="${d1}"></label><label class="fld"><span>Sampai</span><input type="date" class="inp" name="d2" value="${d1}"></label></div>
       <label class="fld"><span>Alasan</span><textarea class="inp" name="why" rows="3" placeholder="${k === 'sakit' ? 'Contoh: demam, sudah ke klinik' : k === 'izin' ? 'Contoh: urusan keluarga' : 'Contoh: acara pernikahan saudara'}"></textarea></label>
       ${k === 'cuti' && L ? `<p class="note small" style="margin:0">Sisa cuti ${Math.max(0, L.quota - L.used)} dari ${L.quota} hari (Minggu tidak dihitung).</p>` : ''}`;
-  el.innerHTML = `${hero(em + ' Ajukan ' + label.toLowerCase(), 'Diputuskan Operasional · kabar masuk lewat notifikasi', 'pengajuan')}
+  el.innerHTML = `${hero('Ajukan ' + label.toLowerCase(), 'Diputuskan Operasional · kabar masuk lewat notifikasi', 'pengajuan')}
   <form class="ra-now stack" id="fa">${body}<button class="btn pri ra-big" type="submit">Kirim pengajuan</button></form></div>`;
   let photo = null; const nf = el.querySelector('#nota');
   if (nf) nf.onchange = async (e) => { const f = e.target.files[0]; if (!f) return; const t = el.querySelector('#selt'); t.textContent = 'Mengunggah…';
     try { const blob = await shrinkImage(f, 1280, .8); const uid = (ctx.byId[ctx.me.id] || {}).user_id; photo = await uploadPhoto('operasional', 'klaim/' + uid + '/' + Date.now() + '.jpg', blob);
-      const img = document.createElement('img'); img.src = URL.createObjectURL(blob); img.alt = 'Nota'; el.querySelector('#shot').appendChild(img); t.textContent = ''; } catch (er) { photo = null; t.textContent = '🧾 Foto ulang'; toast(er.message, 'err'); } };
+      const img = document.createElement('img'); img.src = URL.createObjectURL(blob); img.alt = 'Nota'; el.querySelector('#shot').appendChild(img); t.textContent = ''; } catch (er) { photo = null; t.textContent = 'Foto ulang'; toast(er.message, 'err'); } };
   const amt = el.querySelector('[name=amt]'); if (amt) amt.oninput = () => { const v = amt.value.replace(/\D/g, ''); amt.value = v ? (+v).toLocaleString('id-ID') : ''; };
   el.querySelector('#fa').onsubmit = async (e) => { e.preventDefault(); const f = Object.fromEntries(new FormData(e.target)); const b = e.submitter; b.disabled = true;
     try { need((f.why || '').trim(), 'Tulis keterangan');
@@ -264,11 +288,11 @@ async function vPerforma(el) {
     <div style="flex:1;min-width:0"><span class="lbl">${esc(g.title)}</span><div style="font-size:26px;font-weight:800;line-height:1.1;margin:2px 0 8px">${g.xp.toLocaleString('id-ID')} XP</div>
       <div class="gm-bar"><i style="width:${pct}%"></i></div><small class="muted">${Math.max(0, g.lvl_to - g.xp).toLocaleString('id-ID')} XP lagi ke level ${g.level + 1}</small></div></div>
     <div class="ra-grid3"><div class="ra-kpi"><span>XP bulan ini</span><b>+${g.xp_month.toLocaleString('id-ID')}</b></div><div class="ra-kpi"><span>Peringkat</span><b>#${g.rank || '—'}</b><small>dari ${g.peers} petugas</small></div><div class="ra-kpi"><span>Lencana</span><b>${got} / ${(g.badges || []).length}</b><small>bulan ini</small></div></div></section>
-  <section class="gm-streak"><span class="f">🔥</span><div><b>${g.streak} kali</b> <span class="muted">masuk tepat waktu berturut-turut</span><br><small class="muted">${g.streak >= 5 ? 'Mantap! Pertahankan rentetanmu.' : 'Masuk tepat waktu ' + (5 - g.streak) + ' kali lagi untuk lencana Tepat Waktu.'}</small></div></section>
+  <section class="gm-streak"><span class="f">${ri('api', 34, '#E8590C')}</span><div><b>${g.streak} kali</b> <span class="muted">masuk tepat waktu berturut-turut</span><br><small class="muted">${g.streak >= 5 ? 'Mantap! Pertahankan rentetanmu.' : 'Masuk tepat waktu ' + (5 - g.streak) + ' kali lagi untuk lencana Tepat Waktu.'}</small></div></section>
   <section class="card"><div class="row between"><h2>Lencana bulan ini</h2><small class="muted">${got} diraih</small></div>
-    <div class="gm-badges">${(g.badges || []).map(b => `<div class="gm-b${b.got ? ' got' : ''}"><span class="e">${b.ic}</span><b>${esc(b.name)}</b><small>${esc(b.desc)}</small>${b.got ? '<span class="chip green" style="align-self:flex-start">diraih</span>' : `<div class="gm-mini"><i style="width:${Math.round(b.prog / Math.max(1, b.goal) * 100)}%"></i></div><small>${b.prog} / ${b.goal}</small>`}</div>`).join('')}</div></section>
+    <div class="gm-badges">${(g.badges || []).map(b => `<div class="gm-b${b.got ? ' got' : ''}"><span class="e">${ri(b.k, 24)}</span><b>${esc(b.name)}</b><small>${esc(b.desc)}</small>${b.got ? '<span class="chip green" style="align-self:flex-start">diraih</span>' : `<div class="gm-mini"><i style="width:${Math.round(b.prog / Math.max(1, b.goal) * 100)}%"></i></div><small>${b.prog} / ${b.goal}</small>`}</div>`).join('')}</div></section>
   <section class="card gm-rank"><div class="row between"><h2>Papan peringkat bulan ini</h2><small class="muted">berdasarkan XP</small></div>
-    <div class="list">${(g.top || []).map(t => `<div class="li${t.me ? ' me' : ''}"><span class="n ${t.rank <= 3 ? 'g' + t.rank : ''}">${t.rank <= 3 ? ['🥇', '🥈', '🥉'][t.rank - 1] : t.rank}</span><b style="flex:1">${esc(t.nick)}${t.me ? ' (Anda)' : ''}</b><b>${t.xp.toLocaleString('id-ID')} XP</b></div>`).join('')}</div></section>
+    <div class="list">${(g.top || []).map(t => `<div class="li${t.me ? ' me' : ''}"><span class="n ${t.rank <= 3 ? 'g' + t.rank : ''}">${t.rank}</span><b style="flex:1">${esc(t.nick)}${t.me ? ' (Anda)' : ''}</b><b>${t.xp.toLocaleString('id-ID')} XP</b></div>`).join('')}</div></section>
   <section class="card"><h2>Cara dapat XP</h2><div class="list small">
     <div class="li row between"><span>Clock in</span><b>+10</b></div><div class="li row between"><span>Tepat waktu</span><b>+5</b></div><div class="li row between"><span>Ceklis buka / tutup</span><b>+5</b></div>
     <div class="li row between"><span>Tugas antar/jemput selesai</span><b>+10</b></div><div class="li row between"><span>Shift kas ditutup (kas pas +5)</span><b>+10</b></div><div class="li row between"><span>Poin Rentalaja (bonus/potongan)</span><b>±</b></div></div>
@@ -284,7 +308,7 @@ async function startWork(assign) {
   catch (e) { try { w && w.close(); } catch (x) {} toast(e.message || 'Gagal membuka panel', 'err'); }
 }
 function panelCards(compact) { const A = H.assigns || [], { isIn, isOut } = state(), open = isIn && !isOut;
-  return `<div class="ra-panels${compact ? ' cp' : ''}">${A.map(a => `<button class="ra-panel${open ? '' : ' lock'}" data-start="${a.id}" style="--pc:${POSC[a.position] || '#1F2B4D'};--pc2:${POSC2[a.position] || '#0F172A'}">${open ? '' : '<span class="lk">🔒</span>'}
+  return `<div class="ra-panels${compact ? ' cp' : ''}">${A.map(a => `<button class="ra-panel${open ? '' : ' lock'}" data-start="${a.id}" style="--pc:${POSC[a.position] || '#1F2B4D'};--pc2:${POSC2[a.position] || '#0F172A'}">${open ? '' : `<span class="lk">${ri('kunci', 18, '#fff')}</span>`}
     <span class="ic"><img src="/img/ra.png" alt=""></span><b>${esc(a.pos.label)}</b><small>${esc(a.branch)}${a.kind === 'tambahan' ? ' · tambahan' : ''}</small><span class="go">Masuk →</span></button>`).join('') || '<p class="muted">Belum ada penugasan. Hubungi Operasional.</p>'}</div>`; }
 function wirePanel(el) { const prev = el.onclick; el.onclick = (e) => { const b = e.target.closest('[data-start]'); if (!b) return prev && prev(e); const { isIn, isOut } = state();
   if (!(isIn && !isOut)) return toast(isOut ? 'Shift hari ini sudah selesai' : 'Clock in dulu', 'err'); startWork(b.dataset.start); }; }
@@ -299,10 +323,10 @@ async function vAkun(el) { const me = ctx.byId[ctx.me.id] || ctx.me, A = H.assig
   <section class="ra-now"><div class="row gap"><span class="av-lg">${esc((nickOf() || '?').slice(0, 2).toUpperCase())}</span><div><b style="font-size:18px">${esc(me.name)}</b><br><small class="muted">${esc(me.email || '')}${me.phone ? ' · +' + esc(me.phone) : ''}</small></div></div>
     <div class="ra-pills">${A.map(a => `<span class="ra-pill ok">${esc(a.pos.label)} · ${esc(a.branch)}</span>`).join('') || '<span class="ra-pill">Belum ada penugasan</span>'}</div></section>
   <section class="card"><div class="list menu-l">
-    <a class="li" href="#/slip">📄 <span>Slip gaji</span>›</a><a class="li" href="#/jadwal">🗓️ <span>Jadwal & penugasan</span>›</a><a class="li" href="#/kehadiran">📊 <span>Riwayat kehadiran</span>›</a>
-    <a class="li" href="#/performa">🏆 <span>Performa & lencana</span>›</a><a class="li" href="#/pengajuan">📝 <span>Pengajuan saya</span>›</a>
-    ${WHO.mgr ? '<a class="li" href="https://demo.rentalaja.co.id/#/OpsKerja" target="_blank" rel="noopener">🧑‍💼 <span>Kelola petugas (Rentalaja Operasional)</span>↗</a>' : ''}
-    <button class="li" type="button" data-out>🚪 <span>Keluar</span></button></div></section>
+    <a class="li" href="#/slip">${ri('slip', 20)} <span>Slip gaji</span>›</a><a class="li" href="#/jadwal">${ri('jadwal', 20)} <span>Jadwal & penugasan</span>›</a><a class="li" href="#/kehadiran">${ri('riwayat', 20)} <span>Riwayat kehadiran</span>›</a>
+    <a class="li" href="#/performa">${ri('performa', 20)} <span>Performa & lencana</span>›</a><a class="li" href="#/pengajuan">${ri('reimburse', 20)} <span>Pengajuan saya</span>›</a>
+    ${WHO.mgr ? `<a class="li" href="https://demo.rentalaja.co.id/#/OpsKerja" target="_blank" rel="noopener">${ri('tim', 20)} <span>Kelola petugas (Rentalaja Operasional)</span>↗</a>` : ''}
+    <button class="li" type="button" data-out>${ri('keluar', 20)} <span>Keluar</span></button></div></section>
   <p class="muted small" style="text-align:center">Kerja Lapangan · PT Popo Karya Investama</p></div>`; }
 
 // ---------- coba sebagai petugas (Operasional) ----------

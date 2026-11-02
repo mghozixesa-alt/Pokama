@@ -116,3 +116,17 @@ body.ra .login-card .pk-logo{width:132px}
 }
 .gm-mini-card{flex-direction:row!important;align-items:center}
 .ra-list .li>span.ty{flex:0 0 38px}
+/* ikon gaya Rentalaja: kotak mint, garis teal */
+.qi span{background:var(--mint);color:var(--teal-d);font-size:0}
+.qi:hover span{background:#CFF1EC}
+.qi .lk{display:grid;place-items:center;width:20px;height:20px;border-radius:10px;background:var(--navy);color:#fff;top:2px;right:calc(50% - 32px)}
+.ra-list .ty{background:var(--mint);color:var(--teal-d)}
+.ra-nav2 .em{display:inline-grid;place-items:center;color:var(--teal-d)}.ra-nav2 a.on .em{color:var(--teal-d)}
+.menu-l .li svg{color:var(--teal-d);flex:0 0 auto}
+.ra-shot span{display:inline-flex;align-items:center;gap:8px}
+.ra-loc svg{color:var(--teal-d)}
+.gm-b .e{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;background:var(--line2);color:var(--mut);filter:none;opacity:1}
+.gm-b.got .e{background:linear-gradient(150deg,#FFD978,#F5A623);color:#3D2A00}
+.gm-streak .f{width:52px;height:52px;border-radius:16px;background:#fff;display:grid;place-items:center;font-size:0}
+.gm-rank .n.g1{background:linear-gradient(150deg,#FFD978,#F5A623);color:#3D2A00}.gm-rank .n.g2{background:#DDE2EA}.gm-rank .n.g3{background:#F1CDA8;color:#5A3210}
+.ra-panel .lk{display:grid;place-items:center;width:32px;height:32px;border-radius:16px;background:rgba(0,0,0,.25)}
