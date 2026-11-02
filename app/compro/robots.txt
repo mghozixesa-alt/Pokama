@@ -5,4 +5,5 @@ Disallow: /marketing/
 Disallow: /keuangan/
 Disallow: /mitra/
 Disallow: /affiliate
+Disallow: /investor
 Sitemap: https://pokama.org/sitemap.xml
