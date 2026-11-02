@@ -2,6 +2,7 @@
 // mode "instant" (tiap 5 menit): kirim notifikasi penting yang belum terkirim, digabung per orang.
 // mode "digest"  (07.00 WIB): ringkasan pagi per orang, sekali sehari.
 // mode "test"    : kirim email uji ke pemanggil (harus login sebagai CEO / Kepala Staf).
+// Email investor (antrean iv_mail, Portal Investor) ikut dikirim di setiap mode "instant".
 // Layanan: Brevo (BREVO_API_KEY) atau Resend (RESEND_API_KEY). Tanpa kunci, tidak ada yang dikirim dan antrean tetap tersimpan.
 import { createClient } from "npm:@supabase/supabase-js@2.45.4";
 
@@ -19,7 +20,7 @@ const db = createClient(URL, SERVICE, { auth: { persistSession: false } });
 let CORS: Record<string, string> = { "Vary": "Origin", "Access-Control-Allow-Origin": ORIGINS[0], "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type", "Access-Control-Allow-Methods": "POST, OPTIONS" };
 const json = (b: unknown, s = 200) => new Response(JSON.stringify(b), { status: s, headers: { "Content-Type": "application/json", ...CORS } });
 const esc = (s: unknown) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]!));
-const KIND: Record<string, string> = { tugas: "Tugas", review: "Review", rab: "Belanja", kkh: "KKH", cuti: "Kehadiran", permintaan: "Permintaan" };
+const KIND: Record<string, string> = { tugas: "Tugas", review: "Review", rab: "Belanja", kkh: "KKH", cuti: "Kehadiran", permintaan: "Permintaan", investor: "Investor" };
 const wibToday = () => new Date(Date.now() + 7 * 3600e3).toISOString().slice(0, 10);
 const wibHour = () => new Date(Date.now() + 7 * 3600e3).getUTCHours();
 
@@ -41,19 +42,48 @@ const item = (n: any) => `<tr><td style="padding:10px 0;border-top:1px solid #EE
   ${n.body ? `<div style="font-size:13px;color:#5B6573">${esc(n.body)}</div>` : ""}
   <div style="margin-top:6px"><a href="${esc(APP + (n.link || ""))}" style="font-size:13px;font-weight:800;color:#067A70">Buka →</a></div></td></tr>`;
 
-async function send(to: string, subject: string, html: string) {
+async function send(to: string, subject: string, html: string, fromName = FROM_NAME) {
   if (!KEY) return { ok: false, skipped: "Kunci layanan email (BREVO_API_KEY) belum diisi" };
   const r = BREVO
     ? await fetch("https://api.brevo.com/v3/smtp/email", { method: "POST", headers: { "api-key": BREVO, "Content-Type": "application/json", accept: "application/json" },
-        body: JSON.stringify({ sender: { name: FROM_NAME, email: FROM_EMAIL }, to: [{ email: to }], subject, htmlContent: html }) })
+        body: JSON.stringify({ sender: { name: fromName, email: FROM_EMAIL }, to: [{ email: to }], subject, htmlContent: html }) })
     : await fetch("https://api.resend.com/emails", { method: "POST", headers: { Authorization: "Bearer " + RESEND, "Content-Type": "application/json" },
-        body: JSON.stringify({ from: `${FROM_NAME} <${FROM_EMAIL}>`, to: [to], subject, html }) });
+        body: JSON.stringify({ from: `${fromName} <${FROM_EMAIL}>`, to: [to], subject, html }) });
   return r.ok ? { ok: true } : { ok: false, error: await r.text() };
 }
 
 async function people() {
   const { data } = await db.from("pk_people").select("id,name,nickname,email,notify_email,last_digest,is_active").eq("is_active", true);
   return (data || []).filter((p: any) => p.email && p.notify_email !== false);
+}
+
+// ---------- email investor (investor.pokama.org) ----------
+const IV = "https://investor.pokama.org";
+const IV_NAME = Deno.env.get("IV_MAIL_NAME") || "Investor Pokama";
+function ivShell(m: any) {
+  const rows = (Array.isArray(m.rows) ? m.rows : []).map((r: any) => `<tr><td style="padding:9px 12px 9px 0;border-top:1px solid #EEF0F3;font-size:13px;color:#5B6573;vertical-align:top">${esc(r[0])}</td><td style="padding:9px 0;border-top:1px solid #EEF0F3;font-size:14px;font-weight:800;color:#1F2B4D;text-align:right">${esc(r[1])}</td></tr>`).join("");
+  return `<!doctype html><html><body style="margin:0;background:#F4F6F9;font-family:Segoe UI,Helvetica,Arial,sans-serif;color:#1F2B4D">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#F4F6F9;padding:24px 12px"><tr><td align="center">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;background:#ffffff;border:1px solid #E6E8EC;border-radius:16px;overflow:hidden">
+<tr><td style="background:#1F2B4D;padding:20px 24px"><span style="font-size:20px;font-weight:900;color:#ffffff">poka<span style="color:#09BEAF">ma</span></span>
+<div style="font-size:11px;font-weight:800;letter-spacing:.1em;color:#09BEAF;margin-top:2px">PORTAL INVESTOR</div></td></tr>
+<tr><td style="padding:20px 24px 4px"><div style="font-size:15px;color:#4A5468">Halo ${esc(m.name || "")},</div><h1 style="margin:6px 0 8px;font-size:20px;color:#1F2B4D">${esc(m.heading)}</h1>
+${m.intro ? `<p style="margin:0;font-size:14px;line-height:21px;color:#4A5468">${esc(m.intro)}</p>` : ""}</td></tr>
+${rows ? `<tr><td style="padding:12px 24px 4px"><table role="presentation" width="100%" cellpadding="0" cellspacing="0">${rows}</table></td></tr>` : ""}
+${m.note ? `<tr><td style="padding:10px 24px 0"><div style="background:#F4F6F9;border-radius:10px;padding:10px 12px;font-size:13px;line-height:19px;color:#4A5468">${esc(m.note)}</div></td></tr>` : ""}
+${m.cta_label ? `<tr><td style="padding:16px 24px 4px"><a href="${esc(m.cta_link || IV)}" style="display:inline-block;background:#09BEAF;color:#1F2B4D;text-decoration:none;font-weight:800;font-size:14px;padding:11px 18px;border-radius:10px">${esc(m.cta_label)}</a></td></tr>` : ""}
+<tr><td style="padding:18px 24px 20px;font-size:12px;line-height:18px;color:#8A93A6;border-top:1px solid #F0F1F4">Email otomatis dari Portal Investor PT Popo Karya Investama · investor.pokama.org.<br>Tim Pokama tidak pernah meminta kata sandi, kode verifikasi, atau transfer ke rekening lain lewat email.</td></tr>
+</table></td></tr></table></body></html>`;
+}
+async function investorMail() {
+  const { data: rows, error } = await db.rpc("iv_mail_claim", { p_limit: 200 });
+  if (error) return { error: error.message };
+  let sent = 0; const errors: unknown[] = [];
+  for (const m of rows || []) {
+    const r = await send(m.to_email, m.subject, ivShell(m), IV_NAME);
+    if (r.ok) sent++; else { errors.push({ to: m.to_email, ...r }); await db.rpc("iv_mail_fail", { p_id: m.id, p_error: String((r as any).error || (r as any).skipped || "gagal") }); }
+  }
+  return { claimed: (rows || []).length, sent, errors };
 }
 
 async function instant() {
@@ -74,7 +104,7 @@ async function instant() {
     if (r.ok) sent++;
     else { errors.push({ to: p.email, ...r }); await db.from("pk_notifications").update({ emailed_at: null }).in("id", list.map((x) => x.id)); }
   }
-  return { claimed: (rows || []).length, sent, errors };
+  return { claimed: (rows || []).length, sent, errors, investor: await investorMail() };
 }
 
 const LINES: [string, string, string][] = [
