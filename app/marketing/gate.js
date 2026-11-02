@@ -39,7 +39,7 @@
   function hub(s) {
     if (document.getElementById('pk-hub')) return;
     var b = document.createElement('div'); b.id = 'pk-hub';
-    b.innerHTML = '<button type="button" class="pk-hub-btn" aria-expanded="false" aria-haspopup="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z"/></svg><span>Pusat Kerja</span><b class="pk-hub-n" hidden></b></button><div class="pk-hub-menu" role="menu" hidden></div>';
+    b.innerHTML = '<a class="pk-hub-home" href="/" aria-label="Kembali ke Sistem Kerja Pokama"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg><span>Sistem Kerja</span></a><button type="button" class="pk-hub-btn" aria-expanded="false" aria-haspopup="true" aria-label="Pindah modul"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z"/></svg><span>Modul</span><b class="pk-hub-n" hidden></b></button><div class="pk-hub-menu" role="menu" hidden></div>';
     document.body.appendChild(b);
     var btn = b.querySelector('button'), menu = b.querySelector('.pk-hub-menu'), here = location.pathname.replace(/\/$/, '') || '/';
     function esc(t) { return String(t == null ? '' : t).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
@@ -62,8 +62,32 @@
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { menu.hidden = true; btn.setAttribute('aria-expanded', 'false'); } });
   }
   function load_s() { return load(); }
+  /* penanda balik ke Sistem Kerja Pokama: di menu samping dan bar atas HP setiap modul */
+  function backMark() {
+    var sides = document.querySelectorAll('nav[aria-label="Menu utama"], aside.side, #side');
+    sides.forEach(function (sd) {
+      if (sd.querySelector('.pk-back')) return;
+      var a = document.createElement('a'); a.className = 'pk-back'; a.href = '/';
+      a.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg><span><b>Sistem Kerja Pokama</b><small>Kembali ke KKH &amp; menu utama</small></span>';
+      var logo = sd.querySelector(':scope > img, :scope > a.brand, :scope > div:first-child');
+      if (logo && logo.nextSibling) logo.parentNode.insertBefore(a, logo.nextSibling); else sd.insertBefore(a, sd.firstChild);
+    });
+    document.querySelectorAll('.mbar').forEach(function (mb) {
+      if (mb.querySelector('.pk-back-m')) return;
+      var a = document.createElement('a'); a.className = 'pk-back-m'; a.href = '/'; a.setAttribute('aria-label', 'Kembali ke Sistem Kerja Pokama');
+      a.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>Sistem Kerja';
+      mb.appendChild(a);
+    });
+    /* tautan lama "← Sistem Kerja" disembunyikan supaya tidak dobel */
+    document.querySelectorAll('a[href="/"]:not(.pk-back):not(.pk-back-m):not(.pk-hub-i)').forEach(function (x) { if (/^\s*←\s*Sistem Kerja\s*$/.test(x.textContent)) x.style.display = 'none'; });
+  }
+  function watchBack() {
+    backMark(); var t = null;
+    new MutationObserver(function () { clearTimeout(t); t = setTimeout(backMark, 120); }).observe(document.body, { childList: true, subtree: true });
+  }
   function open(person) {
     try { hub(load()); } catch (e) {}
+    try { watchBack(); } catch (e) {}
     root.classList.remove('mk-locked');
     var g = document.getElementById('mk-gate'); if (g) g.remove();
     window.mkPerson = person;

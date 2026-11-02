@@ -15,8 +15,10 @@ html.mk-locked #dc-root { visibility: hidden; }
 .mk-gate-err { background: #FCEBDD; color: #9A3F0A; font-size: 13px; font-weight: 700; padding: 10px 12px; border-radius: 10px; }
 
 /* Pusat Kerja: pindah modul */
-#pk-hub{position:fixed;right:16px;bottom:16px;z-index:70;font-family:'Nunito',system-ui,sans-serif}
-.pk-hub-btn{display:inline-flex;align-items:center;gap:7px;height:40px;padding:0 14px;border-radius:999px;border:1px solid #D5DAE1;background:#1D3149;color:#FFFFFF;font:inherit;font-size:13.5px;font-weight:800;cursor:pointer;box-shadow:0 6px 18px rgba(29,49,73,.22)}
+#pk-hub{position:fixed;right:16px;bottom:16px;z-index:70;font-family:'Nunito',system-ui,sans-serif;display:flex;border-radius:999px;box-shadow:0 6px 18px rgba(29,49,73,.22)}
+.pk-hub-home{display:inline-flex;align-items:center;gap:5px;height:40px;padding:0 12px 0 12px;border-radius:999px 0 0 999px;background:#09BEAF;color:#1D3149 !important;text-decoration:none !important;font-size:13.5px;font-weight:900;border:1px solid #07A597}
+.pk-hub-home:hover{background:#0BD1C0}
+.pk-hub-btn{display:inline-flex;align-items:center;gap:7px;height:40px;padding:0 14px;border-radius:0 999px 999px 0;border:1px solid #1D3149;background:#1D3149;color:#FFFFFF;font:inherit;font-size:13.5px;font-weight:800;cursor:pointer}
 .pk-hub-btn:hover{background:#25406A}
 .pk-hub-n{min-width:20px;height:20px;border-radius:10px;background:#F2A33A;color:#1D3149;font-size:11.5px;display:inline-flex;align-items:center;justify-content:center;padding:0 5px}
 .pk-hub-menu{position:absolute;right:0;bottom:48px;width:300px;max-width:calc(100vw - 32px);max-height:70vh;overflow:auto;background:#FFFFFF;border:1px solid #E3E6EB;border-radius:14px;box-shadow:0 14px 40px rgba(29,49,73,.22);padding:6px;display:flex;flex-direction:column;gap:2px}
@@ -29,5 +31,15 @@ html.mk-locked #dc-root { visibility: hidden; }
 .pk-hub-i i{font-style:normal;font-size:11.5px;background:#EAF8F6;color:#067A70;border-radius:9px;padding:1px 7px;margin-left:4px}
 .pk-hub-i i.hot{background:#FCEBDD;color:#9A3F0A}
 html.mk-locked #pk-hub{display:none}
-@media (max-width:860px){#pk-hub{bottom:78px;right:12px}.pk-hub-btn{height:36px;padding:0 12px;font-size:12.5px}}
+@media (max-width:860px){#pk-hub{bottom:78px;right:12px}.pk-hub-btn,.pk-hub-home{height:36px;font-size:12.5px}.pk-hub-btn{padding:0 11px}}
 @media print{#pk-hub{display:none}}
+
+/* penanda balik ke Sistem Kerja Pokama */
+.pk-back{display:flex;align-items:center;gap:9px;margin:6px 0 10px;padding:9px 11px;border-radius:12px;background:#1D3149;color:#FFFFFF !important;text-decoration:none !important;font-family:'Nunito',system-ui,sans-serif;box-shadow:0 2px 8px rgba(29,49,73,.15)}
+.pk-back:hover{background:#25406A}
+.pk-back svg{flex:none;color:#09BEAF}
+.pk-back span{display:flex;flex-direction:column;min-width:0;line-height:1.2}
+.pk-back b{font-size:13.5px;font-weight:900;color:#FFFFFF}
+.pk-back small{font-size:11px;font-weight:600;color:#C9D3E0}
+.pk-back-m{margin-left:auto;display:inline-flex;align-items:center;gap:4px;height:30px;padding:0 10px;border-radius:999px;background:#1D3149;color:#FFFFFF !important;text-decoration:none !important;font:800 12px 'Nunito',system-ui,sans-serif;white-space:nowrap;flex:none}
+.pk-back-m svg{color:#09BEAF}
