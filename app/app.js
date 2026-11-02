@@ -221,10 +221,11 @@ async function boot() {
   let ok = false;
   // verifikasi 2 langkah wajib untuk semua staf (server juga menolak sesi tanpa 2 langkah)
   // petugas lapangan (tanpa Authenticator) langsung diarahkan ke Kerja Lapangan
-  try { const { claims } = await import('./mfa.js'); const t = JSON.parse(localStorage.getItem('pokama.session') || '{}').access_token; if (t && claims(t).aal !== 'aal2') { const p = await db.rpc('pk_session'); if (p && p.role === 'lapangan') { location.replace(OPS_URL); return; } } } catch (e) {}
+  try { const { claims } = await import('./mfa.js'); const t = JSON.parse(localStorage.getItem('pokama.session') || '{}').access_token; if (t && claims(t).aal !== 'aal2') { const p = await db.rpc('ops_session'); if (p && p.role === 'lapangan') { location.replace(OPS_URL); return; } } } catch (e) {}
   try { const m = await ensureMfa(); if (!m) { loginView(); return; } reloadSession(); } catch (e) { loginView(e.message); return; }
   try { ok = await loadContext(); } catch (e) { loginView(e.message); return; }
-  if (!ok) { await import('./core.js').then(m => { try { localStorage.removeItem('pokama.session'); } catch (e) {} });
+  if (!ok) { try { const p = await db.rpc('ops_session'); if (p && p.role === 'lapangan') { location.replace(OPS_URL); return; } } catch (e) {}
+    await import('./core.js').then(m => { try { localStorage.removeItem('pokama.session'); } catch (e) {} });
     loginView('Akun ini belum terdaftar di Sistem Kerja Pokama. Minta Kepala Staf menambahkan Anda di Tim & Peran.'); return; }
   try { ctx.ops = await db.rpc('ops_whoami'); } catch (e) { ctx.ops = {}; }
   if (!OPS_HOST && ctx.me.role === 'lapangan') { location.replace(OPS_URL); return; }

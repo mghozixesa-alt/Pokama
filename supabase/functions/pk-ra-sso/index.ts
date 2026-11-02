@@ -41,7 +41,8 @@ Deno.serve(async (req) => {
 
     // 1) pemanggil harus anggota Sistem Kerja dengan 2 langkah
     const asUser = createClient(URL, ANON, { global: { headers: { Authorization: "Bearer " + jwt } }, auth: { persistSession: false } });
-    const { data: me } = await asUser.rpc("pk_me");
+    // petugas lapangan (tanpa Authenticator) hanya boleh membuka panel penugasannya; selain itu wajib Sistem Kerja 2 langkah
+    const { data: me } = await asUser.rpc(target === "ra_kerja" ? "ops_me" : "pk_me");
     if (!me) return out(403, { error: "Masuk Sistem Kerja dulu (dengan verifikasi 2 langkah)" });
     const { data: u } = await asUser.auth.getUser(jwt);
     const user = u?.user;

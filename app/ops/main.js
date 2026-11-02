@@ -364,7 +364,7 @@ const VIEWS = { beranda: vBeranda, absen: vAbsen, kehadiran: vKehadiran, pengaju
 // ---------- mulai ----------
 // konteks ringan: cukup data diri + peran (tanpa memuat seluruh daftar orang & pengaturan holding)
 async function lightContext() {
-  const [me, who] = await Promise.all([db.rpc('pk_session'), db.rpc('ops_whoami').catch(() => ({}))]); if (!me) return false;
+  const [me, who] = await Promise.all([db.rpc('ops_session'), db.rpc('ops_whoami').catch(() => ({}))]); if (!me) return false;
   let uid = null; try { uid = JSON.parse(atob((JSON.parse(localStorage.getItem('pokama.session')).access_token).split('.')[1].replace(/-/g, '+').replace(/_/g, '/'))).sub; } catch (e) {}
   ctx.me = me; ctx.byId = { [me.id]: { ...me, user_id: uid } }; ctx.who = who || {};
   return true;
