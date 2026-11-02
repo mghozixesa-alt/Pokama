@@ -25,6 +25,39 @@
  "cleanUrls": true,
  "redirects": [
   {
+   "source": "/iv/admin",
+   "has": [
+    {
+     "type": "host",
+     "value": "app.pokama.org"
+    }
+   ],
+   "destination": "/investor",
+   "permanent": false
+  },
+  {
+   "source": "/iv/:path*",
+   "has": [
+    {
+     "type": "host",
+     "value": "app.pokama.org"
+    }
+   ],
+   "destination": "https://investor.pokama.org/",
+   "permanent": false
+  },
+  {
+   "source": "/iv/:path*",
+   "has": [
+    {
+     "type": "host",
+     "value": "investor.pokama.org"
+    }
+   ],
+   "destination": "/",
+   "permanent": false
+  },
+  {
    "source": "/investor",
    "has": [
     {
@@ -78,28 +111,6 @@
    ],
    "destination": "https://app.pokama.org/$1$2",
    "permanent": true
-  },
-  {
-   "source": "/investor/",
-   "has": [
-    {
-     "type": "host",
-     "value": "app.pokama.org"
-    }
-   ],
-   "destination": "/investor",
-   "permanent": false
-  },
-  {
-   "source": "/investor/admin",
-   "has": [
-    {
-     "type": "host",
-     "value": "app.pokama.org"
-    }
-   ],
-   "destination": "/investor",
-   "permanent": false
   },
   {
    "source": "/sistem",
@@ -329,7 +340,7 @@
      "value": "investor.pokama.org"
     }
    ],
-   "destination": "/investor/index"
+   "destination": "/iv/index"
   },
   {
    "source": "/affiliate",
@@ -347,7 +358,7 @@
      "value": "app.pokama.org"
     }
    ],
-   "destination": "/investor/admin"
+   "destination": "/iv/admin"
   }
  ]
 }
