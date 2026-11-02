@@ -107,7 +107,8 @@ async function performa(el, params, reload) {
     db.get('pk_outputs', `select=*&month=eq.${m}&order=created_at`),
     db.get('pk_perf', `select=*&month=eq.${m}`),
     db.get('pk_kkh', `select=person_id,day,status&day=gte.${m}&day=lte.${end}&limit=20000`),
-    db.get('pk_attendance', `select=person_id,day,late_min&day=gte.${m}&day=lte.${end}`),
+    db.get('pk_attendance', `select=person_id,day,late_min&day=gte.${m}&day=lte.${end}`)
+      .then(a => db.get('pk_kkh_miss', `select=person_id,day&day=gte.${m}&day=lte.${end}`).catch(() => []).then(ms => a.concat(ms.map(x => ({ person_id: x.person_id, day: x.day, late_min: 0, kkh_miss: true }))))),
     db.get('pk_perf_notes', `select=person_id,valuer_id,score&month=eq.${m}`),
   ]);
   const W = ctx.settings.weights || { output: 60, kkh: 25, valuer: 15 };

@@ -13,7 +13,7 @@ export function cat(s) { return s === null ? ['Belum ada skor', 'gray'] : s >= 8
 export function discOf(kkh, att = []) {
   const need = +ctx.settings.kkh_daily_hours || 8, pen = (+ctx.settings.late_penalty_pct || 0) / 100, t = today();
   const days = [...new Set(kkh.map(k => k.day).concat(att.map(a => a.day)))].filter(d => d && d < t);
-  const late = att.filter(a => a.late_min > 0).length;
+  const late = att.filter(a => a.late_min > 0 || a.kkh_miss).length;
   if (!days.length) return { disc: null, late, days: 0, avg: null };
   const per = days.map(d => Math.min(need, kkh.filter(k => k.day === d && k.status === 'valid').length));
   const base = per.reduce((s, v) => s + v / need, 0) / days.length;
@@ -46,7 +46,8 @@ export async function detail(el, params, reload, pid) {
     db.get('pk_tasks', `select=id,title,status,due,done_at,round,version,revise_due&pic_id=eq.${pid}&order=updated_at.desc&limit=200`),
     db.get('pk_leave', `select=kind,day,end_day,status&person_id=eq.${pid}&status=eq.disetujui&day=lte.${end}`),
     db.get('pk_feedback_asks', `select=*&person_id=eq.${pid}&order=created_at.desc&limit=10`),
-    db.get('pk_attendance', `select=day,at,late_min,mode&person_id=eq.${pid}&day=gte.${m0}&day=lte.${end}`),
+    db.get('pk_attendance', `select=day,at,late_min,mode&person_id=eq.${pid}&day=gte.${m0}&day=lte.${end}`)
+      .then(a => db.get('pk_kkh_miss', `select=day,filled&person_id=eq.${pid}&day=gte.${m0}&day=lte.${end}`).catch(() => []).then(ms => a.concat(ms.map(x => ({ day: x.day, late_min: 0, kkh_miss: true, filled: x.filled }))))),
   ]);
   const inMonth = (d, mm) => d && d.slice(0, 7) === mm.slice(0, 7);
   const forMonth = (mm) => calc(outputs.filter(o => o.month === mm), kkh.filter(k => inMonth(k.day, mm)), perf.find(x => x.month === mm), notes.filter(n => n.month === mm), att.filter(a => inMonth(a.day, mm)));
@@ -108,7 +109,7 @@ export async function detail(el, params, reload, pid) {
     if (c.cap !== null && c.cap < .9) notesAuto.push(['warn', `Capaian output ${pct(c.cap)}. Target capaian minimal 90%.`]);
   } else notesAuto.push(['warn', 'Output bulan ini belum disepakati dengan atasan.']);
   if (c.disc !== null && c.disc < .8) notesAuto.push(['bad', `Disiplin KKH ${pct(c.disc)}, di bawah standar 80%.`]);
-  if (c.dd.late) notesAuto.push([c.dd.late >= (+ctx.settings.late_warn_count || 3) ? 'bad' : 'warn', `Telat ${c.dd.late}× bulan ini, memotong disiplin ${c.dd.late * (+ctx.settings.late_penalty_pct || 0)}%.`]);
+  if (c.dd.late) notesAuto.push([c.dd.late >= (+ctx.settings.late_warn_count || 3) ? 'bad' : 'warn', `Telat absen/isi KKH ${c.dd.late}× bulan ini, memotong disiplin ${c.dd.late * (+ctx.settings.late_penalty_pct || 0)}%.`]);
   if (isSelf && valuers.length && !ns.length) notesAuto.push(['warn', `Valuer Anda belum memberi masukan bulan ini. Minta masukan supaya tahu apa yang perlu ditingkatkan.`]);
   const lateRev = running.filter(t => t.status === 'revisi' && t.revise_due && t.revise_due < today());
   if (lateRev.length) notesAuto.push(['bad', `${lateRev.length} revisi lewat tenggat: ${esc(lateRev.slice(0, 2).map(t => t.title).join(', '))}.`]);
