@@ -34,9 +34,9 @@ const I = {
 };
 const MODIC = { marketing: 'mega', keuangan: 'bank', affiliate: 'link', investor: 'trend', ra_mgmt: 'gauge', ra_aset: 'box' };
 /* warna khas tiap modul: [warna ikon, latar] */
-const MODCOL = { ra_mgmt: ['#1D3149', '#E4E9F1'], ra_aset: ['#C2410C', '#FCEBDD'], marketing: ['#7A3FD1', '#F1EAFD'], keuangan: ['#0B8A5E', '#E3F6EE'], affiliate: ['#1F63D8', '#E6EFFD'], investor: ['#B7791F', '#FDF3DF'] };
+const MODCOL = { ra_mgmt: ['#1D3149', '#E4E9F1'], ra_cs: ['#0A8F86', '#DDF5F2'], ra_lap: ['#2563EB', '#E6EFFD'], ra_aset: ['#C2410C', '#FCEBDD'], ra_tek: ['#6B4F2A', '#F3ECE2'], ra_grt: ['#0F766E', '#DDF5F2'], ra_wnr: ['#0F766E', '#DDF5F2'], ra_bdg: ['#0F766E', '#DDF5F2'], ra_mpt: ['#B0466B', '#FBE7EF'], marketing: ['#7A3FD1', '#F1EAFD'], keuangan: ['#0B8A5E', '#E3F6EE'], affiliate: ['#1F63D8', '#E6EFFD'], investor: ['#B7791F', '#FDF3DF'] };
 const modIc = (m, s = 18, t = 30) => { const c = MODCOL[m.k] || ['#1D3149', '#EEF0F3'];
-  if (/^ra_/.test(m.k)) return `<span class="modi ra" style="--mc:${c[0]};--mb:${c[1]};width:${t}px;height:${t}px"><img src="/img/ra.png" alt="" style="width:${Math.round(t * .62)}px;height:${Math.round(t * .62)}px"><i>${m.k === 'ra_aset' ? 'A' : 'O'}</i></span>`;
+  if (/^ra_/.test(m.k)) return `<span class="modi ra" style="--mc:${c[0]};--mb:${c[1]};width:${t}px;height:${t}px"><img src="/img/ra.png" alt="" style="width:${Math.round(t * .62)}px;height:${Math.round(t * .62)}px"><i>${({ ra_mgmt: 'O', ra_cs: 'CS', ra_lap: 'L', ra_aset: 'A', ra_tek: 'T', ra_grt: 'GK', ra_wnr: 'WR', ra_bdg: 'BD', ra_mpt: 'MP' })[m.k] || ''}</i></span>`;
   return `<span class="modi" style="--mc:${c[0]};--mb:${c[1]};width:${t}px;height:${t}px">${svg(MODIC[m.k] || 'grid', s)}</span>`; };
 const svg = (k, s = 18) => `<svg aria-hidden="true" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${I[k]}</svg>`;
 
@@ -156,7 +156,9 @@ async function route() {
 async function loadModules() {
   try { const { db } = await import('./core.js'); ctx.modules = (await db.rpc('pk_modules')) || []; } catch (e) { ctx.modules = ctx.modules || []; }
   const nav = document.getElementById('modnav');
-  if (nav) { nav.hidden = !ctx.modules.length; nav.innerHTML = `<span class="nav-h">MODUL</span>` + ctx.modules.map(m => `<a href="${esc(m.href)}"${m.sso ? ` data-sso="${esc(m.k)}"` : ''}${m.ext ? ' target="_blank" rel="noopener"' : ''} title="${esc(m.note || '')}">${modIc(m, 16, 28)}<span>${esc(m.name)}</span>${m.n ? `<b class="badge${m.urgent ? '' : ' soft'}">${m.n}</b>` : ''}</a>`).join(''); }
+  if (nav) { nav.hidden = !ctx.modules.length; const navIt = (m => `<a href="${esc(m.href)}"${m.sso ? ` data-sso="${esc(m.k)}"` : ''}${m.ext ? ' target="_blank" rel="noopener"' : ''} title="${esc(m.note || '')}">${modIc(m, 16, 28)}<span>${esc(m.name)}</span>${m.n ? `<b class="badge${m.urgent ? '' : ' soft'}">${m.n}</b>` : ''}</a>`);
+    const pm = ctx.modules.filter(m => !/^ra_/.test(m.k)), rm = ctx.modules.filter(m => /^ra_/.test(m.k));
+    nav.innerHTML = (pm.length ? `<span class="nav-h">MODUL</span>` + pm.map(navIt).join('') : '') + (rm.length ? `<span class="nav-h" style="margin-top:10px">RENTALAJA</span>` + rm.map(navIt).join('') : ''); }
   const st = document.getElementById('modstrip'); if (st) st.outerHTML = modStrip();
   return ctx.modules;
 }

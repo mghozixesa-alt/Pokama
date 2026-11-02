@@ -5,3 +5,6 @@
 -- Akses modul mengikuti peran staf Rentalaja akun Google yang sama:
 --   Dashboard Manajemen: owner, viewer, finance, branch_head  (viewer: Intifa, Reza, Adrian, Ajri)
 --   Aset: owner, asset_manager (asset_manager: Yusril, Dzikri, Fajar)
+-- pk_024d/e/f: modul Rentalaja di Sistem Kerja = Operasional, CS, Lapangan, Cabang (Garut Kota, Wanaraja, Bandung, Maripoto), Aset, Teknisi.
+--   pk_ra_sso_target -> {screen, as (pratinjau peran untuk owner), mod (label), br (kode cabang yang boleh dilihat)}
+--   Rentalaja ra.js/dc-runtime.js: mode Pusat Kerja (LS ra.pk) = panel terfokus + tombol kembali ke Sistem Kerja, cabang dikunci.

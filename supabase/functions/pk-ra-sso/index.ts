@@ -1,5 +1,6 @@
 // Sistem Kerja Pokama · masuk ke Rentalaja App tanpa login & verifikasi 2 langkah kedua.
-// Hanya untuk modul "Dashboard Manajemen" (ra_mgmt) dan "Aset" (ra_aset).
+// Untuk modul Rentalaja di Sistem Kerja (ra_*): Operasional, CS, Lapangan, Cabang (Garut Kota, Wanaraja, Bandung, Maripoto), Aset, Teknisi.
+// Owner membuka panel peran itu (pratinjau); modul cabang dikunci ke cabangnya (br).
 // Syarat: pemanggil sudah masuk Sistem Kerja dengan 2 langkah (pk_me tidak null) dan punya akun staf Rentalaja
 // dengan peran yang sesuai (pk_ra_sso_target). Hasilnya sesi baru (terpisah dari sesi Sistem Kerja) yang
 // dicatat di app.sso_sessions, sehingga Rentalaja App menganggapnya setara 2 langkah selama 12 jam.
@@ -33,7 +34,7 @@ Deno.serve(async (req) => {
     const jwt = (req.headers.get("authorization") || "").replace(/^Bearer\s+/i, "");
     if (!jwt) return out(401, { error: "Belum masuk" });
     const { target } = await req.json().catch(() => ({}));
-    if (target !== "ra_mgmt" && target !== "ra_aset") return out(400, { error: "Modul tidak dikenal" });
+    if (typeof target !== "string" || !/^ra_[a-z]{2,6}$/.test(target)) return out(400, { error: "Modul tidak dikenal" });
 
     // 1) pemanggil harus anggota Sistem Kerja dengan 2 langkah
     const asUser = createClient(URL, ANON, { global: { headers: { Authorization: "Bearer " + jwt } }, auth: { persistSession: false } });
@@ -45,7 +46,8 @@ Deno.serve(async (req) => {
 
     // 2) akun ini punya peran staf Rentalaja yang sesuai?
     const db = createClient(URL, SERVICE, { auth: { persistSession: false } });
-    const { data: screen } = await db.rpc("pk_ra_sso_target", { p_user: user.id, p_target: target });
+    const { data: tgt } = await db.rpc("pk_ra_sso_target", { p_user: user.id, p_target: target });
+    const screen = tgt?.screen;
     if (!screen) return out(403, { error: "Akun Anda belum punya akses modul ini di Rentalaja. Minta owner menambahkan di Pengguna dan peran." });
 
     // 3) sesi baru untuk Rentalaja App (tidak berbagi refresh token dengan Sistem Kerja)
@@ -63,7 +65,7 @@ Deno.serve(async (req) => {
 
     const frag = new URLSearchParams({
       access_token: s.access_token, refresh_token: s.refresh_token, expires_in: String(s.expires_in || 3600),
-      expires_at: String(s.expires_at || ""), token_type: "bearer", sso: "pokama", next: String(screen),
+      expires_at: String(s.expires_at || ""), token_type: "bearer", sso: "pokama", next: String(screen), mod: String(tgt.mod || ""), ...(tgt.as ? { as: String(tgt.as) } : {}), ...(tgt.br ? { br: String(tgt.br) } : {}),
     });
     return out(200, { url: RA_BASE + "/#" + frag.toString(), screen });
   } catch (e) {
