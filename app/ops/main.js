@@ -346,8 +346,12 @@ const VIEWS = { beranda: vBeranda, absen: vAbsen, kehadiran: vKehadiran, pengaju
 // ---------- mulai ----------
 async function boot() {
   root.innerHTML = '<div class="loading full">Memuat…</div>';
-  try { const m = await ensureMfa(); if (!m) { loginView(); return; } reloadSession(); } catch (e) { loginView(e.message); return; }
-  let ok = false; try { ok = await loadContext(); } catch (e) { loginView(e.message); return; }
+  // petugas lapangan tidak perlu aplikasi Authenticator; Operasional (manajemen) tetap verifikasi 2 langkah
+  let ok = false; try { ok = await loadContext(); } catch (e) { ok = false; }
+  if (!ok || ctx.me.role !== 'lapangan') {
+    try { const m = await ensureMfa(); if (!m) { loginView(); return; } reloadSession(); } catch (e) { loginView(e.message); return; }
+    try { ok = await loadContext(); } catch (e) { loginView(e.message); return; }
+  }
   if (!ok) { try { localStorage.removeItem('pokama.session'); } catch (e) {} loginView('Akun ini belum terdaftar sebagai petugas operasional. Minta Operasional mendaftarkan email Anda.'); return; }
   let o = {}; try { o = await db.rpc('ops_whoami'); } catch (e) {}
   WHO = o || {};
