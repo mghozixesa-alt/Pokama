@@ -256,7 +256,7 @@ async function vRingkasan() {
     ${tile('Biaya holding', rpk(g.hq), pct(ratio(g.hq, sum(g.rows, r => r.cur.rev))) + ' dari omzet unit · dibagi ke unit', ratio(g.hq, sum(g.rows, r => r.cur.rev)) > 20 ? 'warn' : '', '#unit/HQ')}
     ${tile('Estimasi PPh final', rpk(taxEst), String(+ST.fin_tax_rate || 0).replace('.', ',') + '% × omzet bruto · cek konsultan', 'mute', '#kewajiban')}
     ${tile('Piutang usaha', rpk(g.bal('1-10100')), 'kasbon staf ' + rpk(g.bal('1-10101')), g.bal('1-10100') > h.burn * .2 ? 'warn' : '', '#pihak/piutang')}
-    ${tile('Sisa pokok pinjaman', rpk(lc.length ? loanRem : g.bal('2-21000')), lc.length ? lc.length + ' pinjaman · cicilan ' + rpk(sum(lc.filter(c => c.left > 0), c => c.inst)) + '/bln' : 'dari neraca', 'mute', '#kewajiban')}
+    ${(() => { const pt = lc.filter(c => c.partial).length, ci = sum(lc.filter(c => c.left !== 0), c => c.inst); return pt ? tile('Cicilan leasing & pinjaman', rpk(ci) + '/bln', lc.length + ' kontrak · ' + pt + ' belum ada pokok/tenor' + (loanRem ? ' · sisa pokok ' + rpk(loanRem) + '+' : ''), 'warn', '#kewajiban') : tile('Sisa pokok pinjaman', rpk(lc.length ? loanRem : g.bal('2-21000')), lc.length ? lc.length + ' pinjaman · cicilan ' + rpk(ci) + '/bln' : 'dari neraca', 'mute', '#kewajiban'); })()}
     ${tile('Hutang usaha', rpk(g.bal('2-20100') + g.bal('2-20300')), 'vendor ' + rpk(g.bal('2-20100')) + ' · mitra ' + rpk(g.bal('2-20300')), '', '#pihak/hutang')}
     ${tile('Belanja berjalan', (g.rab.menunggu + g.rab.siap) + ' pengajuan', rpk(g.rab.menunggu_rp + g.rab.siap_rp) + ' · ' + g.rab.telat + ' LPJ telat', g.rab.telat ? 'warn' : '', '#rab')}
     ${tile('Pembukuan otomatis', h.auto == null ? '—' : h.auto + '%', (h.entries || 0).toLocaleString('id-ID') + ' jurnal · antrean ' + g.excN, g.excN ? 'warn' : '', '#antrean')}
@@ -572,6 +572,12 @@ const FPOS = { operasional: 'Operasional', kewajiban: 'Kewajiban & pajak', bersa
 
 /* --- cicilan & sisa pokok pinjaman --- */
 function loanCalc(l, asOf) {
+  if (!+l.principal || !+l.tenor_months) {
+    // data belum lengkap: hanya cicilan & tanggal yang diketahui
+    const a = D(asOf), dd = Math.min(+l.due_day || 1, 28);
+    let nx = new Date(a.getFullYear(), a.getMonth(), dd); if (nx < new Date(a.getFullYear(), a.getMonth(), a.getDate())) nx = new Date(a.getFullYear(), a.getMonth() + 1, dd);
+    return { inst: +l.installment || 0, paid: null, left: null, rem: 0, next: { d: ymd(nx) }, end: null, interest_left: 0, sched: [], partial: true, noInst: !+l.installment };
+  }
   const P = +l.principal, n = +l.tenor_months, r = +l.rate_pct / 1200;
   const inst = l.installment ? +l.installment : (l.method === 'anuitas' && r > 0 ? Math.round(P * r / (1 - Math.pow(1 + r, -n))) : Math.round(P / n + P * r));
   const s = D(l.start_month), a = D(asOf);
@@ -743,12 +749,19 @@ async function vArusKas() {
 /* --- utang leasing & pinjaman (bagian halaman Kewajiban) --- */
 async function loanSection() {
   const L = await loans(), t = today(), C = L.filter(l => l.is_active !== false).map(l => ({ l, c: loanCalc(l, t) }));
-  const rem = sum(C, x => x.c.rem), inst = sum(C.filter(x => x.c.left > 0), x => x.c.inst), intLeft = sum(C, x => x.c.interest_left);
-  let o = `<div class="tiles">${tile('Sisa pokok pinjaman', rpk(rem), C.length + ' pinjaman aktif')}${tile('Cicilan / bulan', rpk(inst), 'leasing, pinjaman, investor')}${tile('Sisa bunga', rpk(intLeft), 'yang masih akan dibayar')}
-    ${tile('Lunas terakhir', C.length ? bulan(C.map(x => x.c.end).sort().pop()) : '—', 'pinjaman terpanjang')}</div>`;
-  o += sec('Utang leasing & pinjaman', 'sisa pokok dihitung dari jadwal cicilan · klik untuk jadwal lengkap', C.length ? `<div class="scroll"><table class="ftbl"><thead><tr><th>Pinjaman</th><th>Unit</th><th class="r">Pokok awal</th><th class="r">Bunga</th><th class="r">Cicilan</th><th>Tempo</th><th style="min-width:120px">Progres</th><th class="r">Sisa pokok</th><th>Berikutnya</th><th>Lunas</th></tr></thead><tbody>
-    ${C.map(({ l, c }) => `<tr class="click" data-loan="${esc(l.id)}"><td><b>${esc(l.name)}</b><br><span class="muted small">${esc(l.lender || '')} · ${esc(KIND[l.kind] || (l.kind === 'investor' ? 'Investor' : l.kind))}</span></td><td>${logo(l.unit_code, 18)} ${esc(uname(l.unit_code))}</td><td class="r">${rpk(l.principal)}</td><td class="r">${String(+l.rate_pct).replace('.', ',')}% ${l.method === 'anuitas' ? 'efektif' : 'flat'}</td><td class="r b">${rp(c.inst)}</td><td>tgl ${l.due_day}</td>
-      <td>${bar(c.paid, +l.tenor_months, '#09BEAF')}<span class="small">${c.paid}/${l.tenor_months} bulan</span></td><td class="r b">${rp(c.rem)}</td><td class="small">${c.next ? tgl(c.next.d) : '<span class="pill g">lunas</span>'}</td><td class="small">${bulan(c.end)}</td></tr>`).join('')}</tbody></table></div>
+  const rem = sum(C, x => x.c.rem), inst = sum(C.filter(x => x.c.left !== 0), x => x.c.inst), intLeft = sum(C, x => x.c.interest_left);
+  const part = C.filter(x => x.c.partial), noInst = C.filter(x => x.c.noInst), ends = C.map(x => x.c.end).filter(Boolean).sort();
+  C.sort((a, b) => (+a.l.due_day - +b.l.due_day) || String(a.l.lender || '').localeCompare(String(b.l.lender || '')) || String(a.l.name).localeCompare(String(b.l.name)));
+  let o = `<div class="tiles">${tile('Sisa pokok pinjaman', part.length === C.length && C.length ? 'belum diisi' : rpk(rem), C.length + ' pinjaman aktif' + (part.length ? ' · ' + part.length + ' tanpa pokok/tenor' : ''), part.length ? 'warn' : '')}${tile('Cicilan / bulan', rpk(inst), noInst.length ? noInst.length + ' kontrak belum ada nominal' : 'leasing, pinjaman, investor', noInst.length ? 'warn' : '')}${tile('Sisa bunga', rpk(intLeft), 'yang masih akan dibayar')}
+    ${tile('Lunas terakhir', ends.length ? bulan(ends.pop()) : '—', ends.length ? 'pinjaman terpanjang' : 'tenor belum diisi')}</div>`;
+  if (part.length) o += `<div class="alert y"><div><b>${part.length} kontrak belum lengkap.</b> Cicilan & tanggal jatuh tempo sudah dipakai di proyeksi kas, tapi sisa pokok dan tanggal lunas baru terhitung setelah pokok, tenor, dan bulan cicilan pertama diisi${noInst.length ? `; ${noInst.length} kontrak (${[...new Set(noInst.map(x => x.l.lender))].join(', ')}) juga belum ada nominal cicilannya` : ''}. Klik baris untuk melengkapi.</div></div>`;
+  const byL = {}; C.forEach(({ l, c }) => { const k = l.lender || '—'; (byL[k] = byL[k] || { n: 0, inst: 0, rem: 0, days: new Set(), part: 0 }); byL[k].n++; byL[k].inst += c.inst; byL[k].rem += c.rem; byL[k].days.add(+l.due_day); if (c.partial) byL[k].part++; });
+  if (Object.keys(byL).length > 1) o += sec('Per pemberi pinjaman', '', `<div class="scroll"><table class="ftbl"><thead><tr><th>Pemberi pinjaman</th><th class="r">Kontrak</th><th class="r">Cicilan / bulan</th><th>Tanggal tempo</th><th class="r">Sisa pokok</th></tr></thead><tbody>
+    ${Object.entries(byL).sort((a, b) => b[1].inst - a[1].inst).map(([k, v]) => `<tr><td><b>${esc(k)}</b></td><td class="r">${v.n}</td><td class="r b">${rp(v.inst)}</td><td class="small">tgl ${[...v.days].sort((a, b) => a - b).join(', ')}</td><td class="r">${v.part === v.n ? '<span class="muted">belum diisi</span>' : rp(v.rem) + (v.part ? ` <span class="muted small">(+${v.part} belum diisi)</span>` : '')}</td></tr>`).join('')}
+    <tr class="tot"><td>Total</td><td class="r">${C.length}</td><td class="r">${rp(inst)}</td><td></td><td class="r">${rp(rem)}</td></tr></tbody></table></div>`);
+  o += sec('Utang leasing & pinjaman', 'urut tanggal jatuh tempo · klik untuk jadwal / melengkapi data', C.length ? `<div class="scroll"><table class="ftbl"><thead><tr><th>Pinjaman</th><th>Unit</th><th class="r">Pokok awal</th><th class="r">Bunga</th><th class="r">Cicilan</th><th>Tempo</th><th style="min-width:120px">Progres</th><th class="r">Sisa pokok</th><th>Berikutnya</th><th>Lunas</th></tr></thead><tbody>
+    ${C.map(({ l, c }) => `<tr class="click" data-loan="${esc(l.id)}"><td><b>${esc(l.name)}</b><br><span class="muted small">${esc(l.lender || '')} · ${esc(KIND[l.kind] || (l.kind === 'investor' ? 'Investor' : l.kind))}${l.contract_no ? ' · ' + esc(l.contract_no) : ''}</span></td><td>${logo(l.unit_code, 18)} ${esc(uname(l.unit_code))}</td><td class="r">${c.partial ? '<span class="muted">—</span>' : rpk(l.principal)}</td><td class="r">${c.partial ? '<span class="muted">—</span>' : String(+l.rate_pct).replace('.', ',') + '% ' + (l.method === 'anuitas' ? 'efektif' : 'flat')}</td><td class="r b">${c.noInst ? '<span class="pill y">belum diisi</span>' : rp(c.inst)}</td><td>tgl ${l.due_day}</td>
+      <td>${c.partial ? '<span class="pill y">tenor belum diisi</span>' : bar(c.paid, +l.tenor_months, '#09BEAF') + `<span class="small">${c.paid}/${l.tenor_months} bulan</span>`}</td><td class="r b">${c.partial ? '<span class="muted">—</span>' : rp(c.rem)}</td><td class="small">${c.next ? tgl(c.next.d) : '<span class="pill g">lunas</span>'}</td><td class="small">${c.end ? bulan(c.end) : '—'}</td></tr>`).join('')}</tbody></table></div>
     <p class="muted small" style="margin:0">Cicilan leasing cukup dicatat di sini; jangan didobel di Kewajiban rutin. Proyeksi kas otomatis memakai jadwal ini.</p>` : empty('Belum ada pinjaman. Tim Keuangan bisa menambahkan dengan tombol di bawah.'));
   if (canWrite()) o += `<div><button class="btn pri" type="button" data-loanadd>+ Tambah leasing / pinjaman</button></div>`;
   return o;
@@ -760,9 +773,9 @@ function loanForm(l = {}) {
     ${f('name', 'Nama', l.name, 'text', 'required placeholder="mis. Leasing Jeep Guntur"')}<div class="cols2" style="gap:10px">${f('lender', 'Pemberi pinjaman', l.lender, 'text', 'placeholder="ACC, Adira, bank, investor"')}
     <label class="small b" style="display:flex;flex-direction:column;gap:4px">Jenis<select class="inp" name="kind">${[['leasing', 'Leasing'], ['pinjaman', 'Pinjaman bank'], ['investor', 'Dana investor']].map(([k, v]) => `<option value="${k}"${l.kind === k ? ' selected' : ''}>${v}</option>`).join('')}</select></label>
     <label class="small b" style="display:flex;flex-direction:column;gap:4px">Unit<select class="inp" name="unit_code">${UNITS.map(u => `<option value="${u.code}"${l.unit_code === u.code ? ' selected' : ''}>${esc(u.name)}</option>`).join('')}</select></label>
-    ${f('principal', 'Pokok pinjaman (Rp)', l.principal, 'number', 'min="1" required')}${f('rate_pct', 'Bunga per tahun (%)', l.rate_pct ?? 0, 'number', 'min="0" step="0.01"')}
+    ${f('contract_no', 'No. kontrak', l.contract_no)}${f('principal', 'Pokok pinjaman (Rp)', l.principal, 'number', 'min="1"')}${f('rate_pct', 'Bunga per tahun (%)', l.rate_pct ?? 0, 'number', 'min="0" step="0.01"')}
     <label class="small b" style="display:flex;flex-direction:column;gap:4px">Metode bunga<select class="inp" name="method"><option value="flat"${l.method !== 'anuitas' ? ' selected' : ''}>Flat (umum di leasing)</option><option value="anuitas"${l.method === 'anuitas' ? ' selected' : ''}>Anuitas / efektif (bank)</option></select></label>
-    ${f('tenor_months', 'Tenor (bulan)', l.tenor_months, 'number', 'min="1" max="360" required')}${f('start_month', 'Cicilan pertama (bulan)', l.start_month ? l.start_month.slice(0, 7) : '', 'month', 'required')}
+    ${f('tenor_months', 'Tenor (bulan)', l.tenor_months, 'number', 'min="1" max="360"')}${f('start_month', 'Cicilan pertama (bulan)', l.start_month ? l.start_month.slice(0, 7) : '', 'month', 'required')}
     ${f('due_day', 'Tanggal jatuh tempo', l.due_day ?? 5, 'number', 'min="1" max="31"')}${f('installment', 'Cicilan per bulan (kosongkan = dihitung)', l.installment, 'number', 'min="0"')}
     ${f('paid_months', 'Sudah dibayar (bulan)', l.paid_months ?? 0, 'number', 'min="0"')}${f('bank_pattern', 'Kata kunci di mutasi bank', l.bank_pattern, 'text', 'placeholder="mis. ACC FINANCE"')}</div>
     ${f('note', 'Catatan', l.note)}${l.id ? `<label class="chk small"><input type="checkbox" name="is_active" ${l.is_active !== false ? 'checked' : ''}> Masih aktif</label>` : ''}
@@ -771,9 +784,10 @@ function loanForm(l = {}) {
 function loanPanel(id) {
   const l = (LOANS || []).find(x => x.id === id); if (!l) return; const c = loanCalc(l, today());
   panel(`<div class="row between"><div><span class="muted small">${esc(l.lender || '')} · ${esc(uname(l.unit_code))}</span><h2 style="font-size:20px">${esc(l.name)}</h2></div><button class="btn sm" data-close>✕</button></div>
-    <div class="kv"><div><span>Cicilan</span><b>${rp(c.inst)}</b></div><div><span>Sisa pokok</span><b>${rp(c.rem)}</b></div><div><span>Sisa tenor</span><b>${c.left} bulan</b></div></div>
-    ${canWrite() ? `<button class="btn" type="button" data-loanedit="${esc(l.id)}" style="align-self:flex-start">Ubah data pinjaman</button>` : ''}
-    <table class="ftbl compact"><thead><tr><th>#</th><th>Jatuh tempo</th><th class="r">Pokok</th><th class="r">Bunga</th><th class="r">Cicilan</th><th class="r">Sisa pokok</th></tr></thead><tbody>${c.sched.map(s => `<tr${s.i <= c.paid ? ' style="opacity:.5"' : ''}><td>${s.i}</td><td>${tgl(s.d)} ${s.d.slice(0, 4)}</td><td class="r">${num(s.pr)}</td><td class="r">${num(s.int)}</td><td class="r b">${num(s.inst)}</td><td class="r">${num(s.rem)}</td></tr>`).join('')}</tbody></table>`);
+    <div class="kv"><div><span>Cicilan</span><b>${c.noInst ? 'belum diisi' : rp(c.inst)}</b></div><div><span>Sisa pokok</span><b>${c.partial ? 'belum diisi' : rp(c.rem)}</b></div><div><span>Sisa tenor</span><b>${c.partial ? 'belum diisi' : c.left + ' bulan'}</b></div></div>
+    ${l.contract_no ? `<div class="small muted">No. kontrak ${esc(l.contract_no)} · jatuh tempo tgl ${l.due_day}</div>` : ''}${l.note ? `<div class="small">${esc(l.note)}</div>` : ''}
+    ${canWrite() ? `<button class="btn${c.partial ? ' pri' : ''}" type="button" data-loanedit="${esc(l.id)}" style="align-self:flex-start">${c.partial ? 'Lengkapi pokok & tenor' : 'Ubah data pinjaman'}</button>` : ''}
+    ${c.partial ? '<p class="muted small">Jadwal cicilan dan sisa pokok tampil setelah pokok, tenor, dan bulan cicilan pertama diisi.</p>' : `<table class="ftbl compact"><thead><tr><th>#</th><th>Jatuh tempo</th><th class="r">Pokok</th><th class="r">Bunga</th><th class="r">Cicilan</th><th class="r">Sisa pokok</th></tr></thead><tbody>${c.sched.map(s => `<tr${s.i <= c.paid ? ' style="opacity:.5"' : ''}><td>${s.i}</td><td>${tgl(s.d)} ${s.d.slice(0, 4)}</td><td class="r">${num(s.pr)}</td><td class="r">${num(s.int)}</td><td class="r b">${num(s.inst)}</td><td class="r">${num(s.rem)}</td></tr>`).join('')}</tbody></table>`}`);
 }
 
 /* --- akun & rekening + pengaturan --- */

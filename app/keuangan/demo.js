@@ -276,6 +276,8 @@ export function loans() {
     { id: 'l2', name: 'Leasing motor batch 2 (8 unit)', lender: 'Adira', kind: 'leasing', unit_code: 'GK', principal: 214e6, rate_pct: 9, method: 'flat', tenor_months: 24, start_month: '2026-02-01', due_day: 10, installment: null, paid_months: 0, is_active: true, note: null },
     { id: 'l3', name: 'Leasing mobil sopir', lender: 'ACC', kind: 'leasing', unit_code: 'EX', principal: 132e6, rate_pct: 7.5, method: 'flat', tenor_months: 36, start_month: '2025-11-01', due_day: 20, installment: null, paid_months: 0, is_active: true, note: null },
     { id: 'l4', name: 'Dana investor stok Laptopaja', lender: 'Investor perorangan', kind: 'investor', unit_code: 'NL', principal: 150e6, rate_pct: 0, method: 'flat', tenor_months: 12, start_month: '2026-12-01', due_day: 1, installment: null, paid_months: 0, is_active: true, note: 'Bagi hasil 20% dari margin, pokok dicicil 12 bulan' },
+    { id: 'l5', name: 'Cicilan motor MCF 417011', lender: 'Mega Central Finance (MCF)', kind: 'leasing', unit_code: 'RA', contract_no: '5000417011', principal: null, rate_pct: 0, method: 'flat', tenor_months: null, start_month: '2026-11-01', due_day: 25, installment: 735000, paid_months: 0, is_active: true, note: 'pokok & tenor belum diisi' },
+    { id: 'l6', name: 'Cicilan motor BCA Finance 048325', lender: 'BCA Finance', kind: 'leasing', unit_code: 'RA', contract_no: '32212000048325', principal: null, rate_pct: 0, method: 'flat', tenor_months: null, start_month: '2026-11-01', due_day: 1, installment: null, paid_months: 0, is_active: true, note: 'nominal cicilan belum diisi' },
   ];
 }
 export function opening() { return { date: null, lines: [], balancing: 0 }; }
@@ -290,7 +292,7 @@ export function targets(month) {
 export function forecast(today) {
   const T = D(today), w0 = addD(T, -((T.getDay() + 6) % 7)), Dd = dashboard(ymd(new Date(T.getFullYear(), T.getMonth() - 1, 1)), ymd(new Date(T.getFullYear(), T.getMonth(), 0)), today);
   const cash = Dd.health.cash, avgIn = Math.round(sumBy(Dd.units, u => u.cur.rev) / 4.3 * .97), avgOut = Math.round(avgIn * .58);
-  const L = loans(), inst = (l) => Math.round(l.principal / l.tenor_months + l.principal * l.rate_pct / 1200), weeks = []; let bal = cash;
+  const L = loans().filter(l => l.principal && l.tenor_months), inst = (l) => Math.round(l.principal / l.tenor_months + l.principal * l.rate_pct / 1200), weeks = []; let bal = cash;
   for (let i = 0; i < 13; i++) {
     const ws = addD(w0, i * 7), we = addD(ws, 6), from = i === 0 ? T : ws, items = [];
     let obl = 0, cic = 0, gaji = 0;
