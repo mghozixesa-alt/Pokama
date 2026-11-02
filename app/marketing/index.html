@@ -700,7 +700,7 @@ function campText(c) {
 }
 function waReport(v) {
   var me = S.me, d = nice(TODAY), head = '*Marketing Pokama · ', out = '';
-  if (v === 'link') { var L = LB.data; if (!L) return head + 'Link bio*\nData belum termuat.'; return head + 'Link bio Rentalaja*\n' + L.from + ' s.d. ' + L.to + '\n\n• Kunjungan: ' + fmt(L.views) + ' (' + fmt(L.visitors) + ' unik)\n• Klik tombol: ' + fmt(L.clicks) + '\n• Booking dari link: ' + fmt(L.bookings) + ' (' + fmt(L.paid_bookings) + ' dibayar)\n• Omzet: ' + rpS(L.revenue) + '\n\n*Tombol teratas*\n' + (L.links || []).slice(0, 5).map(function (x) { return '• ' + (x.label || x.key) + ': ' + fmt(x.clicks); }).join('\n') + '\n\n*Sumber*\n' + (L.sources || []).map(function (x) { return '• ' + (LB_SRC[x.src] || x.src) + ': ' + fmt(x.views) + ' kunjungan'; }).join('\n'); }
+  if (v === 'link') { var L = LB.data; if (!L) return head + 'Link bio*\nData belum termuat.'; return head + 'Link bio Rentalaja*\n' + L.from + ' s.d. ' + L.to + '\n\n• Kunjungan: ' + fmt(L.views) + ' (' + fmt(L.visitors) + ' unik)\n• Klik tombol: ' + fmt(L.clicks) + '\n• Booking dari link: ' + fmt(L.bookings) + ' (' + fmt(L.paid_bookings) + ' dibayar)\n• Omzet: ' + rpS(L.revenue) + '\n\n*Tombol teratas*\n' + (L.links || []).slice(0, 5).map(function (x) { var nm = x.label || x.key; LB_BTNS.forEach(function (g) { g[1].forEach(function (b) { if (b[0] === x.key) nm = b[1]; }); }); return '• ' + nm + ': ' + fmt(x.clicks); }).join('\n') + '\n\n*Sumber*\n' + (L.sources || []).map(function (x) { return '• ' + (LB_SRC[x.src] || x.src) + ': ' + fmt(x.views) + ' kunjungan'; }).join('\n'); }
   if (v === 'papan') { var pi = boardItems(); return head + 'Papan progres*\n' + longDate(TODAY) + '\n' + STAGES.filter(function (st) { return st !== 'Posted'; }).map(function (st) { var c = pi.filter(function (i) { return stage(i) === st; }); return '\n*' + st + ' (' + c.length + ')*\n' + (c.length ? c.map(function (i) { return '• ' + i.title + ' · ' + i.brand + ' · ' + short(i.date) + (who(i) ? ' · di ' + who(i) : '') + (late(i) ? ' ⚠️' : ''); }).join('\n') : '• -'); }).join('\n') + '\n\n*Dipegang sekarang*\n' + HOLDERS.map(function (n) { return '• ' + n + ': ' + S.items.filter(function (i) { return who(i) === n; }).length; }).join('\n'); }
   if (v === 'live') { var ws = weekStart(S.lweek || 0), wl = lives().filter(function (i) { return i.date >= ws && i.date <= addDays(ws, 6); }).sort(function (a, b) { return (a.date + (a.time || '')).localeCompare(b.date + (b.time || '')); }); return head + 'Live TikTok*\nMinggu ' + short(ws) + ' ' + MON[parse(ws).getMonth()] + '\n\n' + (wl.length ? wl.map(function (i) { return '• ' + nice(i.date) + ' ' + (i.time || '') + '–' + (i.tend || '') + ' · ' + i.brand + ' · ' + i.title + ' · host ' + (i.host || '-') + ' · ' + (i.team || 'Tim marketing') + (i.status === 'Tayang' ? ' → ' + (+i.lv || 0) + ' penonton, ' + (+i.lc || 0) + ' closing, ' + rpS(i.lo) : ''); }).join('\n') : '• Belum ada jadwal'); }
   if (v === 'hasil') { var hl = S.items.filter(function (i) { return i.format !== 'Live TikTok' && i.status === 'Tayang' && monthKey(i.date) === aMonth() && perfHas(i); }).sort(function (a, b) { return (+b.perf.leads || 0) - (+a.perf.leads || 0) || (+b.perf.views || 0) - (+a.perf.views || 0); }); return head + 'Hasil per konten · ' + monthName(aMonth()) + '*\n\n' + (hl.length ? hl.slice(0, 20).map(function (i) { var q = i.perf; return '• ' + i.title + ' (' + i.brand + ', ' + short(i.date) + ')\n  ' + fmt(q.views) + ' views · ER ' + pct1(erOf(q)) + '% · ' + fmt(q.leads) + ' leads · ' + fmt(q.close) + ' closing'; }).join('\n') : '• Belum ada hasil yang diisi'); }
@@ -1772,6 +1772,28 @@ function canSee(el) { var r = el.getAttribute('data-roles'); return !r || r.spli
 var LB = { days: 30, data: null, loading: false, err: '', at: 0 };
 var LB_SRC = { ig: 'Instagram', tt: 'TikTok', fb: 'Facebook', wa: 'WhatsApp', google: 'Google', langsung: 'Langsung / tidak diketahui', line: 'LINE' };
 var LB_URL = 'https://demo.rentalaja.co.id/link';
+var LB_BTNS = [
+  ['Banner geser', [['banner_motor', 'Motor matic siap diantar ke hotel'], ['banner_gadget', 'iPhone & kamera buat konten'], ['banner_inap', 'Nginep cozy di Ruma Metua'], ['banner_ajak', 'Ajak teman, dapat saldo']]],
+  ['Tombol utama', [['booking', 'Booking sekarang']]],
+  ['Daftar menu', [['cat_transportasi', 'Sewa motor & mobil'], ['cat_gadget', 'iPhone, kamera & lainnya'], ['inap', 'Penginapan di Garut'], ['akun', 'Booking saya'], ['buka_lokasi', 'Lokasi cabang & tanya admin (dibuka)']]],
+  ['Lokasi & chat admin', [['wa_grt', 'Chat WA Garut Kota'], ['wa_wnr', 'Chat WA Wanaraja'], ['wa_bdg_motor', 'Chat WA Bandung Motor'], ['wa_bdg_iphone', 'Chat WA Bandung iPhone'], ['maps_grt', 'Peta Garut Kota'], ['maps_wnr', 'Peta Wanaraja'], ['maps_bdg_motor', 'Peta Bandung Motor'], ['maps_bdg_iphone', 'Peta Bandung iPhone']]],
+  ['Sosial media', [['instagram', 'Instagram @rentalaja_'], ['tiktok', 'TikTok @rentalaja_']]]
+];
+function lbName(k) { var nm = k; LB_BTNS.forEach(function (g) { g[1].forEach(function (b) { if (b[0] === k) nm = b[1]; }); }); return nm; }
+function lbButtons(s) {
+  var by = {}; (s.links || []).forEach(function (l) { by[l.key] = l; });
+  var known = {}, mx = Math.max.apply(null, (s.links || []).map(function (l) { return +l.clicks || 0; }).concat([1]));
+  var bar = function (n) { return '<div style="height:8px;border-radius:4px;background:#EAF8F6;overflow:hidden;min-width:60px"><i style="display:block;height:100%;width:' + Math.round(n / mx * 100) + '%;background:' + TEAL + '"></i></div>'; };
+  var h = '<div style="overflow-x:auto"><table class="tbl"><thead><tr><th>Tombol di halaman</th><th style="text-align:right">Klik</th><th style="text-align:right">Orang</th><th style="text-align:right">% kunjungan</th><th style="width:26%"></th></tr></thead><tbody>';
+  LB_BTNS.forEach(function (g) {
+    h += '<tr><td colspan="5" style="background:#F7F8FA;font-size:11px;font-weight:800;letter-spacing:.06em;color:#5B6573">' + g[0].toUpperCase() + '</td></tr>';
+    g[1].forEach(function (b) { known[b[0]] = 1; var l = by[b[0]] || {}, n = +l.clicks || 0;
+      h += '<tr><td><b>' + esc(b[1]) + '</b></td><td style="text-align:right">' + fmt(n) + '</td><td style="text-align:right">' + fmt(l.people || 0) + '</td><td style="text-align:right">' + (s.views ? Math.round(n / s.views * 1000) / 10 : 0).toString().replace('.', ',') + '%</td><td>' + bar(n) + '</td></tr>'; });
+  });
+  var old = (s.links || []).filter(function (l) { return !known[l.key]; });
+  if (old.length) { h += '<tr><td colspan="5" style="background:#F7F8FA;font-size:11px;font-weight:800;letter-spacing:.06em;color:#5B6573">TOMBOL VERSI LAMA</td></tr>' + old.map(function (l) { return '<tr><td>' + esc(l.label || l.key) + '</td><td style="text-align:right">' + fmt(l.clicks) + '</td><td style="text-align:right">' + fmt(l.people) + '</td><td></td><td>' + bar(+l.clicks || 0) + '</td></tr>'; }).join(''); }
+  return h + '</tbody></table></div>';
+}
 if (LOCAL) window.__mkLB = function (d) { LB.data = d; LB.at = Date.now(); render(); }; // uji lokal saja
 function lbLoad() {
   if (LB.loading) return; LB.loading = true; LB.err = '';
@@ -1791,7 +1813,7 @@ function lbTable(rows, cols, barKey) {
 function vLink() {
   var rng = '<div class="acts" style="gap:6px">' + [7, 30, 90].map(function (d) { return '<button class="btn sm' + (LB.days === d ? ' pri' : '') + '" data-lbd="' + d + '">' + d + ' hari</button>'; }).join('') +
     '<a class="btn sm" href="' + LB_URL + '" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;text-decoration:none">' + ic('link', 14) + '&nbsp;Buka halaman</a></div>';
-  var h = header('Analitik · Rentalaja', 'Link bio', 'Pengganti Linktree di ' + LB_URL.replace('https://', '') + '. Kunjungan, klik per tombol, asal pengunjung, sampai booking & omzet yang datang dari link. Data langsung dari aplikasi Rentalaja.', rng);
+  var h = header('Analitik · Rentalaja', 'Link bio', 'Pengganti Linktree di ' + LB_URL.replace('https://', '') + ' (banner geser, tombol Booking sekarang, 4 menu, lokasi & chat admin). Kunjungan, klik per tombol, asal pengunjung, sampai booking & omzet dari link. Data langsung dari aplikasi Rentalaja.', rng);
   if (!LB.data || Date.now() - LB.at > 120000) { if (!LOCAL) lbLoad(); }
   if (LB.err) return h + '<div class="hint" style="background:#FDF3D7;color:#7A5200">' + esc(LB.err) + '</div>';
   if (LOCAL && !LB.data) return h + '<div class="hint">Uji lokal: data link bio hanya tampil di pokama.org setelah masuk.</div>';
@@ -1807,10 +1829,11 @@ function vLink() {
   var vals = [], cl = [], d0 = new Date(s.from + 'T00:00:00Z'), d1 = new Date(s.to + 'T00:00:00Z');
   for (var d = d0; d <= d1; d = new Date(d.getTime() + 864e5)) { var k = d.toISOString().slice(0, 10); vals.push(+(daily[k] || {}).views || 0); cl.push(+(daily[k] || {}).clicks || 0); }
   h += sec('Kunjungan per hari', 'chart', s.from + ' s.d. ' + s.to + ' · batang hijau tua = klik', '', bars(vals, '#9ADFD8') + '<div style="margin-top:6px"></div>' + bars(cl, '#067A70'));
+  h += sec('Klik per tombol', 'list', 'Semua tombol di halaman link bio, urut seperti tampilannya: banner geser, Booking sekarang, daftar menu, lokasi & chat admin, sosial media.', '', lbButtons(s));
   h += '<div class="grid2" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px">' +
-    sec('Tombol yang diklik', 'list', 'Tombol mana yang paling menarik.', '', lbTable(s.links, [['label', 'Tombol'], ['clicks', 'Klik'], ['people', 'Orang']], 'clicks')) +
+    
     sec('Asal pengunjung', 'insta', 'Pasang link berbeda per kanal supaya terbaca (lihat bawah).', '', lbTable((s.sources || []).map(function (r) { return Object.assign({}, r, { label: LB_SRC[r.src] || r.src }); }), [['label', 'Sumber'], ['views', 'Kunjungan'], ['visitors', 'Unik'], ['clicks', 'Klik']], 'views')) +
-    sec('Booking dari link', 'money', 'Per sumber · tombol yang diklik sebelum booking.', '', lbTable((s.booking_by_source || []).map(function (r) { return Object.assign({}, r, { label: (LB_SRC[r.src] || r.src) + (r.link ? ' · ' + r.link : '') }); }), [['label', 'Sumber · tombol'], ['n', 'Booking'], ['paid', 'Dibayar']], 'n')) +
+    sec('Booking dari link', 'money', 'Per sumber · tombol yang diklik sebelum booking.', '', lbTable((s.booking_by_source || []).map(function (r) { return Object.assign({}, r, { label: (LB_SRC[r.src] || r.src) + (r.link ? ' · ' + lbName(r.link) : '') }); }), [['label', 'Sumber · tombol'], ['n', 'Booking'], ['paid', 'Dibayar']], 'n')) +
     sec('Dibuka dari aplikasi', 'phone', 'Browser bawaan IG/TikTok/WA, dan perangkatnya.', '', lbTable(s.in_app, [['app', 'Aplikasi'], ['n', 'Pengunjung']], 'n') + lbTable(s.os, [['os', 'Sistem'], ['n', 'Pengunjung']], 'n')) +
     sec('Jam ramai (WIB)', 'clock', 'Waktu terbaik posting & membalas.', '', lbTable((s.hours || []).map(function (r) { return Object.assign({}, r, { jam: (r.h < 10 ? '0' : '') + r.h + '.00' }); }), [['jam', 'Jam'], ['views', 'Kunjungan'], ['clicks', 'Klik']], 'views')) +
     ((s.campaigns || []).length ? sec('Campaign', 'flag', 'Dari link ?c=nama-campaign.', '', lbTable(s.campaigns, [['campaign', 'Campaign'], ['views', 'Kunjungan'], ['clicks', 'Klik']], 'views')) : '') +
