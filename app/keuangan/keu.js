@@ -26,8 +26,9 @@ const POS = { penerimaan: ['Penerimaan', 'Uang masuk dari pelanggan & gateway, b
 const SRC = { rentalaja: 'Rentalaja App', tripinaja: 'TripinAja', niagaaja: 'Niagaaja', pokama: 'Sistem Kerja', bank: 'Mutasi bank', manual: 'Penyesuaian' };
 const KIND = { leasing: 'Leasing', pinjaman: 'Pinjaman', bagi_hasil: 'Bagi hasil', sewa: 'Sewa', langganan: 'Langganan', pajak: 'Pajak', lain: 'Lain-lain' };
 
-const PAGES = { ringkasan: 'Ringkasan', unit: 'Per unit bisnis', kas: 'Kas & bank', kewajiban: 'Kewajiban & jatuh tempo', rab: 'Belanja (RAB & LPJ)',
-  labarugi: 'Laba rugi', neraca: 'Neraca', jurnal: 'Buku jurnal', antrean: 'Antrean Keuangan', sumber: 'Sumber data & tutup buku' };
+const PAGES = { ringkasan: 'Ringkasan', unit: 'Per unit bisnis', target: 'Target vs realisasi', kas: 'Kas & bank', proyeksi: 'Proyeksi kas', pf: 'Profit First',
+  kewajiban: 'Kewajiban & leasing', pihak: 'Piutang & hutang', rab: 'Belanja (RAB & LPJ)', labarugi: 'Laba rugi', neraca: 'Neraca', aruskas: 'Arus kas',
+  jurnal: 'Buku jurnal', antrean: 'Antrean Keuangan', akun: 'Akun & rekening', saldo: 'Saldo awal', sumber: 'Sumber data & tutup buku' };
 const route = () => { const [v, a] = (location.hash || '#ringkasan').slice(1).split('/'); return PAGES[v] || v === 'menu' ? { v, a } : { v: 'ringkasan' }; };
 const canWrite = () => !!ME && ['ceo', 'keuangan'].includes(ME.role);
 const usingDemo = () => S.demo || ENGINE === false;
@@ -69,6 +70,8 @@ async function data(name, args = {}) {
   const demo = {
     dash: () => X.dashboard(args.from, args.to, today()), pl: () => X.pl(args.from, args.to), bs: () => X.balanceSheet(args.to),
     jurnal: () => X.journal(args.from, args.to, args.biz, args.source, args.q), exc: () => X.exceptions(today()), bank: () => X.bankList(args.acc, today()), accs: () => X.accounts(),
+    fc: () => X.forecast(today()), cf: () => X.cashflow(args.from, args.to), party: () => X.partyLines(args.to), loans: () => X.loans(), set: () => X.settings(),
+    open: () => X.opening(), tgt: () => X.targets(args.month), omz: () => [], accfull: () => X.accounts(),
   };
   if (usingDemo()) return demo[name]();
   const call = {
@@ -77,6 +80,12 @@ async function data(name, args = {}) {
     jurnal: () => A.rpc('pk_fin_journal', { p_from: args.from, p_to: args.to, p_biz: args.biz || null, p_source: args.source || null, p_q: args.q || null, p_acc: null, p_limit: 300 }),
     exc: () => A.rpc('pk_fin_exceptions'), bank: () => A.rpc('pk_fin_bank_list', { p_account: args.acc, p_limit: 300 }),
     accs: () => A.get('pk_fin_accounts?select=code,name,grp,is_cash,unit_code,pos&is_active=eq.true&order=code'),
+    fc: () => A.rpc('pk_fin_forecast', { p_weeks: 13 }), cf: () => A.rpc('pk_fin_cashflow', { p_from: args.from, p_to: args.to }),
+    party: () => A.rpc('pk_fin_party_lines', { p_to: args.to }), loans: () => A.get('pk_fin_loans?select=*&order=created_at'),
+    set: () => A.rpc('pk_fin_settings_get'), open: () => A.rpc('pk_fin_opening_get'),
+    tgt: () => A.get('pk_targets?select=unit_code,month,amount,status&month=eq.' + args.month),
+    omz: () => A.get('pk_omzet?select=unit_code,amount&day=gte.' + args.from + '&day=lte.' + args.to),
+    accfull: () => A.get('pk_fin_accounts?select=code,name,grp,is_cash,unit_code,pos,bank,note,is_active,sort&order=code'),
   };
   try { const r = await call[name](); ENGINE = true; return r; }
   catch (e) { if (MISSING.test(e.message) || e.status === 404) { ENGINE = false; return demo[name](); } throw e; }
@@ -209,25 +218,49 @@ const alertHtml = (a) => `<a class="alert ${a.lvl === 'r' ? '' : a.lvl}" href="$
 
 /* ---------- 1. Ringkasan ---------- */
 async function vRingkasan() {
-  const p = period(), Dd = await data('dash', p), g = digest(Dd), h = Dd.health, dec = decisions(Dd, g);
+  const p = period(), mon = /^\d{4}-\d{2}$/.test(S.per) ? S.per : null;
+  const soft = (pr, dflt) => pr.catch(() => dflt);
+  const [Dd, F, ST, LN, OP, TG] = await Promise.all([data('dash', p), soft(data('fc'), null), soft(settings(), {}), soft(loans(), []), soft(data('open'), null), mon ? soft(data('tgt', { month: mon + '-01' }), []) : Promise.resolve([])]);
+  const g = digest(Dd), h = Dd.health, dec = decisions(Dd, g);
   setBadges(Dd, g);
+  // tambahan: proyeksi kas, saldo awal, target, Profit First, pinjaman
+  const KEU = [roleP('keuangan'), 'Keuangan'], push = (lvl, tag, html, href, pic = KEU) => dec.push({ lvl, tag, html, href, pic });
+  if (F && F.first_low) push('r', 'KAS', `<b>Kas diproyeksikan di bawah minimum mulai ${tgl(F.first_low)}</b> (titik terendah ${rpS(F.lowest)}). Tunda belanja, percepat tagihan.`, '#proyeksi');
+  if (F) setBadge('fclow', F.first_low ? '!' : 0);
+  if (OP && !OP.date && !usingDemo()) push('y', 'DATA', '<b>Saldo awal belum diisi.</b> Kas, piutang, hutang, dan aset masih nol sampai neraca pembuka dimasukkan.', '#saldo');
+  setBadge('saldo', OP && !OP.date && !usingDemo() ? '!' : 0);
+  const tgtBiz = (b) => sum(TG.filter(t => bizOf(t.unit_code) === b), t => t.amount), dm = mon ? new Date(+mon.slice(0, 4), +mon.slice(5, 7), 0).getDate() : 0;
+  const pace = mon ? Math.min(1, ((D(p.to) - D(p.from)) / 864e5 + 1) / dm) : 0, tgtAll = sum(TG, t => t.amount);
+  g.rows.forEach(r => { const t = tgtBiz(r.code); if (t && r.cur.rev < t * pace * .9) push('y', 'PROFIT', `<b>${esc(r.name)} tertinggal dari target</b>: ${rpk(r.cur.rev)} dari ${rpk(t)} (${pct(r.cur.rev / t * 100)}, seharusnya ±${pct(pace * 100)}).`, '#target', [leaderOf(r.code), 'Leader ' + r.name]); });
+  const PF = ST.fin_profit_first || {}, totPos = sum(Object.values(g.byPos), v => v), inbox = g.byPos.penerimaan || 0;
+  const pfNeed = sum(Object.keys(FPOS), k => Math.max(0, totPos * (+PF[k] || 0) / 100 - (g.byPos[k] || 0)));
+  if (inbox > 0 && pfNeed > 0) push('i', 'KAS', `<b>${rpk(Math.min(inbox, pfNeed))} belum dibagi</b> dari rekening penerimaan ke pos Profit First.`, '#pf');
+  const lc = (LN || []).filter(l => l.is_active !== false).map(l => loanCalc(l, today())), loanRem = sum(lc, c => c.rem), taxEst = g.G.rev * (+ST.fin_tax_rate || 0) / 100;
+  { const rank = { r: 0, y: 1, i: 2 }, ord = { KAS: 0, PROFIT: 1, EKSEKUSI: 2, DATA: 3 }; dec.sort((a, b) => ord[a.tag] - ord[b.tag] || rank[a.lvl] - rank[b.lvl]); }
   const gm = ratio(g.G.rev - g.G.hpp, g.G.rev), nm = ratio(g.G.net, g.G.rev);
   cur = { Dd, g, dec };
   let o = waShare('Keuangan grup') + header('Keuangan grup', 'Satu buku untuk Rentalaja, TripinAja, Niagaaja, dan Holding. Urutan baca: kas → profit → eksekusi → pertumbuhan.');
   o += sec('Perlu ditindak', dec.length ? dec.length + ' hal · diurutkan kas → profit → eksekusi → data' : '', dec.length ? `<div class="alerts">${dec.slice(0, 10).map(alertHtml).join('')}</div>` : '<div class="ok">Tidak ada yang perlu diputuskan hari ini.</div>');
+  const lowW = F && F.weeks && F.weeks.length ? F.weeks.reduce((a, w) => (w.close < a.close ? w : a), F.weeks[0]) : null;
   o += `<div class="tiles">
     ${tile('Kas & bank', rpk(h.cash), `${g.cash.length} rekening${g.diffAcc.length ? ' · ' + g.diffAcc.length + ' selisih bank' : ' · cocok dengan bank'}`, '', '#kas')}
-    ${tile('Runway', h.runway == null ? '—' : String(h.runway).replace('.', ',') + ' bln', 'biaya ' + rpk(h.burn) + '/bln (rata² 3 bln)', h.runway != null && h.runway < 3 ? 'bad' : h.runway < 6 ? 'warn' : '', '#kas')}
+    ${tile('Runway', h.runway == null ? '—' : String(h.runway).replace('.', ',') + ' bln', 'biaya tunai ' + rpk(h.burn) + '/bln (rata² 3 bln)', h.runway != null && h.runway < 3 ? 'bad' : h.runway < 6 ? 'warn' : '', '#kas')}
+    ${tile('Kas terendah 13 mgg', lowW ? rpS(lowW.close) : '—', lowW ? 'minggu ' + tgl(lowW.week) + (F.first_low ? ' · di bawah minimum' : '') : 'proyeksi kas', F && F.first_low ? 'bad' : '', '#proyeksi')}
     ${tile('Kewajiban 30 hari', rpk(g.oblSum), `${g.obl.length} tagihan · ${g.obl7.length} dalam 7 hari`, g.obl7Sum > g.kewajibanCash ? 'bad' : '', '#kewajiban')}
+    ${tile('Belum dibagi (Profit First)', rpk(inbox), pfNeed > 0 ? 'perlu dipindah ke pos' : 'pos sudah seimbang', inbox > 0 && pfNeed > 0 ? 'warn' : '', '#pf')}
+    ${tile('DP pelanggan', rpk(g.bal('2-20200')), 'titipan, belum jadi pendapatan', 'mute', '#neraca')}
     ${tile('Omzet grup', rpk(g.G.rev), delta(g.G.rev, g.Gp.rev) + ' vs periode lalu ' + rpk(g.Gp.rev))}
+    ${tile('Capaian target', tgtAll ? pct(g.G.rev / tgtAll * 100) : '—', tgtAll ? 'target ' + rpk(tgtAll) + ' · laju ' + pct(pace * 100) : mon ? 'target bulan ini belum ada' : 'pilih satu bulan', tgtAll && g.G.rev < tgtAll * pace * .9 ? 'warn' : '', '#target')}
     ${tile('Laba bersih grup', rpS(g.G.net), 'margin ' + pct(nm) + ' · ' + delta(g.G.net, g.Gp.net), g.G.net < 0 ? 'bad' : '', '#labarugi')}
     ${tile('Margin kotor', pct(gm), 'laba kotor ' + rpk(g.G.rev - g.G.hpp) + ' · HPP ' + rpk(g.G.hpp), gm != null && gm < 40 ? 'warn' : '')}
-    ${tile('DP pelanggan', rpk(g.bal('2-20200')), 'titipan, belum jadi pendapatan', 'mute', '#neraca')}
-    ${tile('Piutang usaha', rpk(g.bal('1-10100')), 'kasbon staf ' + rpk(g.bal('1-10101')), g.bal('1-10100') > h.burn * .2 ? 'warn' : '', '#neraca')}
     ${tile('Biaya holding', rpk(g.hq), pct(ratio(g.hq, sum(g.rows, r => r.cur.rev))) + ' dari omzet unit · dibagi ke unit', ratio(g.hq, sum(g.rows, r => r.cur.rev)) > 20 ? 'warn' : '', '#unit/HQ')}
-    ${tile('Hutang leasing', rpk(g.bal('2-21000')), 'cicilan ' + rpk(Dd.obligations_month) + '/bln semua kewajiban rutin', 'mute', '#kewajiban')}
+    ${tile('Estimasi PPh final', rpk(taxEst), String(+ST.fin_tax_rate || 0).replace('.', ',') + '% × omzet bruto · cek konsultan', 'mute', '#kewajiban')}
+    ${tile('Piutang usaha', rpk(g.bal('1-10100')), 'kasbon staf ' + rpk(g.bal('1-10101')), g.bal('1-10100') > h.burn * .2 ? 'warn' : '', '#pihak/piutang')}
+    ${tile('Sisa pokok pinjaman', rpk(lc.length ? loanRem : g.bal('2-21000')), lc.length ? lc.length + ' pinjaman · cicilan ' + rpk(sum(lc.filter(c => c.left > 0), c => c.inst)) + '/bln' : 'dari neraca', 'mute', '#kewajiban')}
+    ${tile('Hutang usaha', rpk(g.bal('2-20100') + g.bal('2-20300')), 'vendor ' + rpk(g.bal('2-20100')) + ' · mitra ' + rpk(g.bal('2-20300')), '', '#pihak/hutang')}
     ${tile('Belanja berjalan', (g.rab.menunggu + g.rab.siap) + ' pengajuan', rpk(g.rab.menunggu_rp + g.rab.siap_rp) + ' · ' + g.rab.telat + ' LPJ telat', g.rab.telat ? 'warn' : '', '#rab')}
-    ${tile('Pembukuan otomatis', h.auto == null ? '—' : h.auto + '%', (h.entries || 0).toLocaleString('id-ID') + ' jurnal · antrean ' + g.excN, g.excN ? 'warn' : '', '#antrean')}</div>`;
+    ${tile('Pembukuan otomatis', h.auto == null ? '—' : h.auto + '%', (h.entries || 0).toLocaleString('id-ID') + ' jurnal · antrean ' + g.excN, g.excN ? 'warn' : '', '#antrean')}
+    ${tile('Saldo awal', OP && OP.date ? tgl(OP.date) + ' ' + OP.date.slice(0, 4) : usingDemo() ? 'contoh' : 'belum', OP && OP.date ? 'neraca pembuka tersimpan' : 'diisi tim Keuangan', OP && !OP.date && !usingDemo() ? 'warn' : '', '#saldo')}</div>`;
 
   // kartu unit (gaya Unit Bisnis KKH): peringkat menurut laba setelah biaya holding
   const sorted = [...g.rows].sort((a, b) => b.after - a.after), cashOf = (b) => sum(g.cash.filter(c => bizOf(c.unit) === b), c => c.book);
@@ -384,13 +417,15 @@ async function bankPanel(acc) {
 /* ---------- 4. Kewajiban ---------- */
 async function vKewajiban() {
   const p = period(), Dd = await data('dash', p), g = digest(Dd); setBadges(Dd, g);
-  let o = header('Kewajiban & jatuh tempo', 'Tagihan rutin 30 hari ke depan dibandingkan dengan dana di rekening pos Kewajiban. Saldo hutang dari neraca.');
+  let o = header('Kewajiban & leasing', 'Tagihan rutin 30 hari ke depan, utang leasing & pinjaman, dan estimasi pajak, dibandingkan dengan dana di rekening pos Kewajiban.');
+  const ST = await settings(), taxRate = +ST.fin_tax_rate || 0, gross = g.G.rev;
   let left = g.kewajibanCash;
   const L = g.obl.map(x => { left -= x.amount; return { ...x, left }; });
   const liab = ['2-20100', '2-20200', '2-20300', '2-20400', '2-20500', '2-20600', '2-21000', '2-21100', '2-21200'].map(k => ({ k, ...(Dd.balances[k] || { name: X.ACC[k], bal: 0 }) }));
   o += `<div class="tiles">${tile('Tagihan 30 hari', rpk(g.oblSum), g.obl.length + ' tagihan')}${tile('Dalam 7 hari', rpk(g.obl7Sum), g.obl7.length + ' tagihan', g.obl7Sum > g.kewajibanCash ? 'bad' : '')}
     ${tile('Dana pos Kewajiban', rpk(g.kewajibanCash), 'rekening pajak, cicilan, bagi hasil')}${tile(g.kewajibanCash >= g.oblSum ? 'Sisa setelah 30 hari' : 'Kurang untuk 30 hari', rpS(g.kewajibanCash - g.oblSum), 'perlu dipindah dari penerimaan', g.kewajibanCash < g.oblSum ? 'bad' : '')}
-    ${tile('Kewajiban rutin / bulan', rpk(Dd.obligations_month), pct(ratio(Dd.obligations_month, sum(g.rows, r => r.cur.rev))) + ' dari omzet unit')}${tile('Total hutang', rpk(sum(liab.filter(x => x.k !== '2-20200'), x => x.bal)), 'di luar DP pelanggan')}</div>`;
+    ${tile('Kewajiban rutin / bulan', rpk(Dd.obligations_month), pct(ratio(Dd.obligations_month, sum(g.rows, r => r.cur.rev))) + ' dari omzet unit')}${tile('Estimasi PPh final', rpk(gross * taxRate / 100), String(taxRate).replace('.', ',') + '% × omzet bruto ' + rpk(gross) + ' · cek konsultan pajak', 'mute')}</div>`;
+  o += await loanSection();
   o += `<div class="cols">${sec('Jadwal 30 hari', 'sisa dana = dana pos Kewajiban dikurangi tagihan berurutan', L.length ? `<div class="scroll"><table class="ftbl"><thead><tr><th>Jatuh tempo</th><th>Tagihan</th><th>Unit</th><th class="r">Jumlah</th><th class="r">Sisa dana</th></tr></thead><tbody>${L.map(x => `<tr><td><b>${tgl(x.due)}</b><br><span class="${x.days <= 3 ? 'pill r' : x.days <= 7 ? 'pill y' : 'muted small'}">${x.days} hari</span></td><td><b>${esc(x.name)}</b><br><span class="muted small">${esc(KIND[x.kind] || x.kind)}${x.pattern ? ' · dicocokkan dari mutasi "' + esc(x.pattern) + '"' : ''}</span></td><td>${dot(bizOf(x.unit))}${esc(uname(x.unit))}</td><td class="r b">${rp(x.amount)}</td><td class="r ${mcls(x.left)}">${rpS(x.left)}</td></tr>`).join('')}</tbody></table></div>` : empty('Tidak ada tagihan rutin 30 hari ke depan.'))}
     ${sec('Saldo hutang', 'per tanggal akhir periode', `<table class="ftbl compact"><tbody>${liab.map(x => `<tr><td>${esc(x.name)}${x.k === '2-20200' ? '<br><span class="muted small">titipan pelanggan, jadi pendapatan saat serah-terima</span>' : ''}</td><td class="r b">${rp(x.bal)}</td></tr>`).join('')}</tbody></table>`)}</div>`;
   if (canWrite() && !usingDemo()) o += sec('Tambah kewajiban rutin', 'cicilan, sewa, bagi hasil, langganan, pajak', `<form id="oblf" class="stack" style="gap:10px"><div class="cols3" style="gap:10px">
@@ -438,7 +473,8 @@ async function vLabaRugi() {
   t += block('PENDAPATAN', '4') + line('Total pendapatan', (r, c) => T(r, '4', c)) + block('HARGA POKOK (HPP)', '5') + line('Laba kotor', gp)
     + block('BIAYA OPERASIONAL', '6') + line('Laba operasional', op) + block('PENDAPATAN LAIN', '7') + block('BEBAN LAIN', '8') + line('Laba (rugi) bersih', net, 'tot big') + '</tbody></table>';
   const segs = [['biz', 'Per unit bisnis'], ['RA', 'Rentalaja per lini'], ['NA', 'Niagaaja per lini'], ['HQ', 'Holding per divisi']];
-  let o = header('Laba rugi', 'Dari satu buku grup. Pendapatan Rentalaja diakui saat serah-terima; DP masih titipan. Klik tombol untuk melihat per lini.', `<button class="btn" data-csv="pl">Unduh CSV</button>`);
+  await settings().catch(() => null);
+  let o = header('Laba rugi', 'Dari satu buku grup. Pendapatan Rentalaja diakui saat serah-terima; DP masih titipan. Klik tombol untuk melihat per lini.', printBtn + `<button class="btn" data-csv="pl">Unduh CSV</button>`) + printHead('Laporan laba rugi');
   o += `<div class="chips" role="group" aria-label="Tampilan">${segs.map(([k, l]) => `<button type="button" data-plv="${k}" class="chipbtn ${k === mode ? 'on' : ''}">${k === 'biz' ? '' : logo(k, 22)}${l}</button>`).join('')}</div>`;
   o += `<div class="cols">${sec('Dari omzet ke laba', mode === 'biz' ? 'grup' : BIZN[mode], waterfall([['Omzet', T(rowsAll, '4'), true], ['HPP', -T(rowsAll, '5')], ['Laba kotor', gp(rowsAll), true], ['Biaya operasional', -T(rowsAll, '6')], ['Lain-lain bersih', T(rowsAll, '7') - T(rowsAll, '8')], ['Laba bersih', net(rowsAll), true]]))}
     <div class="tiles" style="grid-template-columns:repeat(2,minmax(0,1fr))">${tile('Omzet', rpk(rev), delta(rev, T(prevAll, '4')) + ' vs lalu')}${tile('Laba bersih', rpS(net(rowsAll)), delta(net(rowsAll), net(prevAll)) + ' vs lalu', net(rowsAll) < 0 ? 'bad' : '')}
@@ -458,7 +494,8 @@ async function vNeraca() {
   const cl = grp(r => /^2-20/.test(r.acc)), lt = grp(r => /^2-2[1-9]/.test(r.acc)), eq = grp(r => r.grp === 'ekuitas');
   const ca = S2(cash) + S2(recv) + S2(inv), TA = ca + S2(fixed) + S2(oth), TL = S2(cl) + S2(lt), TE = S2(eq), diff = Math.round(TA - TL - TE);
   const block = (title, L) => (L.length ? `<tr class="sec"><td colspan="2">${title}</td></tr>` + L.map(r => `<tr><td class="ind">${esc(r.name)} <span class="muted small">${esc(r.acc)}</span></td><td class="r ${mcls(r.bal)}">${num(r.bal)}</td></tr>`).join('') + `<tr class="sub"><td>Jumlah ${title.toLowerCase()}</td><td class="r">${num(S2(L))}</td></tr>` : '');
-  let o = header('Neraca', 'Posisi per tanggal akhir periode. Laba berjalan = laba bersih sejak awal buku sampai tanggal ini.', `<button class="btn" data-csv="bs">Unduh CSV</button>`);
+  await settings().catch(() => null);
+  let o = header('Neraca', 'Posisi per tanggal akhir periode. Laba berjalan = laba bersih sejak awal buku sampai tanggal ini.', printBtn + `<button class="btn" data-csv="bs">Unduh CSV</button>`) + printHead('Neraca per ' + tgl(p.to));
   o += `<div class="tiles">${tile('Total aset', rpk(TA), 'aset lancar ' + rpk(ca))}${tile('Total kewajiban', rpk(TL), 'lancar ' + rpk(S2(cl)) + ' · jangka panjang ' + rpk(S2(lt)))}${tile('Ekuitas', rpk(TE), 'termasuk laba berjalan')}
     ${tile('Rasio lancar', S2(cl) ? (ca / S2(cl)).toFixed(2).replace('.', ',') + '×' : '—', 'aset lancar ÷ kewajiban lancar · sehat ≥ 1,5', S2(cl) && ca / S2(cl) < 1 ? 'bad' : S2(cl) && ca / S2(cl) < 1.5 ? 'warn' : '')}
     ${tile('Rasio kas', S2(cl) ? (S2(cash) / S2(cl)).toFixed(2).replace('.', ',') + '×' : '—', 'kas ÷ kewajiban lancar')}${tile('Hutang ÷ ekuitas', TE ? (TL / TE).toFixed(2).replace('.', ',') + '×' : '—', 'DER · makin kecil makin aman', TE && TL / TE > 1 ? 'warn' : '')}</div>`;
@@ -474,12 +511,12 @@ async function vJurnal() {
   const p = period(), L = await data('jurnal', { ...p, biz: S.jbiz, source: S.jsrc, q: S.jq });
   const f = `<select class="inp" data-f="jbiz"><option value="">Semua unit</option>${['RA', 'WG', 'NA', 'HQ'].map(b => `<option value="${b}"${b === S.jbiz ? ' selected' : ''}>${BIZN[b]}</option>`).join('')}</select>
     <select class="inp" data-f="jsrc"><option value="">Semua sumber</option>${Object.entries(SRC).map(([k, v]) => `<option value="${k}"${k === S.jsrc ? ' selected' : ''}>${v}</option>`).join('')}</select>
-    <input class="inp" data-f="jq" value="${esc(S.jq)}" placeholder="Cari memo / kode / booking" style="width:200px">`;
-  let o = header('Buku jurnal', 'Semua jurnal grup. Hampir semuanya otomatis dari sumber data; koreksi lewat jurnal balik, tidak ada jurnal yang diubah atau dihapus.', f);
+    <input class="inp" data-f="jq" value="${esc(S.jq)}" placeholder="Cari memo / kode / pihak" style="width:200px">`;
+  let o = header('Buku jurnal', 'Semua jurnal grup. Hampir semuanya otomatis dari sumber data; koreksi lewat jurnal balik, tidak ada jurnal yang diubah atau dihapus.', (canWrite() ? '<button class="btn pri" type="button" data-jm>+ Jurnal manual</button>' : '') + f);
   const by = {}; L.forEach(j => { by[j.source] = (by[j.source] || 0) + 1; });
   o += `<div class="tiles">${tile('Jurnal tampil', L.length, 'maks 300 terbaru')}${tile('Nilai', rpk(sum(L, j => j.total)), 'jumlah debit')}${Object.entries(by).slice(0, 4).map(([k, n]) => tile(SRC[k] || k, n, pct(n / L.length * 100) + ' dari jurnal', k === 'manual' ? 'warn' : '')).join('')}</div>`;
   o += sec('Jurnal', 'klik untuk lihat baris', `<div class="scroll"><table class="ftbl compact"><thead><tr><th>Tanggal</th><th>Kode</th><th>Sumber</th><th>Unit</th><th>Keterangan</th><th class="r">Nilai</th></tr></thead><tbody>${L.map(j => `<tr class="click" data-j="${esc(j.id)}"><td>${tgl(j.date)}</td><td><code>${esc(j.code)}</code></td><td><span class="pill ${j.source === 'manual' ? 'y' : j.source === 'bank' ? 'b' : ''}">${esc(SRC[j.source] || j.source)}</span></td><td>${dot(bizOf(j.unit))}${esc(uname(j.unit))}</td><td>${esc(j.memo || '')}${j.status === 'void' ? ' <span class="pill r">batal</span>' : ''}</td><td class="r">${rp(j.total)}</td></tr>
-    <tr data-jl="${esc(j.id)}" hidden><td></td><td colspan="5"><div class="jl"><table class="ftbl compact"><tbody>${(j.lines || []).map(l => `<tr><td>${esc(l.acc)} · ${esc(l.name)}</td><td>${esc(uname(l.unit))}</td><td class="r">${+l.d ? rp(l.d) : ''}</td><td class="r">${+l.c ? rp(l.c) : ''}</td></tr>`).join('')}</tbody></table>
+    <tr data-jl="${esc(j.id)}" hidden><td></td><td colspan="5"><div class="jl"><table class="ftbl compact"><tbody>${(j.lines || []).map(l => `<tr><td>${esc(l.acc)} · ${esc(l.name)}${l.party ? ' <span class="pill b">' + esc(l.party) + '</span>' : ''}</td><td>${esc(uname(l.unit))}</td><td class="r">${+l.d ? rp(l.d) : ''}</td><td class="r">${+l.c ? rp(l.c) : ''}</td></tr>`).join('')}</tbody></table>
     ${canWrite() && j.status === 'posted' ? `<button class="btn sm warn" data-void="${esc(j.id)}" style="margin-top:6px">Batalkan dengan jurnal balik</button>` : ''}</div></td></tr>`).join('') || '<tr><td colspan="6" class="muted">Tidak ada jurnal.</td></tr>'}</tbody></table></div>`);
   return o;
 }
@@ -519,6 +556,323 @@ async function vSumber() {
 }
 
 
+/* =====================================================================
+   Layar tambahan (033): target, proyeksi kas, Profit First, piutang & hutang,
+   arus kas, utang leasing, akun & rekening, saldo awal, jurnal manual
+   ===================================================================== */
+let SET = null, LOANS = null;
+async function settings() { if (!SET) SET = await data('set'); return SET; }
+async function loans() { if (!LOANS) LOANS = await data('loans'); return LOANS || []; }
+const company = () => (SET && SET.fin_company) || 'PT Popo Karya Investama';
+const printHead = (title) => { const p = period(); return `<div class="print-head"><b>${esc(company())}</b><span>${esc(title)} · ${esc(p.label)}</span><small>Dicetak ${tgl(today())} ${new Date().getFullYear()} · Panel Keuangan Pokama</small></div>`; };
+const printBtn = `<button class="btn" type="button" data-print>Cetak / PDF</button>`;
+const monthOf = () => (/^\d{4}-\d{2}$/.test(S.per) ? S.per : today().slice(0, 7));
+const dim = (m) => new Date(+m.slice(0, 4), +m.slice(5, 7), 0).getDate();
+const FPOS = { operasional: 'Operasional', kewajiban: 'Kewajiban & pajak', bersama: 'Bersama & gaji owner', investasi: 'Profit & investasi' };
+
+/* --- cicilan & sisa pokok pinjaman --- */
+function loanCalc(l, asOf) {
+  const P = +l.principal, n = +l.tenor_months, r = +l.rate_pct / 1200;
+  const inst = l.installment ? +l.installment : (l.method === 'anuitas' && r > 0 ? Math.round(P * r / (1 - Math.pow(1 + r, -n))) : Math.round(P / n + P * r));
+  const s = D(l.start_month), a = D(asOf);
+  let k = (a.getFullYear() - s.getFullYear()) * 12 + a.getMonth() - s.getMonth() + (a.getDate() >= +l.due_day ? 1 : 0);
+  k = Math.max(+l.paid_months || 0, Math.min(n, Math.max(0, k)));
+  let rem = P; const sched = [];
+  for (let i = 1; i <= n; i++) {
+    const int = l.method === 'anuitas' && r > 0 ? Math.round(rem * r) : Math.round(P * r), pr = l.method === 'anuitas' && r > 0 ? inst - int : Math.round(P / n);
+    rem = Math.max(0, rem - pr); const d = new Date(s.getFullYear(), s.getMonth() + i - 1, Math.min(+l.due_day, 28));
+    sched.push({ i, d: ymd(d), inst: pr + int, pr, int, rem });
+  }
+  const done = sched[k - 1], next = sched[k];
+  return { inst, paid: k, left: n - k, rem: k ? done.rem : P, next, end: sched[n - 1].d, interest_left: sum(sched.slice(k), x => x.int), sched };
+}
+
+/* --- target vs realisasi --- */
+async function vTarget() {
+  const m = monthOf(), from = m + '-01', last = m + '-' + String(dim(m)).padStart(2, '0'), to = last > today() ? today() : last;
+  const [P, T, OM] = await Promise.all([data('pl', { from, to }), data('tgt', { month: from }), data('omz', { from, to })]);
+  const el = to < from ? 0 : (D(to) - D(from)) / 864e5 + 1, pace = el / dim(m);
+  const rev = (codes) => sum(P.filter(r => codes.includes(r.unit) && r.acc[0] === '4'), r => r.amt);
+  const kkh = (codes) => sum(OM.filter(o => codes.includes(o.unit_code)), o => o.amount);
+  const tgtOf = (codes) => sum(T.filter(t => codes.includes(t.unit_code)), t => t.amount);
+  const rowOf = (code, name, codes, lvl) => {
+    const t = tgtOf(codes), a = rev(codes), k = kkh(codes), proj = pace ? a / pace : 0, c = t ? a / t : null;
+    const st = !t ? ['Belum ada target', ''] : c >= 1 ? ['Tercapai', 'g'] : a >= t * pace * .95 ? ['Sesuai laju', 'g'] : a >= t * pace * .8 ? ['Diawasi', 'y'] : ['Tertinggal', 'r'];
+    const perDay = t && a < t && dim(m) - el > 0 ? (t - a) / (dim(m) - el) : 0;
+    const tr = T.filter(x => codes.includes(x.unit_code)), stat = tr.length ? (tr.every(x => x.status === 'sah') ? 'disahkan' : tr.some(x => x.status === 'usulan') ? 'usulan' : 'dicek') : '';
+    return { code, name, lvl, t, a, k, proj, c, st, perDay, stat };
+  };
+  const R = [];
+  for (const b of ['RA', 'WG', 'NA']) {
+    const lines = UNITS.filter(u => u.parent === b).map(u => u.code), codes = [b, ...lines];
+    R.push(rowOf(b, BIZN[b], codes, 0));
+    lines.forEach(l => { const r = rowOf(l, uname(l), [l], 1); if (r.t || r.a || r.k) R.push(r); });
+  }
+  const G = rowOf('G', 'Grup', UNITS.map(u => u.code), 0);
+  let o = header('Target vs realisasi', `Target omzet bulanan dari Unit Bisnis (KKH) dibandingkan dengan omzet di buku keuangan. Hari ke-${el} dari ${dim(m)} (${pct(pace * 100)} bulan berjalan).`);
+  o += `<div class="tiles">${tile('Target grup', rpk(G.t), bulan(from))}${tile('Realisasi buku', rpk(G.a), G.c == null ? '—' : pct(G.c * 100) + ' dari target', G.st[1] === 'r' ? 'bad' : G.st[1] === 'y' ? 'warn' : '')}
+    ${tile('Proyeksi akhir bulan', rpk(G.proj), 'laju saat ini · ' + (G.t ? (G.proj >= G.t ? 'di atas' : 'kurang ' + rpk(G.t - G.proj)) : '—'), G.t && G.proj < G.t ? 'warn' : '')}
+    ${tile('Perlu per hari', rpk(G.perDay), 'untuk sisa ' + (dim(m) - el) + ' hari')}${tile('Lapor KKH', rpk(G.k), 'omzet dilapor tim · selisih ' + rpS(G.k - G.a))}
+    ${tile('Unit tertinggal', R.filter(r => r.lvl === 0 && r.st[1] === 'r').length, R.filter(r => r.lvl === 1 && r.st[1] === 'r').length + ' lini tertinggal', R.some(r => r.st[1] === 'r') ? 'bad' : '')}</div>`;
+  o += sec('Per unit & lini', 'realisasi = pendapatan di buku · lapor KKH = omzet harian yang dilapor tim', `<div class="scroll"><table class="ftbl"><thead><tr><th>Unit / lini</th><th class="r">Target</th><th class="r">Realisasi</th><th style="min-width:130px">Capaian</th><th class="r">Proyeksi akhir bulan</th><th class="r">Perlu / hari</th><th class="r">Lapor KKH</th><th class="r">Selisih KKH</th><th>Status</th><th>Target</th></tr></thead><tbody>
+    ${R.map(r => `<tr class="${r.lvl ? '' : 'sub'}"><td class="${r.lvl ? 'ind' : 'nw'}">${r.lvl ? '' : logo(r.code, 20)}${esc(r.name)}</td><td class="r">${r.t ? rpk(r.t) : '<span class="muted">—</span>'}</td><td class="r b">${rpk(r.a)}</td>
+      <td>${r.t ? `<div class="bar" style="position:relative"><i style="width:${Math.min(100, r.c * 100)}%;background:${r.st[1] === 'r' ? '#C2410C' : r.st[1] === 'y' ? '#E8A33A' : '#09BEAF'}"></i></div><span class="small">${pct(r.c * 100)}</span>` : ''}</td>
+      <td class="r ${r.t && r.proj < r.t ? 'neg' : ''}">${rpk(r.proj)}</td><td class="r">${r.perDay ? rpk(r.perDay) : '—'}</td><td class="r">${rpk(r.k)}</td><td class="r ${Math.abs(r.k - r.a) > Math.max(r.a, 1) * .05 ? 'neg' : 'muted'}">${rpS(r.k - r.a)}</td>
+      <td>${r.st[0] ? `<span class="pill ${r.st[1]}">${r.st[0]}</span>` : ''}</td><td class="small muted">${r.stat}</td></tr>`).join('')}
+    <tr class="tot"><td>Grup</td><td class="r">${rpk(G.t)}</td><td class="r">${rpk(G.a)}</td><td>${G.c == null ? '' : pct(G.c * 100)}</td><td class="r">${rpk(G.proj)}</td><td class="r">${rpk(G.perDay)}</td><td class="r">${rpk(G.k)}</td><td class="r">${rpS(G.k - G.a)}</td><td></td><td></td></tr></tbody></table></div>
+    <p class="muted small" style="margin:0">Target diusulkan Leader, dicek Keuangan, disahkan CEO di menu Unit Bisnis (Sistem Kerja). Selisih KKH besar berarti laporan omzet harian tim tidak sama dengan uang yang tercatat di buku — cek salah satunya.</p>`);
+  return o;
+}
+
+/* --- proyeksi kas 13 minggu --- */
+function fcChart(F) {
+  const W = 760, H = 250, L = 56, B = 26, T = 14, n = F.weeks.length, bw = (W - L - 8) / n;
+  const vals = F.weeks.flatMap(w => [w.open, w.close, w.in, w.rutin + w.kewajiban + w.cicilan + w.gaji + w.belanja]).concat([F.min_cash || 0, 0]);
+  const max = Math.max(...vals, 1), min = Math.min(...vals, 0), y = (v) => T + (H - T - B) * (1 - (v - min) / (max - min));
+  let g = '';
+  for (let i = 0; i <= 4; i++) { const v = min + (max - min) * i / 4; g += `<line x1="${L}" x2="${W}" y1="${y(v)}" y2="${y(v)}" stroke="#EEF0F3"/><text x="${L - 6}" y="${y(v) + 3}" text-anchor="end">${rpk(v).replace('Rp', '')}</text>`; }
+  if (F.min_cash) g += `<line x1="${L}" x2="${W}" y1="${y(F.min_cash)}" y2="${y(F.min_cash)}" stroke="#C2410C" stroke-dasharray="5 4"/><text x="${W - 4}" y="${y(F.min_cash) - 4}" text-anchor="end" style="fill:#A12A1F">kas minimum ${rpk(F.min_cash)}</text>`;
+  F.weeks.forEach((w, i) => {
+    const x = L + i * bw, out = w.rutin + w.kewajiban + w.cicilan + w.gaji + w.belanja;
+    g += `<rect x="${x + bw * .14}" y="${y(w.in)}" width="${bw * .32}" height="${Math.max(0, y(0) - y(w.in))}" fill="#09BEAF" rx="2"><title>Masuk ${rp(w.in)}</title></rect>`;
+    g += `<rect x="${x + bw * .5}" y="${y(out)}" width="${bw * .32}" height="${Math.max(0, y(0) - y(out))}" fill="#1F2B4D" rx="2"><title>Keluar ${rp(out)}</title></rect>`;
+    g += `<text x="${x + bw / 2}" y="${H - 8}" text-anchor="middle">${tgl(w.week)}</text>`;
+  });
+  const pts = F.weeks.map((w, i) => [L + i * bw + bw / 2, y(w.close)]);
+  g += `<polyline points="${pts.map(p => p.join(',')).join(' ')}" fill="none" stroke="#F2A33A" stroke-width="2.5"/>` + pts.map((p, i) => `<circle cx="${p[0]}" cy="${p[1]}" r="4.5" fill="${F.weeks[i].low ? '#C2410C' : '#F2A33A'}"><title>Saldo akhir ${rp(F.weeks[i].close)}</title></circle>`).join('');
+  return `<div class="chart"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Proyeksi kas 13 minggu">${g}</svg></div>
+    <div class="legend"><span><i class="dot" style="background:#09BEAF"></i>Perkiraan masuk</span><span><i class="dot" style="background:#1F2B4D"></i>Perkiraan keluar</span><span><i class="dot" style="background:#F2A33A;border-radius:5px"></i>Saldo akhir minggu</span>${F.min_cash ? '<span><i class="dot" style="background:#C2410C"></i>Di bawah kas minimum</span>' : ''}</div>`;
+}
+async function vProyeksi() {
+  const [F, ST] = await Promise.all([data('fc'), settings()]);
+  const W = F.weeks, outs = (w) => w.rutin + w.kewajiban + w.cicilan + w.gaji + w.belanja, low = W.find(w => w.low), lowest = W.reduce((a, w) => (w.close < a.close ? w : a), W[0]);
+  let o = header('Proyeksi kas 13 minggu', 'Saldo kas grup ke depan per minggu. Masuk & keluar rutin dari rata-rata 8 minggu terakhir; gaji, cicilan, kewajiban, dan belanja yang sudah diajukan dihitung sesuai jadwal.', printBtn);
+  o += printHead('Proyeksi kas 13 minggu');
+  if (+F.hist_weeks < 4) o += `<div class="demo" style="background:var(--bluebg);color:var(--blue)">Riwayat transaksi baru ${F.hist_weeks || 0} minggu, jadi perkiraan masuk & keluar rutin belum akurat. Akan makin tepat setelah 8 minggu data.</div>`;
+  o += `<div class="tiles">${tile('Kas & bank sekarang', rpk(F.cash), 'semua rekening grup')}${tile('Titik terendah', rpk(lowest.close), 'minggu ' + tgl(lowest.week), lowest.close < (F.min_cash || 0) ? 'bad' : lowest.close < F.cash * .5 ? 'warn' : '')}
+    ${tile('Di bawah kas minimum', low ? 'mulai ' + tgl(low.week) : 'aman', F.min_cash ? 'batas ' + rpk(F.min_cash) : 'batas belum diatur', low ? 'bad' : '')}
+    ${tile('Saldo minggu ke-13', rpk(W[W.length - 1].close), rpS(W[W.length - 1].close - F.cash) + ' dari sekarang', W[W.length - 1].close < F.cash ? 'warn' : '')}
+    ${tile('Masuk rata-rata / minggu', rpk(F.avg_in), 'dari ' + (F.hist_weeks || 0) + ' minggu terakhir')}${tile('Keluar rutin / minggu', rpk(F.avg_out), 'di luar gaji, cicilan, kewajiban')}</div>`;
+  o += sec('Grafik 13 minggu', '', fcChart(F));
+  o += sec('Rincian per minggu', 'klik baris untuk melihat tagihan terjadwal', `<div class="scroll"><table class="ftbl compact"><thead><tr><th>Minggu</th><th class="r">Saldo awal</th><th class="r">Masuk</th><th class="r">Keluar rutin</th><th class="r">Gaji</th><th class="r">Cicilan</th><th class="r">Kewajiban</th><th class="r">Belanja</th><th class="r">Total keluar</th><th class="r">Saldo akhir</th></tr></thead><tbody>
+    ${W.map((w, i) => `<tr class="click" data-fw="${i}"><td class="nw"><b>${tgl(w.week)} – ${tgl(w.end)}</b>${i === 0 ? ' <span class="pill b">minggu ini</span>' : ''}</td><td class="r">${rpk(w.open)}</td><td class="r green-t">${rpk(w.in)}</td><td class="r">${rpk(w.rutin)}</td><td class="r">${w.gaji ? rpk(w.gaji) : '–'}</td><td class="r">${w.cicilan ? rpk(w.cicilan) : '–'}</td><td class="r">${w.kewajiban ? rpk(w.kewajiban) : '–'}</td><td class="r">${w.belanja ? rpk(w.belanja) : '–'}</td><td class="r">${rpk(outs(w))}</td>
+      <td class="r b ${w.low ? 'neg' : ''}">${rpS(w.close)}${w.low ? ' <span class="pill r">kurang</span>' : ''}</td></tr>
+      <tr data-fwl="${i}" hidden><td colspan="10"><div class="jl">${w.items.length ? w.items.map(x => `<div class="row between small"><span>${tgl(x.due)} · ${esc(x.name)} <span class="muted">${esc(KIND[x.kind] || x.kind || '')}</span></span><b>${rp(x.amt)}</b></div>`).join('') : '<span class="muted small">Tidak ada cicilan/kewajiban terjadwal.</span>'}${w.gaji ? `<div class="row between small"><span>Gaji (tanggal ${F.payday})</span><b>${rp(w.gaji)}</b></div>` : ''}${w.belanja ? `<div class="row between small"><span>Belanja RAB ${i === 0 ? 'siap cair' : 'yang diajukan'}</span><b>${rp(w.belanja)}</b></div>` : ''}</div></td></tr>`).join('')}</tbody></table></div>`);
+  if (canWrite()) o += sec('Kas minimum', 'batas aman kas grup; minggu di bawah angka ini diberi tanda merah', `<form id="minf" class="row gap" style="flex-wrap:wrap"><input class="inp" name="v" type="number" min="0" step="1000000" value="${+ST.fin_min_cash || 0}" style="width:220px"><button class="btn pri">Simpan</button><span class="muted small">Saran: minimal 1× biaya tunai bulanan + cicilan 1 bulan.</span></form>`);
+  return o;
+}
+
+/* --- Profit First --- */
+async function vProfitFirst() {
+  const p = period(), [Dd, ST] = await Promise.all([data('dash', p), settings()]), g = digest(Dd); setBadges(Dd, g);
+  const PF = ST.fin_profit_first || {}, tot = sum(Object.keys(FPOS), k => +PF[k] || 0);
+  const inbox = g.byPos.penerimaan || 0, total = sum(Object.values(g.byPos), v => v);
+  const recv = sum(g.cash.filter(c => c.pos === 'penerimaan'), c => +c.in) || sum(g.rows, r => r.cur.rev);
+  const rows = Object.keys(FPOS).map(k => { const pctv = +PF[k] || 0, cur2 = g.byPos[k] || 0, ideal = total * pctv / 100; return { k, pctv, cur: cur2, ideal, need: Math.max(0, ideal - cur2), share: recv * pctv / 100 }; });
+  const needTot = sum(rows, r => r.need), scale = needTot > inbox && needTot ? inbox / needTot : 1;
+  let o = header('Profit First', 'Setiap uang masuk dibagi ke pos rekening sesuai persen yang disepakati, sebelum dipakai. Saldo pos dibandingkan dengan porsi idealnya.');
+  o += `<div class="tiles">${tile('Belum dibagi', rpk(inbox), 'saldo rekening penerimaan', inbox > total * .2 ? 'warn' : '')}${tile('Uang masuk periode', rpk(recv), esc(p.label))}
+    ${tile('Total kas semua pos', rpk(total), g.cash.length + ' rekening')}${tile('Perlu dipindah', rpk(needTot * scale), needTot > inbox ? 'penerimaan kurang ' + rpk(needTot - inbox) : 'dari rekening penerimaan', needTot * scale > 0 ? 'warn' : '')}
+    ${tile('Total persen', tot + '%', tot === 100 ? 'sudah 100%' : 'harus 100%', tot === 100 ? '' : 'bad')}${tile('Pos terkecil vs ideal', rows.length ? pct(Math.min(...rows.map(r => r.ideal ? r.cur / r.ideal * 100 : 100))) : '—', 'saldo ÷ porsi ideal')}</div>`;
+  o += sec('Pembagian per pos', 'ideal = total kas × persen pos', `<div class="scroll"><table class="ftbl"><thead><tr><th>Pos</th><th class="r">Persen</th><th class="r">Jatah dari uang masuk periode</th><th class="r">Saldo sekarang</th><th class="r">Porsi ideal</th><th style="min-width:140px">Terisi</th><th class="r">Pindahkan dari penerimaan</th></tr></thead><tbody>
+    ${rows.map(r => `<tr><td><b>${FPOS[r.k]}</b><br><span class="muted small">${esc((POS[r.k] || [])[1] || '')}</span></td><td class="r">${r.pctv}%</td><td class="r">${rpk(r.share)}</td><td class="r b">${rpk(r.cur)}</td><td class="r">${rpk(r.ideal)}</td>
+      <td>${bar(r.cur, r.ideal || 1, r.cur >= r.ideal ? '#09BEAF' : r.cur >= r.ideal * .7 ? '#E8A33A' : '#C2410C')}<span class="small">${pct(r.ideal ? r.cur / r.ideal * 100 : 0)}</span></td>
+      <td class="r ${r.need ? 'b' : 'muted'}">${r.need ? rp(Math.round(r.need * scale)) : '—'}</td></tr>`).join('')}
+    <tr class="tot"><td>Total</td><td class="r">${tot}%</td><td class="r">${rpk(recv)}</td><td class="r">${rpk(total - inbox)}</td><td class="r">${rpk(total)}</td><td></td><td class="r">${rp(Math.round(needTot * scale))}</td></tr></tbody></table></div>
+    <p class="muted small" style="margin:0">Rekening tiap pos diatur di <a href="#akun">Akun & rekening</a> (kolom Pos). Pindahan antar-rekening dibukukan lewat mutasi bank atau jurnal manual.</p>`);
+  if (canWrite()) o += sec('Atur persen', 'total harus 100', `<form id="pff" class="row gap" style="flex-wrap:wrap;align-items:flex-end">${Object.keys(FPOS).map(k => `<label class="small b" style="display:flex;flex-direction:column;gap:4px">${FPOS[k]}<input class="inp" name="${k}" type="number" min="0" max="100" step="1" value="${+PF[k] || 0}" style="width:130px"></label>`).join('')}<button class="btn pri">Simpan persen</button></form>`);
+  return o;
+}
+
+/* --- piutang & hutang per pihak (umur FIFO) --- */
+const PARTY_ACC = { '1-10100': ['piutang', 'Piutang usaha'], '1-10101': ['piutang', 'Kasbon karyawan'], '2-20100': ['hutang', 'Hutang usaha (vendor)'], '2-20300': ['hutang', 'Hutang bagi hasil mitra'], '2-20600': ['hutang', 'Reimburse karyawan'], '2-21200': ['hutang', 'Dana investor'] };
+function aging(lines, asOf) {
+  const G = {};
+  lines.forEach(l => { const k = l.acc + '|' + l.party; (G[k] = G[k] || { acc: l.acc, party: l.party, items: [], last: l.d, units: new Set() }); const g2 = G[k];
+    const inc = l.acc[0] === '1' ? +l.dr - +l.cr : +l.cr - +l.dr; g2.last = l.d; g2.units.add(bizOf(l.unit));
+    if (inc > 0) g2.items.push({ d: l.d, amt: inc, memo: l.memo });
+    else { let x = -inc; while (x > 0 && g2.items.length) { const it = g2.items[0]; const t2 = Math.min(it.amt, x); it.amt -= t2; x -= t2; if (it.amt <= 0.5) g2.items.shift(); } } });
+  return Object.values(G).map(g2 => { const b = [0, 0, 0, 0]; g2.items.forEach(it => { const a = (D(asOf) - D(it.d)) / 864e5; b[a <= 30 ? 0 : a <= 60 ? 1 : a <= 90 ? 2 : 3] += it.amt; });
+    return { ...g2, b, bal: sum(b, x => x), oldest: g2.items.length ? g2.items[0].d : null }; }).filter(x => Math.abs(x.bal) >= 1);
+}
+async function vPihak(kind) {
+  const k = kind === 'hutang' ? 'hutang' : 'piutang', p = period(), L = await data('party', { to: p.to }), A2 = aging(L, p.to).filter(x => PARTY_ACC[x.acc] && PARTY_ACC[x.acc][0] === k).sort((a, b) => b.bal - a.bal);
+  const T = [0, 1, 2, 3].map(i => sum(A2, x => x.b[i])), tot = sum(T, x => x);
+  let o = header(k === 'piutang' ? 'Piutang per pihak' : 'Hutang per pihak', k === 'piutang' ? 'Siapa yang masih berhutang ke grup, dan sudah berapa lama. Umur dihitung dari tagihan terlama yang belum dibayar.' : 'Ke siapa grup masih berhutang: vendor, mitra bagi hasil, reimburse karyawan, dan investor.', printBtn);
+  o += printHead(k === 'piutang' ? 'Umur piutang' : 'Umur hutang');
+  o += `<div class="chips">${['piutang', 'hutang'].map(x => `<a class="chipbtn ${x === k ? 'on' : ''}" href="#pihak/${x}">${x === 'piutang' ? 'Piutang (orang lain ke kita)' : 'Hutang (kita ke orang lain)'}</a>`).join('')}</div>`;
+  o += `<div class="tiles">${tile('Total ' + k, rpk(tot), A2.length + ' pihak')}${tile('0–30 hari', rpk(T[0]), pct(ratio(T[0], tot)))}${tile('31–60 hari', rpk(T[1]), pct(ratio(T[1], tot)), T[1] ? 'warn' : '')}
+    ${tile('61–90 hari', rpk(T[2]), pct(ratio(T[2], tot)), T[2] ? 'warn' : '')}${tile('> 90 hari', rpk(T[3]), k === 'piutang' ? 'pertimbangkan dihapus/ditagih keras' : 'segera dibayar', T[3] ? 'bad' : '')}
+    ${tile('Pihak terbesar', A2[0] ? rpk(A2[0].bal) : '—', A2[0] ? esc(A2[0].party) : '—')}</div>`;
+  const byAcc = Object.keys(PARTY_ACC).filter(a => PARTY_ACC[a][0] === k);
+  for (const acc of byAcc) {
+    const R = A2.filter(x => x.acc === acc); if (!R.length) continue;
+    o += sec(PARTY_ACC[acc][1], rpk(sum(R, x => x.bal)) + ' · ' + R.length + ' pihak', `<div class="scroll"><table class="ftbl"><thead><tr><th>Pihak</th><th>Unit</th><th class="r">0–30</th><th class="r">31–60</th><th class="r">61–90</th><th class="r">&gt; 90</th><th class="r">Saldo</th><th>Terlama</th><th>Gerak terakhir</th></tr></thead><tbody>
+      ${R.map(x => `<tr><td><b>${esc(x.party)}</b></td><td class="small">${[...x.units].map(u => dot(u) + esc(BIZN[u] || u)).join(' ')}</td>${x.b.map((v, i) => `<td class="r ${v && i >= 2 ? 'neg' : ''}">${v ? rpk(v) : '–'}</td>`).join('')}<td class="r b">${rp(x.bal)}</td>
+        <td class="small">${x.oldest ? tgl(x.oldest) + ' · ' + Math.round((D(p.to) - D(x.oldest)) / 864e5) + ' hari' : '—'}</td><td class="small">${tgl(x.last)}</td></tr>`).join('')}</tbody></table></div>`);
+  }
+  if (!A2.length) o += sec('Belum ada ' + k, '', empty(`Tidak ada saldo ${k} per pihak. Nama pihak diisi lewat <a href="#saldo">Saldo awal</a> atau <b>Jurnal manual</b> di Buku jurnal (kolom Pihak).`));
+  return o;
+}
+
+/* --- arus kas --- */
+async function vArusKas() {
+  const p = period(), C = await data('cf', p);
+  const cats = [['operasi', 'Aktivitas operasi', 'penjualan, biaya, pajak, piutang & hutang usaha, DP pelanggan'], ['investasi', 'Aktivitas investasi', 'beli/jual aset tetap'], ['pendanaan', 'Aktivitas pendanaan', 'leasing, pinjaman, investor, modal & prive']];
+  const T = Object.fromEntries(cats.map(([c]) => [c, sum(C.rows.filter(r => r.cat === c), r => r.amt)])), net = sum(C.rows, r => r.amt), diff = Math.round(C.closing - C.opening - net);
+  const inOp = sum(C.rows.filter(r => r.cat === 'operasi' && r.amt > 0), r => r.amt), outOp = -sum(C.rows.filter(r => r.cat === 'operasi' && r.amt < 0), r => r.amt);
+  let o = header('Arus kas', 'Dari mana uang masuk dan ke mana keluar (metode langsung). Pindahan antar-rekening sendiri tidak dihitung.', printBtn + `<button class="btn" data-csv="cf">Unduh CSV</button>`);
+  o += printHead('Laporan arus kas');
+  o += `<div class="tiles">${tile('Kas awal', rpk(C.opening), tgl(p.from))}${tile('Arus kas operasi', rpS(T.operasi), 'masuk ' + rpk(inOp) + ' · keluar ' + rpk(outOp), T.operasi < 0 ? 'bad' : '')}
+    ${tile('Arus kas investasi', rpS(T.investasi), 'belanja aset')}${tile('Arus kas pendanaan', rpS(T.pendanaan), 'cicilan, pinjaman, modal')}${tile('Kenaikan (penurunan) kas', rpS(net), '', net < 0 ? 'warn' : '')}${tile('Kas akhir', rpk(C.closing), tgl(p.to))}</div>`;
+  if (diff) o += `<div class="alert y"><span class="k">CEK</span><span><b>Selisih ${rp(diff)}</b> antara perubahan saldo kas dan arus kas. Biasanya karena jurnal saldo awal atau jurnal yang hanya berisi rekening kas.</span></div>`;
+  const grp = (c) => { const R = C.rows.filter(r => r.cat === c).sort((a, b) => b.amt - a.amt); const by = {}; R.forEach(r => { by[r.acc] = by[r.acc] || { acc: r.acc, name: r.name, amt: 0, biz: {} }; by[r.acc].amt += r.amt; by[r.acc].biz[r.biz] = (by[r.acc].biz[r.biz] || 0) + r.amt; }); return Object.values(by).sort((a, b) => b.amt - a.amt); };
+  let t = '<table class="ftbl compact"><thead><tr><th>Keterangan</th>' + ['RA', 'WG', 'NA', 'HQ'].map(b => `<th class="r">${BIZN[b]}</th>`).join('') + '<th class="r">Total</th></tr></thead><tbody>';
+  t += `<tr class="sub"><td>Kas awal periode</td><td colspan="4"></td><td class="r">${num(C.opening)}</td></tr>`;
+  for (const [c, l, hint] of cats) {
+    const G2 = grp(c); t += `<tr class="sec"><td colspan="6">${l.toUpperCase()} <span style="text-transform:none;font-weight:600">· ${hint}</span></td></tr>`;
+    t += G2.length ? G2.map(r => `<tr><td class="ind">${r.amt >= 0 ? 'Masuk dari' : 'Keluar untuk'} ${esc(r.name)} <span class="muted small">${r.acc}</span></td>${['RA', 'WG', 'NA', 'HQ'].map(b => `<td class="r ${mcls(r.biz[b] || 0)}">${r.biz[b] ? num(r.biz[b]) : '<span class="muted">–</span>'}</td>`).join('')}<td class="r b ${mcls(r.amt)}">${num(r.amt)}</td></tr>`).join('') : `<tr><td class="ind muted" colspan="6">Tidak ada</td></tr>`;
+    t += `<tr class="sub"><td>Arus kas bersih ${l.toLowerCase()}</td>${['RA', 'WG', 'NA', 'HQ'].map(b => `<td class="r">${num(sum(C.rows.filter(r => r.cat === c && r.biz === b), r => r.amt))}</td>`).join('')}<td class="r ${mcls(T[c])}">${num(T[c])}</td></tr>`;
+  }
+  t += `<tr class="sub"><td>Kenaikan (penurunan) kas</td><td colspan="4"></td><td class="r ${mcls(net)}">${num(net)}</td></tr><tr class="tot big"><td>Kas akhir periode</td><td colspan="4"></td><td class="r">${num(C.closing)}</td></tr></tbody></table>`;
+  o += sec('Laporan arus kas', esc(p.label) + ' · rupiah', `<div class="scroll">${t}</div>`);
+  cur = { csv: () => [['Kategori', 'Akun', 'Nama', 'Unit', 'Jumlah'], ...C.rows.map(r => [r.cat, r.acc, r.name, BIZN[r.biz] || r.biz, r.amt]), ['', '', 'Kas awal', '', C.opening], ['', '', 'Kas akhir', '', C.closing]] };
+  return o;
+}
+
+/* --- utang leasing & pinjaman (bagian halaman Kewajiban) --- */
+async function loanSection() {
+  const L = await loans(), t = today(), C = L.filter(l => l.is_active !== false).map(l => ({ l, c: loanCalc(l, t) }));
+  const rem = sum(C, x => x.c.rem), inst = sum(C.filter(x => x.c.left > 0), x => x.c.inst), intLeft = sum(C, x => x.c.interest_left);
+  let o = `<div class="tiles">${tile('Sisa pokok pinjaman', rpk(rem), C.length + ' pinjaman aktif')}${tile('Cicilan / bulan', rpk(inst), 'leasing, pinjaman, investor')}${tile('Sisa bunga', rpk(intLeft), 'yang masih akan dibayar')}
+    ${tile('Lunas terakhir', C.length ? bulan(C.map(x => x.c.end).sort().pop()) : '—', 'pinjaman terpanjang')}</div>`;
+  o += sec('Utang leasing & pinjaman', 'sisa pokok dihitung dari jadwal cicilan · klik untuk jadwal lengkap', C.length ? `<div class="scroll"><table class="ftbl"><thead><tr><th>Pinjaman</th><th>Unit</th><th class="r">Pokok awal</th><th class="r">Bunga</th><th class="r">Cicilan</th><th>Tempo</th><th style="min-width:120px">Progres</th><th class="r">Sisa pokok</th><th>Berikutnya</th><th>Lunas</th></tr></thead><tbody>
+    ${C.map(({ l, c }) => `<tr class="click" data-loan="${esc(l.id)}"><td><b>${esc(l.name)}</b><br><span class="muted small">${esc(l.lender || '')} · ${esc(KIND[l.kind] || (l.kind === 'investor' ? 'Investor' : l.kind))}</span></td><td>${logo(l.unit_code, 18)} ${esc(uname(l.unit_code))}</td><td class="r">${rpk(l.principal)}</td><td class="r">${String(+l.rate_pct).replace('.', ',')}% ${l.method === 'anuitas' ? 'efektif' : 'flat'}</td><td class="r b">${rp(c.inst)}</td><td>tgl ${l.due_day}</td>
+      <td>${bar(c.paid, +l.tenor_months, '#09BEAF')}<span class="small">${c.paid}/${l.tenor_months} bulan</span></td><td class="r b">${rp(c.rem)}</td><td class="small">${c.next ? tgl(c.next.d) : '<span class="pill g">lunas</span>'}</td><td class="small">${bulan(c.end)}</td></tr>`).join('')}</tbody></table></div>
+    <p class="muted small" style="margin:0">Cicilan leasing cukup dicatat di sini; jangan didobel di Kewajiban rutin. Proyeksi kas otomatis memakai jadwal ini.</p>` : empty('Belum ada pinjaman. Tim Keuangan bisa menambahkan dengan tombol di bawah.'));
+  if (canWrite()) o += `<div><button class="btn pri" type="button" data-loanadd>+ Tambah leasing / pinjaman</button></div>`;
+  return o;
+}
+function loanForm(l = {}) {
+  const f = (n, lab, v, typ = 'text', extra = '') => `<label class="small b" style="display:flex;flex-direction:column;gap:4px">${lab}<input class="inp" name="${n}" type="${typ}" value="${esc(v ?? '')}" ${extra}></label>`;
+  panel(`<div class="row between"><h2>${l.id ? 'Ubah' : 'Tambah'} leasing / pinjaman</h2><button class="btn sm" data-close>✕</button></div>
+    <form id="loanf" class="stack" style="gap:10px"><input type="hidden" name="id" value="${esc(l.id || '')}">
+    ${f('name', 'Nama', l.name, 'text', 'required placeholder="mis. Leasing Jeep Guntur"')}<div class="cols2" style="gap:10px">${f('lender', 'Pemberi pinjaman', l.lender, 'text', 'placeholder="ACC, Adira, bank, investor"')}
+    <label class="small b" style="display:flex;flex-direction:column;gap:4px">Jenis<select class="inp" name="kind">${[['leasing', 'Leasing'], ['pinjaman', 'Pinjaman bank'], ['investor', 'Dana investor']].map(([k, v]) => `<option value="${k}"${l.kind === k ? ' selected' : ''}>${v}</option>`).join('')}</select></label>
+    <label class="small b" style="display:flex;flex-direction:column;gap:4px">Unit<select class="inp" name="unit_code">${UNITS.map(u => `<option value="${u.code}"${l.unit_code === u.code ? ' selected' : ''}>${esc(u.name)}</option>`).join('')}</select></label>
+    ${f('principal', 'Pokok pinjaman (Rp)', l.principal, 'number', 'min="1" required')}${f('rate_pct', 'Bunga per tahun (%)', l.rate_pct ?? 0, 'number', 'min="0" step="0.01"')}
+    <label class="small b" style="display:flex;flex-direction:column;gap:4px">Metode bunga<select class="inp" name="method"><option value="flat"${l.method !== 'anuitas' ? ' selected' : ''}>Flat (umum di leasing)</option><option value="anuitas"${l.method === 'anuitas' ? ' selected' : ''}>Anuitas / efektif (bank)</option></select></label>
+    ${f('tenor_months', 'Tenor (bulan)', l.tenor_months, 'number', 'min="1" max="360" required')}${f('start_month', 'Cicilan pertama (bulan)', l.start_month ? l.start_month.slice(0, 7) : '', 'month', 'required')}
+    ${f('due_day', 'Tanggal jatuh tempo', l.due_day ?? 5, 'number', 'min="1" max="31"')}${f('installment', 'Cicilan per bulan (kosongkan = dihitung)', l.installment, 'number', 'min="0"')}
+    ${f('paid_months', 'Sudah dibayar (bulan)', l.paid_months ?? 0, 'number', 'min="0"')}${f('bank_pattern', 'Kata kunci di mutasi bank', l.bank_pattern, 'text', 'placeholder="mis. ACC FINANCE"')}</div>
+    ${f('note', 'Catatan', l.note)}${l.id ? `<label class="chk small"><input type="checkbox" name="is_active" ${l.is_active !== false ? 'checked' : ''}> Masih aktif</label>` : ''}
+    <button class="btn pri">Simpan</button></form>`);
+}
+function loanPanel(id) {
+  const l = (LOANS || []).find(x => x.id === id); if (!l) return; const c = loanCalc(l, today());
+  panel(`<div class="row between"><div><span class="muted small">${esc(l.lender || '')} · ${esc(uname(l.unit_code))}</span><h2 style="font-size:20px">${esc(l.name)}</h2></div><button class="btn sm" data-close>✕</button></div>
+    <div class="kv"><div><span>Cicilan</span><b>${rp(c.inst)}</b></div><div><span>Sisa pokok</span><b>${rp(c.rem)}</b></div><div><span>Sisa tenor</span><b>${c.left} bulan</b></div></div>
+    ${canWrite() ? `<button class="btn" type="button" data-loanedit="${esc(l.id)}" style="align-self:flex-start">Ubah data pinjaman</button>` : ''}
+    <table class="ftbl compact"><thead><tr><th>#</th><th>Jatuh tempo</th><th class="r">Pokok</th><th class="r">Bunga</th><th class="r">Cicilan</th><th class="r">Sisa pokok</th></tr></thead><tbody>${c.sched.map(s => `<tr${s.i <= c.paid ? ' style="opacity:.5"' : ''}><td>${s.i}</td><td>${tgl(s.d)} ${s.d.slice(0, 4)}</td><td class="r">${num(s.pr)}</td><td class="r">${num(s.int)}</td><td class="r b">${num(s.inst)}</td><td class="r">${num(s.rem)}</td></tr>`).join('')}</tbody></table>`);
+}
+
+/* --- akun & rekening + pengaturan --- */
+async function vAkun() {
+  const [AC, ST] = await Promise.all([data('accfull'), settings()]);
+  const G = [['aset', 'Aset'], ['kewajiban', 'Kewajiban'], ['ekuitas', 'Ekuitas'], ['pendapatan', 'Pendapatan'], ['hpp', 'Harga pokok'], ['beban', 'Biaya operasional'], ['pendapatan_lain', 'Pendapatan lain'], ['beban_lain', 'Beban lain']];
+  const cash = AC.filter(a => a.is_cash);
+  let o = header('Akun & rekening', 'Bagan akun satu buku PT Popo Karya Investama. Rekening kas & bank diberi unit dan pos (Profit First) supaya laporan per unit dan per pos benar.');
+  if (!canWrite()) o += '<div class="ro">Perubahan akun & rekening oleh Keuangan atau CEO.</div>';
+  o += `<div class="tiles">${tile('Rekening kas & bank', cash.length, cash.filter(a => a.bank).length + ' bank · ' + cash.filter(a => !a.bank).length + ' tunai')}${tile('Belum ada nomor rekening', cash.filter(a => a.bank && !a.note).length, 'isi di kolom catatan', cash.some(a => a.bank && !a.note) ? 'warn' : '')}
+    ${tile('Total akun', AC.length, AC.filter(a => a.is_active === false).length + ' nonaktif')}${tile('Tanpa pos', cash.filter(a => !a.pos).length, 'rekening kas belum diberi pos', cash.some(a => !a.pos) ? 'warn' : '')}</div>`;
+  o += sec('Rekening kas & bank', canWrite() ? 'klik baris untuk mengubah' : '', `<div class="scroll"><table class="ftbl"><thead><tr><th>Kode</th><th>Nama rekening</th><th>Bank</th><th>No. rekening / catatan</th><th>Unit</th><th>Pos</th><th>Status</th></tr></thead><tbody>
+    ${cash.map(a => `<tr class="${canWrite() ? 'click' : ''}" data-accedit="${esc(a.code)}"><td><code>${esc(a.code)}</code></td><td><b>${esc(a.name)}</b></td><td>${esc(a.bank || 'tunai')}</td><td class="small">${esc(a.note || '')}</td><td>${a.unit_code ? dot(bizOf(a.unit_code)) + esc(uname(a.unit_code)) : 'Grup'}</td><td>${a.pos ? esc((POS[a.pos] || [a.pos])[0]) : '<span class="pill y">belum</span>'}</td><td>${a.is_active === false ? '<span class="pill">nonaktif</span>' : '<span class="pill g">aktif</span>'}</td></tr>`).join('')}</tbody></table></div>
+    ${canWrite() ? '<div class="row gap"><button class="btn pri" type="button" data-accnew="cash">+ Rekening baru</button><button class="btn" type="button" data-accnew="other">+ Akun lain</button></div>' : ''}`);
+  o += `<div class="cols2">${G.map(([k, l]) => { const R = AC.filter(a => a.grp === k && !a.is_cash); return R.length ? sec(l, R.length + ' akun', `<table class="ftbl compact"><tbody>${R.map(a => `<tr class="${canWrite() ? 'click' : ''}" data-accedit="${esc(a.code)}"><td style="width:90px"><code>${esc(a.code)}</code></td><td>${esc(a.name)}${a.is_active === false ? ' <span class="pill">nonaktif</span>' : ''}</td></tr>`).join('')}</tbody></table>`) : ''; }).join('')}</div>`;
+  if (canWrite()) {
+    const sf = (k, l, v, hint, step = 1) => `<label class="small b" style="display:flex;flex-direction:column;gap:4px">${l}<input class="inp" name="${k}" type="number" step="${step}" value="${v ?? ''}" style="width:200px"><span class="muted" style="font-weight:600">${hint}</span></label>`;
+    o += sec('Pengaturan keuangan', '', `<form id="setf" class="row gap" style="flex-wrap:wrap;align-items:flex-start">${sf('fin_min_cash', 'Kas minimum grup (Rp)', +ST.fin_min_cash || 0, 'batas aman di proyeksi kas', 1000000)}${sf('fin_tax_rate', 'Tarif PPh final (%)', ST.fin_tax_rate ?? 0.5, 'estimasi; cek konsultan pajak', 0.1)}
+      ${sf('fin_payroll_day', 'Tanggal gaji', ST.fin_payroll_day ?? 25, 'gaji dibukukan otomatis')}${sf('fin_close_day', 'Batas tutup buku (tanggal)', ST.fin_close_day ?? 5, 'bulan berikutnya')}${sf('fin_capitalize_min', 'Batas barang jadi aset (Rp)', ST.fin_capitalize_min ?? 500000, 'harga satuan di LPJ', 50000)}
+      <button class="btn pri" style="align-self:center">Simpan pengaturan</button></form>`);
+  }
+  cur = { accs: AC };
+  return o;
+}
+function accForm(a, kind) {
+  const isCash = a ? a.is_cash : kind === 'cash', AC = (cur && cur.accs) || [];
+  const nextCode = () => { const pre = isCash ? '1-100' : '6-600'; const n = AC.filter(x => x.code.startsWith(pre)).map(x => +x.code.slice(2)).sort((x, y) => y - x)[0]; return n ? pre[0] + '-' + String(n + 1).padStart(5, '0') : pre + '01'; };
+  panel(`<div class="row between"><h2>${a ? 'Ubah akun' : isCash ? 'Rekening baru' : 'Akun baru'}</h2><button class="btn sm" data-close>✕</button></div>
+    <form id="accf" class="stack" style="gap:10px"><input type="hidden" name="is_cash" value="${isCash ? 'true' : 'false'}">
+    <div class="cols2" style="gap:10px"><label class="small b" style="display:flex;flex-direction:column;gap:4px">Kode<input class="inp" name="code" value="${esc(a ? a.code : nextCode())}" ${a ? 'readonly' : ''} pattern="[1-8]-[0-9]{5}" required><span class="muted" style="font-weight:600">digit pertama menentukan kelompok: 1 aset · 2 kewajiban · 3 ekuitas · 4 pendapatan · 5 HPP · 6 biaya · 7/8 lain-lain</span></label>
+    <label class="small b" style="display:flex;flex-direction:column;gap:4px">Nama<input class="inp" name="name" value="${esc(a ? a.name : '')}" required></label>
+    ${isCash ? `<label class="small b" style="display:flex;flex-direction:column;gap:4px">Bank (kosongkan bila kas tunai)<input class="inp" name="bank" value="${esc(a ? a.bank || '' : '')}" placeholder="BCA, BRI, Mandiri"></label>
+    <label class="small b" style="display:flex;flex-direction:column;gap:4px">Pos (Profit First)<select class="inp" name="pos"><option value="">—</option>${Object.keys(POS).map(k => `<option value="${k}"${a && a.pos === k ? ' selected' : ''}>${POS[k][0]}</option>`).join('')}</select></label>` : ''}
+    <label class="small b" style="display:flex;flex-direction:column;gap:4px">Unit pemilik<select class="inp" name="unit_code"><option value="">Grup / tanpa unit</option>${UNITS.map(u => `<option value="${u.code}"${a && a.unit_code === u.code ? ' selected' : ''}>${esc(u.name)}</option>`).join('')}</select></label>
+    <label class="small b" style="display:flex;flex-direction:column;gap:4px">${isCash ? 'No. rekening & atas nama' : 'Catatan'}<input class="inp" name="note" value="${esc(a ? a.note || '' : '')}"></label></div>
+    <label class="chk small"><input type="checkbox" name="is_active" ${!a || a.is_active !== false ? 'checked' : ''}> Aktif</label>
+    <button class="btn pri">Simpan</button></form>`);
+}
+
+/* --- saldo awal --- */
+const OPEN_DEFAULT = ['1-10100', '1-10101', '1-10200', '1-10210', '1-10701', '1-10702', '1-10703', '1-10704', '1-10751', '1-10752', '1-10753', '2-20100', '2-20200', '2-20300', '2-20400', '2-21000', '2-21100', '2-21200', '3-30000', '3-30100'];
+async function vSaldo() {
+  const [OP, AC] = await Promise.all([data('open'), data('accfull')]);
+  const bs = AC.filter(a => ['1', '2', '3'].includes(a.code[0]) && a.code !== '3-30999' && a.is_active !== false);
+  const d0 = (() => { const t = D(today()); return ymd(new Date(t.getFullYear(), t.getMonth(), 0)); })();
+  const rows = OP.lines && OP.lines.length ? OP.lines : bs.filter(a => a.is_cash).map(a => ({ acc: a.code, amount: '' })).concat(OPEN_DEFAULT.filter(c => bs.some(a => a.code === c)).map(c => ({ acc: c, amount: '' })));
+  const opt = (sel) => bs.map(a => `<option value="${a.code}"${a.code === sel ? ' selected' : ''}>${a.code} · ${esc(a.name)}</option>`).join('');
+  const row = (r) => `<tr data-orow><td><select class="inp" data-oacc style="width:100%;min-width:240px">${opt(r.acc)}</select></td><td><input class="inp" data-oparty value="${esc(r.party || '')}" placeholder="opsional: nama pelanggan / vendor" style="width:100%"></td>
+    <td><select class="inp" data-ounit style="min-width:130px"><option value="">—</option>${UNITS.map(u => `<option value="${u.code}"${r.unit === u.code ? ' selected' : ''}>${esc(u.name)}</option>`).join('')}</select></td>
+    <td><input class="inp" data-oamt type="number" step="1" value="${r.amount === '' || r.amount == null ? '' : Math.round(r.amount)}" placeholder="0" style="width:170px;text-align:right"></td><td><button class="btn sm" type="button" data-orem>✕</button></td></tr>`;
+  let o = header('Saldo awal', 'Neraca pembuka buku Pokama (dari Jurnal Mekari atau rekening koran) per satu tanggal. Selisih otomatis masuk "Ekuitas saldo awal". Bisa disimpan ulang; versi lama diganti.');
+  if (!canWrite()) o += '<div class="ro">Saldo awal diisi oleh Keuangan atau CEO.</div>';
+  o += OP.date ? `<div class="ok">Saldo awal tersimpan per <b>${tgl(OP.date)} ${OP.date.slice(0, 4)}</b>${OP.by ? ' oleh ' + esc(OP.by) : ''} · penyeimbang ekuitas ${rp(OP.balancing)}${OP.first_tx && OP.first_tx <= OP.date ? ' · <b>perhatian:</b> ada transaksi lain sebelum/sama dengan tanggal ini' : ''}</div>`
+    : `<div class="demo" style="background:var(--bluebg);color:var(--blue)">Belum ada saldo awal. Isi nilai per akun sesuai neraca penutup di Jurnal Mekari pada tanggal yang dipilih.</div>`;
+  o += sec('Isi saldo', 'aset diisi positif · kewajiban & ekuitas diisi positif · akumulasi penyusutan diisi minus', `<form id="openf" class="stack" style="gap:12px">
+    <label class="small b" style="display:flex;flex-direction:column;gap:4px;max-width:260px">Per tanggal (akhir hari)<input class="inp" type="date" name="date" value="${OP.date || d0}" required></label>
+    <div class="scroll"><table class="ftbl compact" id="otbl"><thead><tr><th>Akun</th><th>Pihak (untuk piutang/hutang)</th><th>Unit</th><th class="r">Saldo (Rp)</th><th></th></tr></thead><tbody>${rows.map(row).join('')}</tbody></table></div>
+    <template id="orowt">${row({ acc: '', amount: '' })}</template>
+    <div class="row gap" style="flex-wrap:wrap"><button class="btn" type="button" data-oadd>+ Baris</button><span class="grow"></span><div class="kv" id="osum" style="min-width:min(560px,100%)"></div></div>
+    ${canWrite() ? `<button class="btn pri" style="align-self:flex-start">Simpan saldo awal</button>` : ''}</form>`);
+  setTimeout(openSum, 0);
+  return o;
+}
+function openSum() {
+  const el = document.getElementById('osum'); if (!el) return;
+  let A2 = 0, L2 = 0, E2 = 0;
+  app.querySelectorAll('[data-orow]').forEach(r => { const acc = r.querySelector('[data-oacc]').value, v = +r.querySelector('[data-oamt]').value || 0; if (acc[0] === '1') A2 += v; else if (acc[0] === '2') L2 += v; else E2 += v; });
+  el.innerHTML = `<div><span>Total aset</span><b>${rp(A2)}</b></div><div><span>Kewajiban + ekuitas diisi</span><b>${rp(L2 + E2)}</b></div><div><span>Penyeimbang ekuitas</span><b class="${A2 - L2 - E2 < 0 ? 'red' : ''}">${rpS(A2 - L2 - E2)}</b></div>`;
+}
+
+/* --- jurnal manual --- */
+async function journalForm() {
+  const AC = (await accounts()).filter(a => a.code !== '3-30999');
+  const opt = AC.map(a => `<option value="${a.code}">${a.code} · ${esc(a.name)}</option>`).join('');
+  const un = `<option value="">(unit jurnal)</option>` + UNITS.map(u => `<option value="${u.code}">${esc(u.name)}</option>`).join('');
+  const row = () => `<tr data-jrow><td><select class="inp" data-jacc style="min-width:220px"><option value="">Pilih akun…</option>${opt}</select></td><td><select class="inp" data-junit style="min-width:120px">${un}</select></td>
+    <td><input class="inp" data-jd type="number" min="0" step="1" style="width:130px;text-align:right" placeholder="Debit"></td><td><input class="inp" data-jc type="number" min="0" step="1" style="width:130px;text-align:right" placeholder="Kredit"></td>
+    <td><input class="inp" data-jparty style="width:150px" placeholder="Pihak (opsional)"></td><td><button class="btn sm" type="button" data-jrem>✕</button></td></tr>`;
+  panel(`<div class="row between"><h2>Jurnal manual</h2><button class="btn sm" data-close>✕</button></div>
+    <p class="muted small" style="margin:0">Untuk koreksi dan transaksi yang tidak lewat sistem (setoran modal, prive, penyusutan, pembayaran hutang di luar bank). Debit harus sama dengan kredit. Tercatat atas nama Anda dan tidak bisa diubah; koreksi lewat jurnal balik.</p>
+    <form id="jmf" class="stack" style="gap:10px"><div class="cols2" style="gap:10px"><label class="small b" style="display:flex;flex-direction:column;gap:4px">Tanggal<input class="inp" type="date" name="date" value="${today()}" required></label>
+      <label class="small b" style="display:flex;flex-direction:column;gap:4px">Unit jurnal<select class="inp" name="unit">${UNITS.map(u => `<option value="${u.code}"${u.code === 'HQ' ? ' selected' : ''}>${esc(u.name)}</option>`).join('')}</select></label></div>
+      <label class="small b" style="display:flex;flex-direction:column;gap:4px">Keterangan<input class="inp" name="memo" required placeholder="mis. Setoran modal owner ke Bank Operasional Holding"></label>
+      <label class="small b" style="display:flex;flex-direction:column;gap:4px">Link bukti (opsional)<input class="inp" name="proof_url" placeholder="Google Drive / foto nota"></label>
+      <div class="scroll"><table class="ftbl compact"><tbody id="jrows">${row()}${row()}</tbody></table></div><template id="jrowt">${row()}</template>
+      <div class="row gap"><button class="btn sm" type="button" data-jadd>+ Baris</button><span class="grow"></span><span id="jbal" class="pill">Debit 0 · Kredit 0</span></div>
+      <button class="btn pri">Simpan jurnal</button></form>`, (pn) => {
+    const upd = () => { let dd = 0, cc = 0; pn.querySelectorAll('[data-jrow]').forEach(r => { dd += +r.querySelector('[data-jd]').value || 0; cc += +r.querySelector('[data-jc]').value || 0; });
+      const b = pn.querySelector('#jbal'); b.textContent = 'Debit ' + rp(dd) + ' · Kredit ' + rp(cc) + (dd === cc && dd ? ' · seimbang' : dd !== cc ? ' · selisih ' + rp(Math.abs(dd - cc)) : ''); b.className = 'pill ' + (dd === cc && dd ? 'g' : 'r'); };
+    pn.addEventListener('input', upd);
+    pn.addEventListener('click', (e) => { if (e.target.closest('[data-jadd]')) { pn.querySelector('#jrows').insertAdjacentHTML('beforeend', pn.querySelector('#jrowt').innerHTML); } const rm = e.target.closest('[data-jrem]'); if (rm && pn.querySelectorAll('[data-jrow]').length > 2) { rm.closest('tr').remove(); upd(); } });
+    pn.querySelector('#jmf').addEventListener('submit', (e) => {
+      e.preventDefault(); if (demoAct()) return;
+      const f = Object.fromEntries(new FormData(e.target)), lines = [...pn.querySelectorAll('[data-jrow]')].map(r => ({ acc: r.querySelector('[data-jacc]').value, unit: r.querySelector('[data-junit]').value, d: r.querySelector('[data-jd]').value, c: r.querySelector('[data-jc]').value, party: r.querySelector('[data-jparty]').value })).filter(l => l.acc && (+l.d || +l.c));
+      act(async () => { const r = await A.rpc('pk_fin_journal_save', { p: { ...f, lines } }); toast('Jurnal ' + r.code + ' tersimpan'); close(); render(); });
+    });
+  });
+}
+
 /* ---------- menu (sama dengan Sistem Kerja) ---------- */
 const I = {
   grid: '<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18M15 3v18"/>',
@@ -534,12 +888,20 @@ const I = {
   sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
   users: '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18 14a6.5 6.5 0 0 1 3.5 6"/>',
   menu: '<path d="M4 7h16M4 12h16M4 17h16"/>',
+  flag: '<path d="M5 21V4M5 4h11l-2 4 2 4H5"/>',
+  trend: '<path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/>',
+  pie: '<path d="M12 3v9h9"/><circle cx="12" cy="12" r="9"/>',
+  swap: '<path d="M7 7h13l-3-3M17 17H4l3 3"/>',
+  flow: '<path d="M4 6h10M4 12h16M4 18h7"/><path d="m17 3 3 3-3 3M10 15l3 3-3 3"/>',
+  bank: '<path d="M3 10 12 4l9 6M5 10v8M9.5 10v8M14.5 10v8M19 10v8M3 20h18"/>',
+  open: '<path d="M4 4h16v16H4z"/><path d="M8 9h8M8 13h8M8 17h5"/>',
 };
 const svg = (k, s = 18) => `<svg aria-hidden="true" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${I[k]}</svg>`;
 const NAV = [
-  ['Grup', [['ringkasan', 'Ringkasan', 'grid'], ['unit', 'Per unit bisnis', 'trophy'], ['kas', 'Kas & bank', 'wallet', 'mutasi'], ['kewajiban', 'Kewajiban', 'clock', 'due'], ['rab', 'Belanja RAB & LPJ', 'inbox', 'lpj']]],
-  ['Laporan', [['labarugi', 'Laba rugi', 'coin'], ['neraca', 'Neraca', 'layers'], ['jurnal', 'Buku jurnal', 'book']]],
-  ['Kelola', [['antrean', 'Antrean Keuangan', 'check', 'antrean'], ['sumber', 'Sumber & tutup buku', 'cog']]],
+  ['Grup', [['ringkasan', 'Ringkasan', 'grid'], ['unit', 'Per unit bisnis', 'trophy'], ['target', 'Target vs realisasi', 'flag'], ['rab', 'Belanja RAB & LPJ', 'inbox', 'lpj']]],
+  ['Kas', [['kas', 'Kas & bank', 'wallet', 'mutasi'], ['proyeksi', 'Proyeksi kas', 'trend', 'fclow'], ['pf', 'Profit First', 'pie'], ['kewajiban', 'Kewajiban & leasing', 'clock', 'due'], ['pihak', 'Piutang & hutang', 'swap']]],
+  ['Laporan', [['labarugi', 'Laba rugi', 'coin'], ['neraca', 'Neraca', 'layers'], ['aruskas', 'Arus kas', 'flow'], ['jurnal', 'Buku jurnal', 'book']]],
+  ['Kelola', [['antrean', 'Antrean Keuangan', 'check', 'antrean'], ['akun', 'Akun & rekening', 'bank'], ['saldo', 'Saldo awal', 'open', 'saldo'], ['sumber', 'Sumber & tutup buku', 'cog']]],
 ];
 const MOBILE = [['ringkasan', 'Ringkasan', 'grid'], ['unit', 'Unit', 'trophy'], ['kas', 'Kas', 'wallet', 'mutasi'], ['antrean', 'Antrean', 'check', 'antrean']];
 const ROLE = { ceo: 'CEO', kepala_staf: 'Kepala Staf', keuangan: 'Keuangan', leader: 'Leader', staf: 'Staf' };
@@ -565,9 +927,10 @@ function setBadges(Dd, g) {
   const set = (k, n) => document.querySelectorAll(`[data-nb="${k}"]`).forEach(b => { b.textContent = n; b.hidden = !n; });
   set('mutasi', g.exc.mutasi); set('antrean', g.excN); set('due', g.obl7.length); set('lpj', g.rab.telat);
 }
+function setBadge(k, n) { document.querySelectorAll(`[data-nb="${k}"]`).forEach(b => { b.textContent = n; b.hidden = !n; }); }
 function panel(html, after) { close(); const el = document.createElement('div'); el.className = 'scrim'; el.innerHTML = `<div class="panel" role="dialog" aria-modal="true">${html}</div>`; document.body.appendChild(el); el.addEventListener('click', (e) => { if (e.target === el || e.target.closest('[data-close]')) close(); }); if (after) after(el.querySelector('.panel')); }
 function close() { document.querySelectorAll('.scrim').forEach(s => s.remove()); }
-const VIEWS = { menu: vMenu, ringkasan: vRingkasan, unit: vUnit, kas: vKas, kewajiban: vKewajiban, rab: vRab, labarugi: vLabaRugi, neraca: vNeraca, jurnal: vJurnal, antrean: vAntrean, sumber: vSumber };
+const VIEWS = { menu: vMenu, ringkasan: vRingkasan, unit: vUnit, target: vTarget, kas: vKas, proyeksi: vProyeksi, pf: vProfitFirst, kewajiban: vKewajiban, pihak: vPihak, rab: vRab, labarugi: vLabaRugi, neraca: vNeraca, aruskas: vArusKas, jurnal: vJurnal, antrean: vAntrean, akun: vAkun, saldo: vSaldo, sumber: vSumber };
 let seq = 0;
 async function render() {
   const { v, a } = route(), my = ++seq;
@@ -583,7 +946,30 @@ async function act(fn) { try { await fn(); } catch (e) { toast(e.message, true);
 app.addEventListener('change', (e) => {
   const t = e.target;
   if (t.dataset.f) { S[t.dataset.f] = t.value; if (t.dataset.f === 'per') ls('keu.per', t.value); render(); }
-  if (t.hasAttribute('data-demo')) { S.demo = t.checked; ls('keu.demo', t.checked ? '1' : null); render(); }
+  if (t.hasAttribute('data-demo')) { S.demo = t.checked; ls('keu.demo', t.checked ? '1' : null); SET = null; LOANS = null; ACCS = null; render(); }
+  if (t.closest('#openf')) openSum();
+});
+app.addEventListener('input', (e) => { if (e.target.closest('#openf')) openSum(); });
+const num0 = (v) => (v === '' || v == null ? null : +v);
+document.addEventListener('submit', (e) => {
+  const id = e.target.id, f = Object.fromEntries(new FormData(e.target));
+  if (!['minf', 'pff', 'setf', 'openf', 'loanf', 'accf'].includes(id)) return;
+  e.preventDefault(); if (demoAct()) return;
+  if (id === 'minf') act(async () => { await A.rpc('pk_fin_setting_set', { p_key: 'fin_min_cash', p_value: +f.v || 0 }); SET = null; toast('Kas minimum disimpan'); render(); });
+  if (id === 'pff') act(async () => { const v = Object.fromEntries(Object.keys(FPOS).map(k => [k, +f[k] || 0])); await A.rpc('pk_fin_setting_set', { p_key: 'fin_profit_first', p_value: v }); SET = null; toast('Persen Profit First disimpan'); render(); });
+  if (id === 'setf') act(async () => { for (const k of ['fin_min_cash', 'fin_tax_rate', 'fin_payroll_day', 'fin_close_day', 'fin_capitalize_min']) if (f[k] !== '') await A.rpc('pk_fin_setting_set', { p_key: k, p_value: +f[k] }); SET = null; toast('Pengaturan disimpan'); render(); });
+  if (id === 'openf') {
+    const lines = [...app.querySelectorAll('[data-orow]')].map(r => ({ acc: r.querySelector('[data-oacc]').value, party: r.querySelector('[data-oparty]').value, unit: r.querySelector('[data-ounit]').value, amount: r.querySelector('[data-oamt]').value })).filter(l => l.acc && +l.amount);
+    if (!lines.length) return toast('Isi minimal satu saldo', true);
+    if (!confirm('Simpan saldo awal per ' + tgl(f.date) + ' ' + f.date.slice(0, 4) + '? Versi sebelumnya (bila ada) akan diganti.')) return;
+    act(async () => { const r = await A.rpc('pk_fin_opening_save', { p_date: f.date, p_lines: lines }); toast('Saldo awal tersimpan' + (+r.selisih ? ' · penyeimbang ekuitas ' + rp(r.selisih) : '')); render(); });
+  }
+  if (id === 'loanf') { f.start_month = f.start_month ? f.start_month + '-01' : ''; if (f.id) f.is_active = !!e.target.querySelector('[name=is_active]')?.checked; act(async () => { await A.rpc('pk_fin_loan_save', { p: f }); LOANS = null; toast('Pinjaman tersimpan'); close(); render(); }); }
+  if (id === 'accf') { f.is_cash = f.is_cash === 'true'; f.is_active = !!e.target.querySelector('[name=is_active]')?.checked; act(async () => { await A.rpc('pk_fin_account_save', { p: f }); ACCS = null; toast('Akun tersimpan'); close(); render(); }); }
+});
+document.addEventListener('click', (e) => {
+  const t = e.target.closest('[data-loanedit]'); if (!t) return;
+  loanForm((LOANS || []).find(x => x.id === t.dataset.loanedit) || {});
 });
 app.addEventListener('submit', (e) => {
   if (e.target.id !== 'oblf') return; e.preventDefault();
@@ -591,9 +977,18 @@ app.addEventListener('submit', (e) => {
   act(async () => { await A.rpc('pk_fin_obligation_save', { p: f }); toast('Kewajiban tersimpan'); render(); });
 });
 app.addEventListener('click', (e) => {
-  const t = e.target.closest('[data-go],[data-acc],[data-copy],[data-rcp],[data-wasend],[data-csv],[data-plv],[data-j],[data-void],[data-map],[data-retry],[data-ign],[data-bok],[data-bign],[data-key],[data-lock],[data-unlock]');
+  const t = e.target.closest('[data-go],[data-acc],[data-copy],[data-rcp],[data-wasend],[data-csv],[data-plv],[data-j],[data-void],[data-map],[data-retry],[data-ign],[data-bok],[data-bign],[data-key],[data-lock],[data-unlock],[data-print],[data-fw],[data-loan],[data-loanadd],[data-accedit],[data-accnew],[data-oadd],[data-orem],[data-jm]');
   if (!t) return;
   const d = t.dataset;
+  if (d.print !== undefined) { window.print(); return; }
+  if (d.fw !== undefined) { const r = app.querySelector(`[data-fwl="${d.fw}"]`); if (r) r.hidden = !r.hidden; return; }
+  if (d.loan) { loanPanel(d.loan); return; }
+  if (d.loanadd !== undefined) { loanForm({}); return; }
+  if (d.accedit) { if (!canWrite()) return; accForm(((cur && cur.accs) || []).find(a => a.code === d.accedit), null); return; }
+  if (d.accnew) { accForm(null, d.accnew); return; }
+  if (d.oadd !== undefined) { app.querySelector('#otbl tbody').insertAdjacentHTML('beforeend', app.querySelector('#orowt').innerHTML); return; }
+  if (d.orem !== undefined) { t.closest('tr').remove(); openSum(); return; }
+  if (d.jm !== undefined) { journalForm(); return; }
   if (d.go) { location.hash = d.go; return; }
   if (d.acc) { bankPanel(d.acc); return; }
   if (d.rcp) { WA_TO = WA_TO.includes(d.rcp) ? WA_TO.filter(x => x !== d.rcp) : WA_TO.concat(d.rcp); t.classList.toggle('on'); return; }
@@ -607,7 +1002,7 @@ app.addEventListener('click', (e) => {
     return;
   }
   if (d.copy !== undefined) { navigator.clipboard.writeText(summaryText()).then(() => toast('Ringkasan disalin. Kirim hanya ke nomor owner & Keuangan, bukan ke grup.')); return; }
-  if (d.csv) { csvDl((d.csv === 'pl' ? 'laba-rugi-' : 'neraca-') + period().to + '.csv', cur.csv()); return; }
+  if (d.csv) { csvDl(({ pl: 'laba-rugi-', bs: 'neraca-', cf: 'arus-kas-' }[d.csv] || 'laporan-') + period().to + '.csv', cur.csv()); return; }
   if (d.plv) { S.plv = d.plv; render(); return; }
   if (d.j) { const r = app.querySelector(`[data-jl="${CSS.escape(d.j)}"]`); if (r) r.hidden = !r.hidden; return; }
   if (demoAct()) return;

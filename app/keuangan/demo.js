@@ -264,3 +264,72 @@ export function bankList(acc, today) {
   return ex.concat(ok);
 }
 export const accounts = () => Object.entries(ACC).map(([code, name]) => ({ code, name, grp: grpOf(code), is_cash: CASH.some(c => c[0] === code), unit_code: (CASH.find(c => c[0] === code) || [])[1] || null, pos: (CASH.find(c => c[0] === code) || [])[2] || null }));
+
+/* ===== data contoh untuk layar tambahan (033) ===== */
+export function settings() {
+  return { fin_company: 'PT Popo Karya Investama', fin_profit_first: { operasional: 55, kewajiban: 20, bersama: 15, investasi: 10 }, fin_tax_rate: 0.5,
+    fin_min_cash: 150000000, fin_close_day: 5, fin_payroll_day: 25, fin_capitalize_min: 500000, lpj_days: 2 };
+}
+export function loans() {
+  return [
+    { id: 'l1', name: 'Leasing Jeep Guntur', lender: 'ACC', kind: 'leasing', unit_code: 'JP', principal: 186e6, rate_pct: 8.5, method: 'flat', tenor_months: 36, start_month: '2025-06-01', due_day: 5, installment: null, paid_months: 0, is_active: true, note: null },
+    { id: 'l2', name: 'Leasing motor batch 2 (8 unit)', lender: 'Adira', kind: 'leasing', unit_code: 'GK', principal: 214e6, rate_pct: 9, method: 'flat', tenor_months: 24, start_month: '2026-02-01', due_day: 10, installment: null, paid_months: 0, is_active: true, note: null },
+    { id: 'l3', name: 'Leasing mobil sopir', lender: 'ACC', kind: 'leasing', unit_code: 'EX', principal: 132e6, rate_pct: 7.5, method: 'flat', tenor_months: 36, start_month: '2025-11-01', due_day: 20, installment: null, paid_months: 0, is_active: true, note: null },
+    { id: 'l4', name: 'Dana investor stok Laptopaja', lender: 'Investor perorangan', kind: 'investor', unit_code: 'NL', principal: 150e6, rate_pct: 0, method: 'flat', tenor_months: 12, start_month: '2026-12-01', due_day: 1, installment: null, paid_months: 0, is_active: true, note: 'Bagi hasil 20% dari margin, pokok dicicil 12 bulan' },
+  ];
+}
+export function opening() { return { date: null, lines: [], balancing: 0 }; }
+export function targets(month) {
+  const m = D(month), rows = [], P = pl(month, ymd(new Date(m.getFullYear(), m.getMonth() + 1, 0)));
+  for (const u of UNITS.filter(x => x.parent && x.parent !== 'HQ').concat(UNITS.filter(x => x.code === 'WG'))) {
+    const rev = sumBy(P.filter(r => r.unit === u.code && r.acc[0] === '4'), r => r.amt); if (!rev) continue;
+    rows.push({ unit_code: u.code, month, amount: Math.round(rev * (0.95 + hash(u.code + month) * 0.3) / 1e5) * 1e5, status: hash(u.code) > .3 ? 'sah' : 'dicek' });
+  }
+  return rows;
+}
+export function forecast(today) {
+  const T = D(today), w0 = addD(T, -((T.getDay() + 6) % 7)), Dd = dashboard(ymd(new Date(T.getFullYear(), T.getMonth() - 1, 1)), ymd(new Date(T.getFullYear(), T.getMonth(), 0)), today);
+  const cash = Dd.health.cash, avgIn = Math.round(sumBy(Dd.units, u => u.cur.rev) / 4.3 * .97), avgOut = Math.round(avgIn * .58);
+  const L = loans(), inst = (l) => Math.round(l.principal / l.tenor_months + l.principal * l.rate_pct / 1200), weeks = []; let bal = cash;
+  for (let i = 0; i < 13; i++) {
+    const ws = addD(w0, i * 7), we = addD(ws, 6), from = i === 0 ? T : ws, items = [];
+    let obl = 0, cic = 0, gaji = 0;
+    for (let d = new Date(from); d <= we; d = addD(d, 1)) {
+      OBL.forEach(([name, kind, unit, amt, day]) => { if (kind !== 'leasing' && d.getDate() === day) { obl += amt * 1e6; items.push({ name, amt: amt * 1e6, due: ymd(d), kind }); } });
+      L.forEach(l => { const mi = (d.getFullYear() - D(l.start_month).getFullYear()) * 12 + d.getMonth() - D(l.start_month).getMonth();
+        if (d.getDate() === l.due_day && mi >= 0 && mi < l.tenor_months) { cic += inst(l); items.push({ name: l.name, amt: inst(l), due: ymd(d), kind: l.kind }); } });
+      if (d.getDate() === 25) gaji += 91.5e6;
+    }
+    const f = i === 0 ? ((we - T) / 864e5 + 1) / 7 : 1, inn = Math.round(avgIn * f * SEASON[ws.getMonth()]), rut = Math.round(avgOut * f), bel = i === 0 ? 1.8e6 : i === 1 ? 3.25e6 : 0;
+    const close = bal + inn - rut - obl - cic - gaji - bel;
+    weeks.push({ week: ymd(ws), end: ymd(we), open: bal, in: inn, rutin: rut, kewajiban: obl, cicilan: cic, gaji, belanja: bel, items, close, low: close < settings().fin_min_cash });
+    bal = close;
+  }
+  const low = weeks.find(w => w.low);
+  return { today, cash, avg_in: avgIn, avg_out: avgOut, hist_weeks: 8, payroll: 91.5e6, payday: 25, min_cash: settings().fin_min_cash, weeks,
+    lowest: Math.min(...weeks.map(w => w.close)), first_low: low ? low.week : null };
+}
+export function cashflow(from, to) {
+  const P = pl(from, to), rows = [];
+  const add = (cat, acc, biz, amt) => { if (Math.abs(amt) >= 1000) rows.push({ cat, acc, name: ACC[acc], biz, amt: Math.round(amt / 1000) * 1000 }); };
+  const by = {}; P.forEach(r => { if (r.acc === '5-50001') return; const k = r.acc + '|' + r.biz; by[k] = (by[k] || 0) + ('47'.includes(r.acc[0]) ? r.amt : -r.amt); });
+  Object.entries(by).forEach(([k, v]) => { const [acc, biz] = k.split('|'); add('operasi', acc, biz, v * ('47'.includes(acc[0]) ? .94 : 1)); });
+  add('operasi', '2-20200', 'RA', 3.4e6); add('operasi', '1-10100', 'RA', -2.1e6);
+  add('investasi', '1-10702', 'RA', -18.5e6); add('investasi', '1-10704', 'HQ', -2.4e6);
+  add('pendanaan', '2-21000', 'RA', -21.6e6); add('pendanaan', '3-30200', 'HQ', -5e6);
+  const cash = dashboard(from, to, to).health.cash, net = sumBy(rows, r => r.amt);
+  return { opening: cash - net, closing: cash, rows };
+}
+export function partyLines(to) {
+  const T = D(to), dd = (n) => ymd(addD(T, -n)), L = [];
+  const add = (acc, party, n, dr, cr, memo) => L.push({ acc, party, d: dd(n), dr: dr * 1e6, cr: cr * 1e6, unit: acc[0] === '1' ? 'RA' : 'HQ', code: 'JP-' + L.length, memo });
+  add('1-10100', 'PT Sinar Korporat', 74, 12.5, 0, 'Sewa 4 mobil event Agustus'); add('1-10100', 'PT Sinar Korporat', 40, 0, 6, 'Bayar sebagian');
+  add('1-10100', 'PT Sinar Korporat', 12, 6.8, 0, 'Sewa motor dinas'); add('1-10100', 'Dinas Pariwisata Garut', 55, 9.5, 0, 'Paket famtrip'); add('1-10100', 'SMAN 1 Garut', 18, 4.2, 0, 'Study tour');
+  add('1-10100', 'Hotel Santika Garut', 8, 2.1, 0, 'Tagihan antar-jemput tamu');
+  add('1-10101', 'Fajar (aset)', 33, 1.2, 0, 'Kasbon'); add('1-10101', 'Ica (CS)', 9, 0.9, 0, 'Kasbon'); add('1-10101', 'Fajar (aset)', 3, 0, 0.4, 'Potong gaji');
+  add('2-20100', 'Bengkel Maju Motor', 46, 0, 4.6, 'Servis 6 unit'); add('2-20100', 'Bengkel Maju Motor', 20, 1.6, 0, 'Bayar sebagian'); add('2-20100', 'Toko Ban Garut', 15, 0, 2.4, 'Ban 8 pcs');
+  add('2-20100', 'CV Bus Pariwisata', 6, 0, 5.2, 'Bus trip TripinAja');
+  add('2-20300', 'Pemilik Ruma Metua', 28, 0, 5.8, 'Bagi hasil Oktober'); add('2-20300', 'Mitra Jeep Pak Dadang', 10, 0, 3.3, 'Bagi hasil trip');
+  add('2-20600', 'Adrian', 4, 0, 1.2, 'Kekurangan RAB'); add('2-21200', 'Investor Laptopaja', 120, 0, 0, '');
+  return L;
+}
