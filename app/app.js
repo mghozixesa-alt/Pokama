@@ -29,6 +29,9 @@ const I = {
   trend: '<path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/>',
 };
 const MODIC = { marketing: 'mega', keuangan: 'bank', affiliate: 'link', investor: 'trend' };
+/* warna khas tiap modul: [warna ikon, latar] */
+const MODCOL = { marketing: ['#7A3FD1', '#F1EAFD'], keuangan: ['#0B8A5E', '#E3F6EE'], affiliate: ['#1F63D8', '#E6EFFD'], investor: ['#B7791F', '#FDF3DF'] };
+const modIc = (m, s = 18, t = 30) => { const c = MODCOL[m.k] || ['#1D3149', '#EEF0F3']; return `<span class="modi" style="--mc:${c[0]};--mb:${c[1]};width:${t}px;height:${t}px">${svg(MODIC[m.k] || 'grid', s)}</span>`; };
 const svg = (k, s = 18) => `<svg aria-hidden="true" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${I[k]}</svg>`;
 
 const ROUTES = [
@@ -109,7 +112,7 @@ async function openNotifs() {
 function menuView(el) {
   el.innerHTML = `<header class="ph"><div><h1>Menu</h1><p class="muted">${esc(ctx.me.name)} · ${esc(ctx.me.title || ROLE[ctx.me.role])}</p></div></header>
     <div class="menu-list">${FLAT.map(([k, l, ic]) => `<a class="card row" href="#/${k}">${svg(ic, 22)}<b>${l}</b><span style="flex:1"></span>›</a>`).join('')}
-    ${(ctx.modules || []).length ? `<span class="nav-h" style="margin-top:8px">MODUL</span>` + ctx.modules.map(m => `<a class="card row" href="${esc(m.href)}">${svg(MODIC[m.k] || 'grid', 22)}<span class="col" style="gap:2px;flex:1;min-width:0"><b>${esc(m.name)}</b><small class="muted" style="font-weight:600">${esc(m.note || '')}</small></span>${m.n ? `<b class="badge">${m.n}</b>` : ''}›</a>`).join('') : ''}
+    ${(ctx.modules || []).length ? `<span class="nav-h" style="margin-top:8px">MODUL</span>` + ctx.modules.map(m => `<a class="card row" href="${esc(m.href)}">${modIc(m, 20, 36)}<span style="display:flex;flex-direction:column;gap:2px;flex:1;min-width:0"><b>${esc(m.name)}</b><small class="muted" style="font-weight:600">${esc(m.note || '')}</small></span>${m.n ? `<b class="badge">${m.n}</b>` : ''}›</a>`).join('') : ''}
     <button class="card row danger-t" type="button" id="lo2">Keluar</button></div>`;
   el.querySelector('#lo2').onclick = () => signOut();
 }
@@ -148,13 +151,13 @@ async function route() {
 async function loadModules() {
   try { const { db } = await import('./core.js'); ctx.modules = (await db.rpc('pk_modules')) || []; } catch (e) { ctx.modules = ctx.modules || []; }
   const nav = document.getElementById('modnav');
-  if (nav) { nav.hidden = !ctx.modules.length; nav.innerHTML = `<span class="nav-h">MODUL</span>` + ctx.modules.map(m => `<a href="${esc(m.href)}" title="${esc(m.note || '')}">${svg(MODIC[m.k] || 'grid')}<span>${esc(m.name)}</span>${m.n ? `<b class="badge${m.urgent ? '' : ' soft'}">${m.n}</b>` : ''}</a>`).join(''); }
+  if (nav) { nav.hidden = !ctx.modules.length; nav.innerHTML = `<span class="nav-h">MODUL</span>` + ctx.modules.map(m => `<a href="${esc(m.href)}" title="${esc(m.note || '')}">${modIc(m, 16, 28)}<span>${esc(m.name)}</span>${m.n ? `<b class="badge${m.urgent ? '' : ' soft'}">${m.n}</b>` : ''}</a>`).join(''); }
   const st = document.getElementById('modstrip'); if (st) st.outerHTML = modStrip();
   return ctx.modules;
 }
 function modStrip() {
   const ms = ctx.modules || []; if (!ms.length) return '<div id="modstrip" hidden></div>';
-  return `<section id="modstrip" class="modstrip" aria-label="Modul">${ms.map(m => `<a class="modc${m.urgent ? ' hot' : ''}" href="${esc(m.href)}"><span class="modc-h">${svg(MODIC[m.k] || 'grid', 18)}<b>${esc(m.name)}</b>${m.n ? `<b class="badge${m.urgent ? '' : ' soft'}">${m.n}</b>` : ''}</span><small>${esc(m.note || '')}</small></a>`).join('')}</section>`;
+  return `<section id="modstrip" class="modstrip" aria-label="Modul">${ms.map(m => `<a class="modc${m.urgent ? ' hot' : ''}" style="--mc:${(MODCOL[m.k] || ['#1D3149'])[0]}" href="${esc(m.href)}"><span class="modc-h">${modIc(m, 18, 32)}<b>${esc(m.name)}</b>${m.n ? `<b class="badge${m.urgent ? '' : ' soft'}">${m.n}</b>` : ''}</span><small>${esc(m.note || '')}</small></a>`).join('')}</section>`;
 }
 async function badges() {
   loadModules();

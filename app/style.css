@@ -301,3 +301,12 @@ table.kkh th .att{display:flex;align-items:center;gap:4px;justify-content:center
 .modc small{color:var(--mut);font-size:12.5px;line-height:1.35;overflow-wrap:anywhere}
 .badge.soft{background:var(--mint);color:var(--navy)}
 @media (max-width:760px){.modstrip{grid-template-columns:1fr 1fr;gap:8px;margin-top:46px}.modc{padding:10px 12px}.modc small{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}}
+
+/* warna khas modul */
+.modi{display:inline-flex;align-items:center;justify-content:center;flex:none;border-radius:9px;background:var(--mb);color:var(--mc)}
+#modnav a{gap:10px}
+#modnav a:hover .modi{background:var(--mc);color:#fff}
+.modc{border-left:4px solid var(--mc,#1D3149)}
+.modc.hot{border-left-color:var(--mc,#1D3149)}
+.modc:hover .modi{background:var(--mc);color:#fff}
+.nav-sec a span.modi,.menu-list span.modi,.modc span.modi{flex:0 0 auto}
