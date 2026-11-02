@@ -11,7 +11,7 @@ const URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const ANON = Deno.env.get("SUPABASE_ANON_KEY")!;
 const RA_BASE = Deno.env.get("RA_APP_URL") || "https://demo.rentalaja.co.id";
-const ORIGINS = ["https://app.pokama.org", "https://pokama.org", "https://demo.pokama.org"];
+const ORIGINS = ["https://app.pokama.org", "https://ops.pokama.org", "https://pokama.org", "https://demo.pokama.org"];
 const HOURS = 12;
 
 function cors(req: Request) {
@@ -70,7 +70,7 @@ Deno.serve(async (req) => {
 
     const frag = new URLSearchParams({
       access_token: s.access_token, refresh_token: s.refresh_token, expires_in: String(s.expires_in || 3600),
-      expires_at: String(s.expires_at || ""), token_type: "bearer", sso: "pokama", next: String(screen), mod: String(tgt.mod || ""), ...(tgt.as ? { as: String(tgt.as) } : {}), ...(tgt.br ? { br: String(tgt.br) } : {}),
+      expires_at: String(s.expires_at || ""), token_type: "bearer", sso: "pokama", next: String(screen), mod: String(tgt.mod || ""), ...(tgt.as ? { as: String(tgt.as) } : {}), ...(tgt.br ? { br: String(tgt.br) } : {}), ...(target === "ra_kerja" ? { from: "ops" } : {}),
     });
     return out(200, { url: RA_BASE + "/#" + frag.toString(), screen });
   } catch (e) {

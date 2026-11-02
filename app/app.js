@@ -33,9 +33,9 @@ const I = {
   box: '<path d="M21 8 12 3 3 8v8l9 5 9-5z"/><path d="M3 8l9 5 9-5M12 13v8"/>',
   ext: '<path d="M14 4h6v6M20 4l-9 9"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/>',
 };
-const MODIC = { marketing: 'mega', keuangan: 'bank', affiliate: 'link', investor: 'trend', ra_mgmt: 'gauge', ra_aset: 'box' };
+const MODIC = { ops: 'gauge', pokama: 'sun', marketing: 'mega', keuangan: 'bank', affiliate: 'link', investor: 'trend', ra_mgmt: 'gauge', ra_aset: 'box' };
 /* warna khas tiap modul: [warna ikon, latar] */
-const MODCOL = { ra_mgmt: ['#1D3149', '#E4E9F1'], ra_cs: ['#0A8F86', '#DDF5F2'], ra_lap: ['#2563EB', '#E6EFFD'], ra_aset: ['#C2410C', '#FCEBDD'], ra_tek: ['#6B4F2A', '#F3ECE2'], ra_grt: ['#0F766E', '#DDF5F2'], ra_wnr: ['#0F766E', '#DDF5F2'], ra_bdg: ['#0F766E', '#DDF5F2'], ra_mpt: ['#B0466B', '#FBE7EF'], marketing: ['#7A3FD1', '#F1EAFD'], keuangan: ['#0B8A5E', '#E3F6EE'], affiliate: ['#1F63D8', '#E6EFFD'], investor: ['#B7791F', '#FDF3DF'] };
+const MODCOL = { ops: ['#0F766E', '#DDF5F2'], pokama: ['#1D3149', '#E4E9F1'], ra_mgmt: ['#1D3149', '#E4E9F1'], ra_cs: ['#0A8F86', '#DDF5F2'], ra_lap: ['#2563EB', '#E6EFFD'], ra_aset: ['#C2410C', '#FCEBDD'], ra_tek: ['#6B4F2A', '#F3ECE2'], ra_grt: ['#0F766E', '#DDF5F2'], ra_wnr: ['#0F766E', '#DDF5F2'], ra_bdg: ['#0F766E', '#DDF5F2'], ra_mpt: ['#B0466B', '#FBE7EF'], marketing: ['#7A3FD1', '#F1EAFD'], keuangan: ['#0B8A5E', '#E3F6EE'], affiliate: ['#1F63D8', '#E6EFFD'], investor: ['#B7791F', '#FDF3DF'] };
 const modIc = (m, s = 18, t = 30) => { const c = MODCOL[m.k] || ['#1D3149', '#EEF0F3'];
   if (/^ra_/.test(m.k)) return `<span class="modi ra" style="--mc:${c[0]};--mb:${c[1]};width:${t}px;height:${t}px"><img src="/img/ra.png" alt="" style="width:${Math.round(t * .62)}px;height:${Math.round(t * .62)}px"><i>${({ ra_mgmt: 'O', ra_cs: 'CS', ra_lap: 'L', ra_aset: 'A', ra_tek: 'T', ra_grt: 'GK', ra_wnr: 'WR', ra_bdg: 'BD', ra_mpt: 'MP' })[m.k] || ''}</i></span>`;
   return `<span class="modi" style="--mc:${c[0]};--mb:${c[1]};width:${t}px;height:${t}px">${svg(MODIC[m.k] || 'grid', s)}</span>`; };
@@ -50,18 +50,20 @@ const BASE_ROUTES = [
   ['SISTEM', [['library', 'Library Dokumen', 'book', sistem.library], ['pengaturan', 'Pengaturan', 'cog', sistem.pengaturan]]],
 ];
 let ROUTES = BASE_ROUTES, FLAT = ROUTES.flatMap(([, r]) => r), MOBILE = ['kkh', 'tugas', 'review', 'belanja'];
+// Sistem Kerja Operasional punya alamat sendiri: ops.pokama.org (app.pokama.org tetap untuk Sistem Kerja holding)
+const OPS_HOST = /^ops\./.test(location.hostname) || (location.hostname === 'localhost' && /[?&]ops\b/.test(location.search));
+const OPS_URL = 'https://ops.pokama.org/';
 const SHIFT = ['shift', 'Shift Saya', 'clock', ops.shift], OPS = ['ops', 'Tim Operasional', 'gauge', ops.team];
 // Sistem Kerja Operasional: staf lapangan hanya melihat Shift Saya; Operasional mendapat Tim Operasional
 function buildRoutes() {
-  const o = ctx.ops || {};
-  if (ctx.me.role === 'lapangan') { ROUTES = [['OPERASIONAL', [SHIFT]], ['SISTEM', [['pengaturan', 'Pengaturan', 'cog', sistem.pengaturan]]]]; MOBILE = ['shift', 'pengaturan']; }
-  else { ROUTES = BASE_ROUTES.map(([sec, items]) => [sec, items.slice()]);
-    if (o.field) ROUTES[0][1].unshift(SHIFT);
-    if (o.mgr) ROUTES[1][1].push(OPS);
-    MOBILE = o.field ? ['shift', 'kkh', 'tugas', 'review'] : ['kkh', 'tugas', 'review', 'belanja']; }
+  const o = ctx.ops || {}, lap = ctx.me.role === 'lapangan', set = ['pengaturan', 'Pengaturan', 'cog', sistem.pengaturan];
+  if (OPS_HOST) {
+    const items = [].concat(lap || o.field ? [SHIFT] : [], o.mgr ? [OPS] : []);
+    ROUTES = [['OPERASIONAL', items], ['SISTEM', [set]]]; MOBILE = items.map(x => x[0]).concat(['pengaturan']).slice(0, 4);
+  } else { ROUTES = BASE_ROUTES; MOBILE = ['kkh', 'tugas', 'review', 'belanja']; }
   FLAT = ROUTES.flatMap(([, r]) => r);
 }
-const HOME = () => ctx.me.role === 'lapangan' ? 'shift' : 'kkh';
+const HOME = () => OPS_HOST ? ((ctx.me.role === 'lapangan' || (ctx.ops || {}).field) ? 'shift' : 'ops') : 'kkh';
 const HIDDEN = { performa: (r) => !['ceo', 'keuangan'].includes(r) && false };
 
 const root = document.getElementById('app');
@@ -70,7 +72,7 @@ const root = document.getElementById('app');
 function loginView(msg) {
   root.innerHTML = `<main class="login"><div class="login-card">
     <img class="login-logo" src="img/pokama-logo.png" alt="Pokama">
-    <div><h1>Masuk</h1><p class="muted small">Sistem Kerja Harian · PT Popo Karya Investama</p></div>
+    <div><h1>Masuk</h1><p class="muted small">${OPS_HOST ? 'Sistem Kerja Operasional · staf lapangan Rentalaja' : 'Sistem Kerja Harian · PT Popo Karya Investama'}</p></div>
     ${msg ? `<p class="form-err">${esc(msg)}</p>` : ''}
     <button class="btn sec big" type="button" id="g">${googleIcon}Masuk dengan Google</button>
     <div class="or">atau pakai email</div>
@@ -101,7 +103,7 @@ function shell() {
     `<a href="#/${k}" data-k="${k}">${svg(ic)}<span>${l}</span><b class="badge" data-badge="${k}" hidden></b></a>`).join('')}</div>`).join('')
     + `<div class="nav-sec" id="modnav" hidden></div>`;
   root.innerHTML = `<div class="shell">
-    <nav class="side" aria-label="Menu utama"><div class="brand-row"><a class="brand" href="#/${HOME()}"><img src="img/pokama-logo.png" alt="Pokama"></a><button type="button" class="bell" data-bell aria-label="Notifikasi">${svg('bell', 20)}<b class="badge" data-badge="ntf" hidden></b></button></div><span class="muted small brand-sub">${me.role === 'lapangan' ? 'Sistem Kerja Operasional' : 'Sistem Kerja Harian'}</span>${nav}
+    <nav class="side" aria-label="Menu utama"><div class="brand-row"><a class="brand" href="#/${HOME()}"><img src="img/pokama-logo.png" alt="Pokama"></a><button type="button" class="bell" data-bell aria-label="Notifikasi">${svg('bell', 20)}<b class="badge" data-badge="ntf" hidden></b></button></div><span class="muted small brand-sub">${OPS_HOST ? 'Sistem Kerja Operasional · Rentalaja' : 'Sistem Kerja Harian'}</span>${nav}
       <div class="side-me"><a href="#/pengaturan" class="me">${avatar(me.id, 36)}<span><b>${esc(me.nickname || me.name)}</b><small>${esc(me.title || ROLE[me.role])}</small></span></a>
       <button class="link mute" type="button" id="logout">Keluar</button></div></nav>
     <button type="button" class="bell m-bell" data-bell aria-label="Notifikasi">${svg('bell', 22)}<b class="badge" data-badge="ntf" hidden></b></button>
@@ -152,6 +154,7 @@ async function route() {
   el.innerHTML = '<div class="loading">Memuat…</div>';
   window.scrollTo(0, 0);
   try {
+    if (!OPS_HOST && (k === 'shift' || k === 'ops')) { location.href = OPS_URL + '#/' + k; return; }
     if (k === 'menu') { menuView(el); document.title = 'Menu · Pokama'; return; }
     if (!r) { location.hash = '#/' + HOME(); return; }
     document.title = r[1] + ' · Pokama';
@@ -166,7 +169,11 @@ async function route() {
 }
 // ---------- Pusat Kerja: modul Pokama sesuai peran (daftar & angka dari fungsi pk_modules) ----------
 async function loadModules() {
-  try { const { db } = await import('./core.js'); ctx.modules = (await db.rpc('pk_modules')) || []; } catch (e) { ctx.modules = ctx.modules || []; }
+  if (OPS_HOST) ctx.modules = ctx.me.role === 'lapangan' ? [] : [{ k: 'pokama', name: 'Sistem Kerja Pokama', href: 'https://app.pokama.org/', note: 'KKH, tugas, belanja, modul', n: 0 }];
+  else { try { const { db } = await import('./core.js'); ctx.modules = (await db.rpc('pk_modules')) || []; } catch (e) { ctx.modules = ctx.modules || []; }
+    const o = ctx.ops || {};
+    if (o.mgr) ctx.modules = [{ k: 'ops', name: 'Tim Operasional', href: OPS_URL + '#/ops', note: 'ops.pokama.org · penugasan, mutasi, jadwal, lembur staf lapangan', n: 0, ext: true }].concat(ctx.modules);
+    else if (o.field) ctx.modules = [{ k: 'ops', name: 'Shift Saya', href: OPS_URL + '#/shift', note: 'ops.pokama.org · absen, ceklis, panel kerja', n: 0, ext: true }].concat(ctx.modules); }
   const nav = document.getElementById('modnav');
   if (nav) { nav.hidden = !ctx.modules.length; const navIt = (m => `<a href="${esc(m.href)}"${m.sso ? ` data-sso="${esc(m.k)}"` : ''}${m.ext ? ' target="_blank" rel="noopener"' : ''} title="${esc(m.note || '')}">${modIc(m, 16, 28)}<span>${esc(m.name)}</span>${m.n ? `<b class="badge${m.urgent ? '' : ' soft'}">${m.n}</b>` : ''}</a>`);
     const pm = ctx.modules.filter(m => !/^ra_/.test(m.k)), rm = ctx.modules.filter(m => /^ra_/.test(m.k));
@@ -218,10 +225,12 @@ async function boot() {
   if (!ok) { await import('./core.js').then(m => { try { localStorage.removeItem('pokama.session'); } catch (e) {} });
     loginView('Akun ini belum terdaftar di Sistem Kerja Pokama. Minta Kepala Staf menambahkan Anda di Tim & Peran.'); return; }
   try { ctx.ops = await db.rpc('ops_whoami'); } catch (e) { ctx.ops = {}; }
+  if (!OPS_HOST && ctx.me.role === 'lapangan') { location.replace(OPS_URL); return; }
+  if (OPS_HOST && ctx.me.role !== 'lapangan' && !ctx.ops.field && !ctx.ops.mgr) { loginView('Akun ini tidak punya akses Sistem Kerja Operasional. Buka Sistem Kerja Pokama di app.pokama.org.'); return; }
   buildRoutes();
   shell();
   await loadModules();
-  if (!location.hash || location.hash === '#/' ) location.hash = ctx.me.role === 'lapangan' ? '#/shift' : window.matchMedia('(max-width: 760px)').matches ? (ctx.ops.field ? '#/shift' : '#/kkh') : (ctx.me.role === 'kepala_staf' ? '#/review' : ctx.me.role === 'keuangan' ? '#/belanja' : ctx.ops.field ? '#/shift' : '#/kkh');
+  if (!location.hash || location.hash === '#/' ) location.hash = OPS_HOST ? '#/' + HOME() : window.matchMedia('(max-width: 760px)').matches ? '#/kkh' : (ctx.me.role === 'kepala_staf' ? '#/review' : ctx.me.role === 'keuangan' ? '#/belanja' : '#/kkh');
   window.onhashchange = route;
   route();
   askPhone();
