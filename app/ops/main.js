@@ -14,7 +14,7 @@ const jam = (m) => { m = +m || 0; const h = Math.floor(m / 60), r = m % 60; retu
 const rp = (n) => 'Rp' + Math.round(+n || 0).toLocaleString('id-ID');
 const dist = (a, b, c, d) => { const R = 6371e3, r = (x) => x * Math.PI / 180; const x = Math.sin(r(c - a) / 2) ** 2 + Math.cos(r(a)) * Math.cos(r(c)) * Math.sin(r(d - b) / 2) ** 2; return 2 * R * Math.asin(Math.sqrt(x)); };
 const nowHM = () => new Date(Date.now() + 7 * 3600e3).toISOString().slice(11, 16);
-const ST = { diajukan: ['Menunggu', 'yellow'], disetujui: ['Disetujui', 'green'], ditolak: ['Ditolak', 'red'], batal: ['Dibatalkan', 'gray'], dibayar: ['Dibayar', 'green'] };
+const ST = { diajukan: ['Menunggu', 'yellow'], menunggu_keuangan: ['Menunggu Keuangan', 'yellow'], disetujui: ['Disetujui', 'green'], ditolak: ['Ditolak', 'red'], batal: ['Dibatalkan', 'gray'], dibayar: ['Dibayar', 'green'] };
 const chipS = (s) => `<span class="chip ${(ST[s] || ['', 'gray'])[1]}">${(ST[s] || [s])[0]}</span>`;
 // ikon garis gaya Rentalaja App (stroke, sudut membulat), dipakai di menu cepat, pengajuan, lencana
 const RI = {
@@ -142,7 +142,7 @@ async function vBeranda(el) {
   const A = H.assigns || [], sch = H.schedule, { att, isIn, isOut } = state();
   const B = ckDone('buka'), T = ckDone('tutup');
   const g = CACHE.G, reqs = CACHE.R || [];
-  const pend = (reqs || []).filter(r => r.status === 'diajukan').length;
+  const pend = (reqs || []).filter(r => r.status === 'diajukan' || r.status === 'menunggu_keuangan').length;
   el.innerHTML = `${hero(esc(nickOf()), A.length ? A.map(a => esc(a.pos.label) + ' · ' + esc(a.branch)).join(' / ') : esc(ctx.me.title || 'Petugas operasional'))}
   <section class="ra-now att">
     <div class="row between"><div><span class="lbl">${fdate(today())}</span><div class="sh">${sch ? esc(sch.shift || 'Shift') + ' · ' + hm(sch.starts) + ' – ' + hm(sch.ends) : 'Belum ada jadwal shift'}</div><small class="muted">${sch && sch.branch ? esc(sch.branch) : 'Jadwal diatur Operasional'}</small></div>
@@ -231,17 +231,18 @@ async function vKehadiran(el) {
   <section class="ra-now"><div class="row between"><a class="btn sm" href="#/kehadiran?m=${prev}">‹</a><b style="font-size:16px">${label}</b>${isCur ? '<span style="width:40px"></span>' : `<a class="btn sm" href="#/kehadiran?m=${next}">›</a>`}</div>
     <div class="ra-grid3"><div class="ra-kpi"><span>Hadir</span><b>${s.hadir}${s.jadwal ? ' / ' + s.jadwal : ''}</b><small>hari</small></div><div class="ra-kpi"><span>Telat</span><b class="${s.telat ? 'red' : ''}">${s.telat}</b><small>${s.hadir ? Math.round(s.telat / s.hadir * 100) + '% dari hadir' : '—'}</small></div><div class="ra-kpi"><span>Jam kerja</span><b>${jam(s.menit)}</b><small>total</small></div></div></section>
   <section class="card"><div class="list att-list">${(R.days || []).map(d => { const a = d.att;
-    const tag = a ? (a.late > 0 ? '<span class="chip yellow">Telat ' + jam(a.late) + '</span>' : '<span class="chip green">Hadir</span>') : d.leave ? `<span class="chip blue">${(TYPES[d.leave] || [d.leave])[0]}</span>` : d.sched && d.day < today() ? '<span class="chip red">Tidak hadir</span>' : d.sched ? '<span class="chip gray">Terjadwal</span>' : '<span class="chip gray">Libur</span>';
-    return `<div class="li"><span class="dd"><b>${new Date(d.day + 'T00:00:00Z').getUTCDate()}</b><small>${fdate(d.day).split(' ')[0]}</small></span><span style="flex:1;min-width:0"><div class="row between"><b>${a ? clock(a.in) + ' – ' + (a.out ? clock(a.out) : '…') : d.sched ? hm(d.sched.starts) + ' – ' + hm(d.sched.ends) : '—'}</b>${tag}</div><small class="muted">${a ? (a.branch ? esc(a.branch) : '') + (a.mins ? ' · ' + jam(a.mins) : '') + (a.inside === false ? ' · di luar area' : '') : d.sched ? esc(d.sched.shift || '') : ''}</small>${a && a.note ? `<br><small class="muted">Catatan: ${esc(a.note)}</small>` : ''}</span></div>`; }).join('') || '<p class="muted small">Belum ada data.</p>'}</div></section></div>`;
+    const tag = a ? (a.late > 0 ? '<span class="chip yellow">Telat ' + jam(a.late) + '</span>' : '<span class="chip green">Hadir</span>') : d.leave ? `<span class="chip blue">${(TYPES[d.leave] || [d.leave])[0]}</span>` : d.holiday ? `<span class="chip blue">Libur · ${esc(d.holiday)}</span>` : d.sched && d.day < today() ? '<span class="chip red">Tidak hadir</span>' : d.sched ? '<span class="chip gray">Terjadwal</span>' : '<span class="chip gray">Libur</span>';
+    return `<div class="li"><span class="dd"><b>${new Date(d.day + 'T00:00:00Z').getUTCDate()}</b><small>${fdate(d.day).split(' ')[0]}</small></span><span style="flex:1;min-width:0"><div class="row between"><b>${a ? clock(a.in) + ' – ' + (a.out ? clock(a.out) : '…') : d.sched ? hm(d.sched.starts) + ' – ' + hm(d.sched.ends) : '—'}</b>${tag}</div><small class="muted">${a ? (a.branch ? esc(a.branch) : '') + (a.mins ? ' · ' + jam(a.mins) : '') + (a.inside === false ? ' · di luar area' : '') + (a.auto ? ' · pulang otomatis (lupa absen pulang)' : '') : d.sched ? esc(d.sched.shift || '') : ''}</small>${a && a.note && a.note.replace('[absen pulang otomatis]', '').trim() ? `<br><small class="muted">Catatan: ${esc(a.note.replace('[absen pulang otomatis]', '').trim())}</small>` : ''}</span></div>`; }).join('') || '<p class="muted small">Belum ada data.</p>'}</div></section></div>`;
 }
 
 // ---------- Pengajuan ----------
 async function vPengajuan(el) {
   const f = qp().get('f') || 'semua'; const all = CACHE.R || [];
-  const list = all.filter(r => f === 'semua' || r.status === f);
+  const isW = r => r.status === 'diajukan' || r.status === 'menunggu_keuangan';
+  const list = all.filter(r => f === 'semua' || r.status === f || (f === 'diajukan' && isW(r)));
   el.innerHTML = `${hero('Pengajuan', 'Cuti, izin, sakit, lembur, reimburse, dan kasbon')}
   <section class="ra-now"><span class="lbl">Ajukan baru</span><div class="qm qm6">${Object.entries(TYPES).map(([k, [l, e]]) => `<a href="#/ajukan?k=${k}" class="qi"><span>${ri(e, 24)}</span>${l}</a>`).join('')}</div></section>
-  <div class="seg">${[['semua', 'Semua'], ['diajukan', 'Menunggu'], ['disetujui', 'Disetujui'], ['ditolak', 'Ditolak']].map(([k, l]) => `<a href="#/pengajuan?f=${k}" class="${f === k ? 'on' : ''}">${l}${k === 'diajukan' ? ' (' + all.filter(r => r.status === 'diajukan').length + ')' : ''}</a>`).join('')}</div>
+  <div class="seg">${[['semua', 'Semua'], ['diajukan', 'Menunggu'], ['disetujui', 'Disetujui'], ['ditolak', 'Ditolak']].map(([k, l]) => `<a href="#/pengajuan?f=${k}" class="${f === k ? 'on' : ''}">${l}${k === 'diajukan' ? ' (' + all.filter(isW).length + ')' : ''}</a>`).join('')}</div>
   <section class="card"><div class="list ra-list">${list.map(reqRow).join('') || '<p class="muted small">Tidak ada pengajuan.</p>'}</div></section></div>`;
 }
 async function vAjukan(el) {
@@ -258,7 +259,7 @@ async function vAjukan(el) {
       <label class="fld"><span>Keterangan</span><textarea class="inp" name="why" rows="3" placeholder="${k === 'kasbon' ? 'Contoh: keperluan keluarga, dipotong gaji bulan ini' : 'Contoh: bensin antar unit ke Cipanas'}"></textarea></label>`
     : `<div class="g2"><label class="fld"><span>Mulai</span><input type="date" class="inp" name="d1" value="${d1}"></label><label class="fld"><span>Sampai</span><input type="date" class="inp" name="d2" value="${d1}"></label></div>
       <label class="fld"><span>Alasan</span><textarea class="inp" name="why" rows="3" placeholder="${k === 'sakit' ? 'Contoh: demam, sudah ke klinik' : k === 'izin' ? 'Contoh: urusan keluarga' : 'Contoh: acara pernikahan saudara'}"></textarea></label>
-      ${k === 'cuti' && L ? `<p class="note small" style="margin:0">Sisa cuti ${Math.max(0, L.quota - L.used)} dari ${L.quota} hari (Minggu tidak dihitung).</p>` : ''}`;
+      ${k === 'cuti' && L ? `<p class="note small" style="margin:0">Sisa cuti ${Math.max(0, L.quota - L.used)} dari ${L.quota} hari (hari libur perusahaan tidak dihitung).</p>` : ''}`;
   el.innerHTML = `${hero('Ajukan ' + label.toLowerCase(), 'Diputuskan Operasional · kabar masuk lewat notifikasi', 'pengajuan')}
   <form class="ra-now stack" id="fa">${body}<button class="btn pri ra-big" type="submit">Kirim pengajuan</button></form></div>`;
   let photo = null; const nf = el.querySelector('#nota');
@@ -281,15 +282,18 @@ async function vSlip(el) {
   const row = (l, v, neg) => v ? `<div class="li row between"><span>${l}</span><b class="${neg ? 'red' : ''}">${neg ? '−' : ''}${rp(v)}</b></div>` : '';
   el.innerHTML = `${hero('Slip gaji', 'Dari penggajian yang sudah disetujui', 'beranda')}
   ${S.length ? S.map((s, i) => `<details class="card slip"${i ? '' : ' open'}><summary class="row between"><span><b>${per(s.period)}</b><br><small class="muted">${s.status === 'paid' ? 'Dibayar ' + (s.paid_at ? ftime(s.paid_at) : '') : 'Disetujui, menunggu dibayar'}</small></span><b style="font-size:20px">${rp(s.net)}</b></summary>
-    <div class="list">${row('Gaji pokok', s.base)}${row('Komisi', s.commission)}${row('Lembur', s.overtime)}${row('Bonus', s.bonus)}${row('Kekurangan kas', s.shortage, true)}${row('Kasbon', s.advance, true)}
+    <div class="list">${row('Gaji pokok', s.base)}${row('Komisi', s.commission)}${row('Lembur' + (s.ot_minutes ? ' (' + Math.round(s.ot_minutes / 6) / 10 + ' jam)' : ''), s.overtime)}${row('Bonus', s.bonus)}${row('Reimburse', s.reimburse)}${row('Kekurangan kas', s.shortage, true)}${row('Kasbon', s.advance, true)}${row('Denda telat' + (s.late_count ? ' (' + s.late_count + '×)' : ''), s.late_fine, true)}
     <div class="li row between"><b>Diterima</b><b style="font-size:18px">${rp(s.net)}</b></div>${s.attendance ? `<p class="muted small">Kehadiran: ${esc(s.attendance)}</p>` : ''}</div></details>`).join('')
     : '<section class="ra-now"><b>Belum ada slip gaji</b><p class="muted small" style="margin:0">Slip muncul setelah penggajian periode Anda disetujui.</p></section>'}</div>`;
 }
 
 // ---------- Jadwal ----------
 async function vJadwal(el) {
+  let HL = []; try { HL = (await db.rpc('ops_holiday_list', {})) || []; } catch (e) {}
+  const HU = HL.filter(h => h.day >= today());
   el.innerHTML = `${hero('Jadwal shift', '7 hari ke depan', 'beranda')}
   <section class="card"><div class="list">${(H.week || []).map(w => `<div class="li row gap"><span class="dd"><b>${new Date(w.day + 'T00:00:00Z').getUTCDate()}</b><small>${fdate(w.day).split(' ')[0]}</small></span><span style="flex:1"><b>${esc(w.shift || 'Shift')} · ${hm(w.starts)} – ${hm(w.ends)}</b><br><small class="muted">${esc(w.branch || '')}</small></span>${w.day === today() ? '<span class="chip green">Hari ini</span>' : ''}</div>`).join('') || '<p class="muted small">Jadwal belum diatur Operasional.</p>'}</div></section>
+  ${HU.length ? `<section class="card"><h2>Hari libur perusahaan</h2><div class="list">${HU.map(h => `<div class="li row gap"><span class="dd"><b>${new Date(h.day + 'T00:00:00Z').getUTCDate()}</b><small>${fdate(h.day).split(' ')[0]}</small></span><span style="flex:1"><b>${esc(h.name)}</b><br><small class="muted">${esc(fdate(h.day))} · ${esc(h.branch || 'semua cabang')}</small></span></div>`).join('')}</div></section>` : ''}
   <section class="card"><h2>Penugasan</h2>${(H.next || []).map(n => `<p class="note small" style="margin-top:0"><b>${n.kind === 'mutasi' ? 'Mutasi' : 'Penugasan'} berikutnya:</b> ${esc(n.pos.label)} · ${esc(n.branch)} mulai ${fdate(n.start_day)}</p>`).join('')}
     <div class="list">${(H.history || []).map(x => `<div class="li row gap wrap"><b>${esc(x.pos.label)}</b><span style="flex:1">${esc(x.branch)} <small class="muted">${fdate(x.start_day, false)} – ${x.end_day ? fdate(x.end_day, false) : 'sekarang'}${x.kind !== 'awal' ? ' · ' + x.kind : ''}</small></span></div>`).join('') || '<p class="muted small">—</p>'}</div></section></div>`;
 }
