@@ -103,8 +103,9 @@ export async function loadContext() {
     db.get('pk_units', 'select=*&order=sort'),
     db.get('pk_settings', 'select=key,value,note'),
   ]);
-  ctx.people = orgOrder(people, units); ctx.allUnits = units; ctx.units = units.filter(u => u.is_active !== false);
-  ctx.byId = Object.fromEntries(ctx.people.map(p => [p.id, p]));
+  // staf lapangan (Sistem Kerja Operasional) tidak ikut daftar KKH, kehadiran, dan tim holding; tetap dikenali namanya
+  ctx.people = orgOrder(people.filter(p => p.role !== 'lapangan'), units); ctx.allUnits = units; ctx.units = units.filter(u => u.is_active !== false);
+  ctx.byId = Object.fromEntries(people.map(p => [p.id, p]));
   ctx.unit = Object.fromEntries(units.map(u => [u.code, u]));
   ctx.settings = Object.fromEntries(settings.map(s => [s.key, s.value]));
   ctx.notes = Object.fromEntries(settings.map(s => [s.key, s.note]));
@@ -130,7 +131,7 @@ export const isFin = () => ['ceo', 'keuangan'].includes(ctx.me && ctx.me.role);
 export const isCeo = () => ctx.me && ctx.me.role === 'ceo';
 export const active = () => ctx.people.filter(p => p.is_active);
 export const nick = (id) => { const p = ctx.byId[id]; return p ? (p.nickname || p.name) : '—'; };
-export const ROLE = { ceo: 'CEO', kepala_staf: 'Kepala Staf', keuangan: 'Keuangan', leader: 'Leader', staf: 'Staf' };
+export const ROLE = { ceo: 'CEO', kepala_staf: 'Kepala Staf', keuangan: 'Keuangan', leader: 'Leader', staf: 'Staf', lapangan: 'Staf lapangan' };
 export const bizOf = (code) => { const u = ctx.unit[code]; if (!u) return code; return u.kind === 'lini' ? u.parent : u.code; };
 export const unitName = (code) => (ctx.unit[code] && ctx.unit[code].name) || code || '—';
 

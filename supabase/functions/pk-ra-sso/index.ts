@@ -1,6 +1,7 @@
 // Sistem Kerja Pokama · masuk ke Rentalaja App tanpa login & verifikasi 2 langkah kedua.
 // Untuk modul Rentalaja di Sistem Kerja (ra_*): Operasional, CS, Lapangan, Cabang (Garut Kota, Wanaraja, Bandung, Maripoto), Aset, Teknisi.
 // Owner membuka panel peran itu (pratinjau); modul cabang dikunci ke cabangnya (br).
+// ra_kerja + assign: staf lapangan dari Sistem Kerja Operasional membuka panel penugasannya (pk_ra_ops_start).
 // Syarat: pemanggil sudah masuk Sistem Kerja dengan 2 langkah (pk_me tidak null) dan punya akun staf Rentalaja
 // dengan peran yang sesuai (pk_ra_sso_target). Hasilnya sesi baru (terpisah dari sesi Sistem Kerja) yang
 // dicatat di app.sso_sessions, sehingga Rentalaja App menganggapnya setara 2 langkah selama 12 jam.
@@ -33,8 +34,9 @@ Deno.serve(async (req) => {
   try {
     const jwt = (req.headers.get("authorization") || "").replace(/^Bearer\s+/i, "");
     if (!jwt) return out(401, { error: "Belum masuk" });
-    const { target } = await req.json().catch(() => ({}));
+    const { target, assign } = await req.json().catch(() => ({}));
     if (typeof target !== "string" || !/^ra_[a-z]{2,6}$/.test(target)) return out(400, { error: "Modul tidak dikenal" });
+    if (target === "ra_kerja" && (typeof assign !== "string" || !/^[0-9a-f-]{36}$/i.test(assign))) return out(400, { error: "Penugasan tidak dikenal" });
 
     // 1) pemanggil harus anggota Sistem Kerja dengan 2 langkah
     const asUser = createClient(URL, ANON, { global: { headers: { Authorization: "Bearer " + jwt } }, auth: { persistSession: false } });
@@ -46,9 +48,12 @@ Deno.serve(async (req) => {
 
     // 2) akun ini punya peran staf Rentalaja yang sesuai?
     const db = createClient(URL, SERVICE, { auth: { persistSession: false } });
-    const { data: tgt } = await db.rpc("pk_ra_sso_target", { p_user: user.id, p_target: target });
+    // ra_kerja: staf lapangan membuka panel sesuai penugasan hari ini (peran & cabang akun Rentalaja disamakan dulu)
+    const { data: tgt } = target === "ra_kerja"
+      ? await db.rpc("pk_ra_ops_start", { p_user: user.id, p_assign: assign })
+      : await db.rpc("pk_ra_sso_target", { p_user: user.id, p_target: target });
     const screen = tgt?.screen;
-    if (!screen) return out(403, { error: "Akun Anda belum punya akses modul ini di Rentalaja. Minta owner menambahkan di Pengguna dan peran." });
+    if (!screen) return out(403, { error: target === "ra_kerja" ? "Penugasan ini tidak aktif hari ini. Hubungi Operasional." : "Akun Anda belum punya akses modul ini di Rentalaja. Minta owner menambahkan di Pengguna dan peran." });
 
     // 3) sesi baru untuk Rentalaja App (tidak berbagi refresh token dengan Sistem Kerja)
     const { data: link, error: e1 } = await db.auth.admin.generateLink({ type: "magiclink", email: user.email });

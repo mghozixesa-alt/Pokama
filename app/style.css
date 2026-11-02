@@ -317,3 +317,21 @@ table.kkh th .att{display:flex;align-items:center;gap:4px;justify-content:center
 .modi.ra img{object-fit:contain;display:block}
 .modi.ra i{position:absolute;right:-5px;bottom:-5px;min-width:14px;height:14px;border-radius:7px;background:var(--mc);color:#fff;font:900 9px/14px 'Nunito',system-ui,sans-serif;font-style:normal;text-align:center;padding:0 2px;box-shadow:0 0 0 2px #fff}
 #modnav a:hover .modi.ra,.modc:hover .modi.ra{background:#fff}
+/* Sistem Kerja Operasional */
+.opsteps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+.opsteps li{background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 12px;display:flex;align-items:center;gap:8px;color:var(--mut)}
+.opsteps li span{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:var(--line2);font-weight:900;font-size:12px;flex:0 0 auto}
+.opsteps li b{font-size:13px;font-weight:800}
+.opsteps li.done{color:var(--teal-d)}.opsteps li.done span{background:var(--mint);color:var(--teal-d)}
+.opsteps li.now{border-color:var(--teal);background:#F1FBFA;color:var(--navy)}.opsteps li.now span{background:var(--teal);color:#fff}
+.ops-btns{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px;margin-top:10px}
+.ops-start{display:flex;align-items:center;gap:12px;text-align:left;border:1.5px solid var(--pc);border-radius:14px;background:#fff;padding:12px 14px;cursor:pointer;font:inherit;color:var(--ink);min-height:64px}
+.ops-start:hover{background:var(--bg)}.ops-start[data-need]{opacity:.55;border-style:dashed}
+.ops-start-i{width:40px;height:40px;border-radius:10px;background:var(--pc);display:grid;place-items:center;flex:0 0 auto}.ops-start-i img{width:26px;height:26px;filter:brightness(0) invert(1)}
+.ops-start .col{display:flex;flex-direction:column;gap:2px;flex:1;min-width:0}.ops-start b{font-size:15px;font-weight:900}.ops-start small{color:var(--mut)}
+.ops-go-a{font-size:24px;color:var(--pc);font-weight:900}
+.ck{display:flex;flex-direction:column;gap:10px}.ck-g{display:flex;flex-direction:column;gap:6px}.ck-i{font-weight:600;padding:6px 0;border-top:1px solid var(--line2)}.ck-i input{width:20px;height:20px;flex:0 0 auto}
+.split2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.blue-t{color:var(--blue)}.btn.big{min-height:46px;font-size:15px}
+.gap6{gap:6px}
+@media (max-width:900px){.split2{grid-template-columns:minmax(0,1fr)}.opsteps{grid-template-columns:repeat(5,minmax(0,1fr));gap:4px}.opsteps li{flex-direction:column;padding:8px 4px;text-align:center}.opsteps li b{font-size:10.5px;line-height:1.2}}

@@ -7,6 +7,7 @@ import kehadiran from './screens/kehadiran.js';
 import unit from './screens/unit.js';
 import tim from './screens/tim.js';
 import sistem from './screens/sistem.js';
+import ops from './screens/ops.js';
 
 const I = {
   bell: '<path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>',
@@ -40,7 +41,7 @@ const modIc = (m, s = 18, t = 30) => { const c = MODCOL[m.k] || ['#1D3149', '#EE
   return `<span class="modi" style="--mc:${c[0]};--mb:${c[1]};width:${t}px;height:${t}px">${svg(MODIC[m.k] || 'grid', s)}</span>`; };
 const svg = (k, s = 18) => `<svg aria-hidden="true" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${I[k]}</svg>`;
 
-const ROUTES = [
+const BASE_ROUTES = [
   ['KERJA HARIAN', [
     ['kkh', 'KKH Saya', 'sun', kerja.saya], ['kkh-tim', 'KKH Tim', 'grid', kerja.tim], ['tugas', 'Proyek & Tugas', 'layers', tugas.board],
     ['review', 'Review & Revisi', 'check', tugas.review], ['belanja', 'Pengajuan Belanja', 'wallet', belanja],
@@ -48,8 +49,19 @@ const ROUTES = [
   ['ORANG', [['tim', 'Tim & Peran', 'users', tim.tim], ['performa', 'Performa', 'coin', tim.performa]]],
   ['SISTEM', [['library', 'Library Dokumen', 'book', sistem.library], ['pengaturan', 'Pengaturan', 'cog', sistem.pengaturan]]],
 ];
-const FLAT = ROUTES.flatMap(([, r]) => r);
-const MOBILE = ['kkh', 'tugas', 'review', 'belanja'];
+let ROUTES = BASE_ROUTES, FLAT = ROUTES.flatMap(([, r]) => r), MOBILE = ['kkh', 'tugas', 'review', 'belanja'];
+const SHIFT = ['shift', 'Shift Saya', 'clock', ops.shift], OPS = ['ops', 'Tim Operasional', 'gauge', ops.team];
+// Sistem Kerja Operasional: staf lapangan hanya melihat Shift Saya; Operasional mendapat Tim Operasional
+function buildRoutes() {
+  const o = ctx.ops || {};
+  if (ctx.me.role === 'lapangan') { ROUTES = [['OPERASIONAL', [SHIFT]], ['SISTEM', [['pengaturan', 'Pengaturan', 'cog', sistem.pengaturan]]]]; MOBILE = ['shift', 'pengaturan']; }
+  else { ROUTES = BASE_ROUTES.map(([sec, items]) => [sec, items.slice()]);
+    if (o.field) ROUTES[0][1].unshift(SHIFT);
+    if (o.mgr) ROUTES[1][1].push(OPS);
+    MOBILE = o.field ? ['shift', 'kkh', 'tugas', 'review'] : ['kkh', 'tugas', 'review', 'belanja']; }
+  FLAT = ROUTES.flatMap(([, r]) => r);
+}
+const HOME = () => ctx.me.role === 'lapangan' ? 'shift' : 'kkh';
 const HIDDEN = { performa: (r) => !['ceo', 'keuangan'].includes(r) && false };
 
 const root = document.getElementById('app');
@@ -89,7 +101,7 @@ function shell() {
     `<a href="#/${k}" data-k="${k}">${svg(ic)}<span>${l}</span><b class="badge" data-badge="${k}" hidden></b></a>`).join('')}</div>`).join('')
     + `<div class="nav-sec" id="modnav" hidden></div>`;
   root.innerHTML = `<div class="shell">
-    <nav class="side" aria-label="Menu utama"><div class="brand-row"><a class="brand" href="#/kkh"><img src="img/pokama-logo.png" alt="Pokama"></a><button type="button" class="bell" data-bell aria-label="Notifikasi">${svg('bell', 20)}<b class="badge" data-badge="ntf" hidden></b></button></div><span class="muted small brand-sub">Sistem Kerja Harian</span>${nav}
+    <nav class="side" aria-label="Menu utama"><div class="brand-row"><a class="brand" href="#/${HOME()}"><img src="img/pokama-logo.png" alt="Pokama"></a><button type="button" class="bell" data-bell aria-label="Notifikasi">${svg('bell', 20)}<b class="badge" data-badge="ntf" hidden></b></button></div><span class="muted small brand-sub">${me.role === 'lapangan' ? 'Sistem Kerja Operasional' : 'Sistem Kerja Harian'}</span>${nav}
       <div class="side-me"><a href="#/pengaturan" class="me">${avatar(me.id, 36)}<span><b>${esc(me.nickname || me.name)}</b><small>${esc(me.title || ROLE[me.role])}</small></span></a>
       <button class="link mute" type="button" id="logout">Keluar</button></div></nav>
     <button type="button" class="bell m-bell" data-bell aria-label="Notifikasi">${svg('bell', 22)}<b class="badge" data-badge="ntf" hidden></b></button>
@@ -104,11 +116,11 @@ async function openNotifs() {
   const { db, modal, esc, ftime, toast } = await import('./core.js');
   const list = await db.get('pk_notifications', `select=*&person_id=eq.${ctx.me.id}&order=created_at.desc&limit=40`);
   const unread = list.filter(n => !n.read_at);
-  const KIND = { marketing: 'Marketing', keuangan: 'Keuangan', affiliate: 'Affiliate', investor: 'Investor', tugas: 'Tugas', review: 'Review', rab: 'Belanja', kkh: 'KKH', cuti: 'Kehadiran', permintaan: 'Permintaan' };
+  const KIND = { marketing: 'Marketing', keuangan: 'Keuangan', affiliate: 'Affiliate', investor: 'Investor', tugas: 'Tugas', review: 'Review', rab: 'Belanja', kkh: 'KKH', cuti: 'Kehadiran', permintaan: 'Permintaan', ops: 'Operasional' };
   const onOpen = (ev) => { document.removeEventListener('modal:open', onOpen); ev.detail.addEventListener('click', async (e) => {
     const a = e.target.closest('[data-n]'); if (!a) return; e.preventDefault();
     try { await db.update('pk_notifications', 'id=eq.' + a.dataset.n, { read_at: new Date().toISOString() }); } catch (er) {}
-    const href = a.getAttribute('href') || '#/kkh'; document.querySelector('.modal-wrap')?.remove();
+    const href = a.getAttribute('href') || '#/' + HOME(); document.querySelector('.modal-wrap')?.remove();
     if (!href.startsWith('#')) { location.href = href.startsWith('/') ? href : '/' + href; return; } location.hash = href; route(); }); };
   document.addEventListener('modal:open', onOpen);
   const r = await modal('Notifikasi', list.length ? `<div class="ntf-list">${list.map(n => `<a class="ntf${n.read_at ? '' : ' new'}" data-n="${n.id}" href="${esc(n.link || '#/kkh')}"><small>${esc(KIND[n.kind] || n.kind)} · ${ftime(n.created_at)}</small><b>${esc(n.title)}</b>${n.body ? `<span>${esc(n.body)}</span>` : ''}</a>`).join('')}</div>` : '<p class="muted">Belum ada notifikasi.</p>',
@@ -130,7 +142,7 @@ function labelTables(root) {
 }
 let current = null;
 async function route() {
-  const k = (location.hash.replace(/^#\/?/, '').split('?')[0] || 'kkh');
+  const k = (location.hash.replace(/^#\/?/, '').split('?')[0] || HOME());
   const view = document.getElementById('view'); if (!view) return;
   const el = document.createElement('div'); el.className = 'route'; view.replaceChildren(el);
   new MutationObserver(() => labelTables(el)).observe(el, { childList: true, subtree: true });
@@ -141,7 +153,7 @@ async function route() {
   window.scrollTo(0, 0);
   try {
     if (k === 'menu') { menuView(el); document.title = 'Menu · Pokama'; return; }
-    if (!r) { location.hash = '#/kkh'; return; }
+    if (!r) { location.hash = '#/' + HOME(); return; }
     document.title = r[1] + ' · Pokama';
     const params = new URLSearchParams(location.hash.split('?')[1] || '');
     for (const [pk, pv] of [...params]) if (!/^[\w.-]{0,64}$/.test(pv)) params.delete(pk);
@@ -182,6 +194,8 @@ async function badges() {
   try {
     const { db } = await import('./core.js');
     const me = ctx.me.id;
+    if (ctx.ops && ctx.ops.mgr) db.get('ops_overtime', 'select=id&status=eq.diajukan').then(r => document.querySelectorAll('[data-badge="ops"]').forEach(b => { b.hidden = !r.length; b.textContent = r.length; })).catch(() => {});
+    if (ctx.me.role === 'lapangan') { const nt = await db.get('pk_notifications', `select=id&person_id=eq.${me}&read_at=is.null&limit=99`); document.querySelectorAll('[data-badge="ntf"]').forEach(b => { b.hidden = !nt.length; b.textContent = nt.length; }); return; }
         const [rv, rb, nt] = await Promise.all([
       db.get('pk_tasks', `select=id&reviewer_id=eq.${me}&status=eq.review`),
       db.get('pk_rab', 'select=id,chain,step,status&status=in.(diajukan,siap_cair,lpj)'),
@@ -203,9 +217,11 @@ async function boot() {
   try { ok = await loadContext(); } catch (e) { loginView(e.message); return; }
   if (!ok) { await import('./core.js').then(m => { try { localStorage.removeItem('pokama.session'); } catch (e) {} });
     loginView('Akun ini belum terdaftar di Sistem Kerja Pokama. Minta Kepala Staf menambahkan Anda di Tim & Peran.'); return; }
+  try { ctx.ops = await db.rpc('ops_whoami'); } catch (e) { ctx.ops = {}; }
+  buildRoutes();
   shell();
   await loadModules();
-  if (!location.hash || location.hash === '#/' ) location.hash = window.matchMedia('(max-width: 760px)').matches ? '#/kkh' : (ctx.me.role === 'kepala_staf' ? '#/review' : ctx.me.role === 'keuangan' ? '#/belanja' : '#/kkh');
+  if (!location.hash || location.hash === '#/' ) location.hash = ctx.me.role === 'lapangan' ? '#/shift' : window.matchMedia('(max-width: 760px)').matches ? (ctx.ops.field ? '#/shift' : '#/kkh') : (ctx.me.role === 'kepala_staf' ? '#/review' : ctx.me.role === 'keuangan' ? '#/belanja' : ctx.ops.field ? '#/shift' : '#/kkh');
   window.onhashchange = route;
   route();
   askPhone();
