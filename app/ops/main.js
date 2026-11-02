@@ -2,7 +2,7 @@
 // Alur seperti aplikasi HR (GajiHub): Beranda → Clock In (selfie + lokasi) → menu cepat (cuti, izin, sakit, lembur, reimburse, kasbon,
 // slip gaji, jadwal, riwayat, ceklis, performa, panel kerja) → Clock Out. Persetujuan ada di Rentalaja → Operasional → Kerja lapangan.
 import { ctx, db, esc, today, addDays, fdate, ftime, toast, need, confirmBox, callFn, shrinkImage, uploadPhoto, getLocation, signedPhoto,
-  hasSession, takeSessionFromUrl, signInPassword, signInGoogle, loadContext, signOut, reloadSession } from '../core.js';
+  hasSession, takeSessionFromUrl, signInPassword, signInGoogle, signOut, reloadSession, SB_URL } from '../core.js';
 import { ensureMfa, idleGuard, idleExpired } from '../mfa.js';
 
 const root = document.getElementById('app');
@@ -102,18 +102,34 @@ function shell() {
 
 let H = null, WHO = {};
 const qp = () => new URLSearchParams(location.hash.split('?')[1] || '');
+// data utama disimpan (memori + localStorage) supaya pindah menu & buka ulang aplikasi langsung tampil, lalu diperbarui di belakang
+let CACHE = { H: null, G: null, R: null, t: 0 }, FORCE = false, DIRTY = false, SEQ = 0;
+const ckey = () => 'ops.cache.' + (ctx.me && ctx.me.id);
+function loadCache() { try { const c = JSON.parse(localStorage.getItem(ckey()) || 'null'); if (c && c.day === today()) CACHE = c; } catch (e) {} }
+async function fetchData() {
+  const [h, g, r] = await Promise.all([db.rpc('ops_home'), db.rpc('ops_game').catch(() => null), db.rpc('ops_requests').catch(() => [])]);
+  CACHE = { H: h, G: g, R: r || [], t: Date.now(), day: today() }; try { localStorage.setItem(ckey(), JSON.stringify(CACHE)); } catch (e) {}
+}
+document.addEventListener('input', () => { DIRTY = true; }, true); document.addEventListener('change', () => { DIRTY = true; }, true);
 async function route() {
   let k = location.hash.replace(/^#\/?/, '').split('?')[0];
   if (k === 'shift') k = 'beranda'; if (k === 'cuti') k = 'pengajuan';
   if (!VIEWS[k]) k = 'beranda';
-  const navK = k === 'ajukan' ? 'pengajuan' : k;
+  const navK = k === 'ajukan' ? 'pengajuan' : k, force = FORCE, seq = ++SEQ; FORCE = false; DIRTY = false;
   document.querySelectorAll('[data-k]').forEach(a => a.classList.toggle('on', a.dataset.k.split('?')[0] === navK));
-  const el = document.getElementById('view'); el.innerHTML = '<div class="loading">Memuat…</div>'; window.scrollTo(0, 0); el.onclick = null; el.onsubmit = null;
-  try { H = await db.rpc('ops_home'); flags(); await VIEWS[k](el); document.title = (document.querySelector('.ra-hero h1') || {}).textContent + ' · Kerja Lapangan'; }
-  catch (e) { el.innerHTML = `<div class="ra-body" style="margin-top:20px"><div class="card"><h2>Gagal memuat</h2><p class="muted">${esc(e.message)}</p><button class="btn" onclick="location.reload()">Muat ulang</button></div></div>`; }
+  const el = document.getElementById('view'); window.scrollTo(0, 0);
+  const paint = async () => { el.onclick = null; el.onsubmit = null; H = CACHE.H; flags(); await VIEWS[k](el); document.title = (document.querySelector('.ra-hero h1') || {}).textContent + ' · Kerja Lapangan'; };
+  try {
+    const fresh = CACHE.H && Date.now() - CACHE.t < 45000 && !force;
+    if (CACHE.H && !force) await paint(); else el.innerHTML = '<div class="loading">Memuat…</div>';
+    if (fresh) return;
+    await fetchData();
+    if (seq !== SEQ) return;                       // sudah pindah halaman
+    if (!el.firstElementChild || el.querySelector('.loading') || !DIRTY) { const y = window.scrollY; await paint(); window.scrollTo(0, y); }
+  } catch (e) { if (!CACHE.H) el.innerHTML = `<div class="ra-body" style="margin-top:20px"><div class="card"><h2>Gagal memuat</h2><p class="muted">${esc(e.message)}</p><button class="btn" onclick="location.reload()">Muat ulang</button></div></div>`; else toast('Koneksi lambat, menampilkan data terakhir', 'err'); }
 }
-const reload = () => route();
-const go = (h) => { if (location.hash === '#/' + h) route(); else location.hash = '#/' + h; };
+const reload = () => { FORCE = true; route(); };
+const go = (h) => { FORCE = true; if (location.hash === '#/' + h) route(); else location.hash = '#/' + h; };
 function flags() {
   const att = H.att, isIn = !!(att && att.clock_in);
   document.querySelectorAll('[data-flag="absen"]').forEach(x => x.textContent = isIn ? (att.clock_out ? 'selesai' : '✓ ' + clock(att.clock_in)) : 'belum');
@@ -125,7 +141,7 @@ const ckDone = (ph) => { const items = (H.items || []).filter(i => i.phase === p
 async function vBeranda(el) {
   const A = H.assigns || [], sch = H.schedule, { att, isIn, isOut } = state();
   const B = ckDone('buka'), T = ckDone('tutup');
-  let g = null, reqs = []; try { [g, reqs] = await Promise.all([db.rpc('ops_game'), db.rpc('ops_requests')]); } catch (e) {}
+  const g = CACHE.G, reqs = CACHE.R || [];
   const pend = (reqs || []).filter(r => r.status === 'diajukan').length;
   el.innerHTML = `${hero(esc(nickOf()), A.length ? A.map(a => esc(a.pos.label) + ' · ' + esc(a.branch)).join(' / ') : esc(ctx.me.title || 'Petugas operasional'))}
   <section class="ra-now att">
@@ -221,7 +237,7 @@ async function vKehadiran(el) {
 
 // ---------- Pengajuan ----------
 async function vPengajuan(el) {
-  const f = qp().get('f') || 'semua'; const all = await db.rpc('ops_requests');
+  const f = qp().get('f') || 'semua'; const all = CACHE.R || [];
   const list = all.filter(r => f === 'semua' || r.status === f);
   el.innerHTML = `${hero('Pengajuan', 'Cuti, izin, sakit, lembur, reimburse, dan kasbon')}
   <section class="ra-now"><span class="lbl">Ajukan baru</span><div class="qm qm6">${Object.entries(TYPES).map(([k, [l, e]]) => `<a href="#/ajukan?k=${k}" class="qi"><span>${ri(e, 24)}</span>${l}</a>`).join('')}</div></section>
@@ -280,7 +296,7 @@ async function vJadwal(el) {
 
 // ---------- Performa (gamifikasi) ----------
 async function vPerforma(el) {
-  const g = await db.rpc('ops_game'), p = H.perf || {}, A = H.assigns || [];
+  const g = CACHE.G || await db.rpc('ops_game'), p = H.perf || {}, A = H.assigns || [];
   const pct = Math.max(4, Math.min(100, Math.round((g.xp - g.lvl_from) / Math.max(1, g.lvl_to - g.lvl_from) * 100)));
   const got = (g.badges || []).filter(b => b.got).length;
   el.innerHTML = `${hero('Performa saya', 'Kumpulkan XP, naik level, raih lencana', 'beranda')}
@@ -310,7 +326,9 @@ async function startWork(assign) {
 function panelCards(compact) { const A = H.assigns || [], { isIn, isOut } = state(), open = isIn && !isOut;
   return `<div class="ra-panels${compact ? ' cp' : ''}">${A.map(a => `<button class="ra-panel${open ? '' : ' lock'}" data-start="${a.id}" style="--pc:${POSC[a.position] || '#1F2B4D'};--pc2:${POSC2[a.position] || '#0F172A'}">${open ? '' : `<span class="lk">${ri('kunci', 18, '#fff')}</span>`}
     <span class="ic"><img src="/img/ra.png" alt=""></span><b>${esc(a.pos.label)}</b><small>${esc(a.branch)}${a.kind === 'tambahan' ? ' · tambahan' : ''}</small><span class="go">Masuk →</span></button>`).join('') || '<p class="muted">Belum ada penugasan. Hubungi Operasional.</p>'}</div>`; }
-function wirePanel(el) { const prev = el.onclick; el.onclick = (e) => { const b = e.target.closest('[data-start]'); if (!b) return prev && prev(e); const { isIn, isOut } = state();
+let warmed = 0;
+function wirePanel(el) { if (Date.now() - warmed > 120000 && el.querySelector('[data-start]')) { warmed = Date.now(); fetch(SB_URL + '/functions/v1/pk-ra-sso', { method: 'OPTIONS' }).catch(() => {}); }  // panaskan fungsi supaya panel cepat terbuka
+  const prev = el.onclick; el.onclick = (e) => { const b = e.target.closest('[data-start]'); if (!b) return prev && prev(e); const { isIn, isOut } = state();
   if (!(isIn && !isOut)) return toast(isOut ? 'Shift hari ini sudah selesai' : 'Clock in dulu', 'err'); startWork(b.dataset.start); }; }
 async function vPanel(el) { const { isIn, isOut } = state();
   el.innerHTML = `${hero('Panel kerja', isIn && !isOut ? 'Pilih panel tempat Anda bekerja hari ini' : isOut ? 'Shift hari ini sudah selesai' : 'Terbuka setelah clock in', 'beranda')}
@@ -344,20 +362,27 @@ async function vCoba(el) {
 const VIEWS = { beranda: vBeranda, absen: vAbsen, kehadiran: vKehadiran, pengajuan: vPengajuan, ajukan: vAjukan, akun: vAkun, slip: vSlip, jadwal: vJadwal, ceklis: vCeklis, performa: vPerforma, panel: vPanel, coba: vCoba };
 
 // ---------- mulai ----------
+// konteks ringan: cukup data diri + peran (tanpa memuat seluruh daftar orang & pengaturan holding)
+async function lightContext() {
+  const [me, who] = await Promise.all([db.rpc('pk_session'), db.rpc('ops_whoami').catch(() => ({}))]); if (!me) return false;
+  let uid = null; try { uid = JSON.parse(atob((JSON.parse(localStorage.getItem('pokama.session')).access_token).split('.')[1].replace(/-/g, '+').replace(/_/g, '/'))).sub; } catch (e) {}
+  ctx.me = me; ctx.byId = { [me.id]: { ...me, user_id: uid } }; ctx.who = who || {};
+  return true;
+}
 async function boot() {
   root.innerHTML = '<div class="loading full">Memuat…</div>';
   // petugas lapangan tidak perlu aplikasi Authenticator; Operasional (manajemen) tetap verifikasi 2 langkah
-  let ok = false; try { ok = await loadContext(); } catch (e) { ok = false; }
+  let ok = false; try { ok = await lightContext(); } catch (e) { ok = false; }
   if (!ok || ctx.me.role !== 'lapangan') {
     try { const m = await ensureMfa(); if (!m) { loginView(); return; } reloadSession(); } catch (e) { loginView(e.message); return; }
-    try { ok = await loadContext(); } catch (e) { loginView(e.message); return; }
+    try { ok = await lightContext(); } catch (e) { loginView(e.message); return; }
   }
   if (!ok) { try { localStorage.removeItem('pokama.session'); } catch (e) {} loginView('Akun ini belum terdaftar sebagai petugas operasional. Minta Operasional mendaftarkan email Anda.'); return; }
-  let o = {}; try { o = await db.rpc('ops_whoami'); } catch (e) {}
-  WHO = o || {};
-  if (ctx.me.role !== 'lapangan' && !o.field && !o.mgr) {
+  WHO = ctx.who || {};
+  if (ctx.me.role !== 'lapangan' && !WHO.field && !WHO.mgr) {
     gate('Halaman ini untuk petugas operasional', 'Kerja Lapangan dipakai kasir, CS, runner, sopir, QC, teknisi, dan kepala cabang. Manajemen petugas ada di <a href="https://demo.rentalaja.co.id/#/OpsKerja">Rentalaja → Operasional → Kerja lapangan</a>.'); return;
   }
+  loadCache();
   shell(); window.onhashchange = route; if (!location.hash || location.hash === '#/') location.hash = '#/beranda'; route();
 }
 takeSessionFromUrl();
