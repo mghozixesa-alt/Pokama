@@ -27,10 +27,12 @@ const I = {
   bank: '<path d="M3 10l9-6 9 6M5 10v8M10 10v8M14 10v8M19 10v8M3 21h18"/>',
   link: '<path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/>',
   trend: '<path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/>',
+  key: '<circle cx="8" cy="15" r="4"/><path d="M10.8 12.2 20 3M17 6l3 3M14 9l2 2"/>',
+  ext: '<path d="M14 4h6v6M20 4l-9 9"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/>',
 };
-const MODIC = { marketing: 'mega', keuangan: 'bank', affiliate: 'link', investor: 'trend' };
+const MODIC = { marketing: 'mega', keuangan: 'bank', affiliate: 'link', investor: 'trend', rentalaja: 'key' };
 /* warna khas tiap modul: [warna ikon, latar] */
-const MODCOL = { marketing: ['#7A3FD1', '#F1EAFD'], keuangan: ['#0B8A5E', '#E3F6EE'], affiliate: ['#1F63D8', '#E6EFFD'], investor: ['#B7791F', '#FDF3DF'] };
+const MODCOL = { rentalaja: ['#0A8F86', '#DDF5F2'], marketing: ['#7A3FD1', '#F1EAFD'], keuangan: ['#0B8A5E', '#E3F6EE'], affiliate: ['#1F63D8', '#E6EFFD'], investor: ['#B7791F', '#FDF3DF'] };
 const modIc = (m, s = 18, t = 30) => { const c = MODCOL[m.k] || ['#1D3149', '#EEF0F3']; return `<span class="modi" style="--mc:${c[0]};--mb:${c[1]};width:${t}px;height:${t}px">${svg(MODIC[m.k] || 'grid', s)}</span>`; };
 const svg = (k, s = 18) => `<svg aria-hidden="true" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${I[k]}</svg>`;
 
@@ -109,6 +111,45 @@ async function openNotifs() {
     { submit: unread.length ? 'Tandai semua sudah dibaca' : null, onSubmit: async () => { await db.update('pk_notifications', `person_id=eq.${ctx.me.id}&read_at=is.null`, { read_at: new Date().toISOString() }); } });
   if (r) { toast('Semua notifikasi ditandai dibaca'); badges(); }
 }
+// ---------- Rentalaja App: aplikasi terpisah (login staf sendiri), di sini hanya pintu masuknya ----------
+const RA_BASE = 'https://demo.rentalaja.co.id'; // ganti ke https://rentalaja.co.id setelah domain utama dipindah
+const RA_LINKS = [
+  ['Masuk & manajemen', [
+    ['Masuk staf Rentalaja', '/#/Masuk', 'Login akun staf Rentalaja (2 langkah)'],
+    ['Dashboard manajemen', '/#/MgmtDashboard', 'Owner & manajemen: omzet, utilisasi, persetujuan'],
+    ['Persetujuan', '/#/MgmtSetuju', 'Uang keluar, diskon, dan pengecualian yang menunggu'],
+    ['Pusat aset', '/#/MgmtPusatAset', 'Unit, pembelian, servis, QC'],
+    ['Pelanggan & CRM', '/#/MgmtPelanggan', 'Data pelanggan, daftar hitam, tindak lanjut'],
+    ['Produk & harga', '/#/MgmtProduk', 'Katalog, harga musim, promo'],
+    ['Tim & pengguna', '/#/MgmtPengguna', 'Akun staf Rentalaja dan hak aksesnya']]],
+  ['Cabang & lapangan', [
+    ['Kasir & booking hari ini', '/#/PosHariIni', 'Kepala cabang, kasir, staf cabang'],
+    ['Verifikasi pelanggan', '/#/PosVerifikasi', 'Cek KTP & data sebelum serah-terima'],
+    ['Serah-terima unit', '/#/PosSerahTerima', 'Ambil & kembali unit'],
+    ['QC unit', '/#/PosQC', 'Cek kondisi unit setelah kembali'],
+    ['Pusat CS', '/#/PusatCS', 'CS & CS Experience: chat dan booking'],
+    ['Agenda lapangan', '/#/AgendaLapangan', 'Runner: antar-jemput unit'],
+    ['Teknisi', '/#/Teknisi', 'Perintah kerja servis'],
+    ['Sopir Jeep', '/#/SopirJeep', 'Jadwal trip Jeep']]],
+  ['Unit lain di Rentalaja', [
+    ['Operasional Experience', '/#/OpsBeranda', 'Penginapan & Jeep'],
+    ['Aset (beranda)', '/#/AsetBeranda', 'Tim aset: preventif, servis, unit'],
+    ['Keuangan Rentalaja', '/#/KeuDasbor', 'Panel keuangan di aplikasi Rentalaja'],
+    ['Statistik link bio', '/link/statistik', 'Klik & booking dari link bio']]],
+  ['Halaman publik', [
+    ['Website & booking', '/', 'Yang dilihat pelanggan'],
+    ['Link bio', '/link', 'Pengganti Linktree'],
+    ['Rentalaja Experience', '/experience', 'Penginapan & Jeep'],
+    ['ATVaja', '/atvaja', 'Trip ATV']]],
+];
+function rentalajaView(el) {
+  const c = MODCOL.rentalaja;
+  el.innerHTML = `<header class="ph"><div><span class="muted small">Modul · aplikasi terpisah</span><h1 style="display:flex;align-items:center;gap:10px">${modIc({ k: 'rentalaja' }, 20, 38)}Rentalaja App</h1>
+    <p class="muted">Aplikasi operasional Rentalaja (cabang, aset, CS, manajemen). Login memakai <b>akun staf Rentalaja</b>, terpisah dari Sistem Kerja. Halaman yang tampil mengikuti hak akses akun Anda di sana.</p></div>
+    <a class="btn pri" href="${RA_BASE}/#/Masuk" target="_blank" rel="noopener">${svg('ext', 16)} Buka Rentalaja App</a></header>
+    ${RA_LINKS.map(([g, ls]) => `<section class="card"><h2>${esc(g)}</h2><div class="ra-links">${ls.map(([l, path, d]) => `<a class="ra-link" href="${RA_BASE + path}" target="_blank" rel="noopener" style="--mc:${c[0]}"><span style="display:flex;flex-direction:column;gap:2px;flex:1;min-width:0"><b>${esc(l)}</b><small class="muted">${esc(d)}</small></span>${svg('ext', 16)}</a>`).join('')}</div></section>`).join('')}
+    <p class="muted small">Alamat sekarang ${esc(RA_BASE.replace('https://', ''))}. Setelah domain utama dipindah, tautan ini ikut diganti ke rentalaja.co.id.</p>`;
+}
 function menuView(el) {
   el.innerHTML = `<header class="ph"><div><h1>Menu</h1><p class="muted">${esc(ctx.me.name)} · ${esc(ctx.me.title || ROLE[ctx.me.role])}</p></div></header>
     <div class="menu-list">${FLAT.map(([k, l, ic]) => `<a class="card row" href="#/${k}">${svg(ic, 22)}<b>${l}</b><span style="flex:1"></span>›</a>`).join('')}
@@ -136,6 +177,7 @@ async function route() {
   window.scrollTo(0, 0);
   try {
     if (k === 'menu') { menuView(el); document.title = 'Menu · Pokama'; return; }
+    if (k === 'rentalaja') { rentalajaView(el); document.title = 'Rentalaja App · Pokama'; return; }
     if (!r) { location.hash = '#/kkh'; return; }
     document.title = r[1] + ' · Pokama';
     const params = new URLSearchParams(location.hash.split('?')[1] || '');

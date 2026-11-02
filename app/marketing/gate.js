@@ -43,13 +43,13 @@
     document.body.appendChild(b);
     var btn = b.querySelector('button'), menu = b.querySelector('.pk-hub-menu'), here = location.pathname.replace(/\/$/, '') || '/';
     function esc(t) { return String(t == null ? '' : t).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
-    var HIC = { home: 'M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z', marketing: 'M3 11v2a1 1 0 0 0 1 1h3l5 4V6L7 10H4a1 1 0 0 0-1 1zM16 8a5 5 0 0 1 0 8M19 5a9 9 0 0 1 0 14', keuangan: 'M3 10l9-6 9 6M5 10v8M10 10v8M14 10v8M19 10v8M3 21h18', affiliate: 'M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7', investor: 'M3 17l6-6 4 4 8-8M15 7h6v6', grid: 'M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z' };
-    var HCOL = { home: ['#067A70', '#DDF5F2'], marketing: ['#7A3FD1', '#F1EAFD'], keuangan: ['#0B8A5E', '#E3F6EE'], affiliate: ['#1F63D8', '#E6EFFD'], investor: ['#B7791F', '#FDF3DF'] };
+    var HIC = { rentalaja: 'M8 11a4 4 0 1 0 0 8a4 4 0 1 0 0-8zM10.8 12.2 20 3M17 6l3 3M14 9l2 2', home: 'M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z', marketing: 'M3 11v2a1 1 0 0 0 1 1h3l5 4V6L7 10H4a1 1 0 0 0-1 1zM16 8a5 5 0 0 1 0 8M19 5a9 9 0 0 1 0 14', keuangan: 'M3 10l9-6 9 6M5 10v8M10 10v8M14 10v8M19 10v8M3 21h18', affiliate: 'M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7', investor: 'M3 17l6-6 4 4 8-8M15 7h6v6', grid: 'M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z' };
+    var HCOL = { rentalaja: ['#0A8F86', '#DDF5F2'], home: ['#067A70', '#DDF5F2'], marketing: ['#7A3FD1', '#F1EAFD'], keuangan: ['#0B8A5E', '#E3F6EE'], affiliate: ['#1F63D8', '#E6EFFD'], investor: ['#B7791F', '#FDF3DF'] };
     function ico(d, k) { var c = HCOL[k] || ['#1D3149', '#EEF0F3']; return '<span class="pk-hub-ic" style="color:' + c[0] + ';background:' + c[1] + '"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="' + d + '"/></svg></span>'; }
     function draw(ms) {
       var tot = 0;
       menu.innerHTML = '<a role="menuitem" href="/#/kkh" class="pk-hub-i">' + ico(HIC.home, 'home') + '<span><b>Sistem Kerja Pokama</b><small>KKH, tugas, review, belanja, kehadiran</small></span></a>' + ms.map(function (m) {
-        var on = here.indexOf(m.href.replace(/[#?].*$/, '').replace(/\/$/, '')) === 0; tot += on ? 0 : (+m.n || 0);
+        var base = m.href.replace(/[#?].*$/, '').replace(/\/$/, ''), on = !!base && here.indexOf(base) === 0; tot += on ? 0 : (+m.n || 0);
         return '<a role="menuitem" href="' + esc(m.href) + '" class="pk-hub-i' + (on ? ' on' : '') + '">' + ico(HIC[m.k] || HIC.grid, m.k) + '<span><b>' + esc(m.name) + (m.n ? ' <i class="' + (m.urgent ? 'hot' : '') + '">' + m.n + '</i>' : '') + '</b><small>' + esc(m.note || '') + '</small></span></a>';
       }).join('');
       var n = b.querySelector('.pk-hub-n'); n.hidden = !tot; n.textContent = tot;
