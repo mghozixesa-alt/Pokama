@@ -311,3 +311,9 @@ table.kkh th .att{display:flex;align-items:center;gap:4px;justify-content:center
 .modc:hover .modi{background:var(--mc);color:#fff}
 .nav-sec a span.modi,.menu-list span.modi,.modc span.modi{flex:0 0 auto}
 
+
+/* modul Rentalaja (Operasional, Aset): logo Rentalaja + huruf penanda */
+.modi.ra{position:relative;background:#fff;border:1.5px solid var(--mc)}
+.modi.ra img{object-fit:contain;display:block}
+.modi.ra i{position:absolute;right:-5px;bottom:-5px;min-width:14px;height:14px;border-radius:7px;background:var(--mc);color:#fff;font:900 9px/14px 'Nunito',system-ui,sans-serif;font-style:normal;text-align:center;padding:0 2px;box-shadow:0 0 0 2px #fff}
+#modnav a:hover .modi.ra,.modc:hover .modi.ra{background:#fff}

@@ -35,7 +35,9 @@ const I = {
 const MODIC = { marketing: 'mega', keuangan: 'bank', affiliate: 'link', investor: 'trend', ra_mgmt: 'gauge', ra_aset: 'box' };
 /* warna khas tiap modul: [warna ikon, latar] */
 const MODCOL = { ra_mgmt: ['#1D3149', '#E4E9F1'], ra_aset: ['#C2410C', '#FCEBDD'], marketing: ['#7A3FD1', '#F1EAFD'], keuangan: ['#0B8A5E', '#E3F6EE'], affiliate: ['#1F63D8', '#E6EFFD'], investor: ['#B7791F', '#FDF3DF'] };
-const modIc = (m, s = 18, t = 30) => { const c = MODCOL[m.k] || ['#1D3149', '#EEF0F3']; return `<span class="modi" style="--mc:${c[0]};--mb:${c[1]};width:${t}px;height:${t}px">${svg(MODIC[m.k] || 'grid', s)}</span>`; };
+const modIc = (m, s = 18, t = 30) => { const c = MODCOL[m.k] || ['#1D3149', '#EEF0F3'];
+  if (/^ra_/.test(m.k)) return `<span class="modi ra" style="--mc:${c[0]};--mb:${c[1]};width:${t}px;height:${t}px"><img src="/img/ra.png" alt="" style="width:${Math.round(t * .62)}px;height:${Math.round(t * .62)}px"><i>${m.k === 'ra_aset' ? 'A' : 'O'}</i></span>`;
+  return `<span class="modi" style="--mc:${c[0]};--mb:${c[1]};width:${t}px;height:${t}px">${svg(MODIC[m.k] || 'grid', s)}</span>`; };
 const svg = (k, s = 18) => `<svg aria-hidden="true" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${I[k]}</svg>`;
 
 const ROUTES = [
