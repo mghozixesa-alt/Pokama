@@ -495,7 +495,7 @@ document.querySelectorAll('[data-wa]').forEach(function (a) {
   if (a.dataset.waLabel) a.textContent = '0' + KONTAK.wa.slice(2).replace(/(\d{3})(\d{4})(\d+)/, '$1-$2-$3');
 });
 document.querySelectorAll('[data-mail]').forEach(function (a) {
-  if (!KONTAK.email) { a.innerHTML = '<span class="todo">email belum diisi</span>'; return; }
+  if (!KONTAK.email) { a.closest('li').remove(); return; }
   a.href = 'mailto:' + KONTAK.email; a.textContent = KONTAK.email;
 });
 var mk = document.getElementById('masuk');
