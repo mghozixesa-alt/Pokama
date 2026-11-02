@@ -85,3 +85,34 @@ body.ra .login-card .pk-logo{width:132px}
   .ra-acts{grid-template-columns:repeat(2,minmax(0,1fr))}.gm-badges{grid-template-columns:repeat(2,minmax(0,1fr))}.ra-grid3{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 @media (max-width:420px){.ra-panels{gap:10px}.ra-panel{padding:14px;min-height:156px}.ra-panel b{font-size:16px}}
+/* alur aplikasi HR (beranda, clock in/out, menu cepat) */
+.ra-hero.sm{padding-bottom:58px}.ra-hero .bk{width:34px;height:34px;border-radius:17px;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;display:grid;place-items:center;font-size:24px;line-height:1;font-weight:700}
+@media (min-width:901px){.ra-hero .top{display:flex}.ra-hero .top .pk,.ra-hero .top .av{display:none}.ra-hero .top:not(:has(.bk)){display:none}}
+.att .sh{font-size:18px;font-weight:800;margin-top:2px}
+.clk{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.clk>*{display:flex;flex-direction:column;gap:2px;align-items:flex-start;text-align:left;border:0;border-radius:16px;padding:14px;font:inherit;cursor:pointer;color:#fff}
+.clk .cin{background:linear-gradient(150deg,#09BEAF,#077A70)}.clk .cout{background:linear-gradient(150deg,#2B3A63,#1F2B4D)}
+.clk .done{opacity:.92}.clk small{font-size:12px;font-weight:700;opacity:.9}.clk b{font-size:28px;font-weight:800;line-height:1.1}.clk i{font-style:normal;font-size:12px;opacity:.9}
+.qm{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px}
+.qm.qm6{grid-template-columns:repeat(6,minmax(0,1fr))}
+.qi{display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 4px;border-radius:14px;text-decoration:none;color:var(--ink);font-size:12.5px;font-weight:700;text-align:center;position:relative}
+.qi:hover{background:var(--bg)}.qi span{width:48px;height:48px;border-radius:16px;background:var(--mint);display:grid;place-items:center;font-size:23px}
+.qi .lk{position:absolute;top:4px;right:calc(50% - 30px);font-style:normal;font-size:12px}.qi .dot{position:absolute;top:8px;right:calc(50% - 26px);width:10px;height:10px;border-radius:5px;background:#E5484D}
+.gm-mini-card{display:flex;align-items:center;gap:14px;text-decoration:none;color:var(--ink)}.gm-mini-card .go{font-size:24px;color:var(--mut)}
+.gm-badge.sm{width:54px;height:54px;border-radius:16px}.gm-badge.sm b{font-size:22px}
+.seg{display:flex;gap:6px;overflow-x:auto}.seg a{padding:8px 14px;border-radius:999px;background:#fff;border:1px solid var(--line);text-decoration:none;color:var(--ink);font-weight:700;font-size:13px;white-space:nowrap}.seg a.on{background:var(--navy);border-color:var(--navy);color:#fff}
+.ra-list .ty{width:38px;height:38px;border-radius:12px;background:var(--bg);display:grid;place-items:center;font-size:19px;flex:0 0 auto}
+.att-list .li,.dd-row{display:flex;gap:12px;align-items:flex-start}.dd{width:44px;flex:0 0 auto;text-align:center;background:var(--bg);border-radius:12px;padding:6px 0;display:flex;flex-direction:column}.dd b{font-size:18px;line-height:1.1}.dd small{font-size:11px;color:var(--mut);font-weight:700}
+.av-lg{width:56px;height:56px;border-radius:28px;background:var(--teal);color:var(--navy);display:grid;place-items:center;font-weight:800;font-size:20px;flex:0 0 auto}
+.menu-l .li{display:flex;align-items:center;gap:12px;padding:14px 4px;text-decoration:none;color:var(--ink);font-weight:700;font-size:15px;background:none;border:0;border-top:1px solid var(--line2);width:100%;font-family:inherit;cursor:pointer;text-align:left}.menu-l .li:first-child{border-top:0}.menu-l .li span{flex:1}
+.ra-nav2 a{padding:9px 12px;font-size:14px}.ra-nav2 .em{width:20px;text-align:center}
+.ra-panels.cp .ra-panel{min-height:140px}
+.slip summary{list-style:none;cursor:pointer}.slip summary::-webkit-details-marker{display:none}
+@media (max-width:900px){
+  .ra-bottom{grid-template-columns:repeat(5,1fr)}
+  .ra-bottom a.fab span{width:56px;height:56px;border-radius:28px;background:linear-gradient(150deg,#09BEAF,#077A70);color:#fff;margin-top:-26px;box-shadow:0 6px 16px rgba(9,190,175,.45)}
+  .ra-bottom a.fab.on span{background:linear-gradient(150deg,#09BEAF,#077A70)}
+  .qm,.qm.qm6{grid-template-columns:repeat(4,minmax(0,1fr))}.qm.qm6{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+.gm-mini-card{flex-direction:row!important;align-items:center}
+.ra-list .li>span.ty{flex:0 0 38px}
