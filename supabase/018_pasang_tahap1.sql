@@ -1,5 +1,5 @@
 -- Pasang buku besar grup Pokama (tahap 1): 018a tabel + 018b mesin + 018d laporan.
--- TIDAK termasuk 018c (sambungan Rentalaja App). Jalankan sekali di Supabase → SQL Editor → Run.
+-- TIDAK termasuk 018c (sambungan Rentalaja App). SUDAH TERPASANG di produksi 2 Nov 2026.
 begin;
 -- 018a: Modul Keuangan Grup Pokama — tabel, akun, peta, sumber data
 -- Prinsip: input sekali di sistem asal (website/RAB/bank) → kejadian (event) → mesin jurnal otomatis → laporan.
@@ -787,7 +787,7 @@ begin
       where o.is_active and nd <= t + 30 and (o.start_month is null or nd >= o.start_month)
         and (o.end_month is null or nd <= (date_trunc('month', o.end_month) + interval '1 month - 1 day')::date)),
     'obligations_month', (select coalesce(sum(amount), 0) from public.pk_fin_obligations where is_active),
-    'rab', (select coalesce(jsonb_agg(jsonb_build_object('biz', biz,
+    'rab', (select coalesce(jsonb_agg(x order by x->>'biz'), '[]'::jsonb) from (select jsonb_build_object('biz', biz,
         'menunggu', count(*) filter (where status = 'diajukan'), 'menunggu_rp', coalesce(sum(total) filter (where status = 'diajukan'), 0),
         'siap', count(*) filter (where status = 'siap_cair'), 'siap_rp', coalesce(sum(total) filter (where status = 'siap_cair'), 0),
         'nota', count(*) filter (where status = 'cair'), 'nota_rp', coalesce(sum(total) filter (where status = 'cair'), 0),
@@ -795,8 +795,8 @@ begin
         'cek', count(*) filter (where status = 'lpj'),
         'cair_periode', coalesce(sum(total) filter (where cair_at is not null and (cair_at at time zone 'Asia/Jakarta')::date between p_from and p_to), 0),
         'real_periode', coalesce(sum(realisasi) filter (where done_at is not null and (done_at at time zone 'Asia/Jakarta')::date between p_from and p_to), 0),
-        'darurat', count(*) filter (where is_emergency and created_at >= p_from))), '[]'::jsonb)
-      from (select r.*, public.pk_fin_biz(r.unit_code) biz from public.pk_rab r) z group by biz),
+        'darurat', count(*) filter (where is_emergency and created_at >= p_from)) x
+      from (select r.*, public.pk_fin_biz(r.unit_code) biz from public.pk_rab r) z group by biz) zz),
     'expense_top', (select coalesce(jsonb_agg(jsonb_build_object('code', acc, 'name', (select name from public.pk_fin_accounts where code = acc), 'amt', amt, 'by', by_) order by amt desc), '[]'::jsonb)
       from (select acc, sum(debit - credit) amt, jsonb_object_agg(biz, s) by_ from (
               select acc, biz, sum(debit - credit) s, sum(debit) debit, sum(credit) credit from _fl where d between p_from and p_to and left(acc, 1) in ('5','6','8') group by acc, biz) y
