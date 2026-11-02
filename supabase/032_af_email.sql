@@ -129,7 +129,7 @@ begin
     sent_at = now(), scheduled_at = null, updated_at = now() where id = p_id;
   insert into public.af_audit(by_person, actor, action, target, reason, data)
   values (public.pk_me(), auth.uid(), 'campaign_kirim', p_id::text, c.subject, jsonb_build_object('penerima', n, 'demo', c.demo));
-  return jsonb_build_object('status', 'mengirim', 'n', n);
+  return jsonb_build_object('status', case when c.demo then 'simulasi' else 'mengirim' end, 'n', n);
 end $$;
 
 create or replace function public.af_campaign_cancel(p_id uuid) returns void

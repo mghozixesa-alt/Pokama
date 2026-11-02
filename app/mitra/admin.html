@@ -83,7 +83,7 @@ code,pre{font-family:ui-monospace,Menlo,monospace;font-size:12.5px}pre{backgroun
   <aside class="side" aria-label="Menu mitra affiliate">
     <img src="/img/pokama-logo.png" alt="Pokama">
     <div class="grp"><span>MITRA AFFILIATE</span>
-      <a href="#ringkasan">Ringkasan</a><a href="#pendaftar">Pendaftar <b class="nb" data-nb="menunggu" hidden></b></a><a href="#mitra">Daftar mitra</a><a href="#tantangan">Tantangan & juara</a><a href="#wa">Kirim WA <b class="nb" data-nb="notifs" hidden></b></a><a href="#laporan">Laporan</a></div>
+      <a href="#ringkasan">Ringkasan</a><a href="#pendaftar">Pendaftar <b class="nb" data-nb="menunggu" hidden></b></a><a href="#mitra">Daftar mitra</a><a href="#tantangan">Tantangan & juara</a><a href="#wa">Kirim WA <b class="nb" data-nb="notifs" hidden></b></a><a href="#email">Email & campaign</a><a href="#laporan">Laporan</a></div>
     <div class="grp"><span>KEUANGAN</span><a href="#cair">Pencairan</a></div>
     <div class="grp"><span>LAINNYA</span><a href="#atur">Pengaturan & API</a><a href="/marketing/">← Modul Marketing</a><a href="https://mitra.pokama.org" target="_blank" rel="noopener">Portal mitra ↗</a></div>
     <div class="foot" id="me">…</div>
@@ -96,7 +96,7 @@ const A = api(makeSession('pokama.session'));
 const app = document.getElementById('app');
 const S = { demo: localStorage.getItem('af.demo') === '1', month: monthKey(), city: '', unit: '', kind: '', pstatus: '', period: '', rby: 'unit' };
 let MISC = null, cur = null;
-const PAGES = { ringkasan: 'Ringkasan', pendaftar: 'Pendaftar', mitra: 'Daftar mitra', tantangan: 'Tantangan & juara', wa: 'Kirim WA', laporan: 'Laporan', cair: 'Pencairan', atur: 'Pengaturan & API' };
+const PAGES = { ringkasan: 'Ringkasan', pendaftar: 'Pendaftar', mitra: 'Daftar mitra', tantangan: 'Tantangan & juara', wa: 'Kirim WA', email: 'Email & campaign', laporan: 'Laporan', cair: 'Pencairan', atur: 'Pengaturan & API' };
 const months = () => { const o = []; const d = new Date(); d.setDate(1); for (let i = 0; i < 12; i++) { o.push(monthKey(d)); d.setMonth(d.getMonth() - 1); } return o; };
 const unitName = (c) => (MISC.units.find(u => u.code === c) || {}).name || c;
 const catLabel = (u, c) => ((MISC.units.find(x => x.code === u) || { rates: [] }).rates.find(r => r.cat === c) || {}).label || c || 'semua produk';
@@ -304,6 +304,82 @@ async function vWa() {
   return h;
 }
 
+/* ---------- Email & campaign ---------- */
+const CM = { id: '', subject: '', body: '', seg: { status: 'aktif', city: '', kind: '', idle: false, produktif: false } };
+const CM_TPL = [
+  ['Ajak aktif kembali', 'Ada yang baru di Rentalaja, {nama}', 'Halo {nama},\n\nSudah lama belum ada tamu yang memakai kode {kode}. Bulan ini Rentalaja menambah unit motor dan mobil baru di Garut, cocok untuk tamu {usaha}.\n\nBagikan kode {kode} ke tamu Anda. Setiap sewa yang selesai memberi Anda komisi, dan tamu bisa dapat potongan.\n\nCek komisi dan materi promosi di {link}\n\nSalam,\nTim Mitra Rentalaja', { idle: true }],
+  ['Info promo', 'Promo baru untuk tamu {usaha}', 'Halo {nama},\n\nMulai minggu ini ada promo khusus untuk tamu yang menyewa lewat kode {kode}. Detail promo dan poster siap pakai ada di portal mitra.\n\n{link}\n\nTerima kasih sudah jadi bagian dari Mitra Rentalaja.\n\nSalam,\nTim Mitra Rentalaja', {}],
+  ['Tantangan bulan ini', 'Tantangan mitra bulan ini sudah dibuka', 'Halo {nama},\n\nTantangan bulan ini sudah dibuka. Capai target booking selesai dan dapatkan hadiah tambahan di luar komisi.\n\nLihat tantangan dan progres Anda di {link}\n\nSemangat,\nTim Mitra Rentalaja', {}],
+];
+const segText = (g) => [g.status === 'semua' ? 'semua status' : 'mitra ' + (g.status || 'aktif'), g.city, g.kind ? KIND[g.kind] || g.kind : '', g.idle ? 'sepi 30 hari' : '', g.produktif ? 'produktif 90 hari' : ''].filter(Boolean).join(' · ');
+const cmChip = (s) => `<span class="pill ${{ draf: '', terjadwal: 'y', mengirim: 'b', selesai: 'g', dibatalkan: 'r' }[s] || ''}">${esc(s)}</span>`;
+async function vEmail() {
+  const L = await A.rpc('af_campaign_list', { p_demo: S.demo }), NM = L.notif_mail || {}, biz = L.is_biz;
+  const done = L.rows.filter(r => ['mengirim', 'selesai'].includes(r.status));
+  let h = header('Email & campaign', 'Email otomatis ke mitra untuk setiap kejadian penting, dan campaign email untuk promo, ajakan aktif kembali, atau info tantangan. Dikirim dari notifikasi@pokama.org atas nama Program Mitra Rentalaja.', `<label class="pill ${S.demo ? 'y' : ''}" style="height:38px;padding:0 12px;cursor:pointer;gap:6px"><input type="checkbox" data-demo ${S.demo ? 'checked' : ''}> Data demo</label>`);
+  h += `<div class="tiles">${tile('Email otomatis terkirim', NM.terkirim_7h || 0, '7 hari terakhir')}${tile('Email otomatis gagal', NM.gagal_7h || 0, 'alamat salah / ditolak', NM.gagal_7h ? 'warn' : '')}${tile('Menunggu dikirim', NM.antre || 0, 'diproses tiap 2 menit')}
+    ${tile('Campaign terkirim', done.length, done.reduce((a, r) => a + r.n_sent, 0) + ' email · ' + done.reduce((a, r) => a + r.n_fail, 0) + ' gagal')}</div>`;
+  const g = CM.seg;
+  const form = biz ? `<section class="card" id="cmform"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap"><h2>${CM.id ? 'Ubah campaign' : 'Campaign baru'}</h2>
+      <div style="display:flex;gap:6px;flex-wrap:wrap">${CM_TPL.map((t, i) => `<button class="btn sm" data-cm-tpl="${i}">${esc(t[0])}</button>`).join('')}${CM.id ? '<button class="btn sm" data-cm-new>Batal ubah</button>' : ''}</div></div>
+    <label style="display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:800;color:var(--mut)"><span>Judul email</span><input class="inp" style="width:100%" id="cm-subj" maxlength="160" value="${esc(CM.subject)}" placeholder="Contoh: Promo akhir tahun untuk tamu {usaha}"></label>
+    <label style="display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:800;color:var(--mut)"><span>Isi email</span><textarea class="inp" id="cm-body" rows="9" style="width:100%;height:auto;min-height:220px;font-weight:500;line-height:1.5" maxlength="8000" placeholder="Tulis seperti pesan biasa. Pisahkan paragraf dengan baris kosong.">${esc(CM.body)}</textarea></label>
+    <div class="muted small">Sisipan otomatis: ${['{nama}', '{usaha}', '{kode}', '{kota}', '{link}'].map(x => `<button class="pill" style="border:0;cursor:pointer" data-cm-ins="${x}">${x}</button>`).join(' ')} · {link} = portal mitra. Setiap email otomatis berisi tautan berhenti berlangganan.</div>
+    <h2 style="font-size:14px;margin-top:4px">Sasaran</h2>
+    <div class="filters" id="cm-seg"><select class="sel" data-cm-seg="status"><option value="aktif"${g.status === 'aktif' ? ' selected' : ''}>Mitra aktif</option><option value="semua"${g.status === 'semua' ? ' selected' : ''}>Semua (aktif, nonaktif, pendaftar)</option><option value="nonaktif"${g.status === 'nonaktif' ? ' selected' : ''}>Mitra nonaktif</option><option value="menunggu"${g.status === 'menunggu' ? ' selected' : ''}>Pendaftar menunggu</option></select>
+      <select class="sel" data-cm-seg="city"><option value="">Semua kota</option>${['Garut', 'Bandung', 'Ciputat'].map(c => `<option${c === g.city ? ' selected' : ''}>${c}</option>`).join('')}</select>
+      <select class="sel" data-cm-seg="kind"><option value="">Semua jenis</option>${Object.entries(KIND).map(([k, v]) => `<option value="${k}"${k === g.kind ? ' selected' : ''}>${v}</option>`).join('')}</select>
+      <label class="pill" style="height:38px;padding:0 12px;cursor:pointer;gap:6px"><input type="checkbox" data-cm-seg="idle"${g.idle ? ' checked' : ''}> Sepi 30 hari</label>
+      <label class="pill" style="height:38px;padding:0 12px;cursor:pointer;gap:6px"><input type="checkbox" data-cm-seg="produktif"${g.produktif ? ' checked' : ''}> Produktif 90 hari</label></div>
+    <div id="cm-count" class="muted small">Menghitung penerima…</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><button class="btn" data-cm-save>Simpan draf</button><button class="btn" data-cm-test>Kirim uji ke email saya</button>
+      <button class="btn pri" data-cm-send>Kirim sekarang</button><span class="muted small">atau jadwalkan</span><input type="datetime-local" class="inp" id="cm-when" style="width:auto"><button class="btn" data-cm-sched>Jadwalkan</button></div>
+    ${S.demo ? '<p class="muted small">Mode data demo: campaign hanya disimulasikan, tidak ada email terkirim ke mitra.</p>' : '<p class="muted small">Batas layanan email gratis sekitar 300 email per hari, termasuk email Sistem Kerja. Campaign besar dikirim bertahap tiap 2 menit.</p>'}</section>`
+    : `<section class="card"><p class="muted">Membuat dan mengirim campaign hanya untuk BizDev dan Owner. Anda bisa melihat riwayat dan hasilnya di bawah.</p></section>`;
+  const hist = L.rows.length ? `<table class="tbl"><thead><tr><th>Campaign</th><th>Sasaran</th><th>Status</th><th class="r">Penerima</th><th class="r">Terkirim</th><th class="r">Gagal</th><th>Waktu</th><th></th></tr></thead><tbody>${L.rows.map(r => `<tr><td style="min-width:180px"><b>${esc(r.subject)}</b><br><span class="muted small">oleh ${esc(r.by || '—')}</span></td><td class="small">${esc(segText(r.segment || {}))}</td><td>${cmChip(r.status)}</td>
+      <td class="r">${r.n_target || '—'}</td><td class="r">${r.n_sent}${r.n_queue ? ` <span class="muted small">(+${r.n_queue} antre)</span>` : ''}</td><td class="r"${r.n_fail ? ' style="color:var(--red)"' : ''}>${r.n_fail}</td>
+      <td class="small">${r.status === 'terjadwal' ? 'dijadwalkan ' + tgl(r.scheduled_at) + ' ' + new Date(r.scheduled_at).toTimeString().slice(0, 5) : r.sent_at ? tgl(r.sent_at) + ' ' + new Date(r.sent_at).toTimeString().slice(0, 5) : 'dibuat ' + tgl(r.created_at)}</td>
+      <td style="white-space:nowrap">${biz && ['draf', 'terjadwal'].includes(r.status) ? `<button class="btn sm" data-cm-edit="${r.id}">Ubah</button> <button class="btn sm warn" data-cm-cancel="${r.id}">Batal</button>` : ''}</td></tr>`).join('')}</tbody></table>` : '<p class="muted">Belum ada campaign.</p>';
+  h += `${form}<div class="cols"><section class="card"><h2>Riwayat campaign</h2><div class="scroll">${hist}</div></section>
+    <section class="card"><h2>Email otomatis ke mitra</h2><p class="muted small" style="margin:0">Dikirim sendiri tanpa perlu diklik, bersamaan dengan pesan WA di menu Kirim WA:</p>
+      <table class="tbl"><tbody>${[['Pendaftaran disetujui', 'kode mitra & cara mulai'], ['Booking baru dari kode mitra', 'tiap ada booking masuk'], ['Komisi siap cair', 'setelah sewa selesai'], ['Komisi ditransfer', 'saat Keuangan menandai transfer'], ['Naik tingkat', 'tarif komisi baru'], ['Tantangan tercapai', 'hadiah menunggu'], ['Juara bulanan', 'peringkat 1–3']].map(([a, b]) => `<tr><td><b>${a}</b></td><td class="muted small">${b}</td></tr>`).join('')}</tbody></table>
+      <p class="muted small" style="margin:0">Email penting (komisi & pencairan) tetap terkirim walau mitra berhenti berlangganan info & promo. Staf juga menerima email: pendaftar baru ke BizDev & CEO, rekap pencairan dan komisi dibekukan ke Keuangan & CEO.</p></section></div>`;
+  setTimeout(cmCount, 0);
+  return h;
+}
+let cmT = 0;
+function cmRead() { const s = document.getElementById('cm-subj'); if (!s) return; CM.subject = s.value; CM.body = document.getElementById('cm-body').value;
+  document.querySelectorAll('[data-cm-seg]').forEach(x => { CM.seg[x.dataset.cmSeg] = x.type === 'checkbox' ? x.checked : x.value; }); }
+async function cmCount() {
+  const el = document.getElementById('cm-count'); if (!el) return; cmRead();
+  try { const T = await A.rpc('af_campaign_targets', { p_segment: CM.seg, p_demo: S.demo });
+    el.innerHTML = `<b style="color:var(--navy);font-size:15px">${T.n} mitra</b> akan menerima${T.sample.length ? ': ' + esc(T.sample.join(', ')) + (T.n > T.sample.length ? ', …' : '') : ''}. <span class="muted">Tidak dihitung: ${T.optout} berhenti berlangganan, ${T.no_email} tanpa email.</span>`;
+  } catch (er) { el.textContent = er.message; }
+}
+async function cmSave() { cmRead(); const id = await A.rpc('af_campaign_save', { p: { id: CM.id || null, subject: CM.subject, body: CM.body, segment: CM.seg, demo: S.demo } }); CM.id = id; return id; }
+document.addEventListener('input', (e) => { if (e.target.closest('#cmform')) { cmRead(); if (e.target.dataset.cmSeg) { clearTimeout(cmT); cmT = setTimeout(cmCount, 250); } } });
+document.addEventListener('change', (e) => { if (e.target.dataset && e.target.dataset.cmSeg) { cmRead(); cmCount(); } });
+document.addEventListener('click', async (e) => {
+  const b = e.target.closest('[data-cm-tpl],[data-cm-ins],[data-cm-new],[data-cm-save],[data-cm-test],[data-cm-send],[data-cm-sched],[data-cm-edit],[data-cm-cancel]'); if (!b) return;
+  const d = b.dataset;
+  try {
+    if (d.cmTpl !== undefined) { const t = CM_TPL[+d.cmTpl]; if ((CM.subject || CM.body) && !confirm('Ganti isi yang sedang ditulis dengan contoh "' + t[0] + '"?')) return; CM.subject = t[1]; CM.body = t[2]; Object.assign(CM.seg, { status: 'aktif', idle: false, produktif: false }, t[3]); return render(); }
+    if (d.cmIns) { const ta = document.getElementById('cm-body'); const p = ta.selectionStart ?? ta.value.length; ta.value = ta.value.slice(0, p) + d.cmIns + ta.value.slice(ta.selectionEnd ?? p); ta.focus(); ta.selectionStart = ta.selectionEnd = p + d.cmIns.length; cmRead(); return; }
+    if (d.cmNew !== undefined) { Object.assign(CM, { id: '', subject: '', body: '', seg: { status: 'aktif', city: '', kind: '', idle: false, produktif: false } }); return render(); }
+    if (d.cmEdit) { const L = await A.rpc('af_campaign_list', { p_demo: S.demo }); const r = L.rows.find(x => x.id === d.cmEdit); if (!r) return;
+      Object.assign(CM, { id: r.id, subject: r.subject, body: r.body, seg: Object.assign({ status: 'aktif', city: '', kind: '', idle: false, produktif: false }, r.segment || {}) }); await render(); document.getElementById('cmform')?.scrollIntoView({ behavior: 'smooth' }); return; }
+    if (d.cmCancel) { if (!confirm('Batalkan campaign ini? Email tidak akan dikirim.')) return; await A.rpc('af_campaign_cancel', { p_id: d.cmCancel }); if (CM.id === d.cmCancel) CM.id = ''; toast('Campaign dibatalkan'); return render(); }
+    b.disabled = true;
+    if (d.cmSave !== undefined) { await cmSave(); toast('Draf tersimpan'); return render(); }
+    if (d.cmTest !== undefined) { const id = await cmSave(); const em = await A.rpc('af_campaign_test', { p_id: id }); toast('Email uji dikirim ke ' + em + ' (± 2 menit)'); b.disabled = false; return; }
+    if (d.cmSend !== undefined) { const id = await cmSave(); const T = await A.rpc('af_campaign_targets', { p_segment: CM.seg, p_demo: S.demo });
+      if (!confirm(`Kirim "${CM.subject}" ke ${T.n} mitra sekarang? Email yang sudah terkirim tidak bisa ditarik.`)) { b.disabled = false; return; }
+      const r = await A.rpc('af_campaign_send', { p_id: id, p_when: null }); toast((S.demo ? 'Disimulasikan ke ' : 'Dikirim bertahap ke ') + r.n + ' mitra'); Object.assign(CM, { id: '', subject: '', body: '' }); return render(); }
+    if (d.cmSched !== undefined) { const w = document.getElementById('cm-when').value; if (!w) { toast('Pilih tanggal & jam dulu', true); b.disabled = false; return; }
+      const id = await cmSave(); const r = await A.rpc('af_campaign_send', { p_id: id, p_when: new Date(w).toISOString() }); toast('Dijadwalkan ' + new Date(r.at).toLocaleString('id-ID')); Object.assign(CM, { id: '', subject: '', body: '' }); return render(); }
+  } catch (er) { toast(er.message, true); b.disabled = false; }
+});
+
 /* ---------- Laporan ---------- */
 async function vLaporan() {
   const to = S.month, from = S.rfrom || S.month;
@@ -422,7 +498,7 @@ function diff(d) {
 function panel(html, after) { close(); cur = document.createElement('div'); cur.className = 'scrim'; cur.innerHTML = `<div class="panel" role="dialog" aria-modal="true">${html}</div>`; document.body.appendChild(cur); cur.addEventListener('click', (e) => { if (e.target === cur || e.target.closest('[data-close]')) close(); }); if (after) after(cur.querySelector('.panel')); }
 function close() { if (cur) { cur.remove(); cur = null; } }
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
-const V = { ringkasan: vRingkasan, pendaftar: vPendaftar, mitra: vMitra, tantangan: vTantangan, wa: vWa, laporan: vLaporan, cair: vCair, atur: vAtur };
+const V = { ringkasan: vRingkasan, pendaftar: vPendaftar, mitra: vMitra, tantangan: vTantangan, wa: vWa, email: vEmail, laporan: vLaporan, cair: vCair, atur: vAtur };
 async function render() {
   const v = view();
   document.querySelectorAll('.side a[href^="#"]').forEach(a => { if (a.getAttribute('href') === '#' + v) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); });

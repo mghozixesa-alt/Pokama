@@ -302,6 +302,9 @@ function vAkun() {
       <label class="f">Link Google Maps<input class="inp" name="maps_url" value="${esc(P.maps_url || '')}" placeholder="https://maps.app.goo.gl/…"></label>
       <label class="sw"><span><b style="font-size:14px">Potongan ${esc(ME.rules.guest_discount_pct)}% untuk tamu</b><br><span class="small">Tamu yang pakai kode Anda dapat potongan. Potongan ini mengurangi komisi Anda.</span></span><input type="checkbox" name="guest_discount" ${P.guest_discount ? 'checked' : ''}></label>
       <div id="ea"></div><button class="btn pri" type="submit">Simpan</button></form>
+    <section class="card"><h2>Email dari Program Mitra</h2>
+      <p class="note">Email penting (booking baru, komisi siap cair, transfer) selalu dikirim ke ${esc(P.email || 'email Google Anda')}.</p>
+      <label class="sw"><span><b style="font-size:14px">Terima info & promo</b><br><span class="small">Promo untuk tamu, tantangan bulanan, dan materi promosi baru.</span></span><input type="checkbox" data-mailpref disabled></label></section>
     ${terms()}
     <button class="btn" id="out">Keluar</button>
   </main>`;
@@ -313,6 +316,7 @@ function render() {
   if (!['beranda', 'komisi', 'tantangan', 'akun'].includes(VIEW)) VIEW = 'beranda';
   const V = { beranda: vBeranda, komisi: vKomisi, tantangan: vTantangan, akun: vAkun };
   app.innerHTML = (ME.partner.demo ? '<div class="demo">DATA DEMO · bukan transaksi sungguhan</div>' : '') + '<div class="pad">' + V[VIEW]() + '</div>' + nav();
+  if (VIEW === 'akun') A.rpc('af_mail_prefs_get').then(r => { const c = document.querySelector('[data-mailpref]'); if (c && r) { c.checked = !r.campaign_optout; c.disabled = false; } }).catch(() => {});
   const fa = app.querySelector('#fa');
   if (fa) fa.onsubmit = async (e) => {
     e.preventDefault(); const d = Object.fromEntries(new FormData(fa)); d.guest_discount = fa.guest_discount.checked;
@@ -323,6 +327,12 @@ function render() {
   const out = app.querySelector('#out'); if (out) out.onclick = logout;
   const bo = app.querySelector('[data-bankotp]'); if (bo) bo.onclick = (e) => { e.preventDefault(); otp('bank'); };
 }
+app.addEventListener('change', async (e) => {
+  const c = e.target.closest('[data-mailpref]'); if (!c) return;
+  c.disabled = true;
+  try { await A.rpc('af_mail_pref', { p_optout: !c.checked }); toast(c.checked ? 'Anda akan menerima info & promo' : 'Info & promo dimatikan'); }
+  catch (er) { c.checked = !c.checked; toast(er.message, true); } finally { c.disabled = false; }
+});
 app.addEventListener('click', async (e) => {
   const t = e.target.closest('[data-copy],[data-qr],[data-kf],[data-kt],[data-proof]'); if (!t) return;
   if (t.dataset.copy) { try { await navigator.clipboard.writeText(t.dataset.copy); toast('Link tersalin'); } catch (er) { prompt('Salin link ini', t.dataset.copy); } }
