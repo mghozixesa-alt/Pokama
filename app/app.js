@@ -28,10 +28,11 @@ const I = {
   link: '<path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/>',
   trend: '<path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/>',
   dash: '<rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/>',
+  gauge: '<path d="M3.5 18a9 9 0 1 1 17 0"/><path d="M12 14l4-5"/><circle cx="12" cy="14" r="1.6"/><path d="M6.5 12.5h1M16.5 12.5h1M12 7v1"/>',
   box: '<path d="M21 8 12 3 3 8v8l9 5 9-5z"/><path d="M3 8l9 5 9-5M12 13v8"/>',
   ext: '<path d="M14 4h6v6M20 4l-9 9"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/>',
 };
-const MODIC = { marketing: 'mega', keuangan: 'bank', affiliate: 'link', investor: 'trend', ra_mgmt: 'dash', ra_aset: 'box' };
+const MODIC = { marketing: 'mega', keuangan: 'bank', affiliate: 'link', investor: 'trend', ra_mgmt: 'gauge', ra_aset: 'box' };
 /* warna khas tiap modul: [warna ikon, latar] */
 const MODCOL = { ra_mgmt: ['#1D3149', '#E4E9F1'], ra_aset: ['#C2410C', '#FCEBDD'], marketing: ['#7A3FD1', '#F1EAFD'], keuangan: ['#0B8A5E', '#E3F6EE'], affiliate: ['#1F63D8', '#E6EFFD'], investor: ['#B7791F', '#FDF3DF'] };
 const modIc = (m, s = 18, t = 30) => { const c = MODCOL[m.k] || ['#1D3149', '#EEF0F3']; return `<span class="modi" style="--mc:${c[0]};--mb:${c[1]};width:${t}px;height:${t}px">${svg(MODIC[m.k] || 'grid', s)}</span>`; };
@@ -115,7 +116,7 @@ async function openNotifs() {
 function menuView(el) {
   el.innerHTML = `<header class="ph"><div><h1>Menu</h1><p class="muted">${esc(ctx.me.name)} · ${esc(ctx.me.title || ROLE[ctx.me.role])}</p></div></header>
     <div class="menu-list">${FLAT.map(([k, l, ic]) => `<a class="card row" href="#/${k}">${svg(ic, 22)}<b>${l}</b><span style="flex:1"></span>›</a>`).join('')}
-    ${(ctx.modules || []).length ? `<span class="nav-h" style="margin-top:8px">MODUL</span>` + ctx.modules.map(m => `<a class="card row" href="${esc(m.href)}"${m.ext ? ' target="_blank" rel="noopener"' : ''}>${modIc(m, 20, 36)}<span style="display:flex;flex-direction:column;gap:2px;flex:1;min-width:0"><b>${esc(m.name)}</b><small class="muted" style="font-weight:600">${esc(m.note || '')}</small></span>${m.n ? `<b class="badge">${m.n}</b>` : ''}›</a>`).join('') : ''}
+    ${(ctx.modules || []).length ? `<span class="nav-h" style="margin-top:8px">MODUL</span>` + ctx.modules.map(m => `<a class="card row" href="${esc(m.href)}"${m.sso ? ` data-sso="${esc(m.k)}"` : ''}${m.ext ? ' target="_blank" rel="noopener"' : ''}>${modIc(m, 20, 36)}<span style="display:flex;flex-direction:column;gap:2px;flex:1;min-width:0"><b>${esc(m.name)}</b><small class="muted" style="font-weight:600">${esc(m.note || '')}</small></span>${m.n ? `<b class="badge">${m.n}</b>` : ''}›</a>`).join('') : ''}
     <button class="card row danger-t" type="button" id="lo2">Keluar</button></div>`;
   el.querySelector('#lo2').onclick = () => signOut();
 }
@@ -154,13 +155,24 @@ async function route() {
 async function loadModules() {
   try { const { db } = await import('./core.js'); ctx.modules = (await db.rpc('pk_modules')) || []; } catch (e) { ctx.modules = ctx.modules || []; }
   const nav = document.getElementById('modnav');
-  if (nav) { nav.hidden = !ctx.modules.length; nav.innerHTML = `<span class="nav-h">MODUL</span>` + ctx.modules.map(m => `<a href="${esc(m.href)}"${m.ext ? ' target="_blank" rel="noopener"' : ''} title="${esc(m.note || '')}">${modIc(m, 16, 28)}<span>${esc(m.name)}</span>${m.n ? `<b class="badge${m.urgent ? '' : ' soft'}">${m.n}</b>` : ''}</a>`).join(''); }
+  if (nav) { nav.hidden = !ctx.modules.length; nav.innerHTML = `<span class="nav-h">MODUL</span>` + ctx.modules.map(m => `<a href="${esc(m.href)}"${m.sso ? ` data-sso="${esc(m.k)}"` : ''}${m.ext ? ' target="_blank" rel="noopener"' : ''} title="${esc(m.note || '')}">${modIc(m, 16, 28)}<span>${esc(m.name)}</span>${m.n ? `<b class="badge${m.urgent ? '' : ' soft'}">${m.n}</b>` : ''}</a>`).join(''); }
   const st = document.getElementById('modstrip'); if (st) st.outerHTML = modStrip();
   return ctx.modules;
 }
+// Dashboard Manajemen & Aset: masuk Rentalaja App memakai sesi Sistem Kerja (tanpa login & 2 langkah lagi)
+async function openSSO(k) {
+  const w = window.open('', '_blank');
+  try { if (w) w.document.write('<p style="font:600 15px system-ui;padding:24px;color:#1D3149">Membuka Rentalaja…</p>'); } catch (e) {}
+  try {
+    const { callFn } = await import('./core.js');
+    const r = await callFn('pk-ra-sso', { target: k });
+    if (w) w.location.replace(r.url); else location.href = r.url;
+  } catch (e) { try { w && w.close(); } catch (x) {} toast(e.message || 'Gagal membuka Rentalaja', 'err'); }
+}
+document.addEventListener('click', (e) => { const a = e.target.closest('a[data-sso]'); if (!a) return; e.preventDefault(); openSSO(a.dataset.sso); });
 function modStrip() {
   const ms = ctx.modules || []; if (!ms.length) return '<div id="modstrip" hidden></div>';
-  return `<section id="modstrip" class="modstrip" aria-label="Modul">${ms.map(m => `<a${m.ext ? ' target="_blank" rel="noopener"' : ''} class="modc${m.urgent ? ' hot' : ''}" style="--mc:${(MODCOL[m.k] || ['#1D3149'])[0]}" href="${esc(m.href)}"><span class="modc-h">${modIc(m, 18, 32)}<b>${esc(m.name)}</b>${m.n ? `<b class="badge${m.urgent ? '' : ' soft'}">${m.n}</b>` : ''}</span><small>${esc(m.note || '')}</small></a>`).join('')}</section>`;
+  return `<section id="modstrip" class="modstrip" aria-label="Modul">${ms.map(m => `<a${m.sso ? ` data-sso="${esc(m.k)}"` : ''}${m.ext ? ' target="_blank" rel="noopener"' : ''} class="modc${m.urgent ? ' hot' : ''}" style="--mc:${(MODCOL[m.k] || ['#1D3149'])[0]}" href="${esc(m.href)}"><span class="modc-h">${modIc(m, 18, 32)}<b>${esc(m.name)}</b>${m.n ? `<b class="badge${m.urgent ? '' : ' soft'}">${m.n}</b>` : ''}</span><small>${esc(m.note || '')}</small></a>`).join('')}</section>`;
 }
 async function badges() {
   loadModules();

@@ -43,14 +43,14 @@
     document.body.appendChild(b);
     var btn = b.querySelector('button'), menu = b.querySelector('.pk-hub-menu'), here = location.pathname.replace(/\/$/, '') || '/';
     function esc(t) { return String(t == null ? '' : t).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
-    var HIC = { ra_mgmt: 'M3 3h7v9H3zM14 3h7v5h-7zM14 12h7v9h-7zM3 16h7v5H3z', ra_aset: 'M21 8 12 3 3 8v8l9 5 9-5zM3 8l9 5 9-5M12 13v8', home: 'M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z', marketing: 'M3 11v2a1 1 0 0 0 1 1h3l5 4V6L7 10H4a1 1 0 0 0-1 1zM16 8a5 5 0 0 1 0 8M19 5a9 9 0 0 1 0 14', keuangan: 'M3 10l9-6 9 6M5 10v8M10 10v8M14 10v8M19 10v8M3 21h18', affiliate: 'M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7', investor: 'M3 17l6-6 4 4 8-8M15 7h6v6', grid: 'M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z' };
+    var HIC = { ra_mgmt: 'M3.5 18a9 9 0 1 1 17 0M12 14l4-5M6.5 12.5h1M16.5 12.5h1M12 7v1', ra_aset: 'M21 8 12 3 3 8v8l9 5 9-5zM3 8l9 5 9-5M12 13v8', home: 'M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z', marketing: 'M3 11v2a1 1 0 0 0 1 1h3l5 4V6L7 10H4a1 1 0 0 0-1 1zM16 8a5 5 0 0 1 0 8M19 5a9 9 0 0 1 0 14', keuangan: 'M3 10l9-6 9 6M5 10v8M10 10v8M14 10v8M19 10v8M3 21h18', affiliate: 'M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7', investor: 'M3 17l6-6 4 4 8-8M15 7h6v6', grid: 'M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z' };
     var HCOL = { ra_mgmt: ['#1D3149', '#E4E9F1'], ra_aset: ['#C2410C', '#FCEBDD'], home: ['#067A70', '#DDF5F2'], marketing: ['#7A3FD1', '#F1EAFD'], keuangan: ['#0B8A5E', '#E3F6EE'], affiliate: ['#1F63D8', '#E6EFFD'], investor: ['#B7791F', '#FDF3DF'] };
     function ico(d, k) { var c = HCOL[k] || ['#1D3149', '#EEF0F3']; return '<span class="pk-hub-ic" style="color:' + c[0] + ';background:' + c[1] + '"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="' + d + '"/></svg></span>'; }
     function draw(ms) {
       var tot = 0;
       menu.innerHTML = '<a role="menuitem" href="/#/kkh" class="pk-hub-i">' + ico(HIC.home, 'home') + '<span><b>Sistem Kerja Pokama</b><small>KKH, tugas, review, belanja, kehadiran</small></span></a>' + ms.map(function (m) {
         var base = m.ext ? '' : m.href.replace(/[#?].*$/, '').replace(/\/$/, ''), on = !!base && here.indexOf(base) === 0; tot += on ? 0 : (+m.n || 0);
-        return '<a role="menuitem" href="' + esc(m.href) + '"' + (m.ext ? ' target="_blank" rel="noopener"' : '') + ' class="pk-hub-i' + (on ? ' on' : '') + '">' + ico(HIC[m.k] || HIC.grid, m.k) + '<span><b>' + esc(m.name) + (m.n ? ' <i class="' + (m.urgent ? 'hot' : '') + '">' + m.n + '</i>' : '') + '</b><small>' + esc(m.note || '') + '</small></span></a>';
+        return '<a role="menuitem" href="' + esc(m.href) + '"' + (m.sso ? ' data-sso="' + esc(m.k) + '"' : '') + (m.ext ? ' target="_blank" rel="noopener"' : '') + ' class="pk-hub-i' + (on ? ' on' : '') + '">' + ico(HIC[m.k] || HIC.grid, m.k) + '<span><b>' + esc(m.name) + (m.n ? ' <i class="' + (m.urgent ? 'hot' : '') + '">' + m.n + '</i>' : '') + '</b><small>' + esc(m.note || '') + '</small></span></a>';
       }).join('');
       var n = b.querySelector('.pk-hub-n'); n.hidden = !tot; n.textContent = tot;
     }
@@ -60,6 +60,14 @@
         .then(function (r) { return r.ok ? r.json() : []; }).then(function (ms) { draw(ms || []); }, function () {});
     }
     draw([]); load(); setInterval(function () { if (!document.hidden) load(); }, 120000);
+    menu.addEventListener('click', function (e) {
+      var a = e.target.closest('a[data-sso]'); if (!a) return; e.preventDefault();
+      var w = window.open('', '_blank'); try { w && w.document.write('<p style="font:600 15px system-ui;padding:24px;color:#1D3149">Membuka Rentalaja…</p>'); } catch (x) {}
+      var t = (load_s() || {}).access_token;
+      fetch(SB_URL + '/functions/v1/pk-ra-sso', { method: 'POST', headers: { apikey: SB_KEY, Authorization: 'Bearer ' + t, 'Content-Type': 'application/json' }, body: JSON.stringify({ target: a.getAttribute('data-sso') }) })
+        .then(function (r) { return r.json().then(function (j) { if (!r.ok) throw new Error(j.error || 'Gagal'); return j; }); })
+        .then(function (j) { if (w) w.location.replace(j.url); else location.href = j.url; }, function (er) { try { w && w.close(); } catch (x) {} alert(er.message || 'Gagal membuka Rentalaja'); });
+    });
     btn.onclick = function (e) { e.stopPropagation(); var o = menu.hidden; menu.hidden = !o; btn.setAttribute('aria-expanded', String(o)); if (o) load(); };
     document.addEventListener('click', function (e) { if (!b.contains(e.target)) { menu.hidden = true; btn.setAttribute('aria-expanded', 'false'); } });
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { menu.hidden = true; btn.setAttribute('aria-expanded', 'false'); } });

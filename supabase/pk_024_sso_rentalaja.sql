@@ -1,0 +1,7 @@
+-- Applied via Supabase MCP: pk_024_sso_rentalaja, pk_024b_sso_register
+-- Modul Dashboard Manajemen & Aset membuka Rentalaja App lewat sesi Sistem Kerja (tanpa login & 2 langkah kedua):
+--   edge function pk-ra-sso -> sesi baru (magic link, tidak berbagi refresh token) dicatat di app.sso_sessions (12 jam)
+--   app.aal2() menganggap sesi itu setara 2 langkah; Rentalaja ra.js menerima #...&sso=pokama&next=<Layar>.
+-- Akses modul mengikuti peran staf Rentalaja akun Google yang sama:
+--   Dashboard Manajemen: owner, viewer, finance, branch_head  (viewer: Intifa, Reza, Adrian, Ajri)
+--   Aset: owner, asset_manager (asset_manager: Yusril, Dzikri, Fajar)
