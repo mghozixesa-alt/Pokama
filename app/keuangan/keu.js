@@ -28,7 +28,7 @@ const KIND = { leasing: 'Leasing', pinjaman: 'Pinjaman', bagi_hasil: 'Bagi hasil
 
 const PAGES = { ringkasan: 'Ringkasan', unit: 'Per unit bisnis', target: 'Target vs realisasi', kas: 'Kas & bank', proyeksi: 'Proyeksi kas', pf: 'Profit First',
   kewajiban: 'Kewajiban & leasing', pihak: 'Piutang & hutang', rab: 'Belanja (RAB & LPJ)', labarugi: 'Laba rugi', neraca: 'Neraca', aruskas: 'Arus kas',
-  jurnal: 'Buku jurnal', riwayat: 'Riwayat sistem lama', antrean: 'Antrean Keuangan', akun: 'Akun & rekening', saldo: 'Saldo awal', sumber: 'Sumber data & tutup buku' };
+  jurnal: 'Buku jurnal', riwayat: 'Riwayat sistem lama', gajiops: 'Gaji & klaim petugas', antrean: 'Antrean Keuangan', akun: 'Akun & rekening', saldo: 'Saldo awal', sumber: 'Sumber data & tutup buku' };
 const route = () => { const [v, a] = (location.hash || '#ringkasan').slice(1).split('/'); return PAGES[v] || v === 'menu' ? { v, a } : { v: 'ringkasan' }; };
 const canWrite = () => !!ME && ['ceo', 'keuangan'].includes(ME.role);
 const usingDemo = () => S.demo || ENGINE === false;
@@ -538,6 +538,41 @@ async function vAntrean() {
   return o;
 }
 
+/* ---------- Gaji & klaim petugas lapangan (diajukan Operasional dari Rentalaja) ---------- */
+async function vGajiOps() {
+  if (usingDemo()) return header('Gaji & klaim petugas', 'Mode data contoh aktif. Matikan mode contoh untuk melihat pengajuan asli.', '', true);
+  const G = await A.rpc('pk_fin_ops_payroll'), can = G.can, per = (p) => bulan(p + '-01');
+  setBadge('gajiops', G.pending.filter(x => x.run && x.run.status === 'reviewed').length + G.claims.length);
+  const ST = { collecting: ['Disusun Operasional', ''], reviewed: ['Menunggu persetujuan', 'y'], approved: ['Disetujui · belum dibayar', 'y'], paid: ['Dibayar', 'g'] };
+  let o = header('Gaji & klaim petugas', 'Gaji petugas operasional disusun Operasional di Rentalaja (kehadiran, lembur, reimburse, kasbon, denda telat) lalu diajukan ke sini. Keuangan memeriksa, menyetujui, lalu menandai dibayar; pembayaran otomatis jadi jurnal biaya gaji Rentalaja.', '', true);
+  if (!can) o += '<div class="ro">Persetujuan dan pembayaran oleh Keuangan atau CEO.</div>';
+  const waitN = G.pending.filter(x => x.run.status === 'reviewed').length, payN = G.pending.filter(x => x.run.status === 'approved').length;
+  o += `<div class="tiles">${tile('Gaji menunggu persetujuan', waitN, rpk(sum(G.pending.filter(x => x.run.status === 'reviewed'), x => x.run.total)), waitN ? 'warn' : '')}${tile('Siap dibayar', payN, rpk(sum(G.pending.filter(x => x.run.status === 'approved'), x => x.run.total)), payN ? 'warn' : '')}
+    ${tile('Reimburse/kasbon menunggu', G.claims.length, rpk(sum(G.claims, c => c.amount)), G.claims.length ? 'warn' : '')}${tile('Petugas tanpa gaji pokok', G.comp.filter(c => !(+c.base || +c.daily)).length, 'dari ' + G.comp.length + ' petugas', G.comp.some(c => !(+c.base || +c.daily)) ? 'bad' : '')}</div>`;
+  o += G.pending.map(P => { const r = P.run, I = P.items || [];
+    return sec('Gaji ' + per(r.period) + ` <span class="pill ${ST[r.status][1]}">${ST[r.status][0]}</span>`, I.length + ' orang · ' + rp(r.total) + (r.submitted_at ? ' · diajukan ' + tgl(r.submitted_at.slice(0, 10)) : ''),
+      `<div class="scroll"><table class="ftbl compact"><thead><tr><th>Nama</th><th>Kehadiran</th><th class="r">Pokok</th><th class="r">Komisi</th><th class="r">Lembur</th><th class="r">Reimburse</th><th class="r">Kasbon & selisih</th><th class="r">Denda</th><th class="r">Diterima</th></tr></thead><tbody>
+      ${I.map(x => `<tr><td><b>${esc(x.name)}</b></td><td class="small muted">${esc(x.attendance || '')}</td><td class="r">${num(x.base)}</td><td class="r">${num(x.commission)}</td><td class="r">${num(x.overtime)}</td><td class="r">${num(x.reimburse)}</td><td class="r">${num(-(+x.advance + +x.shortage))}</td><td class="r">${num(-x.late_fine)}</td><td class="r"><b>${num(x.net)}</b></td></tr>`).join('')}
+      <tr class="tot"><td colspan="8">Total</td><td class="r">${num(r.total)}</td></tr></tbody></table></div>
+      ${can ? `<div class="row" style="gap:8px;margin-top:10px;flex-wrap:wrap">${r.status === 'reviewed' ? `<button class="btn pri" data-gx="ok" data-run="${r.id}">Setujui gaji</button><button class="btn" data-gx="back" data-run="${r.id}">Kembalikan ke Operasional</button>` : `<label class="small">Tanggal bayar <input class="inp" type="date" id="gd-${r.id}" value="${today()}" style="width:150px"></label><button class="btn pri" data-gx="paid" data-run="${r.id}">Tandai sudah dibayar</button>`}</div>` : ''}`); }).join('')
+    || sec('Pengajuan gaji', '', '<div class="ok">Tidak ada gaji yang menunggu.</div>');
+  o += sec('Reimburse & kasbon nominal besar', 'sudah disetujui Operasional, menunggu Keuangan', G.claims.length ? `<div class="list">${G.claims.map(c => `<div class="li" style="flex-wrap:wrap"><div class="t"><b>${esc(c.nick)} · ${c.kind === 'kasbon' ? 'Kasbon' : 'Reimburse'} ${rp(c.amount)}</b><span>${tgl(c.day)}${c.category ? ' · ' + esc(c.category) : ''} · ${esc(c.note || '')} · disetujui Operasional (${esc(c.ops_by || '—')})</span></div>
+      ${c.photo ? `<a class="btn sm" target="_blank" rel="noopener" href="${esc(c.photo)}">Nota</a>` : ''}${can ? `<button class="btn sm pri" data-gx="cok" data-cid="${c.id}">Setujui</button><button class="btn sm" data-gx="cno" data-cid="${c.id}">Tolak</button>` : ''}</div>`).join('')}</div>` : '<div class="ok">Tidak ada yang menunggu.</div>');
+  o += sec('Gaji pokok petugas lapangan', 'dasar penggajian Operasional · isi salah satu: bulanan atau harian (× hari hadir)', `<div class="scroll"><table class="ftbl compact"><thead><tr><th>Petugas</th><th class="r">Pokok / bulan</th><th class="r">Per hari hadir</th><th></th></tr></thead><tbody>
+    ${G.comp.map(c => `<tr><td><b>${esc(c.nick)}</b><br><span class="muted small">${esc(c.title || '')}${c.linked ? '' : ' · belum pernah masuk'}</span></td>${can && c.linked ? `<td class="r"><input class="inp" inputmode="numeric" data-cb="${c.id}" value="${+c.base || ''}" style="width:130px;text-align:right"></td><td class="r"><input class="inp" inputmode="numeric" data-cdl="${c.id}" value="${+c.daily || ''}" style="width:110px;text-align:right"></td><td><button class="btn sm" data-gx="comp" data-pid="${c.id}">Simpan</button></td>` : `<td class="r">${+c.base ? num(c.base) : '—'}</td><td class="r">${+c.daily ? num(c.daily) : '—'}</td><td class="small muted">${c.linked ? '' : 'diisi setelah masuk'}</td>`}</tr>`).join('')}</tbody></table></div>`);
+  o += sec('Riwayat penggajian petugas', '', `<div class="list">${G.runs.map(r => `<div class="li"><div class="t"><b>${per(r.period)} · ${rp(r.total)}</b><span>${r.n} orang${r.paid_at ? ' · dibayar ' + tgl(r.paid_at.slice(0, 10)) : ''}${r.return_note ? ' · dikembalikan: ' + esc(r.return_note) : ''}</span></div><span class="pill ${ST[r.status][1]}">${ST[r.status][0]}</span></div>`).join('') || '<div class="ok">Belum ada.</div>'}</div>`);
+  return o;
+}
+app.addEventListener('click', (e) => {
+  const t = e.target.closest('[data-gx]'); if (!t) return; const d = t.dataset;
+  if (d.gx === 'ok') act(async () => { if (!confirm('Setujui gaji ini?')) return; await A.rpc('pk_fin_ops_payroll_decide', { p_run: d.run, p_ok: true, p_note: null }); toast('Gaji disetujui · Operasional diberi tahu'); render(); });
+  if (d.gx === 'back') act(async () => { const n = prompt('Alasan dikembalikan ke Operasional:'); if (!n) return; await A.rpc('pk_fin_ops_payroll_decide', { p_run: d.run, p_ok: false, p_note: n }); toast('Dikembalikan ke Operasional'); render(); });
+  if (d.gx === 'paid') act(async () => { const dt = (app.querySelector('#gd-' + d.run) || {}).value; if (!confirm('Tandai gaji sudah dibayar per ' + dt + '? Jurnal biaya gaji dibuat dan slip dikirim ke petugas.')) return; await A.rpc('pk_fin_ops_payroll_paid', { p_run: d.run, p_date: dt || null }); toast('Tercatat dibayar · slip dikirim'); render(); });
+  if (d.gx === 'cok') act(async () => { await A.rpc('pk_fin_ops_claim_decide', { p_id: d.cid, p_ok: true, p_note: null }); toast('Disetujui'); render(); });
+  if (d.gx === 'cno') act(async () => { const n = prompt('Alasan menolak:'); if (!n) return; await A.rpc('pk_fin_ops_claim_decide', { p_id: d.cid, p_ok: false, p_note: n }); toast('Ditolak'); render(); });
+  if (d.gx === 'comp') act(async () => { const v = (s) => +String((app.querySelector(`[data-${s}="${d.pid}"]`) || {}).value || '').replace(/\D/g, '') || 0; await A.rpc('pk_fin_ops_comp_set', { p_person: d.pid, p_base: v('cb'), p_daily: v('cdl') }); toast('Gaji pokok tersimpan'); });
+});
+
 /* ---------- 10. Sumber & tutup buku ---------- */
 async function vSumber() {
   const p = period(), Dd = await data('dash', p), g = digest(Dd); setBadges(Dd, g);
@@ -976,7 +1011,7 @@ const NAV = [
   ['Grup', [['ringkasan', 'Ringkasan', 'grid'], ['unit', 'Per unit bisnis', 'trophy'], ['target', 'Target vs realisasi', 'flag'], ['rab', 'Belanja RAB & LPJ', 'inbox', 'lpj']]],
   ['Kas', [['kas', 'Kas & bank', 'wallet', 'mutasi'], ['proyeksi', 'Proyeksi kas', 'trend', 'fclow'], ['pf', 'Profit First', 'pie'], ['kewajiban', 'Kewajiban & leasing', 'clock', 'due'], ['pihak', 'Piutang & hutang', 'swap']]],
   ['Laporan', [['labarugi', 'Laba rugi', 'coin'], ['neraca', 'Neraca', 'layers'], ['aruskas', 'Arus kas', 'flow'], ['jurnal', 'Buku jurnal', 'book'], ['riwayat', 'Riwayat sistem lama', 'history']]],
-  ['Kelola', [['antrean', 'Antrean Keuangan', 'check', 'antrean'], ['akun', 'Akun & rekening', 'bank'], ['saldo', 'Saldo awal', 'open', 'saldo'], ['sumber', 'Sumber & tutup buku', 'cog']]],
+  ['Kelola', [['gajiops', 'Gaji & klaim petugas', 'users', 'gajiops'], ['antrean', 'Antrean Keuangan', 'check', 'antrean'], ['akun', 'Akun & rekening', 'bank'], ['saldo', 'Saldo awal', 'open', 'saldo'], ['sumber', 'Sumber & tutup buku', 'cog']]],
 ];
 const MOBILE = [['ringkasan', 'Ringkasan', 'grid'], ['unit', 'Unit', 'trophy'], ['kas', 'Kas', 'wallet', 'mutasi'], ['antrean', 'Antrean', 'check', 'antrean']];
 const ROLE = { ceo: 'CEO', kepala_staf: 'Kepala Staf', keuangan: 'Keuangan', leader: 'Leader', staf: 'Staf' };
@@ -1005,7 +1040,7 @@ function setBadges(Dd, g) {
 function setBadge(k, n) { document.querySelectorAll(`[data-nb="${k}"]`).forEach(b => { b.textContent = n; b.hidden = !n; }); }
 function panel(html, after) { close(); const el = document.createElement('div'); el.className = 'scrim'; el.innerHTML = `<div class="panel" role="dialog" aria-modal="true">${html}</div>`; document.body.appendChild(el); el.addEventListener('click', (e) => { if (e.target === el || e.target.closest('[data-close]')) close(); }); if (after) after(el.querySelector('.panel')); }
 function close() { document.querySelectorAll('.scrim').forEach(s => s.remove()); }
-const VIEWS = { menu: vMenu, ringkasan: vRingkasan, unit: vUnit, target: vTarget, kas: vKas, proyeksi: vProyeksi, pf: vProfitFirst, kewajiban: vKewajiban, pihak: vPihak, rab: vRab, labarugi: vLabaRugi, neraca: vNeraca, aruskas: vArusKas, jurnal: vJurnal, riwayat: vRiwayat, antrean: vAntrean, akun: vAkun, saldo: vSaldo, sumber: vSumber };
+const VIEWS = { menu: vMenu, ringkasan: vRingkasan, unit: vUnit, target: vTarget, kas: vKas, proyeksi: vProyeksi, pf: vProfitFirst, kewajiban: vKewajiban, pihak: vPihak, rab: vRab, labarugi: vLabaRugi, neraca: vNeraca, aruskas: vArusKas, jurnal: vJurnal, riwayat: vRiwayat, gajiops: vGajiOps, antrean: vAntrean, akun: vAkun, saldo: vSaldo, sumber: vSumber };
 let seq = 0;
 async function render() {
   const { v, a } = route(), my = ++seq;
