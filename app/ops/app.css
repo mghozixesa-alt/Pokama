@@ -1,62 +1,87 @@
-/* Kerja Lapangan Rentalaja (ops.pokama.org) · tampilan mengikuti Rentalaja App */
-:root{--navy:#1F2B4D;--teal:#09BEAF;--teal-d:#077A70;--mint:#E3F7F5;--bg:#F6F7F9;--line:#E6E8EC;--line2:#EEF0F3;--ink:#1F2B4D;--mut:#4A5468;--red:#A12A1F;--redbg:#FBE9E7;--yel:#7A5200;--yelbg:#FFF6E0;--blue:#1E5AA8;--bluebg:#E5EEF9}
+/* Kerja Lapangan Pokama (ops.pokama.org) · tampilan mengikuti template terbaru Rentalaja App */
+:root{--navy:#1F2B4D;--teal:#09BEAF;--teal-d:#077A70;--mint:#E3F7F5;--bg:#F4F6F9;--line:#E6E8EC;--line2:#EEF0F3;--ink:#1F2B4D;--mut:#4A5468;--red:#A12A1F;--redbg:#FBE9E7;--yel:#7A5200;--yelbg:#FFF6E0;--blue:#1E5AA8;--bluebg:#E5EEF9}
 body.ra{font-family:'Plus Jakarta Sans',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--ink)}
-body.ra h1{font-size:22px;font-weight:800;letter-spacing:-.01em}body.ra h2{font-size:16px;font-weight:800}
+body.ra h1{font-size:24px;font-weight:800;letter-spacing:-.01em}body.ra h2{font-size:16px;font-weight:800;margin:0 0 8px}
 body.ra .btn{font-family:inherit;border-radius:12px;font-weight:700}body.ra .btn.pri{background:var(--teal);border-color:var(--teal);color:var(--navy)}
-body.ra .card{border-radius:16px;border:1px solid var(--line);box-shadow:none}
-body.ra .inp{font-family:inherit;border-radius:10px}
-body.ra .chip{font-family:inherit}
-.ra-shell{min-height:100vh;display:grid;grid-template-columns:260px minmax(0,1fr)}
-.ra-side{background:var(--navy);color:#fff;padding:20px 14px;display:flex;flex-direction:column;gap:6px;position:sticky;top:0;height:100vh}
-.ra-logo{background:#fff;border-radius:10px;padding:6px 10px;display:inline-flex;align-self:flex-start}.ra-logo img{height:24px;display:block}
-.ra-sub{font-size:12px;font-weight:600;color:#C9D3E0;margin:6px 4px 14px}
-.ra-nav a{display:flex;align-items:center;gap:12px;padding:12px;border-radius:12px;color:#DDE3EE;text-decoration:none;font-weight:700;font-size:14.5px}
-.ra-nav a:hover{background:rgba(255,255,255,.07)}.ra-nav a.on{background:var(--teal);color:var(--navy)}
-.ra-nav a i{font-style:normal;width:26px;height:26px;border-radius:8px;background:rgba(255,255,255,.12);display:grid;place-items:center;font-size:12px;font-weight:800;flex:0 0 auto}
-.ra-nav a.on i{background:rgba(31,43,77,.15)}.ra-nav a small{margin-left:auto;font-size:11px;font-weight:700;opacity:.8}
-.ra-me{margin-top:auto;display:flex;align-items:center;gap:10px;padding:10px;border-radius:12px;background:rgba(255,255,255,.06)}
+body.ra .card{border-radius:18px;border:1px solid var(--line);box-shadow:0 1px 2px rgba(31,43,77,.04)}
+body.ra .inp{font-family:inherit;border-radius:10px}body.ra .chip{font-family:inherit}
+body.ra .login-card .pk-logo{width:132px}
+/* kerangka: menu kiri putih (desktop) seperti Rentalaja */
+.ra-shell{min-height:100vh;display:grid;grid-template-columns:248px minmax(0,1fr)}
+.ra-side{background:#fff;border-right:1px solid var(--line);padding:22px 14px;display:flex;flex-direction:column;gap:4px;position:sticky;top:0;height:100vh}
+.ra-side .pk-logo{width:118px;margin:0 6px 14px}
+.ra-grp{font-size:11.5px;font-weight:800;letter-spacing:.08em;color:var(--teal-d);margin:6px 8px 6px}
+.ra-nav a{display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:12px;color:var(--ink);text-decoration:none;font-weight:600;font-size:14.5px}
+.ra-nav a:hover{background:var(--bg)}.ra-nav a.on{background:var(--mint);color:var(--teal-d);font-weight:800}
+.ra-nav a svg{flex:0 0 auto}.ra-nav a small{margin-left:auto;font-size:11px;font-weight:700;color:var(--mut)}
+.ra-me{margin-top:auto;display:flex;align-items:center;gap:10px;padding:10px;border-radius:14px;background:var(--bg)}
 .ra-me .av{width:36px;height:36px;border-radius:18px;background:var(--teal);color:var(--navy);display:grid;place-items:center;font-weight:800;flex:0 0 auto}
-.ra-me b{display:block;font-size:13.5px}.ra-me small{color:#C9D3E0;font-size:11.5px}.ra-me button{margin-left:auto;background:none;border:0;color:#C9D3E0;font:inherit;font-size:12px;cursor:pointer;text-decoration:underline}
-.ra-main{padding:24px 28px 40px;max-width:880px;width:100%}
-.ra-top{display:none}
-.ra-bottom{display:none}
-.ra-hd{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:14px}.ra-hd small{color:var(--mut);font-weight:600}
-.ra-stack{display:flex;flex-direction:column;gap:14px}
-.ra-hero{background:var(--navy);color:#fff;border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:12px}
-.ra-hero .row{gap:8px;flex-wrap:wrap}.ra-hero small{color:#C9D3E0}
-.ra-hero .big{font-size:30px;font-weight:800;line-height:1}.ra-hero .lbl{font-size:12px;font-weight:700;color:#C9D3E0;text-transform:uppercase;letter-spacing:.05em}
-.ra-pill{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:999px;background:rgba(255,255,255,.12);font-size:12.5px;font-weight:700}
-.ra-pill.ok{background:var(--teal);color:var(--navy)}.ra-pill.warn{background:#FFD978;color:#3D2A00}
+.ra-me b{display:block;font-size:13.5px}.ra-me small{color:var(--mut);font-size:11.5px}.ra-me button{margin-left:auto;background:none;border:0;color:var(--mut);font:inherit;font-size:12px;cursor:pointer;text-decoration:underline}
+.ra-main{min-width:0}
+/* header hijau (hero) seperti Beranda Rentalaja */
+.ra-hero{background:linear-gradient(160deg,#09BEAF 0%,#077A70 100%);color:#fff;padding:18px 28px 64px;position:relative;overflow:hidden}
+.ra-hero:after{content:"";position:absolute;right:-60px;top:-80px;width:260px;height:260px;border-radius:50%;background:rgba(255,255,255,.08)}
+.ra-hero .top{display:none;align-items:center;gap:10px;margin-bottom:14px;position:relative;z-index:1}
+.ra-hero .top .pk{background:#fff;border-radius:10px;padding:5px 9px;display:inline-flex}.ra-hero .top .pk img{height:20px;display:block}
+.ra-hero .top .av{margin-left:auto;width:34px;height:34px;border-radius:17px;background:rgba(255,255,255,.22);display:grid;place-items:center;font-weight:800;font-size:13px;border:0;color:#fff;cursor:pointer}
+.ra-hero .greet{font-size:13.5px;font-weight:600;opacity:.92;position:relative;z-index:1}
+.ra-hero h1{color:#fff;margin:2px 0 2px;font-size:26px;position:relative;z-index:1}
+.ra-hero .sub{font-size:13.5px;opacity:.9;position:relative;z-index:1}
+.ra-body{max-width:900px;margin:-44px auto 0;padding:0 28px 40px;position:relative;z-index:2;display:flex;flex-direction:column;gap:14px}
+.ra-wrap{max-width:900px;margin:0 auto}
+.ra-hero .ra-wrap{max-width:900px}
+/* kartu ringkas */
+.ra-now{background:#fff;border-radius:20px;border:1px solid var(--line);padding:18px;display:flex;flex-direction:column;gap:12px;box-shadow:0 8px 24px rgba(31,43,77,.08)}
+.ra-now .lbl{font-size:12px;font-weight:800;color:var(--teal-d);letter-spacing:.06em;text-transform:uppercase}
+.ra-now .big{font-size:34px;font-weight:800;line-height:1}
+.ra-pills{display:flex;gap:8px;flex-wrap:wrap}
+.ra-pill{display:inline-flex;align-items:center;gap:6px;padding:6px 11px;border-radius:999px;background:var(--bg);font-size:12.5px;font-weight:700;color:var(--ink)}
+.ra-pill.ok{background:var(--mint);color:var(--teal-d)}.ra-pill.warn{background:var(--yelbg);color:var(--yel)}
 .ra-grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-.ra-kpi{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 14px}.ra-kpi span{font-size:12px;font-weight:700;color:var(--mut)}.ra-kpi b{display:block;font-size:22px;font-weight:800;margin-top:2px}.ra-kpi small{color:var(--mut);font-size:11.5px}
-.ra-shot{display:flex;align-items:center;justify-content:center;gap:8px;min-height:120px;border:2px dashed var(--line);border-radius:14px;background:var(--bg);cursor:pointer;font-weight:700;color:var(--mut);overflow:hidden;position:relative}
+.ra-grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.ra-kpi{background:var(--bg);border-radius:14px;padding:12px 14px}.ra-kpi span{font-size:12px;font-weight:700;color:var(--mut)}.ra-kpi b{display:block;font-size:20px;font-weight:800;margin-top:2px}.ra-kpi small{color:var(--mut);font-size:11.5px}
+.ra-shot{display:flex;align-items:center;justify-content:center;gap:8px;min-height:130px;border:2px dashed var(--line);border-radius:16px;background:var(--bg);cursor:pointer;font-weight:700;color:var(--mut);overflow:hidden;position:relative}
 .ra-shot img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .ra-loc{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:13.5px;font-weight:700}
-.ra-big{width:100%;min-height:54px;font-size:16px!important;border-radius:14px!important}
+.ra-big{width:100%;min-height:54px;font-size:16px!important;border-radius:14px!important;justify-content:center}
+.ra-dark{background:var(--navy)!important;color:#fff!important;border-color:var(--navy)!important}
 .ra-ck label{display:flex;gap:12px;align-items:flex-start;padding:12px 2px;border-top:1px solid var(--line2);font-weight:600;font-size:14.5px;cursor:pointer}
-.ra-ck label:first-of-type{border-top:0}.ra-ck input{width:22px;height:22px;flex:0 0 auto;accent-color:var(--teal)}
-.ra-ck h4{margin:8px 0 2px;font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--mut)}
+.ra-ck h4{margin:10px 0 0;font-size:11.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--teal-d)}
+.ra-ck input{width:22px;height:22px;flex:0 0 auto;accent-color:var(--teal)}
+/* panel kerja kiri-kanan */
 .ra-panels{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
-.ra-panel{display:flex;flex-direction:column;gap:10px;text-align:left;border:0;border-radius:18px;padding:18px;cursor:pointer;font:inherit;color:#fff;background:var(--pc,#1F2B4D);min-height:170px;position:relative;box-shadow:0 8px 20px rgba(31,43,77,.12)}
+.ra-panel{display:flex;flex-direction:column;gap:10px;text-align:left;border:0;border-radius:20px;padding:18px;cursor:pointer;font:inherit;color:#fff;background:linear-gradient(160deg,var(--pc,#1F2B4D) 0%,var(--pc2,#13203d) 100%);min-height:176px;position:relative;box-shadow:0 10px 24px rgba(31,43,77,.14)}
 .ra-panel .ic{width:46px;height:46px;border-radius:12px;background:#fff;display:grid;place-items:center}.ra-panel .ic img{width:30px;height:30px}
-.ra-panel b{font-size:19px;font-weight:800;line-height:1.2}.ra-panel small{font-size:13px;opacity:.9;font-weight:600}
-.ra-panel .go{margin-top:auto;display:inline-flex;align-items:center;gap:6px;font-weight:800;font-size:14px;background:rgba(255,255,255,.18);border-radius:10px;padding:8px 12px;align-self:flex-start}
-.ra-panel.lock{filter:grayscale(.85);opacity:.6;cursor:not-allowed}
-.ra-panel .lk{position:absolute;top:14px;right:14px;font-size:18px}
+.ra-panel b{font-size:19px;font-weight:800;line-height:1.2}.ra-panel small{font-size:13px;opacity:.92;font-weight:600}
+.ra-panel .go{margin-top:auto;display:inline-flex;align-items:center;gap:6px;font-weight:800;font-size:14px;background:rgba(255,255,255,.2);border-radius:10px;padding:8px 12px;align-self:flex-start}
+.ra-panel.lock{filter:grayscale(.9);opacity:.55;cursor:not-allowed}.ra-panel .lk{position:absolute;top:14px;right:14px;font-size:18px}
 .ra-list .li{display:flex;gap:10px;align-items:flex-start}.ra-list .li>span{flex:1;min-width:0}
 .ra-acts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
-.ra-act{display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px 6px;border-radius:14px;border:1px solid var(--line);background:#fff;font:inherit;font-weight:700;font-size:13px;color:var(--ink);cursor:pointer}
-.ra-act span{font-size:22px}
+.ra-act{display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px 6px;border-radius:16px;border:1px solid var(--line);background:#fff;font:inherit;font-weight:700;font-size:13px;color:var(--ink);cursor:pointer}
+.ra-act:hover{border-color:var(--teal);background:var(--mint)}.ra-act span{font-size:24px}
+/* gamifikasi */
+.gm-lvl{display:flex;align-items:center;gap:16px}
+.gm-badge{width:78px;height:78px;border-radius:24px;background:linear-gradient(150deg,#FFD978,#F5A623);display:grid;place-items:center;color:#3D2A00;font-weight:800;flex:0 0 auto;box-shadow:inset 0 -4px 0 rgba(0,0,0,.08)}
+.gm-badge b{font-size:30px;line-height:1}.gm-badge small{font-size:10.5px;letter-spacing:.06em;text-transform:uppercase}
+.gm-bar{height:12px;border-radius:999px;background:var(--line2);overflow:hidden}.gm-bar i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,#09BEAF,#4FD6C9)}
+.gm-streak{display:flex;align-items:center;gap:12px;background:linear-gradient(135deg,#FFF1E6,#FFE3CC);border-radius:16px;padding:14px}
+.gm-streak .f{font-size:34px}.gm-streak b{font-size:22px}
+.gm-badges{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.gm-b{border:1px solid var(--line);border-radius:16px;padding:12px;display:flex;flex-direction:column;gap:6px;background:#fff}
+.gm-b .e{font-size:28px;filter:grayscale(1);opacity:.45}.gm-b.got{border-color:#F5C451;background:#FFFAEB}.gm-b.got .e{filter:none;opacity:1}
+.gm-b b{font-size:13.5px}.gm-b small{color:var(--mut);font-size:11.5px;line-height:1.3}
+.gm-mini{height:6px;border-radius:999px;background:var(--line2);overflow:hidden}.gm-mini i{display:block;height:100%;background:var(--teal)}
+.gm-rank .li{display:flex;align-items:center;gap:12px}.gm-rank .n{width:30px;height:30px;border-radius:15px;display:grid;place-items:center;font-weight:800;background:var(--bg);flex:0 0 auto}
+.gm-rank .li.me{background:var(--mint);border-radius:12px;padding:9px 10px}.gm-rank .n.g1{background:#FFD978}.gm-rank .n.g2{background:#E3E7EE}.gm-rank .n.g3{background:#F3D2B3}
+.ra-bottom{display:none}
 .ra-gate{max-width:440px;margin:12vh auto;padding:24px}
 @media (max-width:900px){
   .ra-shell{display:block}.ra-side{display:none}
-  .ra-top{display:flex;align-items:center;gap:10px;background:var(--navy);color:#fff;padding:12px 16px calc(12px);position:sticky;top:0;z-index:5}
-  .ra-top .ra-logo{padding:4px 8px}.ra-top .ra-logo img{height:20px}.ra-top b{font-size:15px;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .ra-top .av{width:32px;height:32px;border-radius:16px;background:rgba(255,255,255,.2);display:grid;place-items:center;font-weight:800;font-size:13px}
-  .ra-main{padding:16px 16px 96px}
-  .ra-bottom{display:grid;grid-template-columns:repeat(4,1fr);position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line);padding:6px 4px calc(6px + env(safe-area-inset-bottom));z-index:6}
-  .ra-bottom a{display:flex;flex-direction:column;align-items:center;gap:2px;text-decoration:none;color:var(--mut);font-size:11px;font-weight:700;padding:6px 0;border-radius:10px}
-  .ra-bottom a i{font-style:normal;font-size:19px;line-height:1}.ra-bottom a.on{color:var(--teal-d);background:var(--mint)}
-  .ra-acts{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .ra-hero{padding:14px 16px 60px}.ra-hero .top{display:flex}.ra-hero h1{font-size:23px}
+  .ra-body{padding:0 16px 100px;margin-top:-44px}
+  .ra-bottom{display:grid;grid-template-columns:repeat(4,1fr);position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line);padding:6px 6px calc(6px + env(safe-area-inset-bottom));z-index:6}
+  .ra-bottom a{display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:var(--mut);font-size:11.5px;font-weight:700;padding:6px 0}
+  .ra-bottom a span{width:44px;height:30px;border-radius:15px;display:grid;place-items:center}.ra-bottom a.on{color:var(--teal-d)}.ra-bottom a.on span{background:var(--mint)}
+  .ra-acts{grid-template-columns:repeat(2,minmax(0,1fr))}.gm-badges{grid-template-columns:repeat(2,minmax(0,1fr))}.ra-grid3{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
-@media (max-width:420px){.ra-panels{gap:10px}.ra-panel{padding:14px;min-height:150px}.ra-panel b{font-size:16px}}
+@media (max-width:420px){.ra-panels{gap:10px}.ra-panel{padding:14px;min-height:156px}.ra-panel b{font-size:16px}}

@@ -60,7 +60,7 @@ function buildRoutes() {
   if (OPS_HOST) {
     const items = [].concat(lap || o.field ? [SHIFT] : [], o.mgr ? [OPS] : []);
     ROUTES = [['OPERASIONAL', items], ['SISTEM', [set]]]; MOBILE = items.map(x => x[0]).concat(['pengaturan']).slice(0, 4);
-  } else { ROUTES = BASE_ROUTES.map(([sec, items]) => [sec, items.slice()]); if (o.mgr) ROUTES[1][1].push(OPS); MOBILE = ['kkh', 'tugas', 'review', 'belanja']; }
+  } else { ROUTES = BASE_ROUTES; /* manajemen Kerja lapangan ada di Rentalaja → Operasional (OpsKerja) */ MOBILE = ['kkh', 'tugas', 'review', 'belanja']; }
   FLAT = ROUTES.flatMap(([, r]) => r);
 }
 const HOME = () => OPS_HOST ? ((ctx.me.role === 'lapangan' || (ctx.ops || {}).field) ? 'shift' : 'ops') : 'kkh';
@@ -155,6 +155,7 @@ async function route() {
   window.scrollTo(0, 0);
   try {
     if (k === 'shift') { location.href = OPS_URL; return; }
+    if (k === 'ops') { location.href = 'https://demo.rentalaja.co.id/#/OpsKerja'; return; }
     if (k === 'menu') { menuView(el); document.title = 'Menu · Pokama'; return; }
     if (!r) { location.hash = '#/' + HOME(); return; }
     document.title = r[1] + ' · Pokama';
