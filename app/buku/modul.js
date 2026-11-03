@@ -1,5 +1,6 @@
 /* Buku Keuangan tahap 2 — Dasbor, Penjualan, Pembelian, Produk & Stok, Aset Tetap, Pajak, Laporan,
    Anggaran, Gaji, Persetujuan, Integrasi & tutup buku. Pembantu bersama datang dari buku.js lewat init(K). */
+import * as V from '/buku/visual.js';
 let K;
 export function init(k) { K = k; }
 const $ = (s, r = document) => r.querySelector(s);
@@ -50,49 +51,85 @@ const delta = (c, p, inv) => { if (!p) return ''; const d = (c - p) / Math.abs(p
 
 /* ---------- Dasbor ---------- */
 async function vDasbor() {
-  const t = K.today(), f = t.slice(0, 8) + '01';
-  const [Dd, ex, sj, sb] = await Promise.all([K.A.rpc('pk_fin_dashboard', { p_from: f, p_to: t }), K.A.rpc('pk_fin_expense_list', { p_from: f, p_to: t }),
-    K.A.rpc('pk_fin_doc_list', { p_kind: 'jual', p_from: f, p_to: t }), K.A.rpc('pk_fin_doc_list', { p_kind: 'beli', p_from: f, p_to: t })]);
+  const t = K.today(), f = t.slice(0, 8) + '01', y = +t.slice(0, 4), mi = +t.slice(5, 7) - 1, dim = new Date(y, mi + 1, 0).getDate(), pace = +t.slice(8) / dim;
+  const [Dd, ex, sj, sb, X, BS] = await Promise.all([K.A.rpc('pk_fin_dashboard', { p_from: f, p_to: t }), K.A.rpc('pk_fin_expense_list', { p_from: f, p_to: t }),
+    K.A.rpc('pk_fin_doc_list', { p_kind: 'jual', p_from: f, p_to: t }), K.A.rpc('pk_fin_doc_list', { p_kind: 'beli', p_from: f, p_to: t }),
+    K.A.rpc('pk_fin_dash_extra', { p_year: y }).catch(() => null), K.A.rpc('pk_fin_balance_sheet', { p_to: t }).catch(() => [])]);
   const U = Dd.units || [], cur = (k) => K.sum(U, u => (u.cur || {})[k]), prev = (k) => K.sum(U, u => (u.prev || {})[k]);
   const rev = cur('rev') + cur('oi'), cost = cur('hpp') + cur('opex') + cur('oe'), net = cur('net'), cash = K.sum(Dd.cash || [], c => c.book);
-  const bal = (c) => +((Dd.balances || {})[c] || {}).bal || 0;
-  const piutang = bal('1-10100'), hutang = bal('2-20100'), H = Dd.health || {}, X = Dd.exceptions || {};
-  const telat = ex.sum.n_telat + sj.sum.n_telat + sb.sum.n_telat;
+  const pRev = prev('rev'), pNet = prev('net'), bal = (c) => +((Dd.balances || {})[c] || {}).bal || 0;
+  const H = Dd.health || {}, XE = Dd.exceptions || {}, EX = X || { util: { total: 0, rented: 0, ready: 0, service: 0 }, months: [], targets: {} };
   K.setBadge(ex.sum.n_belum);
-  const top = (Dd.expense_top || []).slice(0, 7), mix = (Dd.revenue_mix || []).slice(0, 6);
-  const due = [...(Dd.obligations || []).map(o => ({ name: o.name, amt: o.amount, days: o.days, d: o.due, k: 'Kewajiban' }))].slice(0, 6);
-  const acts = [[X.gagal, 'transaksi gagal dibukukan', '#persetujuan'], [X.peta, 'kategori belum dipetakan ke akun', '#persetujuan'], [X.mutasi, 'mutasi bank belum dikenali', '#persetujuan'],
+  const G1 = '#1E9E6A', A1 = '#F2A33A', R1 = '#C0392B';
+  const ratio = rev ? cost / rev * 100 : null, pRatio = pRev ? (pRev - pNet) / pRev * 100 : null;
+  const stR = ratio == null ? null : ratio <= 70 ? ['Sehat', G1] : ratio <= 85 ? ['Waspada', A1] : ['Bahaya', R1];
+  const auto = H.auto == null ? null : +H.auto, stA = auto == null ? null : auto >= 90 ? ['Baik', G1] : auto >= 60 ? ['Lumayan', A1] : ['Banyak manual', R1];
+  // unit bisnis: kendaraan & lampu
+  const BIZ = [['RA', 'motor', '#1F2B4D'], ['WG', 'bus', '#09BEAF'], ['NA', 'truk', '#5B8DEF']];
+  const uRow = (b) => { const u = U.find(x => x.code === b) || { cur: {} }, c = u.cur || {}, r = (+c.rev || 0) + (+c.oi || 0); return { rev: r, net: +c.net || 0, target: +(EX.targets || {})[b] || 0, margin: r ? (+c.net || 0) / r * 100 : null }; };
+  const raceRows = BIZ.map(([b, veh, color]) => ({ name: K.BIZN[b], veh, color, ...uRow(b) }));
+  const lightRows = BIZ.map(([b]) => { const r = uRow(b), cp = r.target ? r.rev / r.target : null;
+    const s = r.net < 0 || (cp != null && cp < pace * .8) ? 2 : (r.margin != null && r.margin < 10) || (cp != null && cp < pace * .95) ? 1 : 0;
+    return { name: K.BIZN[b], s, note: cp != null ? 'omzet ' + Math.round(cp * 100) + '% target' : r.margin != null ? 'margin ' + Math.round(r.margin) + '%' : 'belum ada data' }; });
+  // pesawat: margin 6 bulan
+  const months6 = (Dd.trend || []).map(m => { const by = m.by || {}, r = K.sum(Object.values(by), v => v.rev), n = K.sum(Object.values(by), v => v.net); return { m: m.m, margin: r ? n / r * 100 : null }; });
+  // baterai Profit First
+  const PF = EX.pf || null, POSN = [['operasional', 'Operasional', '#1F2B4D'], ['kewajiban', 'Pajak & kewajiban', '#F2A33A'], ['bersama', 'Gaji owner', '#09BEAF'], ['investasi', 'Profit & investasi', '#1E9E6A']];
+  const byPos = {}; (Dd.cash || []).forEach(c => { byPos[c.pos] = (byPos[c.pos] || 0) + (+c.book || 0); });
+  const pfTot = K.sum(POSN, p => Math.max(0, byPos[p[0]] || 0));
+  const pfRows = POSN.map(([k, n, c]) => ({ name: n, color: c, target: +(PF || {})[k] || 0, actual: pfTot ? Math.max(0, byPos[k] || 0) / pfTot * 100 : 0 }));
+  // odometer & peta
+  const MS = EX.months || [], ytd = K.sum(MS.slice(0, mi + 1), m => m.rev), yt = K.sum(MS, m => m.target);
+  // neraca
+  const sg = (g) => K.sum((BS || []).filter(r => r.grp === g), r => r.bal);
+  const top = (Dd.expense_top || []).slice(0, 6), mix = (Dd.revenue_mix || []).slice(0, 6);
+  const due = (Dd.obligations || []).map(o => ({ name: o.name, amt: o.amount, days: o.days, d: o.due })).slice(0, 5);
+  const acts = [[XE.gagal, 'transaksi gagal dibukukan', '#persetujuan'], [XE.peta, 'kategori belum dipetakan ke akun', '#persetujuan'], [XE.mutasi, 'mutasi bank belum dikenali', '#persetujuan'],
     [ex.sum.n_telat, 'biaya lewat jatuh tempo', '#biaya', 'telat'], [sj.sum.n_telat, 'tagihan penjualan lewat jatuh tempo', '#jual'], [sb.sum.n_telat, 'tagihan pembelian lewat jatuh tempo', '#beli']].filter(a => +a[0]);
-  return K.header('Dasbor', `<span class="small mute">${K.MONL[+t.slice(5, 7) - 1]} ${t.slice(0, 4)} · s.d. ${K.tgl(t)}</span>`) + `
+  const vc = (title, link, body, cls = '') => `<section class="card pad vcard ${cls}"><div class="ch"><h2>${title}</h2>${link || ''}</div>${body}</section>`;
+  const lk = (h, l) => `<a class="lnk" href="${h}">${l} ›</a>`;
+  return K.header('Dasbor', `<span class="small mute">${K.MONL[mi]} ${y} · s.d. ${K.tgl(t)}</span>`) + `
     ${acts.length ? `<div class="todo">${acts.map(a => `<a href="${a[2]}"${a[3] ? ` data-st="${a[3]}"` : ''}><b>${a[0]}</b> ${a[1]} ›</a>`).join('')}</div>` : ''}
     <div class="grid g6">
       <a class="sum t" href="#kas"><span>Kas & bank</span><b>${rpS(cash)}</b><small>${(Dd.cash || []).length} rekening</small></a>
-      <a class="sum" href="#labarugi"><span>Pendapatan</span><b>${rpS(rev)}</b><small>${delta(rev, prev('rev'))} vs periode lalu</small></a>
+      <a class="sum" href="#labarugi"><span>Pendapatan</span><b>${rpS(rev)}</b><small>${delta(rev, pRev)} vs periode lalu</small></a>
       <a class="sum a" href="#labarugi"><span>Beban & HPP</span><b>${rpS(cost)}</b><small>${rev ? Math.round(cost / rev * 100) + '% dari pendapatan' : '—'}</small></a>
-      <a class="sum ${net < 0 ? 'r' : 't'}" href="#labarugi"><span>Laba bersih</span><b class="${net < 0 ? 'neg' : ''}">${rpS(net)}</b><small>${delta(net, prev('net'))} · margin ${rev ? Math.round(net / rev * 100) + '%' : '—'}</small></a>
-      <a class="sum" href="#jual"><span>Piutang</span><b>${rpS(piutang)}</b><small>${sj.sum.n_belum} tagihan${sj.sum.n_telat ? ` · <span class="neg b">${sj.sum.n_telat} telat</span>` : ''}</small></a>
-      <a class="sum r" href="#beli"><span>Hutang usaha</span><b>${rpS(hutang)}</b><small>${ex.sum.n_belum + sb.sum.n_belum} tagihan${telat ? ` · <span class="neg b">${ex.sum.n_telat + sb.sum.n_telat} telat</span>` : ''}</small></a>
+      <a class="sum ${net < 0 ? 'r' : 't'}" href="#labarugi"><span>Laba bersih</span><b class="${net < 0 ? 'neg' : ''}">${rpS(net)}</b><small>${delta(net, pNet)} · margin ${rev ? Math.round(net / rev * 100) + '%' : '—'}</small></a>
+      <a class="sum" href="#jual"><span>Piutang</span><b>${rpS(bal('1-10100'))}</b><small>${sj.sum.n_belum} tagihan${sj.sum.n_telat ? ` · <span class="neg b">${sj.sum.n_telat} telat</span>` : ''}</small></a>
+      <a class="sum r" href="#beli"><span>Hutang usaha</span><b>${rpS(bal('2-20100'))}</b><small>${ex.sum.n_belum + sb.sum.n_belum} tagihan${ex.sum.n_telat + sb.sum.n_telat ? ` · <span class="neg b">${ex.sum.n_telat + sb.sum.n_telat} telat</span>` : ''}</small></a>
     </div>
-    <div class="grid dg1">
-      <section class="card pad"><div class="ch"><h2>Pendapatan & laba 6 bulan</h2><a class="lnk" href="#labarugi">Laba Rugi ›</a></div>${trendSvg(Dd.trend || [])}</section>
-      <section class="card pad"><h2>Kesehatan</h2><div class="gauges">
-        ${gauge(rev ? cost / rev * 100 : null, 'Rasio beban', 'beban + HPP ÷ pendapatan')}
-        ${gauge(H.runway == null ? null : Math.min(100, H.runway / 6 * 100), 'Runway kas', H.runway == null ? 'belum cukup data' : (+H.runway).toFixed(1).replace('.', ',') + ' bulan pada laju sekarang', 'high')}
-        ${gauge(H.auto, 'Jurnal otomatis', (+H.entries || 0) + ' jurnal bulan ini', 'high')}</div></section>
+    <div class="grid g3 vrow">
+      ${vc('Tangki bensin kas', lk('/keuangan/#proyeksi', 'Proyeksi'), V.tank(H.runway == null ? null : +H.runway) + '<p class="small mute vcap">Sisa bulan sebelum kas habis pada laju pengeluaran sekarang.</p>')}
+      ${vc('Rasio beban', lk('#labarugi', 'Laba Rugi'), V.zone({ value: ratio == null ? null : Math.min(ratio, 120), max: 120, label: 'Beban + HPP ÷ pendapatan', sub: 'target ≤ 70%', target: 70, prev: pRatio == null ? null : Math.min(pRatio, 120), better: 'down', status: stR, zones: [[0, 70, G1], [70, 85, A1], [85, 120, R1]] }))}
+      ${vc('Jurnal otomatis', lk('#integrasi', 'Integrasi'), V.zone({ value: auto, max: 100, label: 'Jurnal dari sistem', sub: (+H.entries || 0) + ' jurnal bulan ini · target ≥ 90%', target: 90, status: stA, zones: [[0, 60, R1], [60, 90, A1], [90, 100, G1]] }))}
     </div>
-    <div class="grid dg2">
-      <section class="card pad"><div class="ch"><h2>Arus kas harian</h2><a class="lnk" href="#kas">Kas & Bank ›</a></div>${dailySvg(Dd.daily || [])}</section>
-      <section class="card pad"><div class="ch"><h2>Beban terbesar</h2><a class="lnk" href="#biaya">Biaya ›</a></div>${hbars(top.map(x => ({ name: x.name, amt: x.amt })), Math.max(1, ...top.map(x => +x.amt)), C.amber)}</section>
+    <div class="grid dgv vrow">
+      ${vc('Balapan menuju target omzet ' + K.MONL[mi], lk('#anggaran', 'Anggaran'), '<div class="vscroll">' + V.race(raceRows, pace) + '</div>' + `<p class="small mute vcap">Garis oranye putus-putus = posisi yang seharusnya hari ini (hari ke-${+t.slice(8)} dari ${dim}). Target diisi di Unit Bisnis.</p>`)}
+      ${vc('Lampu unit bisnis', lk('/keuangan/#unit', 'Rinci'), V.lights(lightRows) + '<p class="small mute vcap">Merah = bahas di rapat · kuning = awasi · hijau = aman. Dari capaian target, margin, dan laba.</p>')}
     </div>
-    <div class="grid dg3">
-      <section class="card pad"><div class="ch"><h2>Kinerja unit bisnis</h2><a class="lnk" href="/keuangan#unit">Rinci ›</a></div><table class="tbl"><thead><tr><th>Unit</th><th class="r">Pendapatan</th><th class="r">Laba</th><th class="r">Margin</th></tr></thead><tbody>
-        ${U.map(u => { const c = u.cur || {}, r = (+c.rev || 0) + (+c.oi || 0); return `<tr><td><span class="ub">${K.LOGO[u.code] ? `<img src="${K.LOGO[u.code]}" alt="">` : ''}${K.esc(u.name)}</span></td><td class="r">${rpS(r)} ${delta(r, (u.prev || {}).rev)}</td><td class="r b${c.net < 0 ? ' neg' : ''}">${rpS(c.net)}</td><td class="r">${r ? Math.round(c.net / r * 100) + '%' : '—'}</td></tr>`; }).join('')}
-      </tbody></table></section>
-      <section class="card pad"><h2>Sumber pendapatan</h2>${hbars(mix.map(x => ({ name: x.name, amt: x.amt })), Math.max(1, ...mix.map(x => +x.amt)), C.teal)}</section>
-      <section class="card pad"><div class="ch"><h2>Jatuh tempo 30 hari</h2><a class="lnk" href="/keuangan#kewajiban">Semua ›</a></div>${due.length ? `<table class="tbl"><tbody>${due.map(d => `<tr><td>${K.esc(d.name)}<div class="small mute">${K.tgl(d.d)} · ${d.days <= 0 ? '<span class="neg b">hari ini</span>' : d.days + ' hari lagi'}</div></td><td class="r b">${rpS(d.amt)}</td></tr>`).join('')}</tbody></table>` : '<p class="mute small">Tidak ada kewajiban rutin 30 hari ke depan.</p>'}
-        <div class="mini3"><div><span>Biaya belum dibayar</span><b>${rpS(ex.sum.belum)}</b></div><div><span>Pembelian belum dibayar</span><b>${rpS(sb.sum.belum)}</b></div><div><span>Piutang belum diterima</span><b>${rpS(sj.sum.belum)}</b></div></div></section>
+    <div class="grid g3 vrow">
+      ${vc('Pesawat ketinggian margin', lk('#labarugi', 'Laba Rugi'), V.plane(months6))}
+      ${vc('Tenda utilisasi unit', '', V.tent(EX.util || { total: 0, rented: 0, ready: 0, service: 0 }, .6))}
+      ${vc('Baterai Profit First', lk('/keuangan/#pf', 'Atur'), PF ? V.batteries(pfRows) : '<p class="mute small">Persentase Profit First belum diatur.</p>')}
     </div>
-    <section class="card pad" style="margin-top:14px"><div class="ch"><h2>Saldo rekening</h2><a class="lnk" href="#kas">Semua ›</a></div><div class="grid g4">${[...(Dd.cash || [])].sort((a, b) => b.book - a.book).slice(0, 8).map(a => `<a class="mini" href="#kas/${a.code}"><span>${K.esc(a.name)}</span><b class="${a.book < 0 ? 'neg' : ''}">${K.rp(a.book)}</b>${a.unmatched ? `<small class="neg">${a.unmatched} mutasi belum cocok</small>` : `<small>${K.esc(K.uname(a.unit))}</small>`}</a>`).join('')}</div></section>`;
+    <div class="grid g3 vrow">
+      ${vc('Timbangan neraca', lk('#neraca', 'Neraca'), V.scale(sg('aset'), sg('kewajiban'), sg('ekuitas')))}
+      ${vc('Odometer omzet ' + y, '', V.odometer(ytd, (MS[mi] || {}).rev || rev, yt))}
+      ${vc('Beban terbesar', lk('#biaya', 'Biaya'), hbars(top.map(x => ({ name: x.name, amt: x.amt })), Math.max(1, ...top.map(x => +x.amt)), C.amber))}
+    </div>
+    ${MS.length ? `<div class="vrow">${vc('Peta perjalanan target ' + y, lk('#anggaran', 'Anggaran'), '<div class="vscroll vwide">' + V.roadmap(MS, mi, y) + '</div>')}</div>` : ''}
+    <div class="vrow">${vc('Pendapatan & laba 6 bulan', lk('#labarugi', 'Laba Rugi'), trendSvg(Dd.trend || []))}</div>
+    <div class="grid dgv vrow">
+      ${vc('Kinerja unit bisnis', lk('/keuangan/#unit', 'Rinci'), `<table class="tbl"><thead><tr><th>Unit</th><th class="r">Pendapatan</th><th class="r">Laba</th><th class="r">Margin</th></tr></thead><tbody>
+        ${U.map(u => { const c = u.cur || {}, r = (+c.rev || 0) + (+c.oi || 0); return `<tr><td><span class="ub">${K.LOGO[u.code] ? `<img src="${K.LOGO[u.code]}" alt="">` : ''}${K.esc(u.name)}</span></td><td class="r">${rpS(r)} ${delta(r, (u.prev || {}).rev)}</td><td class="r b${c.net < 0 ? ' neg' : ''}">${rpS(c.net)}</td><td class="r">${r ? Math.round(c.net / r * 100) + '%' : '—'}</td></tr>`; }).join('')}</tbody></table>`)}
+      ${vc('Sumber pendapatan', '', hbars(mix.map(x => ({ name: x.name, amt: x.amt })), Math.max(1, ...mix.map(x => +x.amt)), C.teal))}
+    </div>
+    <div class="grid dg2 vrow">
+      ${vc('Arus kas harian', lk('#kas', 'Kas & Bank'), dailySvg(Dd.daily || []))}
+      ${vc('Jatuh tempo 30 hari', lk('/keuangan/#kewajiban', 'Semua'), (due.length ? `<table class="tbl"><tbody>${due.map(d => `<tr><td>${K.esc(d.name)}<div class="small mute">${K.tgl(d.d)} · ${d.days <= 0 ? '<span class="neg b">hari ini</span>' : d.days + ' hari lagi'}</div></td><td class="r b">${rpS(d.amt)}</td></tr>`).join('')}</tbody></table>` : '<p class="mute small">Tidak ada kewajiban rutin 30 hari ke depan.</p>')
+        + `<div class="mini3"><div><span>Biaya belum dibayar</span><b>${rpS(ex.sum.belum)}</b></div><div><span>Pembelian belum dibayar</span><b>${rpS(sb.sum.belum)}</b></div><div><span>Piutang belum diterima</span><b>${rpS(sj.sum.belum)}</b></div></div>`)}
+    </div>
+    <div class="vrow">${vc('Saldo rekening', lk('#kas', 'Semua'), `<div class="grid g4">${[...(Dd.cash || [])].sort((a, b) => b.book - a.book).slice(0, 8).map(a => `<a class="mini" href="#kas/${a.code}"><span>${K.esc(a.name)}</span><b class="${a.book < 0 ? 'neg' : ''}">${K.rp(a.book)}</b>${a.unmatched ? `<small class="neg">${a.unmatched} mutasi belum cocok</small>` : `<small>${K.esc(K.uname(a.unit))}</small>`}</a>`).join('')}</div>`)}</div>`;
 }
 
 /* ---------- Penjualan & Pembelian ---------- */
