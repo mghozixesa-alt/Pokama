@@ -1,0 +1,3 @@
+-- pk_041 (diterapkan 3 Nov 2026): pk_inbox memakai kolom yang benar
+-- pk_tasks.owner_id -> pic_id, pk_rab.person_id -> created_by, af_payouts.amount -> net, iv_withdrawals.created_at -> requested_at
+-- Penyebab Kotak Persetujuan 'column t.owner_id does not exist'. Isi lengkap: fungsi pk_inbox di database.
