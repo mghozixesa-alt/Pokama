@@ -63,7 +63,7 @@ async function vDasbor() {
   const due = [...(Dd.obligations || []).map(o => ({ name: o.name, amt: o.amount, days: o.days, d: o.due, k: 'Kewajiban' }))].slice(0, 6);
   const acts = [[X.gagal, 'transaksi gagal dibukukan', '#persetujuan'], [X.peta, 'kategori belum dipetakan ke akun', '#persetujuan'], [X.mutasi, 'mutasi bank belum dikenali', '#persetujuan'],
     [ex.sum.n_telat, 'biaya lewat jatuh tempo', '#biaya', 'telat'], [sj.sum.n_telat, 'tagihan penjualan lewat jatuh tempo', '#jual'], [sb.sum.n_telat, 'tagihan pembelian lewat jatuh tempo', '#beli']].filter(a => +a[0]);
-  return K.header('Dasbor', `<span class="small mute">${K.MONL[+t.slice(5, 7) - 1]} ${t.slice(0, 4)} · s.d. ${K.tgl(t)}</span><a class="btn" href="/keuangan">Panel lengkap</a>`) + `
+  return K.header('Dasbor', `<span class="small mute">${K.MONL[+t.slice(5, 7) - 1]} ${t.slice(0, 4)} · s.d. ${K.tgl(t)}</span>`) + `
     ${acts.length ? `<div class="todo">${acts.map(a => `<a href="${a[2]}"${a[3] ? ` data-st="${a[3]}"` : ''}><b>${a[0]}</b> ${a[1]} ›</a>`).join('')}</div>` : ''}
     <div class="grid g6">
       <a class="sum t" href="#kas"><span>Kas & bank</span><b>${rpS(cash)}</b><small>${(Dd.cash || []).length} rekening</small></a>

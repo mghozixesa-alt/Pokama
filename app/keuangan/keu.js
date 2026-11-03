@@ -4,6 +4,7 @@
    halaman otomatis memakai data contoh (demo.js) dengan bentuk yang sama, dan menandainya dengan jelas. */
 import { makeSession, api, esc, rp, rpk, pct, tgl, bulan, toast } from '/mitra/af.js';
 import * as X from '/keuangan/demo.js';
+import * as N from '/buku/nav.js';
 
 const A = api(makeSession('pokama.session'));
 const app = document.getElementById('app');
@@ -29,7 +30,9 @@ const KIND = { leasing: 'Leasing', pinjaman: 'Pinjaman', bagi_hasil: 'Bagi hasil
 const PAGES = { ringkasan: 'Ringkasan', unit: 'Per unit bisnis', target: 'Target vs realisasi', kas: 'Kas & bank', proyeksi: 'Proyeksi kas', pf: 'Profit First',
   kewajiban: 'Kewajiban & leasing', pihak: 'Piutang & hutang', rab: 'Belanja (RAB & LPJ)', labarugi: 'Laba rugi', neraca: 'Neraca', aruskas: 'Arus kas',
   jurnal: 'Buku jurnal', riwayat: 'Riwayat sistem lama', gajiops: 'Gaji & klaim petugas', antrean: 'Antrean Keuangan', akun: 'Akun & rekening', saldo: 'Saldo awal', sumber: 'Sumber data & tutup buku' };
-const route = () => { const [v, a] = (location.hash || '#ringkasan').slice(1).split('/'); return PAGES[v] || v === 'menu' ? { v, a } : { v: 'ringkasan' }; };
+// halaman yang sudah pindah ke Buku Keuangan (/buku) dialihkan ke sana
+const MOVED = { '': 'dasbor', ringkasan: 'dasbor', menu: 'dasbor', target: 'anggaran', neraca: 'neraca', aruskas: 'aruskas', antrean: 'persetujuan', gajiops: 'gaji', sumber: 'integrasi' };
+const route = () => { const [v, a] = (location.hash || '#').slice(1).split('/'); if (v in MOVED || !PAGES[v]) { location.replace('/buku/#' + (MOVED[v] || 'dasbor')); return { v: 'moved' }; } return { v, a }; };
 const canWrite = () => !!ME && ['ceo', 'keuangan'].includes(ME.role);
 const usingDemo = () => S.demo || ENGINE === false;
 
@@ -1017,14 +1020,7 @@ const MOBILE = [['ringkasan', 'Ringkasan', 'grid'], ['unit', 'Unit', 'trophy'], 
 const ROLE = { ceo: 'CEO', kepala_staf: 'Kepala Staf', keuangan: 'Keuangan', leader: 'Leader', staf: 'Staf' };
 function shell() {
   const me = PEOPLE.find(p => ME && (p.id === ME.id || p.email === ME.email)) || ME || {};
-  document.getElementById('side').innerHTML = `<a class="brand" href="/"><img src="/img/pokama-logo.png" alt="Pokama"></a>
-    <div class="side-top"><div class="side-sec">Keuangan grup</div>
-      <div class="restrict"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#09BEAF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><span>Area terbatas · CEO, Kepala Staf, Keuangan · 2FA</span></div>
-      <a class="back-link" href="/">← Sistem Kerja</a></div>
-    <nav aria-label="Menu keuangan">${NAV.map(([sec, items]) => `<div class="nav-sec"><span class="nav-h">${sec}</span>${items.map(([k, l, ic, nb]) => `<a href="#${k}">${svg(ic)}<span>${l}</span>${nb ? `<b class="badge" data-nb="${nb}" hidden></b>` : ''}</a>`).join('')}</div>`).join('')}
-    <div class="nav-sec"><span class="nav-h">Modul lain</span><a href="/buku/">${svg('book')}<span>Buku Keuangan (catat biaya & kas)</span></a><a href="/affiliate">${svg('users')}<span>Mitra Affiliate</span></a></div></nav>
-    <div class="side-me"><a href="/#/pengaturan" class="me">${avatar(me, 36)}<span><b>${esc(nick(me) || me.name || 'Uji lokal')}</b><small>${esc(me.title || ROLE[me.role] || '')}</small></span></a></div>`;
-  document.getElementById('bottom').innerHTML = MOBILE.map(([k, l, ic, nb]) => `<a href="#${k}" data-k="${k}">${svg(ic, 22)}<span>${l}</span>${nb ? `<b class="badge" data-nb="${nb}" hidden></b>` : ''}</a>`).join('') + `<a href="#menu" data-k="menu">${svg('menu', 22)}<span>Lainnya</span></a>`;
+  N.shell(me);
 }
 async function vMenu() {
   return `<header class="ph"><div><span class="muted small">Keuangan grup</span><h1>Menu</h1></div></header>
@@ -1044,9 +1040,9 @@ const VIEWS = { menu: vMenu, ringkasan: vRingkasan, unit: vUnit, target: vTarget
 let seq = 0;
 async function render() {
   const { v, a } = route(), my = ++seq;
-  document.querySelectorAll('.side a[href^="#"]').forEach(x => { const on = x.getAttribute('href') === '#' + v; x.classList.toggle('on', on); if (on) x.setAttribute('aria-current', 'page'); else x.removeAttribute('aria-current'); });
-  document.title = (PAGES[v] || 'Menu') + ' · Keuangan Pokama';
-  document.querySelectorAll('.bottom a').forEach(x => x.classList.toggle('on', x.dataset.k === v));
+  if (v === 'moved') return;
+  N.mark('k:' + v);
+  document.title = (PAGES[v] || 'Keuangan') + ' · Pokama';
   try { const h = await VIEWS[v](a); if (my === seq) app.innerHTML = h; }
   catch (e) { if (my === seq) app.innerHTML = `<div class="alert"><span><b>Gagal memuat.</b> ${esc(e.message)}</span></div>`; }
 }
