@@ -169,7 +169,7 @@ async function detail(t, projects) {
     <div><span>Tenggat</span><b>${t.due ? fdate(t.due) : '—'}</b></div><div><span>Versi · putaran</span><b>v${t.version} · ${t.round}</b></div></div>
     ${t.dod ? `<p class="note"><b>Selesai bila:</b> ${esc(t.dod)}</p>` : ''}
     ${t.last_link ? `<p><a href="${safeUrl(t.last_link)}" target="_blank" rel="noopener">Buka hasil terakhir ↗</a></p>` : ''}
-    ${points.length ? `<h3>Poin review</h3><ul class="pts">${points.map(p => `<li>${chip({ open: 'Belum dijawab', fixed: 'Sudah diperbaiki', disagree: 'Tidak setuju', accepted: 'Diterima' }[p.status], { open: 'red', fixed: 'blue', disagree: 'yellow', accepted: 'green' }[p.status])} ${esc(p.text)}${p.answer ? `<small> ↳ ${esc(p.answer)}</small>` : ''}</li>`).join('')}</ul>` : ''}
+    ${points.length && !(isPic && t.status === 'revisi') ? `<h3>Poin review</h3><ul class="pts">${points.map(p => `<li>${chip({ open: 'Belum dijawab', fixed: 'Sudah diperbaiki', disagree: 'Tidak setuju', accepted: 'Diterima' }[p.status], { open: 'red', fixed: 'blue', disagree: 'yellow', accepted: 'green' }[p.status])} ${esc(p.text)}${p.answer ? `<small> ↳ ${esc(p.answer)}</small>` : ''}</li>`).join('')}</ul>` : ''}
     ${canEdit && ['todo', 'doing', 'hold'].includes(t.status) ? `<div class="row gap wrap"><span class="muted small">Ubah status:</span>${['todo', 'doing', 'hold'].map(s => `<label class="chk"><input type="radio" name="st" value="${s}" ${t.status === s ? 'checked' : ''}> ${ST[s][0]}</label>`).join('')}</div>` : ''}
     ${t.status === 'revisi' ? (isPic ? `<h3>Ajukan ulang</h3>${resubmitFields(t, points)}`
       : `<p class="note">Menunggu <b>${esc(nick(t.pic_id))}</b> memperbaiki ${points.filter(p => p.status === 'open').length} poin lalu mengajukan ulang.</p>`) : ''}
