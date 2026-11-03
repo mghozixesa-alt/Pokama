@@ -20,6 +20,43 @@ export const ST = {
 const stCell = (s) => { const x = ST[s] || ST.todo; return `<span class="st" style="background:${x[1]};color:${x[2]}">${x[0]}</span>`; };
 const daysTo = (d) => d ? Math.round((new Date(d + 'T00:00:00Z') - new Date(today() + 'T00:00:00Z')) / 864e5) : null;
 
+/* ---------- alur review 3 langkah: Ajukan → Setujui / Minta revisi → Ajukan ulang ---------- */
+// isi formulir "ajukan ulang": tautan + centang tiap poin revisi (alasan bila tidak setuju)
+const resubmitFields = (t, pts) => {
+  const open = pts.filter(p => p.status === 'open');
+  return field('Tautan hasil terbaru', `<input name="link" class="inp" placeholder="https://…" value="${esc(t.last_link || '')}">`, 'Boleh tautan yang sama bila isi filenya sudah diperbarui.') +
+    (open.length ? `<div class="fld"><span>Poin revisi dari ${esc(nick(t.reviewer_id))}</span><ul class="pts">${open.map(p => `<li><label class="chk"><input type="checkbox" name="fx_${p.id}" checked> <span>${esc(p.text)}</span></label>
+      <input name="nx_${p.id}" class="inp" placeholder="Catatan (wajib bila tidak dicentang / tidak setuju)" style="margin-top:6px"></li>`).join('')}</ul>
+      <small class="muted">Centang poin yang sudah diperbaiki. Kalau tidak setuju, hapus centang dan tulis alasannya.</small></div>` : '');
+};
+const resubmitSend = (t, pts, f) => {
+  const answers = pts.filter(p => p.status === 'open').map(p => ({ id: p.id, fixed: !!f['fx_' + p.id], note: (f['nx_' + p.id] || '').trim() }));
+  const miss = answers.find(a => !a.fixed && !a.note); if (miss) throw new Error('Tulis alasan untuk poin yang tidak dicentang');
+  return db.rpc('pk_task_resubmit', { p_task: t.id, p_link: (f.link || '').trim(), p_answers: answers });
+};
+async function resubmitForm(t, pts) {
+  const r = await modal('Ajukan ulang · ' + t.title, resubmitFields(t, pts), { submit: 'Ajukan ulang', onSubmit: (f) => resubmitSend(t, pts, f) });
+  if (r) toast('Diajukan ulang ke ' + nick(t.reviewer_id));
+  return r;
+}
+async function approveTask(t) {
+  if (!await confirmBox('Setujui "' + t.title + '" sebagai selesai?', 'Setujui')) return false;
+  await db.rpc('pk_task_decide', { p_task: t.id, p_decision: 'approve' }); toast('Disetujui. Pekerjaan selesai.'); return true;
+}
+async function reviseForm(t, pts) {
+  const ans = pts.filter(p => ['fixed', 'disagree'].includes(p.status));
+  const r = await modal('Minta revisi · ' + t.title,
+    (ans.length ? `<div class="fld"><span>Jawaban ${esc(nick(t.pic_id))} atas poin sebelumnya</span><ul class="pts">${ans.map(p => `<li><b>${esc(p.text)}</b><br><small class="muted">${p.status === 'fixed' ? '✓ diperbaiki' : '✗ tidak setuju'}${p.answer ? ' · ' + esc(p.answer) : ''}</small><br><label class="chk"><input type="checkbox" name="ro_${p.id}"> Masih kurang, buka lagi</label></li>`).join('')}</ul><small class="muted">Yang tidak dicentang dianggap beres.</small></div>` : '') +
+    field('Poin baru yang harus diperbaiki (satu baris satu poin)', '<textarea name="pts" class="inp" rows="4" placeholder="Harga belum dibandingkan 2 vendor\nTambahkan foto lokasi"></textarea>', 'Tenggat revisi 2 hari kerja.'),
+    { submit: 'Kirim revisi', onSubmit: async (f) => {
+      const reopen = ans.filter(p => f['ro_' + p.id]).map(p => p.id); const np = (f.pts || '').split('\n').map(x => x.trim()).filter(Boolean);
+      if (!reopen.length && !np.length) throw new Error('Tulis minimal satu poin, atau tandai poin yang masih kurang');
+      await db.rpc('pk_task_decide', { p_task: t.id, p_decision: 'revise', p_points: np, p_reopen: reopen });
+    } });
+  if (r) toast('Revisi dikirim ke ' + nick(t.pic_id));
+  return r;
+}
+
 async function load() {
   const [tasks, projects] = await Promise.all([
     db.get('pk_tasks', 'select=*&order=due.asc.nullslast,created_at.desc&limit=1000'),
@@ -134,9 +171,9 @@ async function detail(t, projects) {
     ${t.last_link ? `<p><a href="${safeUrl(t.last_link)}" target="_blank" rel="noopener">Buka hasil terakhir ↗</a></p>` : ''}
     ${points.length ? `<h3>Poin review</h3><ul class="pts">${points.map(p => `<li>${chip({ open: 'Belum dijawab', fixed: 'Sudah diperbaiki', disagree: 'Tidak setuju', accepted: 'Diterima' }[p.status], { open: 'red', fixed: 'blue', disagree: 'yellow', accepted: 'green' }[p.status])} ${esc(p.text)}${p.answer ? `<small> ↳ ${esc(p.answer)}</small>` : ''}</li>`).join('')}</ul>` : ''}
     ${canEdit && ['todo', 'doing', 'hold'].includes(t.status) ? `<div class="row gap wrap"><span class="muted small">Ubah status:</span>${['todo', 'doing', 'hold'].map(s => `<label class="chk"><input type="radio" name="st" value="${s}" ${t.status === s ? 'checked' : ''}> ${ST[s][0]}</label>`).join('')}</div>` : ''}
-    ${t.status === 'revisi' ? (() => { const open = points.filter(p => p.status === 'open').length;
-      return isPic ? `<div class="note row between wrap gap"><span><b>${open ? open + ' poin revisi belum dijawab' : 'Semua poin sudah dijawab'}</b><br><small class="muted">${open ? 'Jawab tiap poin (sudah diperbaiki / tidak setuju), lalu Ajukan ulang.' : 'Tinggal Ajukan ulang dengan tautan hasil terbaru.'}</small></span><a class="btn pri" href="#/review?tab=saya&t=${t.id}" data-close>${open ? 'Jawab poin revisi' : 'Ajukan ulang'}</a></div>`
-        : `<p class="note">Menunggu <b>${esc(nick(t.pic_id))}</b> ${open ? 'menjawab ' + open + ' poin revisi' : 'mengajukan ulang'} di Review &amp; Revisi.</p>`; })() : ''}
+    ${t.status === 'revisi' ? (isPic ? `<h3>Ajukan ulang</h3>${resubmitFields(t, points)}`
+      : `<p class="note">Menunggu <b>${esc(nick(t.pic_id))}</b> memperbaiki ${points.filter(p => p.status === 'open').length} poin lalu mengajukan ulang.</p>`) : ''}
+    ${t.status === 'review' && (t.reviewer_id === me || isAdmin()) && t.pic_id !== me ? `<div class="note row between wrap gap"><span><b>Menunggu keputusan Anda</b></span><a class="btn pri" href="#/review?tab=cek&t=${t.id}" data-close>Cek &amp; putuskan</a></div>` : ''}
     ${isPic && ['todo', 'doing', 'hold'].includes(t.status) ? field('Ajukan ke reviewer · tautan hasil', `<input name="link" class="inp" placeholder="https://drive.google.com/…" value="${esc(t.last_link || '')}">`, 'Isi tautan lalu Simpan untuk mengajukan ke reviewer. Kalau ada poin revisi, jawab dulu di Review & Revisi.') : ''}
     <div class="row gap"><button type="button" class="btn sm" data-wa1>Bagikan ke WA</button></div>
     <h3>Riwayat</h3><ul class="log">${log.map(l => `<li><b>${esc(nick(l.actor_id))}</b> ${esc(l.action)}${l.note ? ' · ' + esc(l.note) : ''} <small class="muted">${ftime(l.at)}</small></li>`).join('') || '<li class="muted">—</li>'}</ul>`;
@@ -144,10 +181,11 @@ async function detail(t, projects) {
   const onOpen = (ev) => { document.removeEventListener('modal:open', onOpen); ev.detail.querySelector('[data-wa1]').onclick = () => waReport(t.title, waTask(t, points)); };
   document.addEventListener('modal:open', onOpen);
   const res = await modal(t.title, body, {
-    wide: true, submit: canEdit ? 'Simpan' : null,
+    wide: true, submit: canEdit ? (isPic && t.status === 'revisi' ? 'Ajukan ulang' : 'Simpan') : null,
     danger: canEdit ? { label: 'Ubah detail', confirm: false, onClick: async () => { mode = 'edit'; return 'edit'; } } : null,
     onSubmit: async (f) => {
-      if (isPic && ['todo', 'doing', 'revisi', 'hold'].includes(t.status) && (f.link || '').trim()) {
+      if (isPic && t.status === 'revisi') { await resubmitSend(t, points, f); toast('Diajukan ulang ke ' + nick(t.reviewer_id)); return; }
+      if (isPic && ['todo', 'doing', 'hold'].includes(t.status) && (f.link || '').trim()) {
         await db.rpc('pk_task_submit', { p_task: t.id, p_link: f.link.trim(), p_note: null }); toast('Diajukan ke ' + nick(t.reviewer_id)); return;
       }
       
@@ -175,14 +213,14 @@ async function review(el, params, reload) {
   const late = (t) => t.status === 'revisi' && t.revise_due && t.revise_due < today();
   el.innerHTML = `
   <header class="ph"><div><span class="muted small">Pekerjaan baru dianggap selesai setelah dicek dan disetujui reviewer</span><h1>Review & Revisi</h1></div><button class="btn" data-wa="list">Laporan WA</button></header>
-  <ol class="steps"><li><b>1</b><span><strong>PIC mengajukan</strong><small>hasil + tautan</small></span></li><li><b>2</b><span><strong>Dicek reviewer</strong><small>kekurangan ditulis per poin</small></span></li><li><b>3</b><span><strong>PIC memperbaiki</strong><small>tiap poin dijawab, tenggat 2 hari kerja</small></span></li><li><b class="t">4</b><span><strong>Disetujui = selesai</strong><small>PIC tidak bisa menandai sendiri</small></span></li></ol>
+  <ol class="steps"><li><b>1</b><span><strong>PIC mengajukan</strong><small>tautan hasil</small></span></li><li><b>2</b><span><strong>Reviewer memutuskan</strong><small>setujui, atau minta revisi per poin</small></span></li><li><b class="t">3</b><span><strong>PIC ajukan ulang</strong><small>centang poin yang sudah diperbaiki · tenggat 2 hari kerja</small></span></li></ol>
   <div class="chips">${[['cek', 'Perlu saya cek', sets.cek.length], ['saya', 'Pekerjaan saya', sets.saya.length], ['semua', 'Semua yang berjalan', sets.semua.length], ['selesai', 'Baru selesai', null]].map(([k, l, n]) => `<a class="chipbtn${tab === k ? ' on' : ''}" href="#/review?tab=${k}">${l}${n !== null ? ` (${n})` : ''}</a>`).join('')}</div>
   <div class="split${params.get('t') ? ' picked' : ''}">
     <div class="stack">${list.map(t => `<a class="card item${sel && sel.id === t.id ? ' sel' : ''}${late(t) ? ' late' : ''}" href="#/review?tab=${tab}&t=${t.id}">
       <span class="row gap6 small b">${logo(t.unit_code, 18)}${esc(unitName(bizOf(t.unit_code)))}</span>
       <span class="row between"><b>${esc(t.title)}</b>${stCell(t.status)}</span>
       <span class="small muted">PIC ${avatar(t.pic_id, 18)} <b>${esc(nick(t.pic_id))}</b> · reviewer <b>${esc(nick(t.reviewer_id))}</b> · v${t.version} · putaran ${t.round}</span>
-      ${t.status === 'revisi' ? `<span class="small ${late(t) ? 'red' : ''}">Tenggat revisi ${fdate(t.revise_due)} · ${P(t.id).filter(p => p.status === 'accepted').length}/${P(t.id).length} poin diterima</span>` : ''}</a>`).join('') || `<div class="card empty-state"><p class="muted">${{ cek: 'Tidak ada yang menunggu Anda cek.', saya: 'Tidak ada pekerjaan Anda yang sedang direview.', semua: 'Tidak ada review yang berjalan.', selesai: 'Belum ada.' }[tab]}</p></div>`}</div>
+      ${t.status === 'revisi' ? `<span class="small ${late(t) ? 'red' : ''}">Tenggat revisi ${fdate(t.revise_due)} · ${P(t.id).filter(p => p.status === 'open').length} poin perlu diperbaiki</span>` : ''}</a>`).join('') || `<div class="card empty-state"><p class="muted">${{ cek: 'Tidak ada yang menunggu Anda cek.', saya: 'Tidak ada pekerjaan Anda yang sedang direview.', semua: 'Tidak ada review yang berjalan.', selesai: 'Belum ada.' }[tab]}</p></div>`}</div>
     <div>${sel ? `<a class="m-only back" href="#/review?tab=${tab}">‹ Kembali ke daftar</a>` + detailHtml(sel, P(sel.id)) : ''}</div>
   </div>`;
 
@@ -194,7 +232,7 @@ async function review(el, params, reload) {
       let x = `*Laporan Review & Revisi*\n${fdate(today())}\n${rev.length} menunggu dicek · ${rv.length} sedang revisi · ${rv.filter(late).length} revisi lewat tenggat\n`;
       if (rev.length) { x += `\n*🟡 MENUNGGU DICEK*\n`; const by = {}; rev.forEach(t => (by[t.reviewer_id] ||= []).push(t));
         for (const [r, ts] of Object.entries(by)) x += `_Reviewer ${nick(r)}:_\n` + ts.map(t => `• ${t.title} — dari ${nick(t.pic_id)} · v${t.version}`).join('\n') + '\n'; }
-      if (rv.length) x += `\n*🔴 SEDANG REVISI*\n` + rv.map(t => { const ps = P(t.id); return `• ${t.title} — ${nick(t.pic_id)} · ${ps.filter(p => p.status === 'accepted').length}/${ps.length} poin beres · tenggat ${t.revise_due ? fdate(t.revise_due) : '-'}${late(t) ? ' *(LEWAT)*' : ''}`; }).join('\n') + '\n';
+      if (rv.length) x += `\n*🔴 SEDANG REVISI*\n` + rv.map(t => { const ps = P(t.id); return `• ${t.title} — ${nick(t.pic_id)} · ${ps.filter(p => p.status === 'open').length} poin terbuka · tenggat ${t.revise_due ? fdate(t.revise_due) : '-'}${late(t) ? ' *(LEWAT)*' : ''}`; }).join('\n') + '\n';
       const done = tasks.filter(t => t.status === 'done' && t.done_at && t.done_at.slice(0, 10) >= addDays(today(), -7));
       if (done.length) x += `\n*✅ SELESAI 7 HARI TERAKHIR*\n` + done.map(t => `• ${t.title} — ${nick(t.pic_id)}`).join('\n') + '\n';
       return waReport('Review & Revisi', x + '\napp.pokama.org/#/review');
@@ -202,22 +240,9 @@ async function review(el, params, reload) {
     const b = e.target.closest('[data-r]'); if (!b) return;
     const t = sel; const act = b.dataset.r;
     try {
-      if (act === 'approve') { if (!await confirmBox('Setujui "' + t.title + '" sebagai selesai?', 'Setujui')) return; await db.rpc('pk_task_review', { p_task: t.id, p_decision: 'approve' }); toast('Disetujui. Pekerjaan selesai.'); }
-      else if (act === 'revise') {
-        const r = await modal('Minta revisi', field('Poin yang harus diperbaiki (satu baris satu poin)', '<textarea name="pts" class="inp" rows="5" placeholder="Harga belum dibandingkan 2 vendor\nTambahkan foto lokasi"></textarea>', 'PIC wajib menjawab setiap poin. Tenggat revisi 2 hari kerja.'),
-          { submit: 'Kirim revisi', onSubmit: async (f) => { await db.rpc('pk_task_review', { p_task: t.id, p_decision: 'revise', p_points: f.pts.split('\n').map(s => s.trim()).filter(Boolean) }); } });
-        if (!r) return; toast('Revisi dikirim ke ' + nick(t.pic_id));
-      }
-      else if (act === 'acc' || act === 'reopen') { await db.rpc('pk_point_accept', { p_point: b.dataset.p, p_accept: act === 'acc' }); }
-      else if (act === 'answer') {
-        const r = await modal('Jawab poin revisi', `<p class="note">${esc(b.dataset.txt)}</p>` + field('Jawaban', `<select name="st" class="inp">${opts([['fixed', 'Sudah diperbaiki'], ['disagree', 'Tidak setuju']])}</select>`) + field('Bukti atau alasan', '<input name="ans" class="inp" placeholder="Tautan / halaman / versi, atau alasan">'),
-          { onSubmit: async (f) => { await db.rpc('pk_point_answer', { p_point: b.dataset.p, p_status: f.st, p_answer: f.ans }); } });
-        if (!r) return;
-      }
-      else if (act === 'resubmit') {
-        const r = await modal('Ajukan ulang', field('Tautan hasil terbaru', `<input name="link" class="inp" value="${esc(t.last_link || '')}">`), { submit: 'Ajukan ulang', onSubmit: async (f) => { await db.rpc('pk_task_submit', { p_task: t.id, p_link: f.link, p_note: 'ajukan ulang' }); } });
-        if (!r) return; toast('Diajukan ulang ke ' + nick(t.reviewer_id));
-      }
+      if (act === 'approve') { if (!await approveTask(t)) return; }
+      else if (act === 'revise') { if (!await reviseForm(t, P(t.id))) return; }
+      else if (act === 'resubmit') { if (!await resubmitForm(t, P(t.id))) return; }
       reload();
     } catch (er) { toast(er.message, 'err'); }
   };
@@ -235,13 +260,12 @@ async function review(el, params, reload) {
       <h3>Poin review (${pts.length})</h3>
       ${pts.length ? `<ul class="pts">${pts.map(p => `<li><div class="row between gap"><span>${esc(p.text)}</span>${chip({ open: 'Belum dijawab', fixed: 'Sudah diperbaiki', disagree: 'Tidak setuju', accepted: 'Diterima' }[p.status], { open: 'red', fixed: 'blue', disagree: 'yellow', accepted: 'green' }[p.status])}</div>
         ${p.answer ? `<small class="muted">↳ ${esc(p.answer)}</small>` : ''}
-        <div class="row gap">${isPic && t.status === 'revisi' && p.status === 'open' ? `<button class="btn sm" data-r="answer" data-p="${p.id}" data-txt="${esc(p.text)}">Jawab</button>` : ''}
-        ${isRev && t.status === 'review' && ['fixed', 'disagree'].includes(p.status) ? `<button class="btn sm pri" data-r="acc" data-p="${p.id}">Terima</button><button class="btn sm" data-r="reopen" data-p="${p.id}">Masih kurang</button>` : ''}</div></li>`).join('')}</ul>` : '<p class="muted small">Belum ada poin.</p>'}
+        <div class="row gap"></div></li>`).join('')}</ul>` : '<p class="muted small">Belum ada poin.</p>'}
       <div class="row gap wrap">
-        ${isRev && t.status === 'review' ? `<button class="btn pri" data-r="approve" ${notAcc ? 'disabled title="Terima semua poin dulu"' : ''}>Setujui · selesai</button><button class="btn" data-r="revise">Minta revisi</button>` : ''}
-        ${isPic && t.status === 'revisi' ? `<button class="btn pri" data-r="resubmit" ${open ? 'disabled title="Jawab semua poin dulu"' : ''}>Ajukan ulang</button>` : ''}
+        ${isRev && t.status === 'review' ? `<button class="btn pri" data-r="approve">Setujui · selesai</button><button class="btn" data-r="revise">Minta revisi</button>` : ''}
+        ${isPic && t.status === 'revisi' ? `<button class="btn pri" data-r="resubmit">Ajukan ulang</button>` : ''}
       </div>
-      ${isRev && t.status === 'review' && notAcc ? `<p class="small muted">${notAcc} poin belum diterima. Terima atau kembalikan setiap poin, baru bisa disetujui.</p>` : ''}
+      ${isPic && t.status === 'revisi' && open ? `<p class="small muted">Perbaiki ${open} poin di atas, lalu Ajukan ulang dan centang yang sudah beres.</p>` : ''}
     </section>`;
   }
 }

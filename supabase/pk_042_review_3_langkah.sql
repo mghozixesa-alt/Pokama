@@ -1,0 +1,7 @@
+-- pk_042 (diterapkan 4 Nov 2026): alur review 3 langkah
+-- pk_task_resubmit(p_task, p_link, p_answers jsonb [{id, fixed, note}]): PIC ajukan ulang + jawab semua poin terbuka sekaligus
+--   (poin tidak dicentang wajib beralasan → 'disagree'); memanggil pk_point_answer lalu pk_task_submit.
+-- pk_task_decide(p_task, 'approve'|'revise', p_points text[], p_reopen uuid[], p_note):
+--   approve → semua poin otomatis 'accepted' lalu pk_task_review approve;
+--   revise  → poin yang sudah dijawab otomatis 'accepted' kecuali p_reopen (dibuka lagi), poin baru ditambah.
+-- Isi lengkap: lihat fungsi di database. pk_task_review/pk_point_answer/pk_point_accept lama tetap ada.
