@@ -128,6 +128,7 @@ begin
   select * into pr from public.pk_fin_products where id = p_product for update;
   if pr.id is null then raise exception 'Produk tidak ditemukan'; end if;
   if pr.kind = 'jasa' then return 0; end if;
+  if p_qty < 0 and pr.qty + p_qty < 0 then raise exception 'Stok % tidak cukup (tersisa % %)', pr.name, pr.qty, pr.uom; end if;
   if p_qty > 0 then
     c := coalesce(p_cost, pr.avg_cost);
     update public.pk_fin_products set avg_cost = case when greatest(qty, 0) + p_qty > 0 then round((greatest(qty, 0) * avg_cost + p_qty * c) / (greatest(qty, 0) + p_qty), 4) else c end,

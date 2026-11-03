@@ -3,6 +3,7 @@
    Semua dokumen membukukan jurnal lewat pk_fin_post (supabase/042_buku_biaya_kas.sql),
    jadi Laba Rugi, Neraca, dan laporan lain di /keuangan langsung ikut berubah. */
 import { makeSession, api, esc, toast } from '/mitra/af.js';
+import * as M from '/buku/modul.js';
 
 const LOCAL = ['localhost', '127.0.0.1'].includes(location.hostname);
 const A = LOCAL && window.__bukuMock ? window.__bukuMock : api(makeSession('pokama.session'));
@@ -76,17 +77,18 @@ function cashOpts(list, sel, blank) {
 
 /* ---------- kerangka ---------- */
 const NAV = [
-  ['dasbor', 'Dasbor', 'dash'], ['jual', 'Penjualan', 'jual', 'soon'], ['beli', 'Pembelian', 'beli', 'soon'], ['biaya', 'Biaya', 'biaya'],
-  ['kas', 'Kas & Bank', 'bank'], ['stok', 'Produk & Stok', 'stok', 'soon'], ['aset', 'Aset Tetap', 'aset', 'soon'], ['akun', 'Daftar Akun', 'akun'],
+  ['dasbor', 'Dasbor', 'dash'], ['jual', 'Penjualan', 'jual', 'nbj'], ['beli', 'Pembelian', 'beli'], ['biaya', 'Biaya', 'biaya', 'nb'],
+  ['kas', 'Kas & Bank', 'bank'], ['stok', 'Produk & Stok', 'stok'], ['aset', 'Aset Tetap', 'aset'], ['akun', 'Daftar Akun', 'akun'],
 ];
-const REPORTS = [['/keuangan#labarugi', 'Laba Rugi'], ['/keuangan#neraca', 'Neraca'], ['/keuangan#aruskas', 'Arus Kas'], ['#bukubesar', 'Buku Besar'], ['/keuangan#jurnal', 'Jurnal Umum']];
+const REPORTS = [['#labarugi', 'Laba Rugi'], ['#neraca', 'Neraca'], ['#aruskas', 'Arus Kas'], ['#bukubesar', 'Buku Besar'], ['#jurnal', 'Jurnal Umum'], ['#pajak', 'Pajak']];
+const MORE = [['anggaran', 'Anggaran & Target'], ['gaji', 'Gaji & klaim petugas'], ['persetujuan', 'Persetujuan & antrean'], ['integrasi', 'Integrasi & tutup buku']];
 function shell() {
   const ini = (ME && (ME.code || (ME.nickname || ME.name || '?').slice(0, 2))) || '?';
   document.getElementById('top').innerHTML = `
     <button class="btn sm menu-b" type="button" data-menu aria-label="Menu">${svg('menu')}</button>
     <a class="brand" href="#dasbor"><img src="/img/pokama-logo.png" alt="Pokama"></a>
-    <a class="qa" aria-disabled="true" title="Segera">${'<span class="plus">+</span>'} Jual</a>
-    <a class="qa" aria-disabled="true" title="Segera"><span class="plus">+</span> Beli</a>
+    <a class="qa" href="#jual/baru"><span class="plus">+</span> Jual</a>
+    <a class="qa" href="#beli/baru"><span class="plus">+</span> Beli</a>
     <a class="qa" href="#biaya/baru"><span class="plus">+</span> Biaya</a>
     <span class="sp"></span>
     <a class="back" href="/keuangan">Panel Keuangan</a>
@@ -94,10 +96,10 @@ function shell() {
     <span class="co">PT Popo Karya Investama</span>
     <span class="me" title="${esc(ME ? ME.name : '')}">${ME && ME.photo ? `<img src="${esc(ME.photo)}" alt="">` : esc(String(ini).toUpperCase())}</span>`;
   document.getElementById('side').innerHTML = `<nav aria-label="Menu keuangan">
-    ${NAV.map(([k, l, ic, soon]) => soon ? `<a aria-disabled="true">${svg(ic)}${l}<span class="soon">segera</span></a>`
-      : `<a href="#${k}" data-nav="${k}">${svg(ic)}<span>${l}</span>${k === 'biaya' ? '<span class="nb" data-nb hidden></span>' : ''}</a>`).join('')}
-    <details class="grp" open><summary>${svg('lap')}Laporan</summary><div class="sub">${REPORTS.map(([h, l]) => `<a href="${h}"${h[0] === '#' ? ` data-nav="${h.slice(1)}"` : ''}>${l}</a>`).join('')}<a href="#laporan" data-nav="laporan">Semua laporan</a></div></details>
-    <hr><a href="/keuangan#saldo">${svg('gear')}Saldo awal & pengaturan</a></nav>`;
+    ${NAV.map(([k, l, ic, nb]) => `<a href="#${k}" data-nav="${k}">${svg(ic)}<span>${l}</span>${nb === 'nb' ? '<span class="nb" data-nb hidden></span>' : ''}</a>`).join('')}
+    <details class="grp" open><summary>${svg('lap')}Laporan</summary><div class="sub">${REPORTS.map(([h, l]) => `<a href="${h}" data-nav="${h.slice(1)}">${l}</a>`).join('')}<a href="#laporan" data-nav="laporan">Semua laporan</a></div></details>
+    <details class="grp"><summary>${svg('jurnal')}Lainnya</summary><div class="sub">${MORE.map(([k, l]) => `<a href="#${k}" data-nav="${k}">${l}</a>`).join('')}</div></details>
+    <hr><a href="/keuangan#saldo">${svg('gear')}Saldo awal & pengaturan</a><a href="/keuangan">${svg('dash')}Panel Keuangan grup</a></nav>`;
   document.getElementById('bottom').innerHTML = [['dasbor', 'Dasbor', 'dash'], ['biaya', 'Biaya', 'biaya'], ['biaya/baru', 'Catat', 'plus', 'add'], ['kas', 'Kas', 'bank'], ['akun', 'Akun', 'akun']]
     .map(([k, l, ic, c]) => `<a href="#${k}" data-nav="${k}"${c ? ' class="add"' : ''}>${c ? `<span class="dot">${svg(ic, 22)}</span>` : svg(ic, 22)}${l}</a>`).join('');
 }
@@ -106,29 +108,6 @@ function markNav(v) {
   document.getElementById('side').classList.remove('open');
 }
 const header = (title, right = '', crumb = '') => `<div class="ph">${crumb ? `<div class="crumb">${crumb}</div>` : ''}<h1>${title}</h1><span class="sp"></span>${right}</div>`;
-
-/* ---------- Dasbor ---------- */
-async function vDasbor() {
-  const [f, t] = range('bulan');
-  const [cs, ex] = await Promise.all([A.rpc('pk_fin_cash_summary', { p_from: f, p_to: t }), A.rpc('pk_fin_expense_list', { p_from: range('3bln')[0], p_to: t })]);
-  const cash = sum(cs, a => a.bal), inn = sum(cs, a => a.in), out = sum(cs, a => a.out), s = ex.sum;
-  const top = [...cs].sort((a, b) => Math.abs(b.bal) - Math.abs(a.bal)).slice(0, 8);
-  const recent = ex.rows.slice(0, 8);
-  setBadge(s.n_belum);
-  return header('Dasbor', `<a class="btn pri" href="#biaya/baru">${svg('plus', 16)} Catat biaya</a>`) + `
-    <div class="grid g4">
-      <a class="sum t" href="#kas"><span>Total kas & bank</span><b>${rp(cash)}</b><small>${cs.length} rekening</small></a>
-      <div class="sum"><span>Uang masuk bulan ini</span><b>${rp(inn)}</b><small>semua rekening</small></div>
-      <div class="sum a"><span>Uang keluar bulan ini</span><b>${rp(out)}</b><small>semua rekening</small></div>
-      <a class="sum r" href="#biaya" data-st="belum"><span>Biaya belum dibayar</span><b>${rp(s.belum)}</b><small>${s.n_belum} tagihan${s.n_telat ? ` · <span class="neg b">${s.n_telat} lewat jatuh tempo</span>` : ''}</small></a>
-    </div>
-    <div class="grid g2" style="margin-top:14px">
-      <section class="card pad"><h2>Saldo rekening</h2>${top.length ? `<table class="tbl"><tbody>${top.map(a => `<tr class="go" data-href="#kas/${a.code}"><td>${esc(a.name)}<div class="small mute">${esc(uname(a.unit) )}</div></td><td class="r b${a.bal < 0 ? ' neg' : ''}">${rp(a.bal)}</td></tr>`).join('')}</tbody></table>` : '<p class="mute">Belum ada rekening.</p>'}
-        <p style="margin:10px 0 0"><a class="lnk" href="#kas">Lihat semua rekening ›</a></p></section>
-      <section class="card pad"><h2>Biaya terakhir</h2>${recent.length ? `<table class="tbl"><tbody>${recent.map(r => `<tr class="go" data-href="#biaya/${r.id}"><td><b>${esc(r.party || r.accs || r.code)}</b><div class="small mute">${tgl(r.date)} · ${esc(r.code)}</div></td><td class="r">${rp(r.total)}<div>${pill(r.status)}</div></td></tr>`).join('')}</tbody></table>` : '<p class="mute">Belum ada biaya dicatat. Mulai dari tombol <b>+ Biaya</b> di atas.</p>'}
-        <p style="margin:10px 0 0"><a class="lnk" href="#biaya">Lihat semua biaya ›</a></p></section>
-    </div>`;
-}
 
 /* ---------- Biaya: daftar ---------- */
 async function vBiaya() {
@@ -174,7 +153,7 @@ async function vBiayaBaru() {
       </div>
       <div class="fg">
         <label class="w2"><span class="req">Penerima / vendor</span><input class="inp" name="party" list="partyList" placeholder="Nama bengkel, toko, orang" maxlength="120"></label>
-        <label data-pay><span class="req">Bayar dari</span><select class="inp" name="pay_acc">${cashOpts(CA, last, 'Pilih kas / bank')}</select></label>
+        <label data-payf><span class="req">Bayar dari</span><select class="inp" name="pay_acc">${cashOpts(CA, last, 'Pilih kas / bank')}</select></label>
         <label><span class="req">Tanggal transaksi</span><input class="inp" type="date" name="date" value="${d}" max="${d}"></label>
         <label data-due hidden><span>Jatuh tempo</span><input class="inp" type="date" name="due"></label>
         <label><span class="req">Unit bisnis</span><select class="inp" name="unit">${unitOpts(ls('buku.unit') || 'GK')}</select></label>
@@ -208,7 +187,7 @@ function wireBiayaForm() {
     if (e.target.matches('.num')) { fmt(e.target); calc(); }
     if (e.target.dataset.l === 'asset') assetSearch(e.target.value);
   });
-  f.later.addEventListener('change', () => { f.querySelector('[data-pay]').hidden = f.later.checked; f.querySelector('[data-due]').hidden = !f.later.checked; if (f.later.checked && !f.due.value) { const d = D(f.date.value || today()); d.setDate(d.getDate() + 30); f.due.value = ymd(d); } });
+  f.later.addEventListener('change', () => { f.querySelector('[data-payf]').hidden = f.later.checked; f.querySelector('[data-due]').hidden = !f.later.checked; if (f.later.checked && !f.due.value) { const d = D(f.date.value || today()); d.setDate(d.getDate() + 30); f.due.value = ymd(d); } });
   f.addEventListener('click', async (e) => {
     if (e.target.closest('[data-addrow]')) { const AC = (await accounts()).filter(a => !a.is_cash && ['beban', 'hpp', 'beban_lain', 'aset'].includes(a.grp) && !a.code.startsWith('1-107')); document.getElementById('lines').insertAdjacentHTML('beforeend', lineRow({}, AC)); }
     if (e.target.closest('[data-delrow]')) { const rows = f.querySelectorAll('#lines tr'); if (rows.length > 1) e.target.closest('tr').remove(); calc(); }
@@ -413,17 +392,6 @@ async function vBukuBesar() {
   return header('Buku Besar', '', '<a href="#laporan">Laporan</a> › Buku Besar') + `<div class="tools"><select class="inp" data-bb style="min-width:280px">${accOpts(AC, sel)}</select></div><div id="bb"></div>`;
 }
 
-/* ---------- Laporan ---------- */
-function vLaporan() {
-  const R = [['/keuangan#labarugi', 'pl', 'Laba Rugi', 'Pendapatan, HPP, beban, dan laba per unit bisnis, lini, atau divisi. Bisa dibandingkan dengan periode lalu.'],
-    ['/keuangan#neraca', 'bs', 'Neraca', 'Aset, kewajiban, dan ekuitas per tanggal.'], ['/keuangan#aruskas', 'cash', 'Arus Kas', 'Uang masuk dan keluar per kegiatan.'],
-    ['#bukubesar', 'jurnal', 'Buku Besar', 'Semua transaksi satu akun beserta saldo berjalan.'], ['/keuangan#jurnal', 'akun', 'Jurnal Umum', 'Semua jurnal dari Biaya, Kas & Bank, Sistem Kerja, dan sumber lain.'],
-    ['/keuangan#pihak', 'wallet', 'Hutang & Piutang', 'Umur hutang dan piutang per pihak.'], ['/keuangan#unit', 'dash', 'Kinerja per Unit Bisnis', 'Rentalaja, TripinAja, Niagaaja setelah biaya holding.'],
-    ['/keuangan#proyeksi', 'pl', 'Proyeksi Kas 13 Minggu', 'Perkiraan saldo kas dari kewajiban & cicilan.']];
-  return header('Laporan') + `<div class="banner info">Laporan memakai buku yang sama. Biaya dan transaksi kas yang dicatat di sini langsung muncul di semua laporan.</div>
-    <div class="grid g2">${R.map(([h, ic, t, d]) => `<a class="card rep" href="${h}"><span class="ic">${svg(ic, 20)}</span><span><b>${t}</b><small>${d}</small></span></a>`).join('')}</div>`;
-}
-
 /* ---------- router ---------- */
 function panel(html, after) { close(); const el = document.createElement('div'); el.className = 'scrim'; el.innerHTML = `<div class="panel" role="dialog" aria-modal="true">${html}</div>`; document.body.appendChild(el); el.addEventListener('click', (e) => { if (e.target === el || e.target.closest('[data-close]')) close(); }); if (after) after(el.querySelector('.panel')); const f = el.querySelector('select,input'); if (f) f.focus(); }
 function close() { document.querySelectorAll('.scrim').forEach(s => s.remove()); }
@@ -436,17 +404,17 @@ async function render() {
   app.innerHTML = '<p class="loading">Memuat…</p>';
   try {
     let html;
-    if (v === 'dasbor') html = await vDasbor();
-    else if (v === 'biaya') html = a === 'baru' ? await vBiayaBaru() : a ? await vBiayaDetail(a) : await vBiaya();
+    if (v === 'biaya') html = a === 'baru' ? await vBiayaBaru() : a ? await vBiayaDetail(a) : await vBiaya();
     else if (v === 'kas') html = a ? await vLedger(a, 'kas') : await vKas();
     else if (v === 'akun') html = a ? await vLedger(a, 'akun') : await vAkun();
     else if (v === 'bukubesar') html = await vBukuBesar();
-    else if (v === 'laporan') html = vLaporan();
+    else if (M.views[v]) html = await M.views[v](a);
     else { location.hash = '#dasbor'; return; }
     if (my !== seq) return;
     app.innerHTML = html; app.focus({ preventScroll: true }); window.scrollTo(0, 0);
     if (v === 'biaya' && a === 'baru') wireBiayaForm();
     if (v === 'bukubesar') loadBB();
+    M.after(v, a);
   } catch (e) {
     if (my !== seq) return;
     app.innerHTML = `<div class="card pad"><h2>Halaman gagal dimuat</h2><p class="mute">${esc(e.message)}</p><button class="btn" type="button" onclick="location.reload()">Muat ulang</button></div>`;
@@ -460,15 +428,19 @@ async function loadBB() {
 }
 let qTimer = null;
 document.addEventListener('input', (e) => {
+  if (M.onInput(e)) return;
   if (e.target.matches('[data-q]')) { clearTimeout(qTimer); qTimer = setTimeout(async () => { S.q = e.target.value.trim(); const pos = e.target.selectionStart; await render(); const i = app.querySelector('[data-q]'); if (i) { i.focus(); i.setSelectionRange(pos, pos); } }, 350); }
 });
 document.addEventListener('change', (e) => {
+  if (M.onChange(e)) return;
   if (e.target.matches('[data-per]')) { S.per = e.target.value; ls('buku.per', S.per); if (route().v === 'bukubesar') loadBB(); else render(); }
   if (e.target.matches('[data-bb]')) loadBB();
 });
 document.addEventListener('click', async (e) => {
   const st = e.target.closest('[data-st]'); if (st) { e.preventDefault(); S.st = st.dataset.st; if (location.hash !== '#biaya') location.hash = '#biaya'; else render(); return; }
   if (e.target.closest('[data-menu]')) { document.getElementById('side').classList.toggle('open'); return; }
+  const c0 = e.target.closest('[data-cash]'); if (c0) { e.preventDefault(); cashPanel(c0.dataset.cash, c0.dataset.acc); return; }
+  if (M.onClick(e)) return;
   const c = e.target.closest('[data-cash]'); if (c) { cashPanel(c.dataset.cash, c.dataset.acc); return; }
   if (e.target.closest('[data-pay]')) { payPanel(route().a); return; }
   if (e.target.closest('[data-void]')) { voidPanel(route().a); return; }
@@ -490,6 +462,9 @@ async function exportLedger(code) {
     .concat(L.rows.map(r => [r.date, r.code, r.ref, r.memo, r.party, SRC[r.source] || r.source, r.d, r.c, r.run])));
 }
 window.addEventListener('hashchange', () => { close(); render(); });
+async function rerender(sel) { const i = app.querySelector(sel), pos = i ? i.selectionStart : 0; await render(); const j = app.querySelector(sel); if (j) { j.focus(); try { j.setSelectionRange(pos, pos); } catch (e) { /* abaikan */ } } }
+M.init({ A, esc, toast, rp, num, tgl, MON, MONL, BIZN, LOGO, SRC, sum, parseNum, today, ymd, D, range, perSel, S, canWrite, header, svg, accounts, cashAccs, accOpts, unitOpts, cashOpts,
+  uname, panel, close, render, rerender, route, setBadge, ls, csvDl, assetSearch, assetId: (l) => ASSET_CACHE[l] || null, UNITS: () => UNITS, ME: () => ME || {} });
 
 async function boot() {
   try { const u = await A.get('pk_units?select=code,name,kind,parent,sort&is_active=eq.true&order=sort'); if (Array.isArray(u)) UNITS = u; } catch (e) { /* tetap jalan */ }
