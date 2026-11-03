@@ -23,7 +23,7 @@ const BIZN = { RA: 'Rentalaja', WG: 'TripinAja', NA: 'Niagaaja', HQ: 'Holding' }
 const COL = { RA: '#1D3149', WG: '#09BEAF', NA: '#5B8DEF', HQ: '#A3ACB9' };
 const POS = { penerimaan: ['Penerimaan', 'Uang masuk dari pelanggan & gateway, belum dibagi'], operasional: ['Operasional', 'Belanja harian unit & cabang'],
   kewajiban: ['Kewajiban', 'Pajak, cicilan leasing, bagi hasil'], bersama: ['Bersama & gaji owner', 'Biaya holding dan gaji owner'], investasi: ['Profit & investasi', 'Profit, cadangan aset, pilot unit baru'] };
-const SRC = { rentalaja: 'Rentalaja App', tripinaja: 'TripinAja', niagaaja: 'Niagaaja', pokama: 'Sistem Kerja', bank: 'Mutasi bank', manual: 'Penyesuaian' };
+const SRC = { rentalaja: 'Rentalaja App', tripinaja: 'TripinAja', niagaaja: 'Niagaaja', pokama: 'Sistem Kerja', bank: 'Mutasi bank', manual: 'Penyesuaian', biaya: 'Biaya (Buku)', kasbank: 'Kas & Bank (Buku)' };
 const KIND = { leasing: 'Leasing', pinjaman: 'Pinjaman', bagi_hasil: 'Bagi hasil', sewa: 'Sewa', langganan: 'Langganan', pajak: 'Pajak', lain: 'Lain-lain' };
 
 const PAGES = { ringkasan: 'Ringkasan', unit: 'Per unit bisnis', target: 'Target vs realisasi', kas: 'Kas & bank', proyeksi: 'Proyeksi kas', pf: 'Profit First',
@@ -1022,7 +1022,7 @@ function shell() {
       <div class="restrict"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#09BEAF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><span>Area terbatas · CEO, Kepala Staf, Keuangan · 2FA</span></div>
       <a class="back-link" href="/">← Sistem Kerja</a></div>
     <nav aria-label="Menu keuangan">${NAV.map(([sec, items]) => `<div class="nav-sec"><span class="nav-h">${sec}</span>${items.map(([k, l, ic, nb]) => `<a href="#${k}">${svg(ic)}<span>${l}</span>${nb ? `<b class="badge" data-nb="${nb}" hidden></b>` : ''}</a>`).join('')}</div>`).join('')}
-    <div class="nav-sec"><span class="nav-h">Modul lain</span><a href="/affiliate">${svg('users')}<span>Mitra Affiliate</span></a></div></nav>
+    <div class="nav-sec"><span class="nav-h">Modul lain</span><a href="/buku/">${svg('book')}<span>Buku Keuangan (catat biaya & kas)</span></a><a href="/affiliate">${svg('users')}<span>Mitra Affiliate</span></a></div></nav>
     <div class="side-me"><a href="/#/pengaturan" class="me">${avatar(me, 36)}<span><b>${esc(nick(me) || me.name || 'Uji lokal')}</b><small>${esc(me.title || ROLE[me.role] || '')}</small></span></a></div>`;
   document.getElementById('bottom').innerHTML = MOBILE.map(([k, l, ic, nb]) => `<a href="#${k}" data-k="${k}">${svg(ic, 22)}<span>${l}</span>${nb ? `<b class="badge" data-nb="${nb}" hidden></b>` : ''}</a>`).join('') + `<a href="#menu" data-k="menu">${svg('menu', 22)}<span>Lainnya</span></a>`;
 }

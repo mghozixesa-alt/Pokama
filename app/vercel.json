@@ -25,7 +25,7 @@
  "cleanUrls": true,
  "redirects": [
   {
-   "source": "/(sistem|marketing|keuangan|affiliate|investor|mitra|iv)(.*)",
+   "source": "/(sistem|marketing|keuangan|buku|affiliate|investor|mitra|iv)(.*)",
    "has": [
     {
      "type": "host",
@@ -113,7 +113,7 @@
    "permanent": true
   },
   {
-   "source": "/(marketing|keuangan|affiliate|privasi|mitra)(.*)",
+   "source": "/(marketing|keuangan|buku|affiliate|privasi|mitra)(.*)",
    "has": [
     {
      "type": "host",
@@ -184,6 +184,22 @@
    "permanent": true
   },
   {
+   "source": "/buku/:path*",
+   "has": [
+    {
+     "type": "host",
+     "value": "pokama.org"
+    }
+   ],
+   "destination": "https://app.pokama.org/buku/:path*",
+   "permanent": true
+  },
+  {
+   "source": "/buku",
+   "destination": "/buku/",
+   "permanent": false
+  },
+  {
    "source": "/keuangan/:path*",
    "has": [
     {
@@ -250,7 +266,7 @@
    "permanent": true
   },
   {
-   "source": "/(marketing|keuangan|affiliate|privasi)(.*)",
+   "source": "/(marketing|keuangan|buku|affiliate|privasi)(.*)",
    "has": [
     {
      "type": "host",
