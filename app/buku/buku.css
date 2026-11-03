@@ -269,3 +269,19 @@ a.mini:hover { border-color: var(--navy); }
 .doc.rdoc { overflow-x: auto; }
 .acc .io { flex-wrap: wrap; gap: 4px 10px; }
 @media (max-width: 760px) { .tbl.rpt td, .tbl.rpt th { padding: 7px 8px; font-size: 12.5px; } .rhead img { height: 26px; } }
+
+/* dasbor bergambar */
+.vrow { margin-top: 14px; }
+.dgv { grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); }
+svg.vz { width: 100%; height: auto; display: block; font-family: inherit; }
+.vcard { display: flex; flex-direction: column; } .vcap { margin: 8px 0 0; }
+.gz { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 2px; }
+.gzv { display: flex; gap: 8px; align-items: center; margin-top: -6px; } .gzv b { font-size: 26px; font-weight: 800; }
+.gzs { font-size: 11px; font-weight: 800; padding: 3px 8px; border-radius: 10px; }
+.gzl { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 8px; align-items: center; font-size: 13px; } .gzl .good { color: var(--teal-d); font-size: 12px; font-weight: 800; } .gzl .bad { color: var(--red); font-size: 12px; font-weight: 800; }
+.gz small { color: var(--mute); font-size: 12px; }
+@media (max-width: 1200px) { .g4.vrow { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 960px) { .dgv { grid-template-columns: 1fr; } .g3.vrow { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 760px) { .g4.vrow, .g3.vrow { grid-template-columns: 1fr; } }
+.vrow > .vcard svg.chart { max-height: 300px; }
+@media (max-width: 760px) { .vscroll { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 0 -4px; } .vscroll svg { min-width: 620px; } .vscroll.vwide svg { min-width: 980px; } }
