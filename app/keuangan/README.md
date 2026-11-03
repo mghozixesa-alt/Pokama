@@ -1,4 +1,6 @@
-# Panel Keuangan grup
+# Panel Keuangan grup (bagian dari aplikasi Keuangan)
+
+**4 Nov 2026: digabung dengan Buku Keuangan.** Pintu masuk satu: `app.pokama.org/buku`. Halaman di sini memakai kerangka & menu yang sama (`/buku/nav.js`, `/buku/shell.css`). Ringkasan, Target, Neraca, Arus kas, Antrean, Gaji, dan Sumber & tutup buku dialihkan ke versi /buku. Yang tetap di sini: Per unit bisnis, Laba rugi per lini/divisi, Piutang & hutang, Riwayat sistem lama, Proyeksi kas, Profit First, Kewajiban & leasing, Belanja RAB, Mutasi bank, Akun & rekening, Saldo awal, Jurnal manual.
 
 Modul Keuangan Pokama di `app.pokama.org/keuangan`. Satu buku untuk semua unit bisnis (Rentalaja, TripinAja, Niagaaja) dan Holding.
 

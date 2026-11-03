@@ -4,6 +4,7 @@
    jadi Laba Rugi, Neraca, dan laporan lain di /keuangan langsung ikut berubah. */
 import { makeSession, api, esc, toast } from '/mitra/af.js';
 import * as M from '/buku/modul.js';
+import * as N from '/buku/nav.js';
 
 const LOCAL = ['localhost', '127.0.0.1'].includes(location.hostname);
 const A = LOCAL && window.__bukuMock ? window.__bukuMock : api(makeSession('pokama.session'));
@@ -82,31 +83,8 @@ const NAV = [
 ];
 const REPORTS = [['#labarugi', 'Laba Rugi'], ['#neraca', 'Neraca'], ['#aruskas', 'Arus Kas'], ['#bukubesar', 'Buku Besar'], ['#jurnal', 'Jurnal Umum'], ['#pajak', 'Pajak']];
 const MORE = [['anggaran', 'Anggaran & Target'], ['gaji', 'Gaji & klaim petugas'], ['persetujuan', 'Persetujuan & antrean'], ['integrasi', 'Integrasi & tutup buku']];
-function shell() {
-  const ini = (ME && (ME.code || (ME.nickname || ME.name || '?').slice(0, 2))) || '?';
-  document.getElementById('top').innerHTML = `
-    <button class="btn sm menu-b" type="button" data-menu aria-label="Menu">${svg('menu')}</button>
-    <a class="brand" href="#dasbor"><img src="/img/pokama-logo.png" alt="Pokama"></a>
-    <a class="qa" href="#jual/baru"><span class="plus">+</span> Jual</a>
-    <a class="qa" href="#beli/baru"><span class="plus">+</span> Beli</a>
-    <a class="qa" href="#biaya/baru"><span class="plus">+</span> Biaya</a>
-    <span class="sp"></span>
-    <a class="back" href="/keuangan">Panel Keuangan</a>
-    <a class="back" href="/">‹ Sistem Kerja</a>
-    <span class="co">PT Popo Karya Investama</span>
-    <span class="me" title="${esc(ME ? ME.name : '')}">${ME && ME.photo ? `<img src="${esc(ME.photo)}" alt="">` : esc(String(ini).toUpperCase())}</span>`;
-  document.getElementById('side').innerHTML = `<nav aria-label="Menu keuangan">
-    ${NAV.map(([k, l, ic, nb]) => `<a href="#${k}" data-nav="${k}">${svg(ic)}<span>${l}</span>${nb === 'nb' ? '<span class="nb" data-nb hidden></span>' : ''}</a>`).join('')}
-    <details class="grp" open><summary>${svg('lap')}Laporan</summary><div class="sub">${REPORTS.map(([h, l]) => `<a href="${h}" data-nav="${h.slice(1)}">${l}</a>`).join('')}<a href="#laporan" data-nav="laporan">Semua laporan</a></div></details>
-    <details class="grp"><summary>${svg('jurnal')}Lainnya</summary><div class="sub">${MORE.map(([k, l]) => `<a href="#${k}" data-nav="${k}">${l}</a>`).join('')}</div></details>
-    <hr><a href="/keuangan#saldo">${svg('gear')}Saldo awal & pengaturan</a><a href="/keuangan">${svg('dash')}Panel Keuangan grup</a></nav>`;
-  document.getElementById('bottom').innerHTML = [['dasbor', 'Dasbor', 'dash'], ['biaya', 'Biaya', 'biaya'], ['biaya/baru', 'Catat', 'plus', 'add'], ['kas', 'Kas', 'bank'], ['akun', 'Akun', 'akun']]
-    .map(([k, l, ic, c]) => `<a href="#${k}" data-nav="${k}"${c ? ' class="add"' : ''}>${c ? `<span class="dot">${svg(ic, 22)}</span>` : svg(ic, 22)}${l}</a>`).join('');
-}
-function markNav(v) {
-  document.querySelectorAll('[data-nav]').forEach(a => { if (a.dataset.nav === v) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); });
-  document.getElementById('side').classList.remove('open');
-}
+function shell() { N.shell(ME); }
+function markNav(v) { N.mark('b:' + v); }
 const header = (title, right = '', crumb = '') => `<div class="ph">${crumb ? `<div class="crumb">${crumb}</div>` : ''}<h1>${title}</h1><span class="sp"></span>${right}</div>`;
 
 /* ---------- Biaya: daftar ---------- */
@@ -395,12 +373,13 @@ async function vBukuBesar() {
 /* ---------- router ---------- */
 function panel(html, after) { close(); const el = document.createElement('div'); el.className = 'scrim'; el.innerHTML = `<div class="panel" role="dialog" aria-modal="true">${html}</div>`; document.body.appendChild(el); el.addEventListener('click', (e) => { if (e.target === el || e.target.closest('[data-close]')) close(); }); if (after) after(el.querySelector('.panel')); const f = el.querySelector('select,input'); if (f) f.focus(); }
 function close() { document.querySelectorAll('.scrim').forEach(s => s.remove()); }
-function setBadge(n) { document.querySelectorAll('[data-nb]').forEach(b => { b.textContent = n; b.hidden = !n; }); }
+function setBadge(n) { N.setNb(n); }
 const route = () => { const [v, a] = (location.hash || '#dasbor').slice(1).split('/'); return { v: v || 'dasbor', a }; };
 async function render() {
   const { v, a } = route(), my = ++seq;
   markNav(v === 'biaya' && a === 'baru' ? 'biaya/baru' : v);
-  document.querySelectorAll('[data-nav="biaya"]').forEach(x => { if (v === 'biaya') x.setAttribute('aria-current', 'page'); });
+  if (v === 'biaya' && a === 'baru') document.querySelectorAll('.bk-side [data-nav="b:biaya"]').forEach(x => x.setAttribute('aria-current', 'page'));
+  document.title = ({ dasbor: 'Dasbor', jual: 'Penjualan', beli: 'Pembelian', biaya: 'Biaya', kas: 'Kas & Bank', stok: 'Produk & Stok', aset: 'Aset Tetap', akun: 'Daftar Akun', labarugi: 'Laba Rugi', neraca: 'Neraca', aruskas: 'Arus Kas', jurnal: 'Jurnal Umum', pajak: 'Pajak' }[v] || 'Keuangan') + ' · Pokama';
   app.innerHTML = '<p class="loading">Memuat…</p>';
   try {
     let html;
@@ -438,7 +417,6 @@ document.addEventListener('change', (e) => {
 });
 document.addEventListener('click', async (e) => {
   const st = e.target.closest('[data-st]'); if (st) { e.preventDefault(); S.st = st.dataset.st; if (location.hash !== '#biaya') location.hash = '#biaya'; else render(); return; }
-  if (e.target.closest('[data-menu]')) { document.getElementById('side').classList.toggle('open'); return; }
   const c0 = e.target.closest('[data-cash]'); if (c0) { e.preventDefault(); cashPanel(c0.dataset.cash, c0.dataset.acc); return; }
   if (M.onClick(e)) return;
   const c = e.target.closest('[data-cash]'); if (c) { cashPanel(c.dataset.cash, c.dataset.acc); return; }

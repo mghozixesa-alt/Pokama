@@ -1,0 +1,47 @@
+/* Kerangka bersama Keuangan Pokama (dipakai /buku dan /keuangan). Semua kelas berawalan bk- supaya tidak bentrok. */
+.bk-wrap { min-height: 100vh; display: grid; grid-template-columns: 248px minmax(0, 1fr); grid-template-rows: 64px 1fr; background: #F6F7F9; }
+.bk-top { grid-column: 1 / -1; display: flex; align-items: center; gap: 10px; padding: 0 20px; background: #fff; border-bottom: 1px solid #E6E8EC; position: sticky; top: 0; z-index: 20; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; }
+.bk-brand { width: 228px; display: flex; align-items: center; gap: 10px; text-decoration: none; margin-left: -4px; }
+.bk-brand img { height: 28px; display: block; }
+.bk-brand span { font-size: 12px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: #077A70; padding-left: 10px; border-left: 1px solid #E6E8EC; }
+.bk-qa { height: 38px; padding: 0 14px; border-radius: 8px; border: 1px solid #D5D9E0; background: #fff; display: inline-flex; align-items: center; gap: 6px; text-decoration: none; font-weight: 700; font-size: 14px; color: #1F2B4D; }
+.bk-qa:hover { border-color: #1F2B4D; } .bk-qa b { color: #077A70; font-weight: 800; }
+.bk-sp { flex: 1; }
+.bk-back { font-size: 13px; font-weight: 700; color: #4A5468; text-decoration: none; padding: 0 8px; }
+.bk-co { font-weight: 800; font-size: 14px; color: #1F2B4D; padding: 0 6px; }
+.bk-me { width: 38px; height: 38px; border-radius: 10px; background: #1F2B4D; color: #fff; display: inline-flex; align-items: center; justify-content: center; font-weight: 800; font-size: 13px; overflow: hidden; flex: none; }
+.bk-me img { width: 100%; height: 100%; object-fit: cover; }
+.bk-menu { display: none; width: 38px; height: 38px; border-radius: 8px; border: 1px solid #D5D9E0; background: #fff; color: #1F2B4D; align-items: center; justify-content: center; cursor: pointer; }
+
+.bk-side { background: #fff; border-right: 1px solid #E6E8EC; padding: 14px 12px 28px; position: sticky; top: 64px; height: calc(100vh - 64px); overflow: auto; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; font-size: 14px; }
+.bk-side nav { display: flex; flex-direction: column; gap: 2px; }
+.bk-side a, .bk-grp > summary { min-height: 40px; padding: 0 12px; border-radius: 10px; display: flex; align-items: center; gap: 10px; text-decoration: none; font-weight: 600; color: #1F2B4D; cursor: pointer; list-style: none; }
+.bk-grp > summary::-webkit-details-marker { display: none; }
+.bk-grp > summary::after { content: '›'; margin-left: auto; transform: rotate(90deg); color: #6B7486; transition: transform .15s; }
+.bk-grp:not([open]) > summary::after { transform: none; }
+.bk-grp { margin-top: 2px; }
+.bk-sub { padding-left: 28px; display: flex; flex-direction: column; }
+.bk-sub a { min-height: 34px; font-size: 13.5px; font-weight: 500; color: #4A5468; }
+.bk-side a:hover, .bk-grp > summary:hover { background: #F6F7F9; }
+.bk-side a[aria-current="page"] { background: #E3F7F5; font-weight: 800; color: #1F2B4D; }
+.bk-side svg { flex: none; color: #4A5468; }
+.bk-side a[aria-current="page"] svg { color: #1F2B4D; }
+.bk-nb { margin-left: auto; min-width: 22px; height: 22px; border-radius: 11px; background: #1F2B4D; color: #fff; font-size: 11px; font-weight: 800; display: inline-flex; align-items: center; justify-content: center; padding: 0 7px; }
+.bk-nb[hidden] { display: none !important; }
+.bk-bottom { display: none; }
+
+@media (max-width: 1100px) { .bk-co, .bk-back { display: none; } }
+@media (max-width: 760px) {
+  .bk-wrap { grid-template-columns: minmax(0, 1fr); grid-template-rows: 56px 1fr; }
+  .bk-top { height: 56px; padding: 0 12px; gap: 8px; }
+  .bk-brand { width: auto; } .bk-brand img { height: 24px; } .bk-brand span { display: none; }
+  .bk-qa { display: none; } .bk-menu { display: inline-flex; }
+  .bk-side { display: none; }
+  .bk-side.open { display: block; position: fixed; top: 56px; left: 0; right: 0; bottom: 64px; height: auto; z-index: 30; }
+  .bk-bottom { display: grid; grid-template-columns: repeat(5, 1fr); position: fixed; left: 0; right: 0; bottom: 0; height: 64px; background: #fff; border-top: 1px solid #E6E8EC; z-index: 25; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; }
+  .bk-bottom a { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; text-decoration: none; font-size: 11px; font-weight: 700; color: #6B7486; }
+  .bk-bottom a[aria-current="page"] { color: #1F2B4D; }
+  .bk-bottom a.add .dot { width: 44px; height: 44px; border-radius: 14px; background: #1F2B4D; color: #fff; display: flex; align-items: center; justify-content: center; margin-top: -18px; box-shadow: 0 4px 12px rgba(31, 43, 77, .3); }
+}
+@media (max-width: 760px) { .bk-wrap > .main { padding-bottom: 96px; } }
+@media print { .bk-top, .bk-side, .bk-bottom { display: none !important; } .bk-wrap { display: block; } }
