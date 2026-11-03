@@ -155,6 +155,7 @@ async function route() {
     const params = new URLSearchParams(location.hash.split('?')[1] || '');
     for (const [pk, pv] of [...params]) if (!/^[\w.-]{0,64}$/.test(pv)) params.delete(pk);
     await r[3](el, params, () => { if (current === k) route(); });
+    import('./screens/panel.js').then(m => m.mount(el, k, params)).catch(() => {});
   } catch (e) {
     if (!el.isConnected) return;
     el.innerHTML = `<div class="card"><h2>Gagal memuat</h2><p class="muted">${esc(e.message)}</p><button class="btn" onclick="location.reload()">Muat ulang</button></div>`;
