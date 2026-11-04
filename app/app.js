@@ -120,7 +120,7 @@ async function openNotifs() {
   document.addEventListener('modal:open', onOpen);
   const r = await modal('Notifikasi', list.length ? `<div class="ntf-list">${list.map(n => `<a class="ntf${n.read_at ? '' : ' new'}" data-n="${n.id}" href="${esc(n.link || '#/kkh')}"><small>${esc(KIND[n.kind] || n.kind)} · ${ftime(n.created_at)}</small><b>${esc(n.title)}</b>${n.body ? `<span>${esc(n.body)}</span>` : ''}</a>`).join('')}</div>` : '<p class="muted">Belum ada notifikasi.</p>',
     { submit: unread.length ? 'Tandai semua sudah dibaca' : null, onSubmit: async () => { await db.update('pk_notifications', `person_id=eq.${ctx.me.id}&read_at=is.null`, { read_at: new Date().toISOString() }); } });
-  if (r) { toast('Semua notifikasi ditandai dibaca'); badges(); }
+  if (r) { toast('Semua notifikasi ditandai dibaca'); badges(true); }
 }
 function menuView(el) {
   el.innerHTML = `<header class="ph"><div><h1>Menu</h1><p class="muted">${esc(ctx.me.name)} · ${esc(ctx.me.title || ROLE[ctx.me.role])}</p></div></header>
@@ -163,8 +163,10 @@ async function route() {
   badges();
 }
 // ---------- Pusat Kerja: modul Pokama sesuai peran (daftar & angka dari fungsi pk_modules) ----------
-async function loadModules() {
-  { try { const { db } = await import('./core.js'); ctx.modules = (await db.rpc('pk_modules')) || []; } catch (e) { ctx.modules = ctx.modules || []; }
+let _modAt = 0;
+async function loadModules(force) {
+  /* server kecil: daftar & angka modul cukup diperbarui tiap 2 menit */
+  { if (force || !ctx.modules || Date.now() - _modAt > 120000) { try { const { db } = await import('./core.js'); ctx.modules = (await db.rpc('pk_modules')) || []; _modAt = Date.now(); } catch (e) { ctx.modules = ctx.modules || []; } }
     const o = ctx.ops || {};
     if ((o.field || o.mgr) && ctx.me.role !== 'lapangan') ctx.modules = [{ k: 'pk_ops', name: 'Kerja Lapangan', href: OPS_URL, note: 'ops.pokama.org · absen, pengajuan, panel kerja petugas', n: 0, ext: true, sso: true }].concat(ctx.modules); }
   const nav = document.getElementById('modnav');
@@ -189,7 +191,12 @@ function modStrip() {
   const ms = ctx.modules || []; if (!ms.length) return '<div id="modstrip" hidden></div>';
   return `<section id="modstrip" class="modstrip" aria-label="Modul">${ms.map(m => `<a${m.sso ? ` data-sso="${esc(m.k)}"` : ''}${m.ext ? ' target="_blank" rel="noopener"' : ''} class="modc${m.urgent ? ' hot' : ''}" style="--mc:${(MODCOL[m.k] || ['#1D3149'])[0]}" href="${esc(m.href)}"><span class="modc-h">${modIc(m, 18, 32)}<b>${esc(m.name)}</b>${m.n ? `<b class="badge${m.urgent ? '' : ' soft'}">${m.n}</b>` : ''}</span><small>${esc(m.note || '')}</small></a>`).join('')}</section>`;
 }
-async function badges() {
+let _bAt = 0, _bLast = null;
+async function badges(force) {
+  /* lencana angka: paling sering tiap 30 detik (dulu setiap pindah halaman) */
+  const setB = (k, n) => document.querySelectorAll(`[data-badge="${k}"]`).forEach(b => { b.hidden = !n; b.textContent = n; });
+  if (!force && _bLast && Date.now() - _bAt < 30000) { Object.entries(_bLast).forEach(([k, n]) => setB(k, n)); return; }
+  _bAt = Date.now(); _bLast = _bLast || {};
   loadModules();
   try {
     const { db } = await import('./core.js');
@@ -203,7 +210,7 @@ async function badges() {
     ]);
     const nb = rb.filter(r => r.status === 'diajukan' && r.chain[r.step] === me).length + (ctx.me.role === 'keuangan' ? rb.filter(r => r.status !== 'diajukan').length : 0);
 
-    const set = (k, n) => document.querySelectorAll(`[data-badge="${k}"]`).forEach(b => { b.hidden = !n; b.textContent = n; });
+    const set = (k, n) => { _bLast[k] = n; setB(k, n); };
     set('ntf', nt.length); set('review', rv.length); set('belanja', nb);
     inboxCount().then(n => set('setuju', n));
     document.title = (nt.length ? `(${nt.length}) ` : '') + document.title.replace(/^\(\d+\) /, '');

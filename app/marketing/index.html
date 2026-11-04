@@ -1691,6 +1691,8 @@ var LOCAL = location.hostname === 'localhost' || location.hostname === '127.0.0.
 var ONLINE = false, DOCS = {}, LAST = '1970-01-01T00:00:00Z', SYNC = 'lokal', pushT = null, pushing = false, dirty = false;
 var PERSONAL = ['me', 'brand', 'week', 'plat', 'am', '_auto', 'lweek', 'ftype', 'fq', 'bmode', 'bwho', 'bm'];
 var ARR = ['camps', 'ideas', 'items', 'kols', 'reps', 'foot', 'mps', 'dirs'];
+/* JSON dengan urutan kunci tetap: database (jsonb) menyusun ulang kunci, jadi perbandingan biasa selalu "berubah" dan memicu simpan ulang terus-menerus */
+function canon(v) { if (Array.isArray(v)) return '[' + v.map(canon).join(',') + ']'; if (v && typeof v === 'object') return '{' + Object.keys(v).sort().filter(function (k) { return v[k] !== undefined; }).map(function (k) { return JSON.stringify(k) + ':' + canon(v[k]); }).join(',') + '}'; return JSON.stringify(v === undefined ? null : v); }
 function save() {
   var keep = {}; if (ONLINE) { PERSONAL.forEach(function (k) { keep[k] = S[k]; }); } else keep = S;
   try { localStorage.setItem(ONLINE ? KEY + '.saya' : KEY, JSON.stringify(keep)); } catch (e) {}
@@ -1725,7 +1727,7 @@ function syncHtml() {
 function push() {
   if (pushing) { clearTimeout(pushT); pushT = setTimeout(push, 400); return; }
   var o = snap(), rows = [], next = {};
-  Object.keys(o).forEach(function (k) { var j = JSON.stringify(o[k]); next[k] = j; if (DOCS[k] !== j) rows.push({ key: k, kind: k.split(':')[0], data: o[k], deleted: false }); });
+  Object.keys(o).forEach(function (k) { var j = canon(o[k]); next[k] = j; if (DOCS[k] !== j) rows.push({ key: k, kind: k.split(':')[0], data: o[k], deleted: false }); });
   Object.keys(DOCS).forEach(function (k) { if (!(k in next)) rows.push({ key: k, kind: k.split(':')[0], data: {}, deleted: true }); });
   dirty = false;
   if (!rows.length) { setSync('ok'); return; }
@@ -1736,7 +1738,7 @@ function push() {
 }
 function applyRow(r) {
   var k = r.key, p = k.split(':'), kind = p[0];
-  if (r.deleted) delete DOCS[k]; else DOCS[k] = JSON.stringify(r.data);
+  if (r.deleted) delete DOCS[k]; else DOCS[k] = canon(r.data);
   if (ARR.indexOf(kind) >= 0) {
     var id = p.slice(1).join(':'); S[kind] = S[kind] || [];
     var i = -1; S[kind].forEach(function (x, j) { if (x.id === id) i = j; });
@@ -1767,7 +1769,7 @@ function startOnline() {
   if (WHO && !SWITCH) S.me = mapPerson(WHO);
   if (!PEOPLE.some(function (p) { return p.n === S.me; })) S.me = LEAD;
   render();
-  return pull(true).then(function () { setInterval(function () { pull(false); }, 15000); document.addEventListener('visibilitychange', function () { if (!document.hidden) pull(false); }); });
+  return pull(true).then(function () { setInterval(function () { if (!document.hidden) pull(false); }, 30000); document.addEventListener('visibilitychange', function () { if (!document.hidden) pull(false); }); });
 }
 
 /* ---------- render & menu kiri ---------- */
