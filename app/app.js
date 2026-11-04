@@ -168,7 +168,8 @@ async function loadModules(force) {
   /* server kecil: daftar & angka modul cukup diperbarui tiap 2 menit */
   { if (force || !ctx.modules || Date.now() - _modAt > 120000) { try { const { db } = await import('./core.js'); ctx.modules = (await db.rpc('pk_modules')) || []; _modAt = Date.now(); } catch (e) { ctx.modules = ctx.modules || []; } }
     const o = ctx.ops || {};
-    if ((o.field || o.mgr) && ctx.me.role !== 'lapangan') ctx.modules = [{ k: 'pk_ops', name: 'Kerja Lapangan', href: OPS_URL, note: 'ops.pokama.org · absen, pengajuan, panel kerja petugas', n: 0, ext: true, sso: true }].concat(ctx.modules); }
+    if ((o.field || o.mgr) && ctx.me.role !== 'lapangan' && !ctx.modules.some(m => m.k === 'pk_ops' || /Kerja Lapangan/i.test(m.name || ''))) ctx.modules = [{ k: 'pk_ops', name: 'Kerja Lapangan', href: OPS_URL, note: 'ops.pokama.org · absen, pengajuan, panel kerja petugas', n: 0, ext: true, sso: true }].concat(ctx.modules); }
+  { const seen = new Set(); ctx.modules = (ctx.modules || []).filter(m => { const key = m.k || m.name; if (seen.has(key)) return false; seen.add(key); return true; }); }
   const nav = document.getElementById('modnav');
   if (nav) { nav.hidden = !ctx.modules.length; const navIt = (m => `<a href="${esc(m.href)}"${m.sso ? ` data-sso="${esc(m.k)}"` : ''}${m.ext ? ' target="_blank" rel="noopener"' : ''} title="${esc(m.note || '')}">${modIc(m, 16, 28)}<span>${esc(m.name)}</span>${m.n ? `<b class="badge${m.urgent ? '' : ' soft'}">${m.n}</b>` : ''}</a>`);
     const pm = ctx.modules.filter(m => !/^ra_/.test(m.k)), rm = ctx.modules.filter(m => /^ra_/.test(m.k));
