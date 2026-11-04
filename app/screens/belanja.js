@@ -57,6 +57,7 @@ export default async function belanja(el, params, reload) {
     db.get('pk_rab_log', 'select=*&order=at.desc&limit=600'),
   ]);
   const terms = await db.get('pk_rab_termin', 'select=*&order=n').catch(() => []);
+  const drafts = await db.get('pk_rab_drafts', 'select=*&order=updated_at.desc').catch(() => []);
   const T = (id) => terms.filter(t => t.rab_id === id);
   const plan = (r) => { const ts = T(r.id); const last = ts.length; let acc = 0; return ts.map(t => { const v = t.n === last ? r.total - acc : Math.round(r.total * t.pct / 100); acc += t.n === last ? 0 : v; return { ...t, planned: v }; }); };
   const cairTot = (r) => { const ts = T(r.id); return ts.length ? ts.reduce((s, t) => s + (t.cair_amount || 0), 0) : r.total; };
@@ -90,7 +91,9 @@ export default async function belanja(el, params, reload) {
   <div class="chips">${tabs.map(([k, l]) => `<a class="chipbtn${tab === k ? ' on' : ''}" href="#/belanja?tab=${k}&u=${scope}">${l} (${sets[k].length})</a>`).join('')}<span style="flex:1"></span>
     ${[['ALL', 'Semua unit']].concat(biz.map(u => [u.code, u.name])).map(([k, l]) => `<a class="chipbtn sm${scope === k ? ' on' : ''}" href="#/belanja?tab=${tab}&u=${k}">${k !== 'ALL' ? logo(k, 16) : ''}${esc(l)}</a>`).join('')}</div>
   <div class="split${params.get('r') ? ' picked' : ''}">
-    <div class="stack">${list.map(r => `<a class="card item${sel && sel.id === r.id ? ' sel' : ''}" style="box-shadow:inset 4px 0 0 ${ST[r.status][2]}" href="#/belanja?tab=${tab}&u=${scope}&r=${r.id}">
+    <div class="stack">${tab === 'saya' || (!list.length && drafts.length) ? drafts.map(d => `<button type="button" class="card item" data-a="draft" data-d="${d.id}" style="text-align:left;box-shadow:inset 4px 0 0 #B9C0CC">
+      <span class="row between small"><span class="b">Draft · belum dikirim</span><span class="muted">${ftime(d.updated_at)}</span></span>
+      <span class="row between"><b>${esc(d.title || 'RAB tanpa judul')}</b><b>${rp(d.total || 0)}</b></span><span class="small muted">${(d.payload.rows || []).length} barang · klik untuk melanjutkan</span></button>`).join('') : ''}${list.map(r => `<a class="card item${sel && sel.id === r.id ? ' sel' : ''}" style="box-shadow:inset 4px 0 0 ${ST[r.status][2]}" href="#/belanja?tab=${tab}&u=${scope}&r=${r.id}">
       <span class="row between small"><span class="row gap6 b">${logo(r.unit_code, 18)}${esc(unitName(r.unit_code))} · ${esc(r.code)}</span><span class="muted">${ftime(r.created_at)}</span></span>
       <span class="row between"><b>${esc(r.title)}</b><b>${rp(r.total)}</b></span>
       <span class="row between small"><span class="muted">Diajukan ${esc(nick(r.created_by))}${r.via_app ? ' · dari crew' : ''}</span>${chip(r.status === 'diajukan' ? 'Menunggu ' + nick(r.chain[r.step]) : lateLpj(r) ? 'Nota terlambat' : ST[r.status][0], lateLpj(r) ? 'red' : ST[r.status][1])}</span></a>`).join('') || '<div class="card empty-state"><p class="muted">Tidak ada RAB di sini.</p></div>'}</div>
@@ -141,9 +144,11 @@ export default async function belanja(el, params, reload) {
       <div class="row between small"><span class="muted">${its.length} barang${grp.length > 1 ? ' · ' + grp.length + ' kategori' : ''}</span>${its.length > 8 ? `<input class="inp sm" id="rab-q" placeholder="Cari barang…" style="max-width:200px">` : ''}</div>
       <div class="scroll-x rab-items"><table class="tbl compact"><thead><tr><th>Barang</th><th class="r">Qty</th><th class="r">Harga</th><th class="r">Total</th><th class="r">Realisasi</th></tr></thead><tbody>
         ${grp.map(([cat, rows]) => (grp.length > 1 ? `<tr class="cat"><td colspan="3">${esc(cat)} <small class="muted">· ${rows.length}</small></td><td class="r">${rp(rows.reduce((s, i) => s + i.qty * i.price, 0))}</td><td></td></tr>` : '') +
-          rows.map(i => `<tr data-name="${esc((i.name + ' ' + (i.vendor || '')).toLowerCase())}"><td>${esc(i.name)}${i.vendor ? `<small class="muted"> · ${esc(i.vendor)}</small>` : ''}${i.nota_link ? ` <a href="${safeUrl(i.nota_link)}" target="_blank" rel="noopener" class="small">nota ↗</a>` : ''}</td><td class="r nw">${(+i.qty).toLocaleString('id-ID')} ${esc(i.uom || '')}</td><td class="r">${rp(i.price)}</td><td class="r b">${rp(i.qty * i.price)}</td><td class="r ${i.real_amount != null && i.real_amount > i.qty * i.price ? 'red' : ''}">${i.real_amount != null ? rp(i.real_amount) : '—'}</td></tr>`).join('')).join('')}
+          rows.map(i => `<tr data-name="${esc((i.name + ' ' + (i.vendor || '')).toLowerCase())}"><td>${esc(i.name)}${i.vendor ? `<small class="muted"> · ${esc(i.vendor)}</small>` : ''}${i.unit_code && i.unit_code !== r.unit_code ? `<small class="muted"> · untuk ${esc(unitName(i.unit_code))}</small>` : ''}${i.nota_link ? ` <a href="${safeUrl(i.nota_link)}" target="_blank" rel="noopener" class="small">nota ↗</a>` : ''}</td><td class="r nw">${(+i.qty).toLocaleString('id-ID')} ${esc(i.uom || '')}</td><td class="r">${rp(i.price)}</td><td class="r b">${rp(i.qty * i.price)}</td><td class="r ${i.real_amount != null && i.real_amount > i.qty * i.price ? 'red' : ''}">${i.real_amount != null ? rp(i.real_amount) : '—'}</td></tr>`).join('')).join('')}
         <tr class="tot"><td>Total</td><td></td><td></td><td class="r">${rp(r.total)}</td><td class="r">${r.realisasi != null ? rp(r.realisasi) : '—'}</td></tr></tbody></table></div>
       ${r.realisasi != null ? `<p class="note">${r.realisasi <= cairTot(r) ? 'Sisa dana ' + rp(cairTot(r) - r.realisasi) + ' dikembalikan ke rekening unit.' : 'Kurang ' + rp(r.realisasi - cairTot(r)) + ', ajukan sebagai RAB tambahan.'}</p>` : ''}
+      ${(() => { const by = {}; its.forEach(i => { const u = i.unit_code || r.unit_code; by[u] = (by[u] || 0) + i.qty * i.price; }); const ks = Object.keys(by);
+        return ks.length > 1 || (ks[0] && ks[0] !== r.unit_code) ? `<div class="rab-cats"><b class="small">Untuk</b> ${Object.entries(by).sort((a, b) => b[1] - a[1]).map(([k, v]) => `<span>${logo(k, 14)} <span class="muted">${esc(unitName(k))}</span> <b>${rp(v)}</b></span>`).join('')} <small class="muted">· dibayar dari ${esc(unitName(r.unit_code))}, biaya masuk ke unit masing-masing</small></div>` : ''; })()}
       ${T(r.id).length ? terminBlock(r) : ''}
       ${ai.length ? `<div class="note warn"><b class="small">CEK OTOMATIS</b><ul>${ai.map(a => `<li>${esc(a)}</li>`).join('')}</ul></div>` : ''}
       ${r.note ? `<p class="note err">${esc(r.note)}</p>` : ''}
@@ -185,7 +190,11 @@ export default async function belanja(el, params, reload) {
           { submit: 'Nota sesuai', onSubmit: () => db.rpc('pk_rab_termin_check', { p_termin: tt.id, p_ok: true }) });
       else if (a.dataset.a === 'tno') ok = await modal('Kembalikan nota termin ' + tt.n, field('Apa yang kurang', '<textarea name="n" class="inp" rows="3"></textarea>'), { submit: 'Kembalikan', onSubmit: (f) => db.rpc('pk_rab_termin_check', { p_termin: tt.id, p_ok: false, p_note: f.n }) });
       else if (a.dataset.a === 'tdate') ok = await modal('Geser jadwal termin ' + tt.n, field('Tanggal cair', `<input type="date" name="d" class="inp" value="${tt.need_date || today()}">`), { submit: 'Simpan', onSubmit: (f) => db.rpc('pk_rab_termin_date', { p_termin: tt.id, p_date: f.d }) });
-      else if (a.dataset.a === 'new') ok = await rabForm();
+      else if (a.dataset.a === 'draft') { const d = drafts.find(x => x.id === a.dataset.d); ok = await rabForm(null, [], d); }
+      else if (a.dataset.a === 'new') { let loc = null; try { loc = JSON.parse(localStorage.getItem('pokama.rabdraft.' + me) || 'null'); } catch (e2) {}
+        if (loc && loc.payload && ((loc.payload.rows || []).length || loc.payload.title) && await confirmBox('Ada isian RAB yang belum terkirim' + (loc.payload.title ? ' ("' + loc.payload.title + '")' : '') + '. Lanjutkan isian itu?', 'Lanjutkan'))
+          ok = await rabForm(null, [], { id: loc.id || null, payload: loc.payload });
+        else { try { localStorage.removeItem('pokama.rabdraft.' + me); } catch (e2) {} ok = await rabForm(); } }
       else if (a.dataset.a === 'approve') { ok = await modal('Setujui ' + r.code, `<p>${esc(r.title)} · <b>${rp(r.total)}</b></p>`, { submit: 'Setujui', onSubmit: () => db.rpc('pk_rab_decide', { p_id: r.id, p_action: 'approve' }) }); }
       else if (a.dataset.a === 'revise' || a.dataset.a === 'reject') ok = await modal(a.dataset.a === 'revise' ? 'Minta revisi' : 'Tolak RAB', field(a.dataset.a === 'revise' ? 'Apa yang perlu direvisi' : 'Alasan penolakan', '<textarea name="n" class="inp" rows="3"></textarea>'),
         { submit: 'Kirim', onSubmit: (f) => db.rpc('pk_rab_decide', { p_id: r.id, p_action: a.dataset.a, p_note: f.n }) });
@@ -207,32 +216,47 @@ export default async function belanja(el, params, reload) {
     } catch (er) { toast(er.message, 'err'); }
   };
 
-  async function rabForm(r = null, its = []) {
+  async function rabForm(r = null, its = [], dft = null) {
+    const D = dft ? dft.payload || {} : null; if (D && !its.length) its = D.rows || [];
     const isLeader = ['leader', 'kepala_staf', 'ceo'].includes(ctx.me.role);
     const mine = rabs.filter(x => x.created_by === me && (!r || x.id !== r.id)).slice(0, 30);
     const cats = [...new Set(items.map(i => i.category).filter(Boolean).concat(CATS))];
     const body = (r ? `<p class="note err">${esc(r.note || '')}</p>` : '') +
-      `<div class="g2">` + field('Unit', `<select name="unit" class="inp"${r ? ' disabled' : ''}>${unitOpts(r ? r.unit_code : ctx.me.unit_code)}</select>`) +
-      field('Jenis', `<select name="kind" class="inp"${r ? ' disabled' : ''}>${opts(Object.entries(KIND), r ? r.kind : 'op')}</select>`) + `</div>` +
-      field('Untuk apa', `<input name="title" class="inp" value="${esc(r ? r.title : '')}" placeholder="Misalnya: Restock perlengkapan trip Kebon November">`) +
-      field('Tujuan & alasan (opsional)', `<textarea name="desc" class="inp" rows="2" placeholder="Kenapa perlu dibeli sekarang, dipakai untuk apa, dampaknya ke unit">${esc(r ? r.description || '' : '')}</textarea>`) +
+      `<div class="g2">` + field('Dibayar dari', `<select name="unit" class="inp"${r ? ' disabled' : ''}>${unitOpts(r ? r.unit_code : D && D.unit || ctx.me.unit_code)}</select>`, 'Unit yang mencairkan dana. Barang untuk cabang/unit lain dipilih per baris di kolom "Untuk".') +
+      field('Jenis', `<select name="kind" class="inp"${r ? ' disabled' : ''}>${opts(Object.entries(KIND), r ? r.kind : D && D.kind || 'op')}</select>`) + `</div>` +
+      field('Untuk apa', `<input name="title" class="inp" value="${esc(r ? r.title : D && D.title || '')}" placeholder="Misalnya: Restock perlengkapan trip Kebon November">`) +
+      field('Tujuan & alasan (opsional)', `<textarea name="desc" class="inp" rows="2" placeholder="Kenapa perlu dibeli sekarang, dipakai untuk apa, dampaknya ke unit">${esc(r ? r.description || '' : D && D.desc || '')}</textarea>`) +
       `<div class="rab-tools row gap wrap"><b class="lab" style="flex:1">RINCIAN BARANG</b>${mine.length ? `<select class="inp sm" id="rab-copy"><option value="">Salin dari RAB lama…</option>${mine.map(x => `<option value="${x.id}">${esc(x.code)} · ${esc(x.title)}</option>`).join('')}</select>` : ''}<button type="button" class="btn sm" data-paste>Tempel dari Excel / Sheet</button></div>
-      <div class="rab-paste" hidden><textarea class="inp mono" rows="5" id="rab-paste-t" placeholder="Salin baris dari Excel/Google Sheet lalu tempel di sini. Urutan kolom: Barang · Qty · Satuan · Harga · Kategori · Toko\nBan dalam\t6\tpcs\t45000\tSparepart\tToko Jaya"></textarea><div class="row gap"><button type="button" class="btn sm pri" data-paste-go>Masukkan ke tabel</button><span class="muted small">Kolom dipisah tab (hasil copy dari spreadsheet) atau koma. Baris judul dilewati otomatis.</span></div></div>
+      <div class="rab-paste" hidden><textarea class="inp mono" rows="5" id="rab-paste-t" placeholder="Salin baris dari Excel/Google Sheet lalu tempel di sini. Urutan kolom: Barang · Qty · Satuan · Harga · Kategori · Toko · Untuk (cabang/unit, opsional)\nBan dalam\t6\tpcs\t45000\tSparepart\tToko Jaya"></textarea><div class="row gap"><button type="button" class="btn sm pri" data-paste-go>Masukkan ke tabel</button><span class="muted small">Kolom dipisah tab (hasil copy dari spreadsheet) atau koma. Baris judul dilewati otomatis.</span></div></div>
       <datalist id="rab-cats">${cats.map(c => `<option value="${esc(c)}">`).join('')}</datalist>
-      <div class="rab-ed scroll-x"><table class="tbl compact"><thead><tr><th>#</th><th>Barang / jasa</th><th class="r">Qty</th><th>Satuan</th><th class="r">Harga satuan</th><th class="r">Subtotal</th><th>Kategori</th><th>Toko / vendor</th><th></th></tr></thead><tbody id="rab-body"></tbody></table></div>
+      <div class="rab-ed scroll-x"><table class="tbl compact"><thead><tr><th>#</th><th>Barang / jasa</th><th class="r">Qty</th><th>Satuan</th><th class="r">Harga satuan</th><th class="r">Subtotal</th><th>Kategori</th><th>Toko / vendor</th><th>Untuk (cabang/unit)</th><th></th></tr></thead><tbody id="rab-body"></tbody></table></div>
       <div class="row gap"><button type="button" class="btn sm" data-add="1">+ Baris</button><button type="button" class="btn sm" data-add="5">+ 5 baris</button><span class="muted small">Tab / Enter untuk pindah kolom. Baris kosong diabaikan.</span></div>
       <div class="rab-sum" id="rab-sum"></div>` +
-      `<details class="termin-ed" ${r && T(r.id).length ? 'open' : ''}><summary><b class="lab">CAIR BERTAHAP (OPSIONAL)</b> <span class="muted small">· dana dicairkan per termin, termin berikutnya cair setelah nota termin sebelumnya dicek Keuangan</span></summary>
-        <label class="chk" style="margin:8px 0"><input type="checkbox" name="termin_on" ${r && T(r.id).length ? 'checked' : ''}> Cairkan bertahap</label>
+      `<details class="termin-ed" ${(r && T(r.id).length) || (D && D.termin_on) ? 'open' : ''}><summary><b class="lab">CAIR BERTAHAP (OPSIONAL)</b> <span class="muted small">· dana dicairkan per termin, termin berikutnya cair setelah nota termin sebelumnya dicek Keuangan</span></summary>
+        <label class="chk" style="margin:8px 0"><input type="checkbox" name="termin_on" ${(r && T(r.id).length) || (D && D.termin_on) ? 'checked' : ''}> Cairkan bertahap</label>
         <div class="scroll-x"><table class="tbl compact"><thead><tr><th>Termin</th><th class="r">%</th><th>Jadwal cair</th><th>Untuk apa</th></tr></thead><tbody id="termin-body">
-        ${(r && T(r.id).length ? T(r.id) : [{ pct: 30 }, { pct: 40 }, { pct: 30 }]).concat([{}, {}, {}]).slice(0, 6).map((t, i) => `<tr><td class="muted">${i + 1}</td><td><input class="inp r w-qty" name="tp_${i}" inputmode="decimal" value="${t.pct != null ? +t.pct : ''}"></td><td><input type="date" class="inp" name="td_${i}" value="${t.need_date || ''}"></td><td><input class="inp" name="tn_${i}" value="${esc(t.note || '')}" placeholder="${['DP vendor', 'Material datang', 'Pelunasan', '', '', ''][i]}"></td></tr>`).join('')}
+        ${(r && T(r.id).length ? T(r.id) : D && D.terms && D.terms.length ? D.terms : [{ pct: 30 }, { pct: 40 }, { pct: 30 }]).concat([{}, {}, {}]).slice(0, 6).map((t, i) => `<tr><td class="muted">${i + 1}</td><td><input class="inp r w-qty" name="tp_${i}" inputmode="decimal" value="${t.pct != null ? +t.pct : ''}"></td><td><input type="date" class="inp" name="td_${i}" value="${t.need_date || ''}"></td><td><input class="inp" name="tn_${i}" value="${esc(t.note || '')}" placeholder="${['DP vendor', 'Material datang', 'Pelunasan', '', '', ''][i]}"></td></tr>`).join('')}
         </tbody></table></div><small class="muted" id="termin-sum">Isi 2–6 termin, total 100%. Baris kosong diabaikan.</small></details>` +
-      (r ? '' : `<div class="g2">` + field('Dibutuhkan tanggal', `<input type="date" name="need" class="inp" value="${addDays(today(), 3)}">`) +
+      (r ? '' : `<div class="g2">` + field('Dibutuhkan tanggal', `<input type="date" name="need" class="inp" value="${D && D.need || addDays(today(), 3)}">`) +
       `<div class="stack">${isLeader ? `<label class="chk"><input type="checkbox" name="crew"> Dari crew cabang (diteruskan Leader)</label>` : ''}${isLeader || ctx.me.role === 'keuangan' ? '<label class="chk"><input type="checkbox" name="emg"> Pakai dana darurat (mendadak)</label>' : ''}</div></div>`);
-    const onOpen = (ev) => { document.removeEventListener('modal:open', onOpen); edInit(ev.detail, its.length ? its : [], (id) => I(id)); };
+    const LK = 'pokama.rabdraft.' + me; let did = dft ? dft.id : null, sent = false, dirty = false;
+    const state = (form) => { const f = Object.fromEntries(new FormData(form)); const rows = edRead(form);
+      return { unit: f.unit, kind: f.kind, title: f.title || '', desc: f.desc || '', need: f.need || '', termin_on: !!f.termin_on, rows,
+        terms: [0, 1, 2, 3, 4, 5].map(i => ({ pct: f['tp_' + i] ? +String(f['tp_' + i]).replace(',', '.') : null, need_date: f['td_' + i] || null, note: f['tn_' + i] || '' })).filter(t => t.pct) }; };
+    const saveDraft = async (form) => { const st = state(form); const tot = st.rows.reduce((a, x) => a + x.qty * x.price, 0);
+      const row = { title: st.title || 'RAB tanpa judul', payload: st, total: tot, updated_at: new Date().toISOString() };
+      if (did) await db.update('pk_rab_drafts', 'id=eq.' + did, row); else { const x = await db.insert('pk_rab_drafts', row); did = (Array.isArray(x) ? x[0] : x || {}).id; }
+      try { localStorage.removeItem(LK); } catch (e) {} };
+    const onOpen = (ev) => { document.removeEventListener('modal:open', onOpen); const form = ev.detail; edInit(form, its.length ? its : [], (id) => I(id));
+      if (!r) { let t0 = 0; form.addEventListener('input', () => { dirty = true; clearTimeout(t0); t0 = setTimeout(() => { if (sent) return; try { localStorage.setItem(LK, JSON.stringify({ at: Date.now(), id: did, payload: state(form) })); } catch (e) {} }, 400); }); } };
     document.addEventListener('modal:open', onOpen);
-    return modal(r ? 'Revisi ' + r.code : 'Ajukan RAB baru', body,
-      { wide: true, submit: r ? 'Ajukan ulang' : 'Kirim RAB', onSubmit: async (f, form) => {
+    const res0 = await modal(r ? 'Revisi ' + r.code : dft ? 'Lanjutkan draft' : 'Ajukan RAB baru', body,
+      { wide: true, sticky: true, submit: r ? 'Ajukan ulang' : 'Kirim RAB',
+        extra: r ? null : { label: 'Simpan draft', onClick: async (f, form) => { await saveDraft(form); sent = true; toast('Draft tersimpan · lanjutkan dari tab RAB saya'); return 'draft'; } },
+        beforeClose: async (form) => { if (r || sent || !dirty) return true;
+          if (await confirmBox('Simpan isian RAB ini sebagai draft?', 'Simpan draft')) { await saveDraft(form); sent = true; toast('Draft tersimpan'); }
+          return true; },
+        onSubmit: async (f, form) => {
         const list = edRead(form); need(f.title, 'Isi untuk apa belanjanya');
         const bad = list.find(x => !(x.qty > 0)); if (bad) throw new Error(`Baris "${bad.name}": isi jumlah`);
         if (!list.length) throw new Error('Isi minimal satu barang beserta jumlah dan harganya');
@@ -242,8 +266,11 @@ export default async function belanja(el, params, reload) {
           if (tplan.length || T(r.id).length) await db.rpc('pk_rab_termin_set', { p_id: r.id, p_plan: tplan }); if ((f.desc || '') !== (r.description || '')) await db.rpc('pk_rab_describe', { p_id: r.id, p_desc: f.desc || null }); }
         else { const res = await db.rpc('pk_rab_submit', { p_unit: f.unit, p_kind: f.kind, p_title: f.title, p_need: f.need || null, p_items: list, p_emergency: !!f.emg, p_via_app: !!f.crew, p_for: null });
           if ((f.desc || '').trim()) await db.rpc('pk_rab_describe', { p_id: res.id, p_desc: f.desc.trim() });
-          if (tplan.length) await db.rpc('pk_rab_termin_set', { p_id: res.id, p_plan: tplan }); toast(res.code + ' terkirim · ' + list.length + ' barang'); }
+          if (tplan.length) await db.rpc('pk_rab_termin_set', { p_id: res.id, p_plan: tplan });
+          if (list.some(x => x.unit_code && x.unit_code !== f.unit)) db.rpc('pk_rab_notify_units', { p_id: res.id }).catch(() => {});
+          sent = true; try { localStorage.removeItem(LK); } catch (e) {} if (did) await db.remove('pk_rab_drafts', 'id=eq.' + did).catch(() => {}); toast(res.code + ' terkirim · ' + list.length + ' barang'); }
       } });
+    return res0;
   }
 }
 // alur persetujuan: Valuer 1 → Valuer 2 (tanpa valuer: atasan langsung), lalu Keuangan mencairkan
@@ -259,11 +286,12 @@ function edRow(x = {}) {
     <td data-l="Qty"><input class="inp r w-qty" data-k="qty" inputmode="decimal" value="${x.qty != null ? fmtN(+x.qty) : ''}"></td><td data-l="Satuan"><input class="inp w-uom" data-k="uom" value="${esc(x.uom || '')}" placeholder="pcs"></td>
     <td data-l="Harga satuan"><input class="inp r w-price" data-k="price" inputmode="numeric" value="${x.price != null && x.price !== '' ? fmtN(+x.price) : ''}"></td><td data-l="Subtotal" class="r b sub">—</td>
     <td data-l="Kategori"><input class="inp w-cat" data-k="category" list="rab-cats" value="${esc(x.category || '')}" placeholder="kategori"></td><td data-l="Toko"><input class="inp w-ven" data-k="vendor" value="${esc(x.vendor || '')}" placeholder="toko"></td>
+    <td data-l="Untuk"><select class="inp w-unit" data-k="unit_code"><option value="">ikut pembayar</option>${unitOpts(x.unit_code || '')}</select></td>
     <td class="dl"><button type="button" class="x" data-del title="Hapus baris">×</button></td></tr>`;
 }
 function edRead(form) {
   return [...form.querySelectorAll('#rab-body tr')].map(tr => { const g = (k) => (tr.querySelector(`[data-k="${k}"]`).value || '').trim();
-    return { name: g('name'), qty: +g('qty').replace(/\./g, '').replace(',', '.') || 0, price: num(g('price')) || 0, uom: g('uom') || null, category: g('category') || null, vendor: g('vendor') || null }; })
+    return { name: g('name'), qty: +g('qty').replace(/\./g, '').replace(',', '.') || 0, price: num(g('price')) || 0, uom: g('uom') || null, category: g('category') || null, vendor: g('vendor') || null, unit_code: g('unit_code') || null }; })
     .filter(x => x.name);
 }
 function edInit(form, its, itemsOf) {
@@ -273,12 +301,15 @@ function edInit(form, its, itemsOf) {
     [...body.querySelectorAll('tr')].forEach((tr, i) => { tr.querySelector('.n').textContent = i + 1; const q = +(tr.querySelector('[data-k=qty]').value || '').replace(/\./g, '').replace(',', '.') || 0; const p = num(tr.querySelector('[data-k=price]').value) || 0; tr.querySelector('.sub').textContent = q && p ? rp(q * p) : '—'; });
     const list = edRead(form); const tot = list.reduce((s, x) => s + x.qty * x.price, 0);
     const byCat = {}; list.forEach(x => { const k = x.category || 'Tanpa kategori'; byCat[k] = (byCat[k] || 0) + x.qty * x.price; });
-    const chain = myChain();
+    const chain = myChain(); const hu = (form.querySelector('[name=unit]') || {}).value;
+    const byBiz = {}, byBr = {}; list.forEach(x => { const u = x.unit_code || hu; const b = bizOf(u); byBiz[b] = (byBiz[b] || 0) + x.qty * x.price; const un = ctx.unit[u]; if (un && un.kind === 'lini') byBr[u] = (byBr[u] || 0) + x.qty * x.price; });
     form.querySelector('#rab-sum').innerHTML = list.length ? `<div class="row between"><span><b>${list.length}</b> barang · disetujui: ${esc(chain.join(' → ') || 'langsung ke Keuangan')}</span><b class="big">${rp(tot)}</b></div>
+      ${Object.keys(byBiz).length > 1 || Object.keys(byBr).length ? `<div class="rab-cats"><b class="small">Per unit bisnis</b> ${Object.entries(byBiz).sort((a, b) => b[1] - a[1]).map(([k, v]) => `<span>${logo(k, 14)} <span class="muted">${esc(unitName(k))}</span> <b>${jt(v)}</b></span>`).join('')}${Object.keys(byBr).length ? ` <b class="small">· Per cabang</b> ${Object.entries(byBr).sort((a, b) => b[1] - a[1]).map(([k, v]) => `<span><span class="muted">${esc(unitName(k))}</span> <b>${jt(v)}</b></span>`).join('')}` : ''}</div>` : ''}
       ${Object.keys(byCat).length > 1 ? `<div class="rab-cats">${Object.entries(byCat).sort((a, b) => b[1] - a[1]).map(([k, v]) => `<span><span class="muted">${esc(k)}</span> <b>${jt(v)}</b></span>`).join('')}</div>` : ''}` : '<span class="muted">Isi rincian, total dan jalur persetujuan dihitung otomatis.</span>';
   };
   add(its.length ? its : [{}, {}, {}]);
   form.addEventListener('input', (e) => { if (e.target.closest('#rab-body')) calc(); });
+  form.addEventListener('change', (e) => { if (e.target.closest('#rab-body') || e.target.name === 'unit') calc(); });
   form.addEventListener('focusout', (e) => { const k = e.target.dataset && e.target.dataset.k; if (k === 'price' && e.target.value) e.target.value = fmtN(num(e.target.value)); });
   form.addEventListener('keydown', (e) => { if (e.key !== 'Enter' || !e.target.closest('#rab-body')) return; e.preventDefault();
     const tr = e.target.closest('tr'); let nx = tr.nextElementSibling; if (!nx) { add([{}]); nx = tr.nextElementSibling; } nx.querySelector(`[data-k="${e.target.dataset.k}"]`).focus(); });
@@ -291,13 +322,15 @@ function edInit(form, its, itemsOf) {
       form.querySelector('#rab-paste-t').value = ''; form.querySelector('.rab-paste').hidden = true; toast(rows.length + ' baris dimasukkan'); }
   });
   const cp = form.querySelector('#rab-copy'); if (cp) cp.addEventListener('change', () => { if (!cp.value) return; const src = itemsOf(cp.value);
-    [...body.querySelectorAll('tr')].filter(tr => !tr.querySelector('[data-k=name]').value.trim()).forEach(tr => tr.remove()); add(src.map(i => ({ name: i.name, qty: +i.qty, uom: i.uom, price: +i.price, category: i.category, vendor: i.vendor })));
+    [...body.querySelectorAll('tr')].filter(tr => !tr.querySelector('[data-k=name]').value.trim()).forEach(tr => tr.remove()); add(src.map(i => ({ name: i.name, qty: +i.qty, uom: i.uom, price: +i.price, category: i.category, vendor: i.vendor, unit_code: i.unit_code })));
     const t = form.querySelector('[name=title]'); const r0 = cp.options[cp.selectedIndex].text.split(' · ').slice(1).join(' · '); if (!t.value) t.value = r0; cp.value = ''; toast(src.length + ' barang disalin'); });
 }
+function unitFrom(v) { const q = String(v || '').trim().toLowerCase(); if (!q) return null;
+  const u = ctx.units.find(x => x.code.toLowerCase() === q || x.name.toLowerCase() === q) || ctx.units.find(x => x.name.toLowerCase().includes(q) || q.includes(x.name.toLowerCase())); return u ? u.code : null; }
 function parsePaste(t) {
   return String(t || '').split(/\r?\n/).map(l => (l.includes('\t') ? l.split('\t') : l.split(',')).map(s => s.trim())).filter(p => p[0] && p.length >= 2)
     .map(p => { const nums = p.map(x => num(x)); // Barang · Qty · Satuan · Harga · Kategori · Toko, atau Barang · Qty · Harga
       if (p.length <= 3) return { name: p[0], qty: +p[1].replace(',', '.') || 0, price: nums[2] || 0, category: p[3] || '', vendor: p[4] || '' };
-      return { name: p[0], qty: +p[1].replace(',', '.') || 0, uom: p[2] || '', price: nums[3] || 0, category: p[4] || '', vendor: p[5] || '' }; })
+      return { name: p[0], qty: +p[1].replace(',', '.') || 0, uom: p[2] || '', price: nums[3] || 0, category: p[4] || '', vendor: p[5] || '', unit_code: unitFrom(p[6]) }; })
     .filter(x => x.qty > 0 || x.price > 0);
 }

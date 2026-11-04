@@ -1,0 +1,7 @@
+-- pk_044 (diterapkan 4 Nov 2026): RAB cair bertahap
+--   tabel pk_rab_termin; pk_rab_termin_set (2–6 termin, total 100%), pk_rab_cair → termin 1,
+--   pk_rab_termin_cair (wajib nota termin sebelumnya 'beres', CEO bisa lewati dgn alasan), pk_rab_termin_lpj, pk_rab_termin_check, pk_rab_termin_date.
+--   Nominal cair termin n = rencana kumulatif − cair sebelumnya − sisa termin beres (sisa/kekurangan otomatis).
+--   Buku: tiap termin rab.cair (kode:cair:n); LPJ penutup memakai total yang benar-benar cair. pk_inbox: termin siap cair & nota termin.
+-- pk_045: pk_rab_items.unit_code (barang untuk cabang/unit lain), biaya LPJ masuk unit tujuan per baris;
+--   pk_rab_notify_units (kabar ke Leader unit lain); tabel pk_rab_drafts (draft per orang, RLS milik sendiri).

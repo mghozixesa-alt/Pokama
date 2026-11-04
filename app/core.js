@@ -180,19 +180,22 @@ export function toast(msg, tone = 'ok') {
   document.body.appendChild(el); setTimeout(() => el.classList.add('show'), 10);
   setTimeout(() => { el.classList.remove('show'); setTimeout(() => el.remove(), 300); }, tone === 'err' ? 5200 : 3200);
 }
-export function modal(title, bodyHtml, { submit = 'Simpan', onSubmit, wide = false, danger } = {}) {
+export function modal(title, bodyHtml, { submit = 'Simpan', onSubmit, wide = false, danger, sticky = false, beforeClose, extra } = {}) {
   return new Promise((resolve) => {
     const wrap = document.createElement('div'); wrap.className = 'modal-wrap';
     wrap.innerHTML = `<div class="modal${wide ? ' wide' : ''}" role="dialog" aria-modal="true" aria-label="${esc(title)}">
       <div class="modal-h"><h2>${esc(title)}</h2><button type="button" class="x" data-close aria-label="Tutup">×</button></div>
       <form class="modal-b" novalidate>${bodyHtml}<p class="form-err" hidden></p>
       <div class="modal-f">${danger ? `<button type="button" class="btn danger" data-danger>${esc(danger.label)}</button>` : ''}<span style="flex:1"></span>
-      <button type="button" class="btn" data-close>Batal</button>${submit ? `<button type="submit" class="btn pri">${esc(submit)}</button>` : ''}</div></form></div>`;
+      ${extra ? `<button type="button" class="btn" data-extra>${esc(extra.label)}</button>` : ''}<button type="button" class="btn" data-close>Batal</button>${submit ? `<button type="submit" class="btn pri">${esc(submit)}</button>` : ''}</div></form></div>`;
     document.body.appendChild(wrap); document.body.classList.add('modal-open');
     const form = wrap.querySelector('form'); const err = wrap.querySelector('.form-err');
     const close = (v) => { wrap.remove(); if (!document.querySelector('.modal-wrap')) document.body.classList.remove('modal-open'); resolve(v); };
-    wrap.addEventListener('click', (e) => { if (e.target === wrap || e.target.closest('[data-close]')) close(null); });
-    wrap.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(null); });
+    /* sticky: klik di luar / Esc tidak menutup; beforeClose(form) boleh menahan (return false) */
+    const tryClose = async () => { if (beforeClose) { try { if (await beforeClose(form) === false) return; } catch (e) { return; } } close(null); };
+    wrap.addEventListener('click', (e) => { if (e.target.closest('[data-close]')) return tryClose(); if (e.target === wrap && !sticky) tryClose(); });
+    wrap.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !sticky) tryClose(); });
+    if (extra) wrap.querySelector('[data-extra]').addEventListener('click', () => run((f, fm) => extra.onClick(f, fm)));
     const run = async (fn) => {
       const btns = wrap.querySelectorAll('button'); btns.forEach(b => b.disabled = true); err.hidden = true;
       try { const v = await fn(Object.fromEntries(new FormData(form)), form); close(v === undefined || v === null ? true : v); }
