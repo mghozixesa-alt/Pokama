@@ -56,6 +56,10 @@ export default async function belanja(el, params, reload) {
     db.get('pk_rab_items', 'select=*&active=eq.true&order=sort'),
     db.get('pk_rab_log', 'select=*&order=at.desc&limit=600'),
   ]);
+  const terms = await db.get('pk_rab_termin', 'select=*&order=n').catch(() => []);
+  const T = (id) => terms.filter(t => t.rab_id === id);
+  const plan = (r) => { const ts = T(r.id); const last = ts.length; let acc = 0; return ts.map(t => { const v = t.n === last ? r.total - acc : Math.round(r.total * t.pct / 100); acc += t.n === last ? 0 : v; return { ...t, planned: v }; }); };
+  const cairTot = (r) => { const ts = T(r.id); return ts.length ? ts.reduce((s, t) => s + (t.cair_amount || 0), 0) : r.total; };
   const I = (id) => items.filter(i => i.rab_id === id); const L = (id) => log.filter(l => l.rab_id === id);
   const lpjDays = +ctx.settings.lpj_days || 2;
   const nKlaim = await db.get('pk_claims', 'select=id,status,approver_id,person_id&status=in.(diajukan,disetujui)').then(ks => ks.filter(k => (k.status === 'diajukan' && k.approver_id === me) || (k.status === 'disetujui' && isFin())).length).catch(() => 0);
@@ -97,6 +101,27 @@ export default async function belanja(el, params, reload) {
     <div><span>Dana cair</span><b>${esc((ctx.settings.cair_days || []).join(' & '))} ${esc(ctx.settings.cair_time || '')}</b></div><div><span>Nota</span><b>≤ ${lpjDays} hari; telat = RAB berikutnya ditahan</b></div>
     <div><span>Crew cabang</span><b>Ajukan lewat Leader / Rentalaja App</b></div><div><span>Barang ≥ Rp500 rb</span><b>Masuk daftar aset unit</b></div></div></details>`;
 
+  function terminBlock(r) {
+    const ts = plan(r); const last = ts.length; const run = r.status === 'cair';
+    const lbl = { rencana: ['Belum cair', 'gray'], cair: ['Cair · tunggu nota', 'blue'], lpj: ['Nota dicek Keuangan', 'yellow'], beres: ['Beres', 'green'] };
+    const row = (t) => { const prev = ts.find(x => x.n === t.n - 1); const st = t.n === last && t.status === 'cair' ? ['Cair · nota lewat LPJ penutup', 'blue'] : lbl[t.status];
+      const acts = [];
+      if (run && t.status === 'rencana' && isFin() && prev && prev.status === 'beres') acts.push(`<button class="btn sm pri" data-a="tcair" data-t="${t.id}">Cairkan termin ${t.n}</button>`);
+      if (run && t.status === 'rencana' && isCeo() && prev && ['cair', 'lpj'].includes(prev.status)) acts.push(`<button class="btn sm" data-a="tskip" data-t="${t.id}">Cairkan tanpa tunggu nota (CEO)</button>`);
+      if (t.status === 'cair' && t.n < last && (r.created_by === me || isFin())) acts.push(`<button class="btn sm pri" data-a="tlpj" data-t="${t.id}">Upload nota termin ${t.n}</button>`);
+      if (t.status === 'lpj' && isFin()) acts.push(`<button class="btn sm pri" data-a="tok" data-t="${t.id}">Nota sesuai</button><button class="btn sm" data-a="tno" data-t="${t.id}">Kembalikan</button>`);
+      if (t.status === 'rencana' && isFin() && !['ditolak', 'batal'].includes(r.status)) acts.push(`<button class="btn sm" data-a="tdate" data-t="${t.id}">Geser jadwal</button>`);
+      return `<tr><td><b>Termin ${t.n}</b> <small class="muted">${+t.pct}%</small>${t.note ? `<br><small class="muted">${esc(t.note)}</small>` : ''}</td><td data-l="Jadwal" class="nw">${t.need_date ? fdate(t.need_date) : '—'}</td>
+        <td data-l="Rencana" class="r">${rp(t.planned)}</td><td data-l="Cair" class="r b">${t.cair_amount != null ? rp(t.cair_amount) : '—'}</td>
+        <td data-l="Nota" class="r">${t.lpj_amount != null ? (t.lpj_link ? `<a href="${safeUrl(t.lpj_link)}" target="_blank" rel="noopener">${rp(t.lpj_amount)} ↗</a>` : rp(t.lpj_amount)) : '—'}</td>
+        <td data-l="Status">${chip(st[0], st[1])}${t.skip_note ? `<br><small class="red">dicairkan CEO tanpa tunggu nota: ${esc(t.skip_note)}</small>` : ''}${t.check_note && t.status === 'cair' ? `<br><small class="red">dikembalikan: ${esc(t.check_note)}</small>` : ''}</td>
+        <td>${acts.join(' ')}</td></tr>`; };
+    const cair = ts.reduce((s, t) => s + (t.cair_amount || 0), 0);
+    return `<h3>Cair bertahap · ${ts.length} termin</h3>
+      <div class="termin-bar" style="display:flex;gap:3px;height:10px;border-radius:6px;overflow:hidden;margin:4px 0 8px">${ts.map(t => `<span title="Termin ${t.n}" style="flex:${t.pct};background:${{ rencana: '#E3E7EE', cair: '#7FB6F0', lpj: '#F2C46D', beres: '#2BB673' }[t.status]}"></span>`).join('')}</div>
+      <div class="scroll-x"><table class="tbl compact"><thead><tr><th>Termin</th><th>Jadwal</th><th class="r">Rencana</th><th class="r">Cair</th><th class="r">Nota</th><th>Status</th><th></th></tr></thead><tbody>${ts.map(row).join('')}
+      <tr class="tot"><td>Total</td><td></td><td class="r">${rp(r.total)}</td><td class="r">${rp(cair)}</td><td class="r">${rp(ts.reduce((s, t) => s + (t.lpj_amount || 0), 0))}</td><td colspan="2" class="small muted">Termin berikutnya cair setelah nota termin sebelumnya dicek. Sisa/kekurangan termin otomatis memotong/menambah termin berikutnya.</td></tr></tbody></table></div>`;
+  }
   function detail(r) {
     const its = I(r.id); const lg = L(r.id).slice().reverse();
     const grp = Object.entries(its.reduce((g, i) => { (g[i.category || 'Lain-lain'] ||= []).push(i); return g; }, {})).sort((a, b) => b[1].reduce((s, i) => s + i.qty * i.price, 0) - a[1].reduce((s, i) => s + i.qty * i.price, 0));
@@ -118,17 +143,18 @@ export default async function belanja(el, params, reload) {
         ${grp.map(([cat, rows]) => (grp.length > 1 ? `<tr class="cat"><td colspan="3">${esc(cat)} <small class="muted">· ${rows.length}</small></td><td class="r">${rp(rows.reduce((s, i) => s + i.qty * i.price, 0))}</td><td></td></tr>` : '') +
           rows.map(i => `<tr data-name="${esc((i.name + ' ' + (i.vendor || '')).toLowerCase())}"><td>${esc(i.name)}${i.vendor ? `<small class="muted"> · ${esc(i.vendor)}</small>` : ''}${i.nota_link ? ` <a href="${safeUrl(i.nota_link)}" target="_blank" rel="noopener" class="small">nota ↗</a>` : ''}</td><td class="r nw">${(+i.qty).toLocaleString('id-ID')} ${esc(i.uom || '')}</td><td class="r">${rp(i.price)}</td><td class="r b">${rp(i.qty * i.price)}</td><td class="r ${i.real_amount != null && i.real_amount > i.qty * i.price ? 'red' : ''}">${i.real_amount != null ? rp(i.real_amount) : '—'}</td></tr>`).join('')).join('')}
         <tr class="tot"><td>Total</td><td></td><td></td><td class="r">${rp(r.total)}</td><td class="r">${r.realisasi != null ? rp(r.realisasi) : '—'}</td></tr></tbody></table></div>
-      ${r.realisasi != null ? `<p class="note">${r.realisasi <= r.total ? 'Sisa dana ' + rp(r.total - r.realisasi) + ' dikembalikan ke rekening unit.' : 'Kurang ' + rp(r.realisasi - r.total) + ', ajukan sebagai RAB tambahan.'}</p>` : ''}
+      ${r.realisasi != null ? `<p class="note">${r.realisasi <= cairTot(r) ? 'Sisa dana ' + rp(cairTot(r) - r.realisasi) + ' dikembalikan ke rekening unit.' : 'Kurang ' + rp(r.realisasi - cairTot(r)) + ', ajukan sebagai RAB tambahan.'}</p>` : ''}
+      ${T(r.id).length ? terminBlock(r) : ''}
       ${ai.length ? `<div class="note warn"><b class="small">CEK OTOMATIS</b><ul>${ai.map(a => `<li>${esc(a)}</li>`).join('')}</ul></div>` : ''}
       ${r.note ? `<p class="note err">${esc(r.note)}</p>` : ''}
       <h3>Perjalanan RAB</h3><ol class="journey">${steps.map((s, i) => `<li class="${s[1] ? 'done' : stopped && i === curIdx ? 'stop' : i === curIdx ? 'cur' : ''}"><b>${s[1] ? '✓' : stopped && i === curIdx ? '×' : i + 1}</b><span>${esc(s[0])}<small>${esc(s[2])}</small></span></li>`).join('')}</ol>
       <div class="row gap wrap">
         ${myTurn(r) || (isCeo() && r.status === 'diajukan' && r.created_by !== me) ? `<button class="btn pri" data-a="approve">${myTurn(r) ? 'Setujui' : 'Setujui langsung (CEO)'}</button><button class="btn" data-a="revise">Minta revisi</button><button class="btn danger" data-a="reject">Tolak</button>` : ''}
         ${r.status === 'revisi' && r.created_by === me ? `<button class="btn pri" data-a="resubmit">Revisi & ajukan ulang</button>` : ''}
-        ${r.status === 'siap_cair' && isFin() ? `<button class="btn pri" data-a="cair">Tandai dana sudah dicairkan</button>` : ''}
+        ${r.status === 'siap_cair' && isFin() ? `<button class="btn pri" data-a="cair">${T(r.id).length ? 'Cairkan termin 1' : 'Tandai dana sudah dicairkan'}</button>` : ''}
         ${r.status === 'diajukan' && isFin() ? `<button class="btn pri" disabled title="Persetujuan belum lengkap">Cairkan (menunggu ${esc(nick(r.chain[r.step]))})</button>` : ''}
         ${['diajukan', 'revisi', 'siap_cair'].includes(r.status) && (r.created_by === me || isCeo()) ? `<button class="btn danger" data-a="cancel">Batalkan RAB</button>` : ''}
-        ${r.status === 'cair' && (r.created_by === me || isFin()) ? `<button class="btn pri" data-a="lpj">Upload nota (LPJ)</button>` : ''}
+        ${r.status === 'cair' && (r.created_by === me || isFin()) && !T(r.id).some(t => ['rencana', 'lpj'].includes(t.status)) ? `<button class="btn pri" data-a="lpj">${T(r.id).length ? 'LPJ penutup (nota termin terakhir)' : 'Upload nota (LPJ)'}</button>` : ''}
         ${r.status === 'lpj' && isFin() ? `<button class="btn pri" data-a="close">Nota sesuai · selesai</button>` : ''}
         <button class="btn" data-a="wa">Bagikan ke WA</button>
       </div>
@@ -147,14 +173,26 @@ export default async function belanja(el, params, reload) {
           rows.forEach((i, n) => { t += `${n + 1}. ${i.name} — ${(+i.qty).toLocaleString('id-ID')} ${i.uom || ''} × ${rp(i.price)} = ${rp(i.qty * i.price)}${i.vendor ? ' (' + i.vendor + ')' : ''}\n`; }); }
         t += `\n*TOTAL ${rp(r.total)}*${r.realisasi != null ? ` · realisasi ${rp(r.realisasi)}` : ''}${r.status === 'diajukan' ? `\nMenunggu persetujuan ${nick(r.chain[r.step])}` : ''}\n\napp.pokama.org/#/belanja?r=${r.id}`;
         await waReport(r.code, t); return; }
-      if (a.dataset.a === 'new') ok = await rabForm();
+      const tt = a.dataset.t ? plan(r).find(x => x.id === a.dataset.t) : null;
+      if (a.dataset.a === 'tcair' || a.dataset.a === 'tskip') { const skip = a.dataset.a === 'tskip';
+        ok = await modal('Cairkan termin ' + tt.n + ' · ' + r.code, `<p>Rencana <b>${rp(tt.planned)}</b> (${+tt.pct}%) untuk ${esc(nick(r.created_by))}. Nominal akhir otomatis dikurangi sisa / ditambah kekurangan nota termin sebelumnya.</p>` +
+          field(skip ? 'Alasan cair tanpa menunggu nota (wajib)' : 'Catatan (mis. nomor transfer)', '<input name="n" class="inp">'),
+          { submit: 'Sudah dicairkan', onSubmit: (f) => db.rpc('pk_rab_termin_cair', { p_termin: tt.id, p_skip: skip, p_note: f.n || null }) }); }
+      else if (a.dataset.a === 'tlpj') ok = await modal('Nota termin ' + tt.n + ' · ' + r.code, `<p class="muted small" style="margin-top:0">Dana termin ini cair ${rp(tt.cair_amount)}. Isi total nota yang benar-benar terpakai.</p>` +
+          field('Total nota termin ' + tt.n + ' (Rp)', `<input name="amt" class="inp" inputmode="numeric" value="${(tt.cair_amount || 0).toLocaleString('id-ID')}">`) + field('Tautan nota (Google Drive)', '<input name="link" class="inp" placeholder="https://drive.google.com/…">'),
+          { submit: 'Kirim nota', onSubmit: (f) => db.rpc('pk_rab_termin_lpj', { p_termin: tt.id, p_amount: num(f.amt), p_link: (f.link || '').trim() }) });
+      else if (a.dataset.a === 'tok') ok = await modal('Nota termin ' + tt.n + ' sesuai?', `<p>Nota ${rp(tt.lpj_amount)} dari cair ${rp(tt.cair_amount)}${tt.lpj_amount < tt.cair_amount ? ' · sisa ' + rp(tt.cair_amount - tt.lpj_amount) + ' memotong termin berikutnya' : tt.lpj_amount > tt.cair_amount ? ' · kekurangan ' + rp(tt.lpj_amount - tt.cair_amount) + ' ditambahkan di termin berikutnya' : ''}.</p>`,
+          { submit: 'Nota sesuai', onSubmit: () => db.rpc('pk_rab_termin_check', { p_termin: tt.id, p_ok: true }) });
+      else if (a.dataset.a === 'tno') ok = await modal('Kembalikan nota termin ' + tt.n, field('Apa yang kurang', '<textarea name="n" class="inp" rows="3"></textarea>'), { submit: 'Kembalikan', onSubmit: (f) => db.rpc('pk_rab_termin_check', { p_termin: tt.id, p_ok: false, p_note: f.n }) });
+      else if (a.dataset.a === 'tdate') ok = await modal('Geser jadwal termin ' + tt.n, field('Tanggal cair', `<input type="date" name="d" class="inp" value="${tt.need_date || today()}">`), { submit: 'Simpan', onSubmit: (f) => db.rpc('pk_rab_termin_date', { p_termin: tt.id, p_date: f.d }) });
+      else if (a.dataset.a === 'new') ok = await rabForm();
       else if (a.dataset.a === 'approve') { ok = await modal('Setujui ' + r.code, `<p>${esc(r.title)} · <b>${rp(r.total)}</b></p>`, { submit: 'Setujui', onSubmit: () => db.rpc('pk_rab_decide', { p_id: r.id, p_action: 'approve' }) }); }
       else if (a.dataset.a === 'revise' || a.dataset.a === 'reject') ok = await modal(a.dataset.a === 'revise' ? 'Minta revisi' : 'Tolak RAB', field(a.dataset.a === 'revise' ? 'Apa yang perlu direvisi' : 'Alasan penolakan', '<textarea name="n" class="inp" rows="3"></textarea>'),
         { submit: 'Kirim', onSubmit: (f) => db.rpc('pk_rab_decide', { p_id: r.id, p_action: a.dataset.a, p_note: f.n }) });
       else if (a.dataset.a === 'resubmit') ok = await rabForm(r, I(r.id));
       else if (a.dataset.a === 'cancel') ok = await modal('Batalkan ' + r.code, `<p>Batalkan RAB "<b>${esc(r.title)}</b>" ${rp(r.total)}? RAB tetap tercatat dengan status Dibatalkan.</p>` + field('Alasan (opsional)', '<input name="n" class="inp">'),
         { submit: 'Ya, batalkan', onSubmit: (f) => db.rpc('pk_rab_cancel', { p_id: r.id, p_note: f.n || null }) });
-      else if (a.dataset.a === 'cair') ok = await modal('Cairkan ' + r.code, `<p>Transfer <b>${rp(r.total)}</b> ke ${esc(nick(r.created_by))} untuk "${esc(r.title)}".</p>` + field('Catatan (mis. nomor transfer)', '<input name="n" class="inp">'),
+      else if (a.dataset.a === 'cair') ok = await modal('Cairkan ' + r.code, `<p>Transfer <b>${rp(T(r.id).length ? plan(r)[0].planned : r.total)}</b>${T(r.id).length ? ' (termin 1 dari ' + T(r.id).length + ')' : ''} ke ${esc(nick(r.created_by))} untuk "${esc(r.title)}".</p>` + field('Catatan (mis. nomor transfer)', '<input name="n" class="inp">'),
         { submit: 'Sudah dicairkan', onSubmit: (f) => db.rpc('pk_rab_cair', { p_id: r.id, p_note: f.n || null }) });
       else if (a.dataset.a === 'lpj') ok = await modal('Upload nota · ' + r.code, `<p class="muted small" style="margin-top:0">Realisasi terisi sesuai anggaran. Ubah hanya yang berbeda. Kalau semua nota ada di satu folder/foto, isi tautan bersama saja.</p>` +
         field('Tautan nota bersama (folder Drive / album foto)', '<input name="all" class="inp" placeholder="https://drive.google.com/…">') +
@@ -184,6 +222,11 @@ export default async function belanja(el, params, reload) {
       <div class="rab-ed scroll-x"><table class="tbl compact"><thead><tr><th>#</th><th>Barang / jasa</th><th class="r">Qty</th><th>Satuan</th><th class="r">Harga satuan</th><th class="r">Subtotal</th><th>Kategori</th><th>Toko / vendor</th><th></th></tr></thead><tbody id="rab-body"></tbody></table></div>
       <div class="row gap"><button type="button" class="btn sm" data-add="1">+ Baris</button><button type="button" class="btn sm" data-add="5">+ 5 baris</button><span class="muted small">Tab / Enter untuk pindah kolom. Baris kosong diabaikan.</span></div>
       <div class="rab-sum" id="rab-sum"></div>` +
+      `<details class="termin-ed" ${r && T(r.id).length ? 'open' : ''}><summary><b class="lab">CAIR BERTAHAP (OPSIONAL)</b> <span class="muted small">· dana dicairkan per termin, termin berikutnya cair setelah nota termin sebelumnya dicek Keuangan</span></summary>
+        <label class="chk" style="margin:8px 0"><input type="checkbox" name="termin_on" ${r && T(r.id).length ? 'checked' : ''}> Cairkan bertahap</label>
+        <div class="scroll-x"><table class="tbl compact"><thead><tr><th>Termin</th><th class="r">%</th><th>Jadwal cair</th><th>Untuk apa</th></tr></thead><tbody id="termin-body">
+        ${(r && T(r.id).length ? T(r.id) : [{ pct: 30 }, { pct: 40 }, { pct: 30 }]).concat([{}, {}, {}]).slice(0, 6).map((t, i) => `<tr><td class="muted">${i + 1}</td><td><input class="inp r w-qty" name="tp_${i}" inputmode="decimal" value="${t.pct != null ? +t.pct : ''}"></td><td><input type="date" class="inp" name="td_${i}" value="${t.need_date || ''}"></td><td><input class="inp" name="tn_${i}" value="${esc(t.note || '')}" placeholder="${['DP vendor', 'Material datang', 'Pelunasan', '', '', ''][i]}"></td></tr>`).join('')}
+        </tbody></table></div><small class="muted" id="termin-sum">Isi 2–6 termin, total 100%. Baris kosong diabaikan.</small></details>` +
       (r ? '' : `<div class="g2">` + field('Dibutuhkan tanggal', `<input type="date" name="need" class="inp" value="${addDays(today(), 3)}">`) +
       `<div class="stack">${isLeader ? `<label class="chk"><input type="checkbox" name="crew"> Dari crew cabang (diteruskan Leader)</label>` : ''}${isLeader || ctx.me.role === 'keuangan' ? '<label class="chk"><input type="checkbox" name="emg"> Pakai dana darurat (mendadak)</label>' : ''}</div></div>`);
     const onOpen = (ev) => { document.removeEventListener('modal:open', onOpen); edInit(ev.detail, its.length ? its : [], (id) => I(id)); };
@@ -193,9 +236,13 @@ export default async function belanja(el, params, reload) {
         const list = edRead(form); need(f.title, 'Isi untuk apa belanjanya');
         const bad = list.find(x => !(x.qty > 0)); if (bad) throw new Error(`Baris "${bad.name}": isi jumlah`);
         if (!list.length) throw new Error('Isi minimal satu barang beserta jumlah dan harganya');
-        if (r) { await db.rpc('pk_rab_resubmit', { p_id: r.id, p_title: f.title, p_items: list }); if ((f.desc || '') !== (r.description || '')) await db.rpc('pk_rab_describe', { p_id: r.id, p_desc: f.desc || null }); }
+        const tplan = !f.termin_on ? [] : [0, 1, 2, 3, 4, 5].map(i => ({ pct: +String(f['tp_' + i] || '').replace(',', '.') || 0, need_date: f['td_' + i] || null, note: (f['tn_' + i] || '').trim() || null })).filter(t => t.pct > 0);
+        if (f.termin_on) { const sp = tplan.reduce((s, t) => s + t.pct, 0); if (tplan.length < 2) throw new Error('Cair bertahap: isi minimal 2 termin'); if (Math.abs(sp - 100) > 0.001) throw new Error('Cair bertahap: jumlah persentase harus 100% (sekarang ' + sp + '%)'); }
+        if (r) { await db.rpc('pk_rab_resubmit', { p_id: r.id, p_title: f.title, p_items: list });
+          if (tplan.length || T(r.id).length) await db.rpc('pk_rab_termin_set', { p_id: r.id, p_plan: tplan }); if ((f.desc || '') !== (r.description || '')) await db.rpc('pk_rab_describe', { p_id: r.id, p_desc: f.desc || null }); }
         else { const res = await db.rpc('pk_rab_submit', { p_unit: f.unit, p_kind: f.kind, p_title: f.title, p_need: f.need || null, p_items: list, p_emergency: !!f.emg, p_via_app: !!f.crew, p_for: null });
-          if ((f.desc || '').trim()) await db.rpc('pk_rab_describe', { p_id: res.id, p_desc: f.desc.trim() }); toast(res.code + ' terkirim · ' + list.length + ' barang'); }
+          if ((f.desc || '').trim()) await db.rpc('pk_rab_describe', { p_id: res.id, p_desc: f.desc.trim() });
+          if (tplan.length) await db.rpc('pk_rab_termin_set', { p_id: res.id, p_plan: tplan }); toast(res.code + ' terkirim · ' + list.length + ' barang'); }
       } });
   }
 }
