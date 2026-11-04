@@ -11,13 +11,12 @@ async function klaimForm() {
   const r = await modal('Klaim penggantian', `<p class="muted small" style="margin-top:0">Untuk uang pribadi yang sudah Anda keluarkan untuk perusahaan. Disetujui atasan langsung, lalu ditransfer Keuangan.</p>` +
     `<div class="g2">` + field('Unit', `<select name="unit" class="inp">${unitOpts(ctx.me.unit_code)}</select>`) + field('Tanggal nota', `<input type="date" name="day" class="inp" value="${today()}" max="${today()}">`) + `</div>` +
     `<div class="g2">` + field('Nominal (Rp)', '<input name="amt" class="inp" inputmode="numeric" placeholder="0">') + field('Kategori', `<select name="cat" class="inp">${KCAT.map(c => `<option>${c}</option>`).join('')}</select>`) + `</div>` +
-    field('Keterangan', '<textarea name="note" class="inp" rows="2" placeholder="Contoh: bensin survei lokasi mitra di Bandung"></textarea>') +
-    field('Foto nota (wajib)', '<input type="file" name="nota" accept="image/*" capture="environment" class="inp">'),
+    field('Keterangan / rincian', '<textarea name="note" class="inp" rows="4" placeholder="Contoh:\n1. Bensin jeep Rp100.000\n2. Tiket short jeep Rp35.000"></textarea>', 'Beberapa nota sekaligus boleh: tulis rinciannya, nominal di atas diisi totalnya.') +
+    field('Tautan nota (Google Drive)', '<input name="link" class="inp" inputmode="url" placeholder="https://drive.google.com/…">', 'Unggah foto/scan nota ke Google Drive, atur akses "Siapa saja yang memiliki link", lalu tempel tautannya. Banyak nota boleh dalam satu folder.'),
     { submit: 'Ajukan klaim', onSubmit: async (f) => {
       const amt = +String(f.amt || '').replace(/\D/g, ''); if (!amt) throw new Error('Isi nominal'); need((f.note || '').trim(), 'Tulis keterangan');
-      if (!f.nota || !f.nota.size) throw new Error('Lampirkan foto nota');
-      const path = await uploadPhoto('mku-bukti', ctx.me.id + '/klaim/' + Date.now() + '.jpg', await shrinkImage(f.nota, 1400, .8));
-      const args = { p_amount: amt, p_category: f.cat, p_note: f.note.trim(), p_photo: path, p_day: f.day || null, p_unit: f.unit || null };
+      const link = (f.link || '').trim(); if (!/^https:\/\/(drive|docs)\.google\.com\//i.test(link)) throw new Error('Tempel tautan Google Drive nota (diawali https://drive.google.com/)');
+      const args = { p_amount: amt, p_category: f.cat, p_note: f.note.trim(), p_photo: link, p_day: f.day || null, p_unit: f.unit || null };
       try { await db.rpc('pk_claim_submit', args); }
       catch (er) { if (!/DUPLIKAT/.test(er.message)) throw er; if (!await confirmBox(er.message.replace(/^.*DUPLIKAT:\s*/, ''), 'Tetap ajukan')) throw new Error('Dibatalkan'); await db.rpc('pk_claim_submit', { ...args, p_force: true }); }
     } });
@@ -27,7 +26,7 @@ async function klaimForm() {
 async function klaimView(el, params, reload) {
   const me = ctx.me.id; const ks = await db.get('pk_claims', 'select=*&order=created_at.desc&limit=300');
   const mine = ks.filter(k => k.person_id === me), dec = ks.filter(k => k.status === 'diajukan' && k.approver_id === me), pay = isFin() ? ks.filter(k => k.status === 'disetujui') : [];
-  const row = (k, acts) => `<div class="li row gap wrap" style="align-items:flex-start"><span style="flex:1;min-width:220px">${chip(KST[k.status][0], KST[k.status][1])} <b>${rp(k.amount)}</b> · ${esc(k.category || '')}${k.dup_of ? ' <span class="chip red">mirip klaim lain</span>' : ''}<br>${esc(k.note)}<br>
+  const row = (k, acts) => `<div class="li row gap wrap" style="align-items:flex-start"><span style="flex:1;min-width:220px">${chip(KST[k.status][0], KST[k.status][1])} <b>${rp(k.amount)}</b> · ${esc(k.category || '')}${k.dup_of ? ' <span class="chip red">mirip klaim lain</span>' : ''}<br><span style="white-space:pre-line">${esc(k.note)}</span><br>
       <small class="muted">${k.person_id !== me ? esc(nick(k.person_id)) + ' · ' : ''}${logo(k.unit_code, 14)} ${esc(unitName(k.unit_code))} · nota ${fdate(k.day)}${k.approver_id ? ' · atasan ' + esc(nick(k.approver_id)) : ''}${k.decide_note ? ' · ' + esc(k.decide_note) : ''}</small></span>
       <button type="button" class="btn sm" data-nota="${esc(k.photo || '')}">Nota</button>${acts || ''}</div>`;
   el.innerHTML = `<header class="ph"><div><span class="muted small">Uang pribadi yang sudah keluar untuk perusahaan · nota → atasan langsung → Keuangan transfer</span><h1>Klaim penggantian</h1></div>
@@ -40,7 +39,7 @@ async function klaimView(el, params, reload) {
     const t = e.target.closest('[data-k],[data-ok],[data-no],[data-pay],[data-cancel],[data-nota]'); if (!t) return;
     try {
       if (t.dataset.k === 'new') { if (await klaimForm()) reload(); return; }
-      if (t.dataset.nota !== undefined) { if (!t.dataset.nota) return; const w = window.open('', '_blank'); const u = await signedPhoto('mku-bukti', t.dataset.nota); if (w) w.location = u; else location.href = u; return; }
+      if (t.dataset.nota !== undefined) { if (!t.dataset.nota) return; const w = window.open('', '_blank'); const u = /^https?:/.test(t.dataset.nota) ? t.dataset.nota : await signedPhoto('mku-bukti', t.dataset.nota); if (w) w.location = u; else location.href = u; return; }
       if (t.dataset.ok) { await db.rpc('pk_claim_decide', { p_id: t.dataset.ok, p_ok: true }); toast('Disetujui · diteruskan ke Keuangan'); return reload(); }
       if (t.dataset.no) { const r = await modal('Tolak klaim', field('Alasan (dikirim ke pengaju)', '<textarea name="n" class="inp" rows="3" required></textarea>'), { submit: 'Tolak', danger: true, onSubmit: (f) => db.rpc('pk_claim_decide', { p_id: t.dataset.no, p_ok: false, p_note: f.n }) }); if (r) { toast('Ditolak'); reload(); } return; }
       if (t.dataset.pay) { const r = await modal('Tandai sudah ditransfer', field('Dibayar lewat', '<select name="ch" class="inp"><option value="transfer">Transfer bank</option><option value="tunai">Tunai</option></select>', 'Dicatat sebagai biaya di buku Keuangan.'), { submit: 'Tandai dibayar', onSubmit: (f) => db.rpc('pk_claim_paid', { p_id: t.dataset.pay, p_channel: f.ch }) }); if (r) { toast('Ditandai sudah ditransfer'); reload(); } return; }
