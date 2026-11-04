@@ -1,10 +1,56 @@
-import { safeUrl, ctx, db, esc, today, addDays, fdate, ftime, avatar, nick, modal, field, opts, toast, unitName, unitOpts, isFin, isCeo, need, chip, logo, rp, jt, num, bizOf, waReport } from '../core.js';
+import { safeUrl, ctx, db, esc, today, addDays, fdate, ftime, avatar, nick, modal, field, opts, toast, unitName, unitOpts, isFin, isCeo, need, chip, logo, rp, jt, num, bizOf, waReport, shrinkImage, uploadPhoto, signedPhoto, confirmBox } from '../core.js';
 
 const ST = { diajukan: ['Menunggu persetujuan', 'yellow', '#D99A00'], revisi: ['Diminta revisi', 'gray', '#8A94A3'], ditolak: ['Ditolak', 'gray', '#8A94A3'],
   siap_cair: ['Siap dicairkan', 'blue', '#2F6FDB'], cair: ['Dana cair · tunggu nota', 'red', '#C2410C'], lpj: ['Nota masuk · dicek Keuangan', 'blue', '#2F6FDB'], selesai: ['Selesai', 'green', '#09BEAF'], batal: ['Dibatalkan', 'gray', '#A9B4C2'] };
 const KIND = { op: 'Kebutuhan operasional', mt: 'Maintenance produk/aset' };
 
+/* ---------- Klaim penggantian: staf sudah bayar sendiri → nota → atasan langsung → Keuangan transfer ---------- */
+const KST = { diajukan: ['Menunggu atasan', 'yellow'], disetujui: ['Menunggu transfer', 'blue'], dibayar: ['Sudah ditransfer', 'green'], ditolak: ['Ditolak', 'red'], batal: ['Dibatalkan', 'gray'] };
+const KCAT = ['Transport & bensin', 'Makan & rapat', 'Perlengkapan kantor', 'Parkir & tol', 'Pulsa & internet', 'Lainnya'];
+async function klaimForm() {
+  const r = await modal('Klaim penggantian', `<p class="muted small" style="margin-top:0">Untuk uang pribadi yang sudah Anda keluarkan untuk perusahaan. Disetujui atasan langsung, lalu ditransfer Keuangan.</p>` +
+    `<div class="g2">` + field('Unit', `<select name="unit" class="inp">${unitOpts(ctx.me.unit_code)}</select>`) + field('Tanggal nota', `<input type="date" name="day" class="inp" value="${today()}" max="${today()}">`) + `</div>` +
+    `<div class="g2">` + field('Nominal (Rp)', '<input name="amt" class="inp" inputmode="numeric" placeholder="0">') + field('Kategori', `<select name="cat" class="inp">${KCAT.map(c => `<option>${c}</option>`).join('')}</select>`) + `</div>` +
+    field('Keterangan', '<textarea name="note" class="inp" rows="2" placeholder="Contoh: bensin survei lokasi mitra di Bandung"></textarea>') +
+    field('Foto nota (wajib)', '<input type="file" name="nota" accept="image/*" capture="environment" class="inp">'),
+    { submit: 'Ajukan klaim', onSubmit: async (f) => {
+      const amt = +String(f.amt || '').replace(/\D/g, ''); if (!amt) throw new Error('Isi nominal'); need((f.note || '').trim(), 'Tulis keterangan');
+      if (!f.nota || !f.nota.size) throw new Error('Lampirkan foto nota');
+      const path = await uploadPhoto('mku-bukti', ctx.me.id + '/klaim/' + Date.now() + '.jpg', await shrinkImage(f.nota, 1400, .8));
+      const args = { p_amount: amt, p_category: f.cat, p_note: f.note.trim(), p_photo: path, p_day: f.day || null, p_unit: f.unit || null };
+      try { await db.rpc('pk_claim_submit', args); }
+      catch (er) { if (!/DUPLIKAT/.test(er.message)) throw er; if (!await confirmBox(er.message.replace(/^.*DUPLIKAT:\s*/, ''), 'Tetap ajukan')) throw new Error('Dibatalkan'); await db.rpc('pk_claim_submit', { ...args, p_force: true }); }
+    } });
+  if (r) toast('Klaim diajukan ke atasan');
+  return r;
+}
+async function klaimView(el, params, reload) {
+  const me = ctx.me.id; const ks = await db.get('pk_claims', 'select=*&order=created_at.desc&limit=300');
+  const mine = ks.filter(k => k.person_id === me), dec = ks.filter(k => k.status === 'diajukan' && k.approver_id === me), pay = isFin() ? ks.filter(k => k.status === 'disetujui') : [];
+  const row = (k, acts) => `<div class="li row gap wrap" style="align-items:flex-start"><span style="flex:1;min-width:220px">${chip(KST[k.status][0], KST[k.status][1])} <b>${rp(k.amount)}</b> · ${esc(k.category || '')}${k.dup_of ? ' <span class="chip red">mirip klaim lain</span>' : ''}<br>${esc(k.note)}<br>
+      <small class="muted">${k.person_id !== me ? esc(nick(k.person_id)) + ' · ' : ''}${logo(k.unit_code, 14)} ${esc(unitName(k.unit_code))} · nota ${fdate(k.day)}${k.approver_id ? ' · atasan ' + esc(nick(k.approver_id)) : ''}${k.decide_note ? ' · ' + esc(k.decide_note) : ''}</small></span>
+      <button type="button" class="btn sm" data-nota="${esc(k.photo || '')}">Nota</button>${acts || ''}</div>`;
+  el.innerHTML = `<header class="ph"><div><span class="muted small">Uang pribadi yang sudah keluar untuk perusahaan · nota → atasan langsung → Keuangan transfer</span><h1>Klaim penggantian</h1></div>
+    <div class="row gap"><a class="btn" href="#/belanja">‹ Pengajuan Belanja</a><button class="btn pri" data-k="new">+ Klaim penggantian</button></div></header>
+  <ol class="steps"><li><b>1</b><span><strong>Ajukan</strong><small>foto nota + nominal</small></span></li><li><b>2</b><span><strong>Atasan langsung</strong><small>setujui atau tolak</small></span></li><li><b class="t">3</b><span><strong>Keuangan transfer</strong><small>tercatat di buku otomatis</small></span></li></ol>
+  ${dec.length ? `<section class="card"><h2>Perlu saya setujui (${dec.length})</h2><div class="list">${dec.map(k => row(k, `<button class="btn sm pri" data-ok="${k.id}">Setujui</button><button class="btn sm" data-no="${k.id}">Tolak</button>`)).join('')}</div></section>` : ''}
+  ${pay.length ? `<section class="card"><h2>Perlu ditransfer Keuangan (${pay.length})</h2><div class="list">${pay.map(k => row(k, `<button class="btn sm pri" data-pay="${k.id}">Tandai sudah ditransfer</button>`)).join('')}</div></section>` : ''}
+  <section class="card"><h2>Klaim saya</h2><div class="list">${mine.map(k => row(k, k.status === 'diajukan' ? `<button class="btn sm danger" data-cancel="${k.id}">Batalkan</button>` : '')).join('') || '<p class="muted">Belum ada klaim.</p>'}</div></section>`;
+  el.onclick = async (e) => {
+    const t = e.target.closest('[data-k],[data-ok],[data-no],[data-pay],[data-cancel],[data-nota]'); if (!t) return;
+    try {
+      if (t.dataset.k === 'new') { if (await klaimForm()) reload(); return; }
+      if (t.dataset.nota !== undefined) { if (!t.dataset.nota) return; const w = window.open('', '_blank'); const u = await signedPhoto('mku-bukti', t.dataset.nota); if (w) w.location = u; else location.href = u; return; }
+      if (t.dataset.ok) { await db.rpc('pk_claim_decide', { p_id: t.dataset.ok, p_ok: true }); toast('Disetujui · diteruskan ke Keuangan'); return reload(); }
+      if (t.dataset.no) { const r = await modal('Tolak klaim', field('Alasan (dikirim ke pengaju)', '<textarea name="n" class="inp" rows="3" required></textarea>'), { submit: 'Tolak', danger: true, onSubmit: (f) => db.rpc('pk_claim_decide', { p_id: t.dataset.no, p_ok: false, p_note: f.n }) }); if (r) { toast('Ditolak'); reload(); } return; }
+      if (t.dataset.pay) { const r = await modal('Tandai sudah ditransfer', field('Dibayar lewat', '<select name="ch" class="inp"><option value="transfer">Transfer bank</option><option value="tunai">Tunai</option></select>', 'Dicatat sebagai biaya di buku Keuangan.'), { submit: 'Tandai dibayar', onSubmit: (f) => db.rpc('pk_claim_paid', { p_id: t.dataset.pay, p_channel: f.ch }) }); if (r) { toast('Ditandai sudah ditransfer'); reload(); } return; }
+      if (t.dataset.cancel) { if (!await confirmBox('Batalkan klaim ini?', 'Ya, batalkan')) return; await db.rpc('pk_claim_cancel', { p_id: t.dataset.cancel }); toast('Klaim dibatalkan'); return reload(); }
+    } catch (er) { toast(er.message, 'err'); }
+  };
+}
+
 export default async function belanja(el, params, reload) {
+  if (params.get('tab') === 'klaim') return klaimView(el, params, reload);
   const me = ctx.me.id;
   const [rabs, items, log] = await Promise.all([
     db.get('pk_rab', 'select=*&order=created_at.desc&limit=400'),
@@ -13,6 +59,7 @@ export default async function belanja(el, params, reload) {
   ]);
   const I = (id) => items.filter(i => i.rab_id === id); const L = (id) => log.filter(l => l.rab_id === id);
   const lpjDays = +ctx.settings.lpj_days || 2;
+  const nKlaim = await db.get('pk_claims', 'select=id,status,approver_id,person_id&status=in.(diajukan,disetujui)').then(ks => ks.filter(k => (k.status === 'diajukan' && k.approver_id === me) || (k.status === 'disetujui' && isFin())).length).catch(() => 0);
   const lateLpj = (r) => r.status === 'cair' && r.cair_at && (Date.now() - new Date(r.cair_at)) / 864e5 > lpjDays;
   const myTurn = (r) => r.status === 'diajukan' && r.chain[r.step] === me;
   const sets = {
@@ -31,7 +78,7 @@ export default async function belanja(el, params, reload) {
   const biz = ctx.units.filter(u => u.kind !== 'lini');
   el.innerHTML = `
   <header class="ph"><div><span class="muted small">Belanja pakai uang perusahaan: ajukan RAB, belanja, lalu upload nota (LPJ)</span><h1>Pengajuan Belanja</h1></div>
-    <button class="btn pri" data-a="new">+ Ajukan RAB</button></header>
+    <div class="row gap"><a class="btn" href="#/belanja?tab=klaim">Klaim penggantian${nKlaim ? ` (${nKlaim})` : ''}</a><button class="btn pri" data-a="new">+ Ajukan RAB</button></div></header>
   <ol class="steps"><li><b>1</b><span><strong>Ajukan RAB</strong><small>tabel barang, bisa tempel dari Excel</small></span></li><li><b>2</b><span><strong>Valuer 1 → Valuer 2</strong><small>berapa pun nominalnya</small></span></li><li><b>3</b><span><strong>Dana cair</strong><small>Keuangan, ${esc((ctx.settings.cair_days || []).join(' & '))} ${esc(ctx.settings.cair_time || '')}</small></span></li><li><b>4</b><span><strong>Upload nota</strong><small>≤ ${lpjDays} hari setelah belanja</small></span></li><li><b class="t">5</b><span><strong>Selesai</strong><small>sisa dana kembali ke unit</small></span></li></ol>
   <div class="tiles"><div class="tile"><span>Menunggu persetujuan</span><b>${rabs.filter(r => r.status === 'diajukan').length}</b><small>${rp(rabs.filter(r => r.status === 'diajukan').reduce((s, r) => s + r.total, 0))}</small></div>
     <div class="tile"><span>Siap dicairkan</span><b>${rabs.filter(r => r.status === 'siap_cair').length}</b><small>${rp(rabs.filter(r => r.status === 'siap_cair').reduce((s, r) => s + r.total, 0))}</small></div>

@@ -1,10 +1,11 @@
 // Kotak Persetujuan · satu tempat untuk semua yang menunggu keputusan Anda:
 // review tugas, RAB/LPJ, Kerja lapangan (cuti/izin/sakit, lembur, reimburse, kasbon), gaji & klaim tahap Keuangan,
 // persetujuan Rentalaja (owner), mitra affiliate, dan investor. Diputuskan langsung di sini bila bisa; sisanya dibuka di modulnya.
-import { ctx, db, esc, fdate, modal, field, toast, chip, nick } from '../core.js';
+import { ctx, db, esc, fdate, modal, field, toast, chip, nick, signedPhoto } from '../core.js';
 
+const PAY = { claimpay: 'Tandai sudah dibayar', klaimpay: 'Tandai sudah ditransfer' };
 const rp = (n) => 'Rp' + Math.round(+n || 0).toLocaleString('id-ID');
-const SRC = { hold: ['Kehadiran', 'green'], review: ['Review', 'blue'], rab: ['Belanja', 'yellow'], ops: ['Kerja lapangan', 'green'], fin: ['Keuangan', 'yellow'], ra: ['Rentalaja', 'blue'], af: ['Mitra', 'gray'], iv: ['Investor', 'gray'] };
+const SRC = { hold: ['Kehadiran', 'green'], klaim: ['Klaim', 'yellow'], review: ['Review', 'blue'], rab: ['Belanja', 'yellow'], ops: ['Kerja lapangan', 'green'], fin: ['Keuangan', 'yellow'], ra: ['Rentalaja', 'blue'], af: ['Mitra', 'gray'], iv: ['Investor', 'gray'] };
 const ago = (t) => { if (!t) return ''; const m = Math.max(0, Math.round((Date.now() - new Date(t)) / 6e4)); return m < 60 ? m + ' menit' : m < 1440 ? Math.round(m / 60) + ' jam' : Math.round(m / 1440) + ' hari'; };
 
 /* cuti, izin & WFA staf holding: diputuskan berurutan sesuai rantai atasan (chain[step]) */
@@ -34,17 +35,28 @@ export default async function setuju(el, params, reload) {
   ${groups.length > 1 ? `<div class="seg">${[['semua', 'Semua (' + all.length + ')']].concat(groups.map(k => [k, SRC[k][0] + ' (' + all.filter(x => x.src === k).length + ')'])).map(([k, l]) => `<a href="#/setuju?f=${k}" class="${f === k ? 'on' : ''}">${esc(l)}</a>`).join('')}</div>` : ''}
   <section class="card"><div class="list">${list.map(x => `<div class="li row gap wrap" style="align-items:flex-start">
       <span style="flex:1;min-width:240px">${chip(SRC[x.src][0], SRC[x.src][1])} <b>${esc(x.kind)}</b>${x.amount ? ` · <b>${rp(x.amount)}</b>` : ''}<br>${esc(x.title || '')}<br><small class="muted">${esc(x.sub || '')}${x.day ? ' · ' + fdate(x.day) : ''} · menunggu ${ago(x.since)}</small></span>
-      ${x.photo ? `<a class="btn sm" target="_blank" rel="noopener" href="${esc(x.photo)}">Nota</a>` : ''}
-      ${x.act ? `<button class="btn sm pri" data-ok="${esc(x.id)}" data-act="${x.act}" data-t="${esc(x.t || '')}">Setujui</button><button class="btn sm" data-no="${esc(x.id)}" data-act="${x.act}" data-t="${esc(x.t || '')}">Tolak</button>`
+      ${x.photo ? `<button type="button" class="btn sm" data-nota="${esc(x.photo)}" data-b="${esc(x.bucket || 'operasional')}">Nota</button>` : ''}
+      ${PAY[x.act] ? `<button class="btn sm pri" data-pay="${esc(x.id)}" data-act="${x.act}">${PAY[x.act]}</button>`
+        : x.act ? `<button class="btn sm pri" data-ok="${esc(x.id)}" data-act="${x.act}" data-t="${esc(x.t || '')}">Setujui</button><button class="btn sm" data-no="${esc(x.id)}" data-act="${x.act}" data-t="${esc(x.t || '')}">Tolak</button>`
         : x.sso ? `<a class="btn sm" href="#" data-sso="${esc(x.sso)}">Buka</a>` : x.href ? `<a class="btn sm" href="${esc(x.href)}">Buka</a>` : ''}
     </div>`).join('') || '<p class="muted">Tidak ada yang menunggu keputusan Anda. 👍</p>'}</div></section>`;
   el.onclick = async (e) => {
+    const nb = e.target.closest('[data-nota]');
+    if (nb) { const w = window.open('', '_blank'); try { const u = /^https?:/.test(nb.dataset.nota) ? nb.dataset.nota : await signedPhoto(nb.dataset.b, nb.dataset.nota); if (w) w.location = u; else location.href = u; } catch (er) { if (w) w.close(); toast(er.message, 'err'); } return; }
+    const pb = e.target.closest('[data-pay]');
+    if (pb) {
+      const it = all.find(x => String(x.id) === pb.dataset.pay) || {};
+      const r = await modal(PAY[pb.dataset.act], `<p class="note"><b>${esc(it.title || '')}</b><br>${rp(it.amount)}</p>` + field('Dibayar lewat', '<select name="ch" class="inp"><option value="transfer">Transfer bank</option><option value="tunai">Tunai</option></select>', 'Pembayaran reimburse otomatis dicatat sebagai biaya di buku Keuangan.'),
+        { submit: 'Tandai dibayar', onSubmit: (f) => db.rpc(pb.dataset.act === 'klaimpay' ? 'pk_claim_paid' : 'pk_fin_claim_paid', { p_id: pb.dataset.pay, p_channel: f.ch }) });
+      if (r) { toast('Ditandai dibayar'); reload(); } return;
+    }
     const b = e.target.closest('[data-ok],[data-no]'); if (!b) return;
     const ok = !!b.dataset.ok, id = b.dataset.ok || b.dataset.no, act = b.dataset.act, t = b.dataset.t;
     const call = (note) => {
       if (act === 'ops') return db.rpc(t === 'leave' ? 'ops_leave_decide' : t === 'ot' ? 'ops_ot_decide' : 'ops_claim_decide', { p_id: id, p_ok: ok, p_note: note || null });
       if (act === 'finclaim') return db.rpc('pk_fin_ops_claim_decide', { p_id: id, p_ok: ok, p_note: note || null });
       if (act === 'ra') return db.rpc('decide_approval', { p_id: id, p_approve: ok, p_note: note || null });
+      if (act === 'klaim') return db.rpc('pk_claim_decide', { p_id: id, p_ok: ok, p_note: note || null });
       if (act === 'hold') return t === 'wfa' ? db.rpc('pk_wfa_decide', { p_id: id, p_approve: ok, ...(note ? { p_note: note } : {}) }) : db.rpc('pk_leave_decision', { p_id: id, p_approve: ok, ...(note ? { p_note: note } : {}) });
     };
     try {

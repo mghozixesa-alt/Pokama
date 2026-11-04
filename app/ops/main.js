@@ -154,7 +154,7 @@ async function vBeranda(el) {
   wireCk(el); wirePanel(el);
 }
 const reqRow = (r) => { const t = TYPES[r.type] || [r.type, 'slip'];
-  const what = r.type === 'lembur' ? fdate(r.day) + ' · ' + hm(r.starts) + '–' + hm(r.ends) + ' (' + jam(r.minutes) + ')' : ['reimburse', 'kasbon'].includes(r.type) ? rp(r.amount) + ' · ' + fdate(r.day) : fdate(r.day) + (r.end_day && r.end_day !== r.day ? ' – ' + fdate(r.end_day) : '');
+  const what = r.type === 'lembur' ? fdate(r.day) + ' · ' + hm(r.starts) + '–' + hm(r.ends) + ' (' + jam(r.minutes) + ')' : ['reimburse', 'kasbon'].includes(r.type) ? rp(r.amount) + ' · ' + fdate(r.day) + (r.paid_at ? ' · ✓ sudah ' + (r.type === 'kasbon' ? 'dicairkan' : 'ditransfer') : r.pay === 'segera' && r.type === 'reimburse' ? ' · transfer segera' : r.type === 'reimburse' ? ' · dibayar bersama gaji' : '') : fdate(r.day) + (r.end_day && r.end_day !== r.day ? ' – ' + fdate(r.end_day) : '');
   return `<div class="li"><span class="ty">${ri(t[1], 20)}</span><span><b>${t[0]}</b> ${r.assigned ? '<span class="chip blue">Ditugaskan</span>' : chipS(r.status)}<br><small>${what}</small><br><small class="muted">${esc(r.note || '')}${r.by && r.status !== 'diajukan' ? ' · ' + esc(r.by) : ''}</small>${r.reply ? `<p class="reject-note${r.status === 'ditolak' ? '' : ' ok'}">${esc(r.reply)}</p>` : ''}</span>${r.status === 'diajukan' && !r.assigned ? `<button class="btn sm" data-cancel="${r.type}:${r.id}">Batalkan</button>` : ''}</div>`; };
 
 // ---------- Clock in / out ----------
@@ -301,7 +301,8 @@ async function vAjukan(el) {
     : ['reimburse', 'kasbon'].includes(k) ? `<label class="fld"><span>Tanggal</span><input type="date" class="inp" name="d1" value="${t0}"></label>
       <label class="fld"><span>Nominal (Rp)</span><input class="inp" name="amt" inputmode="numeric" placeholder="0"></label>
       ${k === 'reimburse' ? `<label class="fld"><span>Kategori</span><select class="inp" name="cat"><option>Bensin / transport</option><option>Parkir & tol</option><option>Makan tugas</option><option>Perlengkapan kerja</option><option>Lainnya</option></select></label>
-      <label class="ra-shot" id="shot" style="min-height:110px"><span id="selt">${ri('kamera', 22)} Foto nota / bukti (wajib)</span><input type="file" accept="image/*" capture="environment" id="nota" hidden></label>` : ''}
+      <label class="ra-shot" id="shot" style="min-height:110px"><span id="selt">${ri('kamera', 22)} Foto nota / bukti (wajib)</span><input type="file" accept="image/*" capture="environment" id="nota" hidden></label>
+      <div class="fld"><span>Dibayar</span><div class="g2"><label class="chk"><input type="radio" name="pay" value="gaji" checked> Bersama gaji</label><label class="chk"><input type="radio" name="pay" value="segera"> Transfer segera</label></div><small class="muted">Transfer segera dibayar Keuangan setelah disetujui, tidak menunggu gajian.</small></div>` : `<p class="note small" style="margin:0">Kasbon dicairkan Keuangan setelah disetujui, lalu dipotong dari gaji bulan ini.</p>`}
       <label class="fld"><span>Keterangan</span><textarea class="inp" name="why" rows="3" placeholder="${k === 'kasbon' ? 'Contoh: keperluan keluarga, dipotong gaji bulan ini' : 'Contoh: bensin antar unit ke Cipanas'}"></textarea></label>`
     : `<div class="g2"><label class="fld"><span>Mulai</span><input type="date" class="inp" name="d1" value="${d1}"></label><label class="fld"><span>Sampai</span><input type="date" class="inp" name="d2" value="${d1}"></label></div>
       <label class="fld"><span>Alasan</span><textarea class="inp" name="why" rows="3" placeholder="${k === 'sakit' ? 'Contoh: demam, sudah ke klinik' : k === 'izin' ? 'Contoh: urusan keluarga' : 'Contoh: acara pernikahan saudara'}"></textarea></label>
@@ -317,7 +318,11 @@ async function vAjukan(el) {
     try { need((f.why || '').trim(), 'Tulis keterangan');
       if (k === 'lembur') await db.rpc('ops_ot_request', { p_day: f.d1, p_starts: f.s, p_ends: f.e, p_reason: f.why.trim() });
       else if (['reimburse', 'kasbon'].includes(k)) { const n = +String(f.amt || '').replace(/\D/g, ''); if (!n) throw new Error('Isi nominal'); if (k === 'reimburse' && !photo) throw new Error('Lampirkan foto nota');
-        await db.rpc('ops_claim_request', { p_kind: k, p_day: f.d1, p_amount: n, p_category: f.cat || null, p_note: f.why.trim(), p_photo: photo }); }
+        const args = { p_kind: k, p_day: f.d1, p_amount: n, p_category: f.cat || null, p_note: f.why.trim(), p_photo: photo, p_pay: f.pay || 'gaji' };
+        try { await db.rpc('ops_claim_submit', args); }
+        catch (er) { if (!/DUPLIKAT/.test(er.message)) throw er;
+          if (!await confirmBox(er.message.replace(/^.*DUPLIKAT:\s*/, ''), 'Tetap ajukan')) { b.disabled = false; return; }
+          await db.rpc('ops_claim_submit', { ...args, p_force: true }); } }
       else await db.rpc('ops_leave_request', { p_kind: k, p_d1: f.d1, p_d2: f.d2 || f.d1, p_reason: f.why.trim() });
       toast(label + ' diajukan ke Operasional'); go('pengajuan'); } catch (er) { b.disabled = false; toast(er.message, 'err'); } };
 }

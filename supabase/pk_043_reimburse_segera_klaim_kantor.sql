@@ -1,0 +1,8 @@
+-- pk_043 + pk_043b (diterapkan 4 Nov 2026): alur reimburse
+-- Petugas lapangan (ops_claims): kolom pay_mode ('gaji'|'segera'), paid_at, paid_by, dup_of.
+--   ops_claim_submit(...p_pay, p_force): pilih bayar bersama gaji / transfer segera; tolak nominal+tanggal sama (DUPLIKAT) kecuali p_force.
+--   Kasbon selalu 'segera' (dicairkan Keuangan, tetap dipotong gaji). payroll_collect_core tidak menghitung reimburse 'segera'.
+--   pk_fin_claim_paid(id, channel): Keuangan tandai dibayar → expense.paid ke buku (akun dari kategori, pk_fin_claim_cat).
+-- Staf kantor (pk_claims): pk_claim_submit → atasan langsung (boss_id; bila kosong CEO) pk_claim_decide → Keuangan pk_claim_paid → buku.
+--   Nota disimpan di bucket mku-bukti/<pk_me>/klaim/.
+-- pk_inbox: klaim (atasan), klaimpay & claimpay (Keuangan). Isi lengkap: lihat fungsi di database.
