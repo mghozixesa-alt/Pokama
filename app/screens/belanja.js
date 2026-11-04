@@ -283,8 +283,8 @@ const CATS = ['Bahan & perlengkapan', 'Sparepart & perawatan', 'Konsumsi', 'Tran
 const fmtN = (v) => v === '' || v == null || isNaN(v) ? '' : (+v).toLocaleString('id-ID');
 function edRow(x = {}) {
   return `<tr><td class="muted n"></td><td data-l="Barang"><input class="inp" data-k="name" value="${esc(x.name || '')}" placeholder="Nama barang"></td>
-    <td data-l="Qty"><input class="inp r w-qty" data-k="qty" inputmode="decimal" value="${x.qty != null ? fmtN(+x.qty) : ''}"></td><td data-l="Satuan"><input class="inp w-uom" data-k="uom" value="${esc(x.uom || '')}" placeholder="pcs"></td>
-    <td data-l="Harga satuan"><input class="inp r w-price" data-k="price" inputmode="numeric" value="${x.price != null && x.price !== '' ? fmtN(+x.price) : ''}"></td><td data-l="Subtotal" class="r b sub">—</td>
+    <td data-l="Qty"><input class="inp r w-qty" data-k="qty" inputmode="decimal" value="${+x.qty ? fmtN(+x.qty) : ''}"></td><td data-l="Satuan"><input class="inp w-uom" data-k="uom" value="${esc(x.uom || '')}" placeholder="pcs"></td>
+    <td data-l="Harga satuan"><input class="inp r w-price" data-k="price" inputmode="numeric" value="${+x.price ? fmtN(+x.price) : ''}"></td><td data-l="Subtotal" class="r b sub">—</td>
     <td data-l="Kategori"><input class="inp w-cat" data-k="category" list="rab-cats" value="${esc(x.category || '')}" placeholder="kategori"></td><td data-l="Toko"><input class="inp w-ven" data-k="vendor" value="${esc(x.vendor || '')}" placeholder="toko"></td>
     <td data-l="Untuk"><select class="inp w-unit" data-k="unit_code"><option value="">ikut pembayar</option>${unitOpts(x.unit_code || '')}</select></td>
     <td class="dl"><button type="button" class="x" data-del title="Hapus baris">×</button></td></tr>`;
