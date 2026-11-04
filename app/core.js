@@ -188,9 +188,9 @@ export function modal(title, bodyHtml, { submit = 'Simpan', onSubmit, wide = fal
       <form class="modal-b" novalidate>${bodyHtml}<p class="form-err" hidden></p>
       <div class="modal-f">${danger ? `<button type="button" class="btn danger" data-danger>${esc(danger.label)}</button>` : ''}<span style="flex:1"></span>
       <button type="button" class="btn" data-close>Batal</button>${submit ? `<button type="submit" class="btn pri">${esc(submit)}</button>` : ''}</div></form></div>`;
-    document.body.appendChild(wrap);
+    document.body.appendChild(wrap); document.body.classList.add('modal-open');
     const form = wrap.querySelector('form'); const err = wrap.querySelector('.form-err');
-    const close = (v) => { wrap.remove(); resolve(v); };
+    const close = (v) => { wrap.remove(); if (!document.querySelector('.modal-wrap')) document.body.classList.remove('modal-open'); resolve(v); };
     wrap.addEventListener('click', (e) => { if (e.target === wrap || e.target.closest('[data-close]')) close(null); });
     wrap.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(null); });
     const run = async (fn) => {
@@ -206,7 +206,8 @@ export function modal(title, bodyHtml, { submit = 'Simpan', onSubmit, wide = fal
         setTimeout(() => { if (wrap.isConnected) { db0.textContent = danger.label; db0.classList.remove('armed'); } }, 5000);
       }); }
     wrap.dispatchEvent(new CustomEvent('modal:open', { bubbles: true, detail: form }));
-    setTimeout(() => { const f = form.querySelector('input:not([type=hidden]),select,textarea'); f && f.focus(); }, 30);
+    // di HP jangan langsung buka keyboard: tampilan bergeser dan ketukan bisa salah sasaran
+    if (!window.matchMedia('(pointer: coarse)').matches) setTimeout(() => { const f = form.querySelector('input:not([type=hidden]),select,textarea'); f && f.focus(); }, 30);
   });
 }
 export async function confirmBox(text, label = 'Ya, lanjutkan') {
@@ -250,3 +251,6 @@ export function getLocation() {
       (e) => rej(new Error(e.code === 1 ? 'Izin lokasi ditolak. Aktifkan lokasi untuk app.pokama.org di pengaturan browser, atau absen dengan foto.' : 'Lokasi tidak terbaca. Coba lagi di tempat terbuka, atau absen dengan foto.')),
       { enableHighAccuracy: true, timeout: 15000, maximumAge: 60000 }); });
 }
+
+// modal yang dihapus langsung (mis. dari daftar notifikasi) tetap mengembalikan menu bawah
+new MutationObserver(() => { if (document.body.classList.contains('modal-open') && !document.querySelector('.modal-wrap')) document.body.classList.remove('modal-open'); }).observe(document.body, { childList: true });

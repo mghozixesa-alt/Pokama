@@ -339,3 +339,8 @@ table.kkh th .att{display:flex;align-items:center;gap:4px;justify-content:center
 /* KKH Tim: kolom rapi saat anggota sedikit, dan keadaan kosong */
 table.kkh.few{min-width:0;width:auto;align-self:flex-start;justify-self:start;margin-right:auto}table.kkh.few thead th:not(.sticky),table.kkh.few td{width:170px;min-width:170px}table.kkh .sticky{width:64px}
 .empty-kkh{display:flex;flex-direction:column;gap:4px;padding:22px;text-align:center;align-items:center}
+
+/* selama form/modal terbuka: menu bawah disembunyikan, halaman di belakang tidak ikut tergeser, tombol simpan selalu terlihat */
+body.modal-open{overflow:hidden}
+body.modal-open .bottom,body.modal-open .m-bell{visibility:hidden;pointer-events:none}
+@media (max-width:760px){.modal-f{position:sticky;bottom:0;background:#fff;padding-top:10px;padding-bottom:calc(10px + env(safe-area-inset-bottom));margin-bottom:-1px;z-index:2}}
