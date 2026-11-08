@@ -1,0 +1,6 @@
+-- Aturan: sisa dana RAB wajib dikembalikan dulu ke rekening unit.
+-- Termin: nota sesuai + ada sisa -> status 'sisa'; pengaju kirim bukti (pk_rab_termin_refund),
+-- Keuangan konfirmasi (pk_rab_termin_refund_ok) -> 'beres'; baru termin berikutnya bisa cair.
+-- Nominal termin berikutnya = rencana + kekurangan termin sebelumnya (topup_amount); sisa tidak lagi dipotong otomatis.
+-- Tutup RAB: bila ada sisa, Keuangan wajib centang "sisa sudah diterima" (pk_rab_close p_refunded).
+-- (Diterapkan lewat migrasi Supabase pk_rab_sisa_dana_kembali_dulu.)
