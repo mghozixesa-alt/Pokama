@@ -8,6 +8,7 @@ import unit from './screens/unit.js';
 import tim from './screens/tim.js';
 import sistem from './screens/sistem.js';
 import setuju, { inboxCount } from './screens/setuju.js';
+import gudang from './screens/gudang.js';
 
 const I = {
   bell: '<path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>',
@@ -44,7 +45,7 @@ const svg = (k, s = 18) => `<svg aria-hidden="true" width="${s}" height="${s}" v
 const BASE_ROUTES = [
   ['KERJA HARIAN', [
     ['setuju', 'Kotak Persetujuan', 'inbox', setuju], ['kkh', 'KKH Saya', 'sun', kerja.saya], ['kkh-tim', 'KKH Tim', 'grid', kerja.tim], ['tugas', 'Proyek & Tugas', 'layers', tugas.board],
-    ['review', 'Review & Revisi', 'check', tugas.review], ['belanja', 'Pengajuan Belanja', 'wallet', belanja],
+    ['review', 'Review & Revisi', 'check', tugas.review], ['belanja', 'Pengajuan Belanja', 'wallet', belanja], ['gudang', 'Gudang & Permintaan', 'box', gudang],
     ['kehadiran', 'Kehadiran & Cuti', 'clock', kehadiran], ['unit', 'Unit Bisnis', 'trophy', unit]]],
   ['ORANG', [['tim', 'Tim & Peran', 'users', tim.tim], ['performa', 'Performa', 'coin', tim.performa]]],
   ['SISTEM', [['library', 'Library Dokumen', 'book', sistem.library], ['pengaturan', 'Pengaturan', 'cog', sistem.pengaturan]]],
