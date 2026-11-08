@@ -78,7 +78,7 @@ export default async function gudang(el, params, reload) {
       if (t.dataset.ok) { await db.rpc('pk_gudang_act', { p_id: t.dataset.ok, p_action: 'setujui', p: {} }); toast('Disetujui · siap diambil'); return reload(); }
       if (t.dataset.no) { const r = await modal('Tolak permintaan', field('Alasan', '<textarea name="n" class="inp" rows="3" required></textarea>'), { submit: 'Tolak', onSubmit: (f) => db.rpc('pk_gudang_act', { p_id: t.dataset.no, p_action: 'tolak', p: { note: f.n } }) }); if (r) { toast('Ditolak'); reload(); } return; }
       if (t.dataset.cx) { if (await confirmBox('Batalkan permintaan ini?', 'Batalkan')) { await db.rpc('pk_gudang_act', { p_id: t.dataset.cx, p_action: 'batal', p: {} }); toast('Dibatalkan'); reload(); } return; }
-      if (t.dataset.ph) { const r = reqs.find(x => x.id === t.dataset.ph); const urls = await Promise.all((r.photos || []).map(p => signedPhoto('pk-nota', p).catch(() => ''))); await modal('Foto serah terima ' + (r.code || ''), urls.filter(Boolean).map(u => `<img src="${esc(u)}" alt="" style="width:100%;border-radius:12px;margin-bottom:8px">`).join('') || '<p class="muted">Foto tidak bisa dibuka.</p>', { submit: null }); return; }
+      if (t.dataset.ph) { const r = reqs.find(x => x.id === t.dataset.ph); const urls = await Promise.all((r.photos || []).map(p => signedPhoto('pk-absen', p).catch(() => ''))); await modal('Foto serah terima ' + (r.code || ''), urls.filter(Boolean).map(u => `<img src="${esc(u)}" alt="" style="width:100%;border-radius:12px;margin-bottom:8px">`).join('') || '<p class="muted">Foto tidak bisa dibuka.</p>', { submit: null }); return; }
       if (t.dataset.hand) return serah(reqs.find(x => x.id === t.dataset.hand));
     } catch (er) { toast(er.message, 'err'); }
   };
@@ -103,7 +103,7 @@ export default async function gudang(el, params, reload) {
     const paths = [];
     document.addEventListener('modal:open', (ev) => { const fm = ev.detail; const inp = fm.querySelector('#gd-file'); if (!inp) return;
       inp.addEventListener('change', async () => { const fl = inp.files[0]; if (!fl) return;
-        try { const blob = await shrinkImage(fl); const path = `${me}/gudang-${r.code || r.id}-${Date.now()}.jpg`; await uploadPhoto('pk-nota', path, blob); paths.push(path);
+        try { const blob = await shrinkImage(fl); const path = `${me}/gudang-${r.code || r.id}-${Date.now()}.jpg`; await uploadPhoto('pk-absen', path, blob); paths.push(path);
           fm.querySelector('#gd-ph').insertAdjacentHTML('beforeend', `<img src="${URL.createObjectURL(blob)}" alt="" style="width:72px;height:72px;object-fit:cover;border-radius:10px">`); inp.value = ''; }
         catch (er) { toast(er.message, 'err'); } }); }, { once: true });
     const res = await modal('Serah terima ' + (r.code || ''), `<p class="small muted" style="margin-top:0">Diminta ${esc(nick(r.from_id))} · ${ftime(r.created_at)}${r.approved_at ? ' · disetujui ' + ftime(r.approved_at) : ''}</p>
