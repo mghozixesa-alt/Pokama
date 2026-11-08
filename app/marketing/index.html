@@ -1598,48 +1598,283 @@ function profForm() {
 
 /* ---------- Live TikTok (menu sendiri) ---------- */
 function lives() { return S.items.filter(function (i) { return i.format === 'Live TikTok'; }); }
-function liveForm(o) {
-  var def = o.brand || myBrands(S.me)[0] || BRANDS[0].k;
-  var h = '<div style="display:flex;justify-content:space-between;gap:10px"><h1>Jadwal live baru</h1><button class="btn sm" data-close aria-label="Tutup">✕</button></div>';
-  h += '<div class="f"><label for="l-title">Tema live</label><input id="l-title" placeholder="Contoh: Promo sewa motor akhir pekan"></div>';
-  h += '<div class="f2"><div class="f"><label for="l-brand">Brand / akun</label><select id="l-brand">' + opts(BRANDS.map(function (b) { return b.k; }), def) + '</select></div><div class="f"><label for="l-date">Tanggal</label><input id="l-date" type="date" value="' + esc(o.date || TODAY) + '"></div></div>';
-  h += '<div class="f2"><div class="f"><label for="l-time">Jam mulai</label><input id="l-time" type="time" value="19:00"></div><div class="f"><label for="l-tend">Jam selesai</label><input id="l-tend" type="time" value="21:00"></div></div>';
-  h += '<div class="f2"><div class="f"><label for="l-host">Host</label><input id="l-host" placeholder="Nama host"></div><div class="f"><label for="l-team">Tim / cabang</label><select id="l-team">' + opts(LTEAMS, LTEAMS[0]) + '</select></div></div>';
-  h += '<div class="f"><label for="l-camp">Campaign</label><select id="l-camp">' + campOptions('', o.camp) + '</select></div>';
-  h += '<div class="f"><label for="l-note">Rundown / catatan (boleh kosong)</label><textarea id="l-note" placeholder="Produk yang dibahas, promo, giveaway"></textarea></div>';
-  h += '<div class="acts"><button class="btn pri" data-ok>Simpan jadwal live</button><button class="btn" data-close>Batal</button></div>';
-  panel(h, function (p) {
-    p.querySelector('#l-title').focus();
-    p.querySelector('[data-ok]').addEventListener('click', function () {
-      var v = function (id) { return p.querySelector('#' + id).value.trim(); };
-      if (!v('l-title')) { p.querySelector('#l-title').focus(); toast('Tema live belum diisi'); return; }
-      var it = { id: uid(), title: v('l-title'), brand: v('l-brand'), format: 'Live TikTok', pillar: 'Promotional', date: v('l-date'), time: v('l-time'), tend: v('l-tend'), host: v('l-host'), team: v('l-team'), camp: v('l-camp'), brief: v('l-note'), ch: ['TikTok'], status: 'Siap tayang', mode: 'sendiri', log: [] };
-      log(it, 'jadwal live dibuat'); S.items.push(it); save(); close(); render(); toast('Live dijadwalkan ' + nice(it.date));
-    });
-  }, true);
+/* ---------- Live TikTok (jadwal · eksekusi · hasil & bonus · pengaturan) ---------- */
+var LV_THEMES = [
+  { n: 'Promo & diskon', chk: ['Siapkan unit & foto/video', 'Cek link bio & CTA', 'Pastikan jaringan stabil', 'Siapkan promo & harga', 'Koordinasi dengan CS'], pts: ['Opening: sapaan & perkenalan (±2 menit)', 'Highlight promo & benefit', 'Tampilkan unit & keunggulan', 'Jawab pertanyaan audiens (±10 menit)', 'Closing: ajak chat WA & booking di link bio'] },
+  { n: 'Katalog produk', chk: ['Siapkan 3–5 unit unggulan', 'Cek link bio & CTA', 'Pastikan jaringan stabil', 'Siapkan daftar harga'], pts: ['Opening', 'Tur unit satu per satu', 'Bandingkan tipe & harga', 'Tanya-jawab', 'Closing: booking di link bio'] },
+  { n: 'Flash sale', chk: ['Tentukan kuota & harga flash', 'Cek link bio & CTA', 'Pastikan jaringan stabil', 'Koordinasi dengan CS untuk lonjakan chat'], pts: ['Opening + hitung mundur', 'Umumkan kuota & syarat', 'Ulangi CTA tiap 5 menit', 'Closing: sisa kuota'] },
+  { n: 'Edukasi produk', chk: ['Siapkan unit & aksesori', 'Cek link bio & CTA', 'Pastikan jaringan stabil'], pts: ['Opening', 'Cara pakai & tips', 'Kesalahan yang sering terjadi', 'Tanya-jawab', 'Closing: sewa di link bio'] },
+  { n: 'Review & perbandingan', chk: ['Siapkan 2–3 unit yang dibandingkan', 'Cek link bio & CTA', 'Pastikan jaringan stabil'], pts: ['Opening', 'Review tiap unit', 'Perbandingan & rekomendasi', 'Tanya-jawab', 'Closing'] }
+];
+var LV_DEF_BONUS = { sesi: 25000, minDur: 60, closing: 10000, giftPct: 10, target: 30, targetBonus: 100000, checked: false };
+function lset() {
+  S.lset = S.lset || {}; var d = S.lset;
+  if (!d.teams || !d.teams.length) d.teams = ['Wanaraja', 'Garut Kota', 'Bandung Hub', 'Jackal Point', 'Tim marketing'];
+  if (!d.hosts) d.hosts = [];
+  if (!d.themes || !d.themes.length) d.themes = JSON.parse(JSON.stringify(LV_THEMES));
+  d.cta = Object.assign({ text: 'Klik link di bio untuk booking sekarang', wa: '6281324700077', link: 'https://rentalaja.co.id', bio: 'https://demo.rentalaja.co.id/link' }, d.cta || {});
+  d.bonus = Object.assign({}, LV_DEF_BONUS, d.bonus || {});
+  d.appr = d.appr || {}; d.plan = d.plan || 10;
+  return d;
 }
+var LV_CODE = { 'Wanaraja': 'WNR', 'Cabang Wanaraja': 'WNR', 'Garut Kota': 'GRT', 'Cabang Garut Kota': 'GRT', 'Bandung Hub': 'HUB', 'Cabang Bandung': 'BDG', 'Jackal Point': 'JKL', 'Tim marketing': 'MKT', 'TripinAja': 'TRP', 'Laptopaja': 'LPT' };
+function lvCode(i) { var b = (i.brand || 'R').split(/\s+/).map(function (w) { return w[0]; }).join('').toUpperCase().slice(0, 2); if (b === 'R') b = 'RL'; var t = LV_CODE[i.team] || String(i.team || 'X').replace(/[^A-Za-z]/g, '').slice(0, 3).toUpperCase(); var d = parse(i.date); return b + '-' + t + '-' + String(d.getDate()).padStart(2, '0') + String(d.getMonth() + 1).padStart(2, '0') + (i.time ? '-' + i.time.slice(0, 2) : ''); }
+function lvState(i) { return i.status === 'Tayang' ? ['Selesai', '#EEF0F3', '#3B4250'] : i.status === 'Draft' ? ['Draft', '#FDF3D7', '#7A5200'] : (i.date < TODAY || (i.date === TODAY && i.tend && nowHM() > i.tend)) ? ['Isi hasil', '#FCEBDD', '#9A3F0A'] : lvLiveNow(i) ? ['Tayang', '#DDF5F2', '#067A70'] : ['Terjadwal', '#E5EEF9', '#1E5AA8']; }
+function lvChip(i) { var s = lvState(i); return '<span class="st" style="background:' + s[1] + ';color:' + s[2] + '">' + s[0] + '</span>'; }
+function nowHM() { var d = new Date(); return String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0'); }
+function lvLiveNow(i) { return i.status !== 'Tayang' && i.status !== 'Draft' && i.date === TODAY && i.time && i.tend && nowHM() >= i.time && nowHM() <= i.tend; }
+function lvMin(i) { if (+i.dur) return +i.dur; if (!i.time || !i.tend) return 0; var a = i.time.split(':'), b = i.tend.split(':'); return Math.max(0, (+b[0] * 60 + +b[1]) - (+a[0] * 60 + +a[1])); }
+function lvWa(i) { var c = lset().cta; return 'Halo! Saya tertarik dengan LIVE ' + (i.brand || 'Rentalaja') + ' (' + (i.team || '-') + ').\nKode sesi: ' + lvCode(i) + '\n\nBisa info ketersediaan unit dan harga promonya?'; }
+function lvWaLink(i) { return 'https://wa.me/' + String(lset().cta.wa || '').replace(/\D/g, '') + '?text=' + encodeURIComponent(lvWa(i)); }
+function lvBonus(list) {
+  var r = lset().bonus, by = {};
+  list.forEach(function (i) { var h = i.host || '-'; var o = by[h] = by[h] || { host: h, n: 0, sesi: 0, view: 0, chat: 0, leads: 0, cl: 0, omz: 0, gift: 0, team: {} }; o.n++; if (lvMin(i) >= (+r.minDur || 0)) o.sesi++; o.view += +i.lvt || +i.lv || 0; o.chat += +i.lchat || 0; o.leads += +i.lleads || 0; o.cl += +i.lc || 0; o.omz += +i.lo || 0; o.gift += +i.lgift || 0; o.team[i.team || '-'] = 1; });
+  return Object.keys(by).map(function (h) { var o = by[h]; o.bAkt = o.sesi * (+r.sesi || 0); o.bCl = o.cl * (+r.closing || 0); o.bGift = Math.round(o.gift * (+r.giftPct || 0) / 100); o.bTgt = (+r.target && o.cl >= +r.target) ? (+r.targetBonus || 0) : 0; o.bonus = o.bAkt + o.bCl + o.bGift + o.bTgt; return o; }).sort(function (a, b) { return b.bonus - a.bonus || b.cl - a.cl; });
+}
+function lvTabs() {
+  var t = S.ltab || 'jadwal';
+  return '<div class="chips" role="tablist" aria-label="Bagian Live TikTok">' + [['jadwal', 'Jadwal & kalender'], ['eksekusi', 'Eksekusi & link bio'], ['hasil', 'Hasil, bonus & analitik'], ['atur', 'Pengaturan']].map(function (x) { return '<button class="chip" data-lv="tab" data-v="' + x[0] + '" aria-pressed="' + (t === x[0]) + '">' + x[1] + '</button>'; }).join('') + '</div>';
+}
+function lvWeek() { var ws = weekStart(S.lweek || 0); return [ws, addDays(ws, 6)]; }
+function lvList(ws, we) { return lives().filter(function (i) { return i.date >= ws && i.date <= we && brandOk(i.brand) && (!S.lcab || i.team === S.lcab); }).sort(function (a, b) { return (a.date + (a.time || '')).localeCompare(b.date + (b.time || '')); }); }
+function lvTd(s, x) { return '<td' + (x ? ' style="text-align:right"' : '') + '>' + s + '</td>'; }
+
+function liveForm(o) { S.ltab = 'eksekusi'; S.lsel = ''; save(); if (location.hash !== '#live') location.hash = '#live'; else render(); }
 function vLive() {
-  var ws = weekStart(S.lweek || 0), we = addDays(ws, 6), mk = monthKey();
-  var wk = lives().filter(function (i) { return i.date >= ws && i.date <= we && brandOk(i.brand); }).sort(function (a, b) { return (a.date + (a.time || '')).localeCompare(b.date + (b.time || '')); });
-  var done = lives().filter(function (i) { return i.status === 'Tayang' && monthKey(i.date) === mk; });
-  var tot = done.reduce(function (a, i) { return [a[0] + (+i.lv || 0), a[1] + (+i.lc || 0), a[2] + (+i.lo || 0)]; }, [0, 0, 0]);
+  var t = S.ltab || 'jadwal', w = lvWeek(), ws = w[0], we = w[1];
   var nav = '<button class="btn sm" data-lwk="-1" aria-label="Minggu sebelumnya">‹</button><span style="font-weight:900;color:#1D3149;align-self:center">' + short(ws) + ' ' + MON[parse(ws).getMonth()] + ' – ' + short(we) + ' ' + MON[parse(we).getMonth()] + '</span><button class="btn sm" data-lwk="1" aria-label="Minggu berikutnya">›</button>';
-  var h = header('Konten · Live TikTok', 'Live TikTok', 'Jadwal live, host, tim yang live, dan hasilnya. Terpisah dari content plan feed.', '<button class="btn pri" data-a="live">+ Jadwal live</button>' + nav);
-  h += kpis([
-    { label: 'Live minggu ini', ic: 'clock', val: wk.length, note: wk.filter(function (i) { return i.status === 'Tayang'; }).length + ' sudah selesai', bar: TEAL },
-    { label: 'Live selesai bulan ini', ic: 'check', val: done.length, note: monthName(mk), bar: TEAL },
-    { label: 'Closing dari live', ic: 'money', val: tot[1], note: rpS(tot[2]) + ' omzet', bar: TEAL },
-    { label: 'Belum isi hasil', ic: 'alert', val: lives().filter(function (i) { return i.status !== 'Tayang' && i.date < TODAY; }).length, note: 'Live yang sudah lewat', nc: lives().some(function (i) { return i.status !== 'Tayang' && i.date < TODAY; }) ? BAD : '#5B6573' }
-  ]);
-  var sched = brandChips() + (wk.length ? '<div class="list">' + wk.map(function (i) { var past = i.status !== 'Tayang' && i.date < TODAY; return '<div class="row click" data-open="' + i.id + '"><span class="dot" style="background:' + brand(i.brand).c + '"></span><div class="grow"><strong>' + nice(i.date) + ' · ' + esc(i.time || '--:--') + '–' + esc(i.tend || '--:--') + ' · ' + esc(i.brand) + '</strong><span class="m">' + esc(i.title) + ' · host ' + esc(i.host || '-') + ' · ' + esc(i.team || 'Tim marketing') + (i.status === 'Tayang' ? ' · ' + fmt(i.lv) + ' penonton · ' + fmt(i.lc) + ' closing' + ((i.shots || []).length ? ' · 📷 ' + i.shots.length : ' · belum ada screenshot') : '') + '</span></div>' + (past ? '<span class="st" style="background:#FCEBDD;color:#9A3F0A">Isi hasil</span>' : itChip(i)) + '</div>'; }).join('') + '</div>' : empty('Belum ada jadwal live minggu ini. Tekan <b>+ Jadwal live</b>.'));
-  h += sec('Jadwal minggu ini', 'cal', 'Klik jadwal untuk ubah host/jam, atau isi hasil setelah live selesai.', '', sched);
-  var byT = {}; done.forEach(function (i) { var t = i.team || 'Tim marketing'; byT[t] = byT[t] || [0, 0, 0, 0]; byT[t][0]++; byT[t][1] += +i.lv || 0; byT[t][2] += +i.lc || 0; byT[t][3] += +i.lo || 0; });
-  var byH = {}; done.forEach(function (i) { var t = i.host || '-'; byH[t] = byH[t] || [0, 0]; byH[t][0]++; byH[t][1] += +i.lc || 0; });
-  var tt = Object.keys(byT).length ? '<div style="overflow-x:auto"><table class="tbl"><thead><tr><th>Tim / cabang</th><th style="text-align:right">Live</th><th style="text-align:right">Penonton</th><th style="text-align:right">Closing</th><th style="text-align:right">Omzet</th></tr></thead><tbody>' + Object.keys(byT).map(function (t) { var r = byT[t]; return '<tr><td><b>' + esc(t) + '</b></td><td style="text-align:right">' + r[0] + '</td><td style="text-align:right">' + grp(String(r[1])) + '</td><td style="text-align:right">' + r[2] + '</td><td style="text-align:right">' + rpS(r[3]) + '</td></tr>'; }).join('') + '</tbody></table></div><span class="sub">Dasar hitung bonus live per tim (berdasarkan closing).</span>' : empty('Belum ada live yang selesai bulan ini.');
-  var th = Object.keys(byH).length ? '<div class="list">' + Object.keys(byH).sort(function (a, b) { return byH[b][1] - byH[a][1]; }).map(function (k) { return '<div class="row"><span class="ib">' + ic('user') + '</span><div class="grow"><strong>' + esc(k) + '</strong><span class="m">' + byH[k][0] + ' live · ' + byH[k][1] + ' closing</span></div></div>'; }).join('') + '</div>' : empty('Host muncul di sini setelah ada live selesai.');
-  h += '<div class="cols">' + sec('Hasil per tim · ' + monthName(mk), 'users', '', '', tt) + sec('Hasil per host', 'user', '', '', th) + '</div>';
+  var h = header('Konten · Live TikTok', 'Live TikTok', 'Rencana & jadwal live per cabang, eksekusi dan link bio, laporan hasil, bonus host, dan analitik.', '<button class="btn pri" data-lv="new">+ Jadwal live</button>' + nav);
+  h += lvTabs();
+  if (t === 'eksekusi') h += lvExec(ws, we);
+  else if (t === 'hasil') h += lvRes();
+  else if (t === 'atur') h += lvSet();
+  else h += lvSched(ws, we);
+  setTimeout(lvAfter, 0);
   return h;
 }
+function lvSched(ws, we) {
+  var mk = monthKey(), wk = lvList(ws, we), all = lives();
+  var done = all.filter(function (i) { return i.status === 'Tayang' && monthKey(i.date) === mk; });
+  var prevDone = all.filter(function (i) { var d = parse(mk + '-01'); d.setMonth(d.getMonth() - 1); return i.status === 'Tayang' && monthKey(i.date) === iso(d).slice(0, 7); });
+  var lastWk = lives().filter(function (i) { return i.date >= addDays(ws, -7) && i.date <= addDays(ws, -1); }).length;
+  var cl = done.reduce(function (a, i) { return a + (+i.lc || 0); }, 0), om = done.reduce(function (a, i) { return a + (+i.lo || 0); }, 0);
+  var miss = all.filter(function (i) { return lvState(i)[0] === 'Isi hasil'; }).length;
+  var h = kpis([
+    { label: 'Live minggu ini', ic: 'video', val: wk.length, note: 'minggu lalu ' + lastWk, bar: TEAL },
+    { label: 'Live selesai bulan ini', ic: 'check', val: done.length, note: 'bulan lalu ' + prevDone.length, bar: TEAL },
+    { label: 'Closing dari live', ic: 'money', val: cl, note: rpS(om) + ' omzet', bar: TEAL },
+    { label: 'Belum isi hasil', ic: 'alert', val: miss, note: 'dari live yang sudah lewat', nc: miss ? BAD : '#5B6573' }]);
+  var days = []; for (var k = 0; k < 7; k++) days.push(addDays(ws, k));
+  var strip = '<div style="display:grid;grid-template-columns:repeat(7,1fr) 1.4fr;gap:8px;margin-top:4px">' + days.map(function (d) { var n = wk.filter(function (i) { return i.date === d; }).length; return '<div style="border:1px solid #E3E6EB;border-radius:12px;padding:8px;text-align:center' + (d === TODAY ? ';background:#EAF8F6;border-color:#09BEAF' : '') + '"><b style="color:#1D3149">' + DAYS[parse(d).getDay()] + '</b><div class="sub">' + parse(d).getDate() + ' ' + MON[parse(d).getMonth()] + '</div><b style="font-size:15px;color:#1D3149">' + n + ' live</b></div>'; }).join('') + '<div style="border:1px solid #E3E6EB;border-radius:12px;padding:8px 12px;display:flex;flex-direction:column;justify-content:center"><span class="sub">Total minggu ini</span><b style="font-size:20px;color:#1D3149">' + wk.length + ' live</b><span class="st" style="align-self:flex-start;background:' + (wk.length >= lset().plan ? '#DDF5F2;color:#067A70' : '#FDF3D7;color:#7A5200') + '">' + (wk.length >= lset().plan ? 'Sesuai rencana' : 'Rencana ' + lset().plan + ' live') + '</span></div></div>';
+  var cabs = lset().teams;
+  var cchips = '<div class="chips"><button class="chip" data-lv="cab" data-v="" aria-pressed="' + !S.lcab + '">Semua cabang</button>' + cabs.map(function (c) { return '<button class="chip" data-lv="cab" data-v="' + esc(c) + '" aria-pressed="' + (S.lcab === c) + '">' + esc(c) + '</button>'; }).join('') + '</div>';
+  h += sec('Jadwal minggu ini', 'cal', 'Rencana live per hari. Klik baris untuk ubah atau isi hasil.', '', brandChips() + cchips + strip);
+  var rows = wk.map(function (i) { return '<tr class="click" data-lv="pick" data-v="' + i.id + '" style="cursor:pointer"><td><b>' + nice(i.date) + '</b></td><td><span class="dot" style="background:' + brand(i.brand).c + ';margin-right:6px"></span>' + esc(i.brand) + '</td><td>' + esc(i.team || '-') + '</td><td>' + esc(i.host || '-') + '</td><td style="white-space:nowrap">' + esc(i.time || '--:--') + '–' + esc(i.tend || '--:--') + '</td><td>' + esc(i.title) + (i.rec ? ' <span class="sub">· mingguan</span>' : '') + '</td><td>' + lvChip(i) + '</td><td><a class="btn sm" href="' + esc(lvWaLink(i)) + '" target="_blank" rel="noopener" title="Link WA berkode sesi ' + esc(lvCode(i)) + '">' + ic('link', 14) + '</a></td></tr>'; }).join('');
+  h += sec('Jadwal LIVE', 'list', 'Brand, cabang, host, jam, tema, dan status. Tombol link = chat WA berkode sesi untuk dipasang di link bio.', '', wk.length ? '<div style="overflow-x:auto"><table class="tbl"><thead><tr><th>Tanggal</th><th>Brand</th><th>Cabang</th><th>Host</th><th>Jam</th><th>Tema live</th><th>Status</th><th>Link</th></tr></thead><tbody>' + rows + '</tbody></table></div>' : empty('Belum ada jadwal live minggu ini. Tekan <b>+ Jadwal live</b>.'));
+  var cal = '<div style="overflow-x:auto"><table class="tbl" style="table-layout:fixed;min-width:820px"><thead><tr><th style="width:120px">Cabang</th>' + days.map(function (d) { return '<th>' + DAYS[parse(d).getDay()] + ' ' + parse(d).getDate() + '</th>'; }).join('') + '</tr></thead><tbody>' + cabs.map(function (c) {
+    return '<tr><td><b>' + esc(c) + '</b></td>' + days.map(function (d) { var its = lives().filter(function (i) { return i.date === d && i.team === c && brandOk(i.brand); }); return '<td style="vertical-align:top">' + (its.length ? its.map(function (i) { var b = brand(i.brand); return '<div data-lv="pick" data-v="' + i.id + '" style="cursor:pointer;border-radius:8px;padding:5px 6px;margin-bottom:4px;font-size:11.5px;line-height:15px;background:' + b.c + '1A;border-left:3px solid ' + b.c + '"><b>' + esc(i.brand) + '</b><br>' + esc(i.time || '') + '–' + esc(i.tend || '') + '<br>' + esc(i.title) + '</div>'; }).join('') : '<span class="sub">—</span>') + '</td>'; }).join('') + '</tr>';
+  }).join('') + '</tbody></table></div>';
+  h += sec('Kalender mingguan', 'cal', 'Jadwal live per cabang dalam satu minggu.', '', cal);
+  return h;
+}
+function lvPicked(ws, we) {
+  var all = lives(), id = S.lsel, it = all.filter(function (i) { return i.id === id; })[0];
+  if (!it) { var up = all.filter(function (i) { return i.date >= TODAY && i.status !== 'Tayang'; }).sort(function (a, b) { return (a.date + (a.time || '')).localeCompare(b.date + (b.time || '')); }); it = up[0] || null; }
+  return it;
+}
+function lvForm(i) {
+  var L = lset(), ro = role() === 'ks', dis = ro ? ' disabled' : '';
+  var hostNames = L.hosts.filter(function (x) { return x.act !== false; }).map(function (x) { return x.n; });
+  var o = function (list, v) { return opts(list.indexOf(v) < 0 && v ? [v].concat(list) : list, v); };
+  var th = L.themes.map(function (x) { return x.n; });
+  return '<div class="f2"><div class="f"><label for="lv-brand">Brand *</label><select id="lv-brand"' + dis + '>' + o(BRANDS.map(function (b) { return b.k; }), i.brand || (myBrands(S.me)[0] || BRANDS[0].k)) + '</select></div><div class="f"><label for="lv-team">Cabang *</label><select id="lv-team"' + dis + '>' + o(L.teams, i.team || L.teams[0]) + '</select></div></div>'
+    + '<div class="f2"><div class="f"><label for="lv-host">Host *</label><input id="lv-host" list="lv-hosts" value="' + esc(i.host || '') + '" placeholder="Pilih atau ketik nama"' + dis + '><datalist id="lv-hosts">' + hostNames.map(function (n) { return '<option value="' + esc(n) + '">'; }).join('') + '</datalist></div><div class="f"><label for="lv-date">Tanggal live *</label><input id="lv-date" type="date" value="' + esc(i.date || TODAY) + '"' + dis + '></div></div>'
+    + '<div class="f2"><div class="f"><label for="lv-time">Jam mulai *</label><input id="lv-time" type="time" value="' + esc(i.time || '19:00') + '"' + dis + '></div><div class="f"><label for="lv-tend">Jam selesai *</label><input id="lv-tend" type="time" value="' + esc(i.tend || '20:30') + '"' + dis + '></div></div>'
+    + '<div class="f2"><div class="f"><label for="lv-theme">Template tema</label><select id="lv-theme"' + dis + '>' + opts(['(tanpa template)'].concat(th), i.theme || '(tanpa template)') + '</select></div><div class="f"><label for="lv-title">Tema live *</label><input id="lv-title" value="' + esc(i.title || '') + '" placeholder="Contoh: Flash Deal Weekend Rentalaja"' + dis + '></div></div>'
+    + '<div class="f"><label for="lv-obj">Objective</label><input id="lv-obj" value="' + esc(i.obj || '') + '" placeholder="Contoh: booking weekend ≥ 20 transaksi"' + dis + '></div>'
+    + '<div class="f"><label for="lv-cta">CTA (ajakan)</label><input id="lv-cta" value="' + esc(i.cta || L.cta.text) + '"' + dis + '></div>'
+    + '<div class="f2"><div class="f"><label for="lv-link">Link booking target</label><input id="lv-link" value="' + esc(i.link || L.cta.link) + '"' + dis + '></div><div class="f"><label for="lv-st">Status</label><select id="lv-st"' + dis + '>' + opts(['Terjadwal', 'Draft'], i.status === 'Draft' ? 'Draft' : 'Terjadwal') + '</select></div></div>'
+    + '<div class="f2"><div class="f"><label for="lv-prod">Produk fokus (satu per baris)</label><textarea id="lv-prod" placeholder="Honda Beat harian&#10;iPhone 13"' + dis + '>' + esc(i.prod || '') + '</textarea></div><div class="f"><label for="lv-pts">Poin pembahasan (satu per baris)</label><textarea id="lv-pts" placeholder="Kosongkan untuk pakai template"' + dis + '>' + esc(i.pts || '') + '</textarea></div></div>'
+    + '<div class="f2"><div class="f"><label for="lv-faq">FAQ / jawaban siap pakai</label><textarea id="lv-faq" placeholder="Syarat sewa? KTP + KK + 1 dokumen pendukung"' + dis + '>' + esc(i.faq || '') + '</textarea></div><div class="f"><label for="lv-note">Catatan untuk host</label><textarea id="lv-note"' + dis + '>' + esc(i.brief || '') + '</textarea></div></div>'
+    + (i.id ? '' : '<label style="display:flex;gap:8px;align-items:center;font-weight:700;font-size:13px"><input type="checkbox" id="lv-rec"' + dis + '> Ulangi setiap minggu (buat 4 minggu ke depan)</label>')
+    + (ro ? '' : '<div class="acts"><button class="btn pri" data-lv="save" data-v="' + (i.id || '') + '">' + (i.id ? 'Simpan perubahan' : 'Publikasikan') + '</button>' + (i.id ? '<button class="btn" data-lv="dup" data-v="' + i.id + '">Duplikat minggu depan</button><button class="btn warn" data-lv="del" data-v="' + i.id + '">Hapus</button>' : '') + '</div>');
+}
+function lvExec(ws, we) {
+  var it = lvPicked(ws, we), L = lset();
+  var pick = lives().filter(function (i) { return i.date >= addDays(TODAY, -7) && i.date <= addDays(TODAY, 21); }).sort(function (a, b) { return (a.date + (a.time || '')).localeCompare(b.date + (b.time || '')); });
+  var sel = '<div class="f"><label for="lv-pick">Pilih sesi live</label><select id="lv-pick" data-lv-pick><option value="">+ Jadwal live baru</option>' + pick.map(function (i) { return '<option value="' + i.id + '"' + (it && it.id === i.id && S.lsel !== '' ? ' selected' : '') + '>' + esc(nice(i.date) + ' ' + (i.time || '') + ' · ' + i.team + ' · ' + i.title) + '</option>'; }).join('') + '</select></div>';
+  var cur = S.lsel === '' ? null : it;
+  var left = sec(cur ? 'Ubah jadwal live' : 'Tambah jadwal live', 'form', 'Atur detail eksekusi lalu publikasikan ke tim.', '', sel + lvForm(cur || {}));
+  var mid = '';
+  if (cur) {
+    var thm = L.themes.filter(function (x) { return x.n === cur.theme; })[0] || L.themes[0];
+    var chk = thm.chk || [], done = cur.chk || {};
+    var pts = (cur.pts ? cur.pts.split('\n') : thm.pts || []).filter(Boolean), prod = (cur.prod || '').split('\n').filter(Boolean), faq = (cur.faq || '').split('\n').filter(Boolean);
+    mid = sec('Detail sesi & brief host', 'review', '', lvChip(cur),
+      '<div class="hint" style="background:#F4F6F9;color:#1D3149"><b>' + esc(cur.brand) + ' · ' + esc(cur.team) + '</b> · host ' + esc(cur.host || '-') + ' · ' + nice(cur.date) + ' ' + esc(cur.time || '') + '–' + esc(cur.tend || '') + ' · kode <b>' + esc(lvCode(cur)) + '</b></div>'
+      + (cur.obj ? '<div class="sub"><b>Objective:</b> ' + esc(cur.obj) + '</div>' : '')
+      + '<div class="cols" style="gap:12px"><div class="box"><h2 style="font-size:14px;margin:0">Checklist persiapan</h2>' + (chk.length ? chk.map(function (c, k) { return '<label style="display:flex;gap:8px;align-items:flex-start;font-size:13px"><input type="checkbox" data-lv-chk="' + cur.id + '|' + k + '"' + (done[k] ? ' checked' : '') + (role() === 'ks' ? ' disabled' : '') + '> ' + esc(c) + '</label>'; }).join('') : '<span class="sub">Pilih template tema untuk checklist.</span>') + '</div>'
+      + '<div class="box"><h2 style="font-size:14px;margin:0">Poin pembahasan</h2><ol style="margin:0;padding-left:18px;font-size:13px;line-height:20px">' + pts.map(function (p) { return '<li>' + esc(p) + '</li>'; }).join('') + '</ol></div></div>'
+      + '<div class="cols" style="gap:12px"><div class="box"><h2 style="font-size:14px;margin:0">Produk fokus (' + prod.length + ')</h2>' + (prod.length ? '<ul style="margin:0;padding-left:18px;font-size:13px">' + prod.map(function (p) { return '<li>' + esc(p) + '</li>'; }).join('') + '</ul>' : '<span class="sub">Belum diisi.</span>') + '</div>'
+      + '<div class="box"><h2 style="font-size:14px;margin:0">CTA ke WhatsApp</h2><div style="font-size:13px">"' + esc(cur.cta || L.cta.text) + '"</div></div></div>'
+      + (faq.length ? '<div class="box"><h2 style="font-size:14px;margin:0">FAQ</h2><ul style="margin:0;padding-left:18px;font-size:13px">' + faq.map(function (p) { return '<li>' + esc(p) + '</li>'; }).join('') + '</ul></div>' : '')
+      + (cur.brief ? '<div class="box"><h2 style="font-size:14px;margin:0">Catatan</h2><div style="font-size:13px;white-space:pre-line">' + esc(cur.brief) + '</div></div>' : '')
+      + '<button class="btn" data-lv="copybrief" data-v="' + cur.id + '">' + ic('chat', 14) + ' Salin brief untuk host (WA)</button>');
+  }
+  var nowLive = lives().filter(lvLiveNow)[0], next = lives().filter(function (i) { return i.status !== 'Tayang' && i.status !== 'Draft' && (i.date > TODAY || (i.date === TODAY && (i.time || '') > nowHM())); }).sort(function (a, b) { return (a.date + (a.time || '')).localeCompare(b.date + (b.time || '')); })[0];
+  var show = cur || nowLive || next;
+  var right = sec('Link bio & pesan WA otomatis', 'link', 'Satu link tetap di bio TikTok. Saat live, pengunjung diarahkan chat WA dengan kode sesi supaya leads tercatat per live.', '',
+    '<div class="f"><label>Link bio permanen</label><div style="display:flex;gap:6px"><input readonly value="' + esc(L.cta.bio) + '"><button class="btn sm" data-lv="copy" data-t="' + esc(L.cta.bio) + '">Salin</button></div></div>'
+    + (nowLive ? '<div class="hint"><b>● LIVE sekarang:</b> ' + esc(nowLive.brand) + ' – ' + esc(nowLive.team) + ' · ' + esc(nowLive.title) + ' · ' + esc(nowLive.time) + '–' + esc(nowLive.tend) + '</div>' : next ? '<div class="hint" style="background:#F4F6F9;color:#1D3149">Live berikutnya: <b>' + esc(next.brand) + ' – ' + esc(next.team) + '</b> · ' + nice(next.date) + ' ' + esc(next.time) + ' · ' + esc(next.title) + '</div>' : '<div class="sub">Belum ada live terjadwal.</div>')
+    + (show ? '<div class="box" style="background:#F0FBF9"><b style="font-size:13px">Pesan WA otomatis · kode ' + esc(lvCode(show)) + '</b><div style="white-space:pre-line;font-size:13px;background:#fff;border-radius:10px;padding:10px">' + esc(lvWa(show)) + '</div><div class="acts"><button class="btn sm pri" data-lv="copy" data-t="' + esc(lvWaLink(show)) + '">Salin link WA</button><a class="btn sm" href="' + esc(lvWaLink(show)) + '" target="_blank" rel="noopener">Coba buka</a></div><span class="sub">Admin WA mencatat chat dengan kode ini sebagai leads live. Nomor WA tujuan diatur di Pengaturan.</span></div>' : ''));
+  var flow = sec('Alur operasional hari-H', 'flag', '', '', '<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px">' + [['Cek jadwal', 'Pastikan jadwal, host, cabang, brief final.'], ['Persiapan live', 'Siapkan unit, materi, promo, link bio, kabari CS.'], ['Mulai live', 'Jalankan sesuai brief & jawab pertanyaan.'], ['Arahkan ke link bio', 'Ingatkan klik link bio (booking / chat WA berkode).'], ['Input hasil', 'Isi durasi, viewers, leads, closing + screenshot.']].map(function (s, k) { return '<div class="box" style="gap:4px"><b style="color:#067A70">' + (k + 1) + ' · ' + s[0] + '</b><span class="sub">' + s[1] + '</span></div>'; }).join('') + '</div>');
+  return '<div class="cols">' + left + '<div style="display:flex;flex-direction:column;gap:22px">' + (mid || '') + right + '</div></div>' + flow;
+}
+function lvRes() {
+  var mk = S.lmon || monthKey(), L = lset(), all = lives();
+  var pend = all.filter(function (i) { return lvState(i)[0] === 'Isi hasil'; }).sort(function (a, b) { return (b.date + b.time).localeCompare(a.date + a.time); });
+  var recent = all.filter(function (i) { return i.date <= TODAY && i.date >= addDays(TODAY, -30); }).sort(function (a, b) { return (b.date + (b.time || '')).localeCompare(a.date + (a.time || '')); });
+  var opt = pend.concat(recent.filter(function (i) { return pend.indexOf(i) < 0; }));
+  var it = opt.filter(function (i) { return i.id === S.lres; })[0] || opt[0];
+  var ro = role() === 'ks', dis = ro ? ' disabled' : '';
+  var num = function (id, lbl, v, ph) { return '<div class="f"><label for="' + id + '">' + lbl + '</label><input id="' + id + '" type="text" inputmode="decimal" data-num value="' + esc(v == null ? '' : v) + '" placeholder="' + (ph || '') + '"' + dis + '></div>'; };
+  var form = it ? '<div class="f"><label for="lv-res">Pilih live *</label><select id="lv-res" data-lv-res>' + opt.map(function (i) { return '<option value="' + i.id + '"' + (i === it ? ' selected' : '') + '>' + esc((lvState(i)[0] === 'Isi hasil' ? '⚠ ' : '') + nice(i.date) + ' · ' + i.team + ' · ' + i.title + ' · ' + (i.host || '-')) + '</option>'; }).join('') + '</select></div>'
+    + '<div class="f2">' + num('lr-dur', 'Durasi live (menit) *', it.dur || lvMin(it)) + num('lr-view', 'Total viewers', it.lvt) + '</div>'
+    + '<div class="f2">' + num('lr-peak', 'Penonton puncak', it.lv) + num('lr-chat', 'Chat / komentar masuk', it.lchat) + '</div>'
+    + '<div class="f2">' + num('lr-leads', 'Leads WA (kode ' + esc(lvCode(it)) + ')', it.lleads) + num('lr-cl', 'Closing', it.lc) + '</div>'
+    + '<div class="f2">' + num('lr-omz', 'Omzet (Rp)', it.lo) + num('lr-gift', 'Gift (nilai Rp)', it.lgift) + '</div>'
+    + '<div class="f"><label for="lr-note">Catatan</label><textarea id="lr-note"' + dis + ' placeholder="Contoh: banyak tanya promo bundling">' + esc(it.lnote || '') + '</textarea></div>'
+    + '<div id="lv-shots">' + shotsBox(it, !ro) + '</div>'
+    + (ro ? '' : '<div class="acts"><button class="btn pri" data-lv="res" data-v="' + it.id + '">' + (it.status === 'Tayang' ? 'Simpan perubahan hasil' : 'Kirim laporan') + '</button></div>')
+    : empty('Belum ada live yang perlu dilaporkan.');
+  var mon = all.filter(function (i) { return i.status === 'Tayang' && monthKey(i.date) === mk; });
+  var pm = (function () { var d = parse(mk + '-01'); d.setMonth(d.getMonth() - 1); return iso(d).slice(0, 7); })();
+  var prev = all.filter(function (i) { return i.status === 'Tayang' && monthKey(i.date) === pm; });
+  var sum = function (l, f) { return l.reduce(function (a, i) { return a + (+i[f] || 0); }, 0); };
+  var vw = function (l) { return l.reduce(function (a, i) { return a + (+i.lvt || +i.lv || 0); }, 0); };
+  var B = lvBonus(mon), tb = B.reduce(function (a, o) { return a + o.bonus; }, 0), tbp = lvBonus(prev).reduce(function (a, o) { return a + o.bonus; }, 0);
+  var dd = function (a, b) { if (!b) return ''; var p = Math.round((a - b) / b * 100); return (p >= 0 ? '▲ ' : '▼ ') + Math.abs(p) + '% vs bulan lalu'; };
+  var monNav = '<button class="btn sm" data-lv="mon" data-v="-1">‹</button><b style="align-self:center;color:#1D3149">' + monthName(mk) + '</b><button class="btn sm" data-lv="mon" data-v="1">›</button>';
+  var apr = L.appr[mk] || {};
+  var lead = S.me === LEAD;
+  var stC = { menunggu: ['Menunggu', '#FDF3D7', '#7A5200'], ok: ['Disetujui', '#DDF5F2', '#067A70'], tolak: ['Ditolak', '#FCEBDD', '#9A3F0A'] };
+  var rank = B.length ? '<div style="overflow-x:auto"><table class="tbl"><thead><tr><th>#</th><th>Host</th><th style="text-align:right">Live</th><th style="text-align:right">Viewers</th><th style="text-align:right">Closing</th><th style="text-align:right">Omzet</th><th style="text-align:right">Aktivitas</th><th style="text-align:right">Closing</th><th style="text-align:right">Gift</th><th style="text-align:right">Target</th><th style="text-align:right">Total bonus</th><th>Status</th></tr></thead><tbody>' + B.map(function (o, k) {
+    var a = apr[o.host] || 'menunggu', s = stC[a] || stC.menunggu;
+    return '<tr><td>' + (k + 1) + '</td><td><b>' + esc(o.host) + '</b><div class="sub">' + esc(Object.keys(o.team).join(', ')) + '</div></td>' + lvTd(o.n, 1) + lvTd(fmt(o.view), 1) + lvTd(o.cl, 1) + lvTd(rpS(o.omz), 1) + lvTd(rpS(o.bAkt), 1) + lvTd(rpS(o.bCl), 1) + lvTd(rpS(o.bGift), 1) + lvTd(rpS(o.bTgt), 1) + '<td style="text-align:right"><b>Rp ' + grp(String(o.bonus)) + '</b></td><td><span class="st" style="background:' + s[1] + ';color:' + s[2] + '">' + s[0] + '</span>' + (lead ? ' <button class="btn sm" data-lv="apr" data-v="' + esc(o.host) + '" data-s="ok">Setujui</button><button class="btn sm" data-lv="apr" data-v="' + esc(o.host) + '" data-s="tolak">Tolak</button>' : '') + '</td></tr>';
+  }).join('') + '</tbody></table></div>' : empty('Bonus muncul setelah ada laporan hasil live bulan ini.');
+  var warn = L.bonus.checked ? '' : '<div class="hint" style="background:#FDF3D7;color:#7A5200">Aturan bonus masih <b>nilai contoh</b> (Rp' + grp(String(L.bonus.sesi)) + '/sesi ≥ ' + L.bonus.minDur + ' menit, Rp' + grp(String(L.bonus.closing)) + '/closing, ' + L.bonus.giftPct + '% gift, bonus target ' + L.bonus.target + ' closing = Rp' + grp(String(L.bonus.targetBonus)) + '). Head of Marketing perlu mengecek di Pengaturan.</div>';
+  var perf = sec('Performa host & bonus', 'users', 'Bonus dihitung otomatis dari laporan hasil, dibayar setelah disetujui Head of Marketing.', monNav + '<button class="btn sm" data-lv="bonuswa">' + ic('chat', 14) + ' Salin rekap bonus</button>',
+    kpis([{ label: 'Total live', ic: 'video', val: mon.length, note: dd(mon.length, prev.length) || 'bulan ini', bar: TEAL }, { label: 'Total viewers', ic: 'users', val: fmt(vw(mon)), note: dd(vw(mon), vw(prev)) || '—', bar: TEAL },
+      { label: 'Total closing', ic: 'check', val: sum(mon, 'lc'), note: dd(sum(mon, 'lc'), sum(prev, 'lc')) || rpS(sum(mon, 'lo')), bar: TEAL }, { label: 'Total bonus', ic: 'money', val: rpS(tb), note: dd(tb, tbp) || 'menunggu persetujuan', bar: TEAL }]) + warn + rank);
+  // analitik
+  var hrs = {}; mon.forEach(function (i) { var hh = (i.time || '00').slice(0, 2); hrs[hh] = hrs[hh] || [0, 0, 0]; hrs[hh][0]++; hrs[hh][1] += +i.lc || 0; hrs[hh][2] += +i.lvt || +i.lv || 0; });
+  var hk = Object.keys(hrs).sort(), mx = Math.max.apply(null, hk.map(function (k) { return hrs[k][1]; }).concat([1]));
+  var best = hk.slice().sort(function (a, b) { return hrs[b][1] - hrs[a][1]; })[0];
+  var hourChart = hk.length ? '<div style="display:flex;align-items:flex-end;gap:10px;height:150px;padding-top:10px">' + hk.map(function (k) { var v = hrs[k][1]; return '<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end"><b style="font-size:11.5px;color:#1D3149">' + v + '</b><div style="width:100%;max-width:46px;border-radius:8px 8px 0 0;height:' + Math.max(4, Math.round(v / mx * 100)) + '%;background:' + (k === best ? '#067A70' : '#9DE3DB') + '"></div><span class="sub">' + k + '.00</span></div>'; }).join('') + '</div><span class="sub">Closing per jam mulai live. Jam terbaik: <b>' + best + '.00</b> (' + hrs[best][0] + ' live).</span>' : empty('Belum ada data.');
+  var V = vw(mon), C = sum(mon, 'lchat'), Ld = sum(mon, 'lleads'), Cl = sum(mon, 'lc');
+  var fn = [['Viewers', V], ['Chat masuk', C], ['Leads WA', Ld], ['Closing', Cl]];
+  var funnel = V ? fn.map(function (f, k) { var p = V ? f[1] / V * 100 : 0; return '<div style="display:flex;align-items:center;gap:10px;margin:4px 0"><div style="width:' + (100 - k * 18) + '%;margin:0 auto;background:' + ['#067A70', '#09BEAF', '#6FD3C9', '#B5EAE4'][k] + ';color:' + (k < 2 ? '#fff' : '#1D3149') + ';border-radius:8px;padding:7px 10px;display:flex;justify-content:space-between;font-size:13px"><b>' + f[0] + '</b><span><b>' + fmt(f[1]) + '</b> · ' + (Math.round(p * 10) / 10).toString().replace('.', ',') + '%</span></div></div>'; }).join('') : empty('Isi viewers di laporan hasil untuk melihat funnel.');
+  var byC = {}; mon.forEach(function (i) { var t = i.team || '-'; var o = byC[t] = byC[t] || [0, 0, 0, 0]; o[0]++; o[1] += +i.lvt || +i.lv || 0; o[2] += +i.lc || 0; o[3] += +i.lo || 0; });
+  var cTbl = Object.keys(byC).length ? '<table class="tbl"><thead><tr><th>Cabang</th><th style="text-align:right">Live</th><th style="text-align:right">Viewers</th><th style="text-align:right">Closing</th><th style="text-align:right">Omzet</th></tr></thead><tbody>' + Object.keys(byC).sort(function (a, b) { return byC[b][3] - byC[a][3]; }).map(function (k) { var o = byC[k]; return '<tr><td><b>' + esc(k) + '</b></td>' + lvTd(o[0], 1) + lvTd(fmt(o[1]), 1) + lvTd(o[2], 1) + lvTd(rpS(o[3]), 1) + '</tr>'; }).join('') + '</tbody></table>' : empty('Belum ada data.');
+  var byT = {}; mon.forEach(function (i) { var t = i.theme || 'Lainnya'; byT[t] = (byT[t] || 0) + 1; });
+  var tTot = mon.length || 1, tCol = ['#067A70', '#09BEAF', '#F2A33A', '#5B8DEF', '#B0466B', '#A9B4C2'];
+  var tk = Object.keys(byT).sort(function (a, b) { return byT[b] - byT[a]; });
+  var topik = tk.length ? '<div style="display:flex;height:16px;border-radius:9px;overflow:hidden;margin:6px 0 10px">' + tk.map(function (k, j) { return '<span style="flex:' + byT[k] + ';background:' + tCol[j % 6] + '"></span>'; }).join('') + '</div>' + tk.map(function (k, j) { return '<div style="display:flex;justify-content:space-between;font-size:13px;padding:3px 0"><span><span class="dot" style="background:' + tCol[j % 6] + ';margin-right:6px"></span>' + esc(k) + '</span><b>' + Math.round(byT[k] / tTot * 100) + '%</b></div>'; }).join('') : empty('Belum ada data.');
+  var hTbl = B.length ? '<div style="overflow-x:auto"><table class="tbl"><thead><tr><th>Host</th><th style="text-align:right">Live</th><th style="text-align:right">Viewers</th><th style="text-align:right">Chat</th><th style="text-align:right">Leads WA</th><th style="text-align:right">Closing</th><th style="text-align:right">Konversi</th><th style="text-align:right">Omzet</th></tr></thead><tbody>' + B.map(function (o) { return '<tr><td><b>' + esc(o.host) + '</b></td>' + lvTd(o.n, 1) + lvTd(fmt(o.view), 1) + lvTd(fmt(o.chat), 1) + lvTd(fmt(o.leads), 1) + lvTd(o.cl, 1) + lvTd(o.view ? (Math.round(o.cl / o.view * 1000) / 10).toString().replace('.', ',') + '%' : '-', 1) + lvTd(rpS(o.omz), 1) + '</tr>'; }).join('') + '</tbody></table></div>' : empty('Belum ada data.');
+  var ana = sec('Analitik · ' + monthName(mk), 'chart', 'Untuk evaluasi jam, tema, cabang, dan host.', '', '<div class="cols"><div class="box"><h2 style="font-size:14px;margin:0">Jam terbaik live</h2>' + hourChart + '</div><div class="box"><h2 style="font-size:14px;margin:0">Conversion funnel</h2>' + funnel + '</div></div>'
+    + '<div class="cols"><div class="box"><h2 style="font-size:14px;margin:0">Performa per cabang</h2>' + cTbl + '</div><div class="box"><h2 style="font-size:14px;margin:0">Topik live terbanyak</h2>' + topik + '</div></div>'
+    + '<div class="box"><h2 style="font-size:14px;margin:0">Perbandingan performa per host</h2>' + hTbl + '</div>');
+  return sec('Laporan hasil LIVE', 'form', 'Isi setelah live selesai. Screenshot dari TikTok Live wajib sebagai bukti.', pend.length ? '<span class="st" style="background:#FCEBDD;color:#9A3F0A">' + pend.length + ' belum diisi</span>' : '', form) + perf + ana;
+}
+function lvSet() {
+  var L = lset(), lead = S.me === LEAD, dis = lead ? '' : ' disabled';
+  var hosts = '<div class="list">' + (L.hosts.length ? L.hosts.map(function (x, k) { return '<div class="row"><span class="ib">' + ic('user') + '</span><div class="grow"><strong>' + esc(x.n) + '</strong><span class="m">' + esc(x.team || '-') + ' · ' + (x.kind || 'Staf cabang') + '</span></div><span class="st" style="background:' + (x.act === false ? '#EEF0F3;color:#3B4250' : '#DDF5F2;color:#067A70') + '">' + (x.act === false ? 'Nonaktif' : 'Aktif') + '</span>' + (lead ? '<button class="btn sm" data-lv="hostact" data-v="' + k + '">' + (x.act === false ? 'Aktifkan' : 'Nonaktifkan') + '</button>' : '') + '</div>'; }).join('') : empty('Belum ada host. Tambahkan staf cabang atau tim marketing yang jadi host.')) + '</div>'
+    + (lead ? '<div class="f2" style="margin-top:8px"><div class="f"><label for="ls-hn">Nama host</label><input id="ls-hn" placeholder="Contoh: Dinda"></div><div class="f"><label for="ls-ht">Cabang</label><select id="ls-ht">' + opts(L.teams, L.teams[0]) + '</select></div></div><div class="f2"><div class="f"><label for="ls-hk">Asal</label><select id="ls-hk">' + opts(['Staf cabang', 'Tim marketing'], 'Staf cabang') + '</select></div><div class="f" style="justify-content:flex-end"><button class="btn pri" data-lv="hostadd">+ Tambah host</button></div></div>' : '');
+  var teams = '<div class="f"><label for="ls-teams">Cabang / tim live (satu per baris)</label><textarea id="ls-teams"' + dis + '>' + esc(L.teams.join('\n')) + '</textarea></div><div class="f2"><div class="f"><label for="ls-plan">Rencana live per minggu</label><input id="ls-plan" type="text" inputmode="decimal" data-num value="' + L.plan + '"' + dis + '></div><div></div></div>';
+  var themes = L.themes.map(function (t, k) { return '<details class="box"><summary style="cursor:pointer;font-weight:800">' + esc(t.n) + '</summary><div class="f"><label>Nama template</label><input data-ls-th="' + k + '|n" value="' + esc(t.n) + '"' + dis + '></div><div class="f2"><div class="f"><label>Checklist persiapan (satu per baris)</label><textarea data-ls-th="' + k + '|chk"' + dis + '>' + esc((t.chk || []).join('\n')) + '</textarea></div><div class="f"><label>Poin pembahasan (satu per baris)</label><textarea data-ls-th="' + k + '|pts"' + dis + '>' + esc((t.pts || []).join('\n')) + '</textarea></div></div></details>'; }).join('') + (lead ? '<button class="btn sm" data-lv="thadd">+ Template baru</button>' : '');
+  var cta = '<div class="f"><label for="ls-ct">Kalimat CTA default</label><input id="ls-ct" value="' + esc(L.cta.text) + '"' + dis + '></div><div class="f2"><div class="f"><label for="ls-wa">Nomor WA tujuan leads (62…)</label><input id="ls-wa" value="' + esc(L.cta.wa) + '"' + dis + '></div><div class="f"><label for="ls-lk">Link booking default</label><input id="ls-lk" value="' + esc(L.cta.link) + '"' + dis + '></div></div><div class="f"><label for="ls-bio">Link bio permanen</label><input id="ls-bio" value="' + esc(L.cta.bio) + '"' + dis + '></div>';
+  var b = L.bonus, nb = function (id, lbl, v, sfx) { return '<div class="f"><label for="' + id + '">' + lbl + '</label><input id="' + id + '" type="text" inputmode="decimal" data-num value="' + v + '"' + dis + '>' + (sfx ? '<span class="sub">' + sfx + '</span>' : '') + '</div>'; };
+  var bonus = (b.checked ? '' : '<div class="hint" style="background:#FDF3D7;color:#7A5200">Nilai di bawah masih <b>contoh</b>. Ubah sesuai kebijakan, lalu Simpan, maka tanda "perlu dicek" hilang.</div>')
+    + '<div class="f2">' + nb('lb-sesi', 'Bonus aktivitas per sesi (Rp)', b.sesi, 'dihitung kalau durasi ≥ batas di kanan') + nb('lb-min', 'Durasi minimal sesi (menit)', b.minDur) + '</div>'
+    + '<div class="f2">' + nb('lb-cl', 'Bonus per closing (Rp)', b.closing) + nb('lb-gift', 'Bonus gift (% dari nilai gift)', b.giftPct) + '</div>'
+    + '<div class="f2">' + nb('lb-tg', 'Target closing per bulan', b.target) + nb('lb-tgb', 'Bonus kalau target tercapai (Rp)', b.targetBonus) + '</div>';
+  var acts = lead ? '<div class="acts"><button class="btn pri" data-lv="setsave">Simpan pengaturan</button></div>' : '<div class="sub">Hanya Head of Marketing yang bisa mengubah pengaturan.</div>';
+  var info = '<div class="list"><div class="row"><div class="grow"><strong>Alur persetujuan bonus</strong><span class="m">Laporan hasil dikirim → bonus terhitung otomatis (Menunggu) → Head of Marketing menyetujui atau menolak per host per bulan → rekap bonus disalin ke WA/Keuangan.</span></div></div>'
+    + '<div class="row"><div class="grow"><strong>Hak akses</strong><span class="m">Head of Marketing: semua, termasuk pengaturan & persetujuan bonus. PIC akun: jadwal, brief, laporan hasil. Kepala Staf: lihat saja. Host (staf cabang) menerima brief lewat WA dan mengirim angka/screenshot ke PIC.</span></div></div></div>';
+  return '<div class="cols">' + sec('Master host', 'users', 'Staf cabang + tim marketing yang menjadi host live.', '', hosts) + sec('Master cabang & rencana', 'pin', '', '', teams) + '</div>'
+    + '<div class="cols">' + sec('Template tema live', 'bulb', 'Checklist & poin pembahasan otomatis terpakai di brief host.', '', themes) + sec('Default CTA & link', 'link', '', '', cta) + '</div>'
+    + '<div class="cols">' + sec('Aturan bonus', 'money', 'Total bonus = aktivitas + closing + gift + bonus target.', b.checked ? '' : '<span class="st" style="background:#FDF3D7;color:#7A5200">Perlu dicek</span>', bonus) + sec('Status approval & hak akses', 'check', '', '', info) + '</div>' + acts;
+}
+function lvAfter() {
+  var box = document.getElementById('lv-shots'); if (box) { var id = (document.getElementById('lv-res') || {}).value; var it = lives().filter(function (i) { return i.id === id; })[0]; if (it) wireShots(box, it); }
+  var th = document.getElementById('lv-theme'), tt = document.getElementById('lv-title');
+  if (th && tt && !th._w) { th._w = 1; th.addEventListener('change', function () { if (!tt.value && th.value !== '(tanpa template)') tt.value = th.value + ' ' + (document.getElementById('lv-brand') || {}).value; }); }
+}
+function lvRead(id, it) {
+  var v = function (k) { var el = document.getElementById(k); return el ? String(el.value || '').trim() : ''; };
+  var o = it || { id: uid(), format: 'Live TikTok', pillar: 'Promotional', ch: ['TikTok'], mode: 'sendiri', log: [] };
+  o.brand = v('lv-brand'); o.team = v('lv-team'); o.host = v('lv-host'); o.date = v('lv-date'); o.time = v('lv-time'); o.tend = v('lv-tend');
+  o.theme = v('lv-theme') === '(tanpa template)' ? '' : v('lv-theme'); o.title = v('lv-title'); o.obj = v('lv-obj'); o.cta = v('lv-cta'); o.link = v('lv-link');
+  o.status = v('lv-st') === 'Draft' ? 'Draft' : (it && it.status === 'Tayang' ? 'Tayang' : 'Siap tayang');
+  o.prod = v('lv-prod'); o.pts = v('lv-pts'); o.faq = v('lv-faq'); o.brief = v('lv-note');
+  return o;
+}
+document.addEventListener('change', function (e) {
+  var el = e.target; if (!el.hasAttribute) return;
+  if (el.hasAttribute('data-lv-pick')) { S.lsel = el.value; save(); render(); return; }
+  if (el.hasAttribute('data-lv-res')) { S.lres = el.value; render(); return; }
+  if (el.hasAttribute('data-lv-chk')) { if (role() === 'ks') return; var p = el.getAttribute('data-lv-chk').split('|'), it = lives().filter(function (i) { return i.id === p[0]; })[0]; if (!it) return; it.chk = it.chk || {}; it.chk[p[1]] = el.checked; save(); return; }
+});
+document.addEventListener('click', function (e) {
+  var t = e.target.closest('[data-lv]'); if (!t || (cur && cur.contains(t))) return;
+  var a = t.getAttribute('data-lv'), v = t.getAttribute('data-v');
+  var find = function (id) { return lives().filter(function (i) { return i.id === id; })[0]; };
+  if (a === 'tab') { S.ltab = v; save(); render(); window.scrollTo(0, 0); return; }
+  if (a === 'cab') { S.lcab = v || ''; save(); render(); return; }
+  if (a === 'pick') { S.ltab = 'eksekusi'; S.lsel = v; save(); render(); window.scrollTo(0, 0); return; }
+  if (a === 'new') { S.ltab = 'eksekusi'; S.lsel = ''; save(); render(); window.scrollTo(0, 0); return; }
+  if (a === 'mon') { var d = parse((S.lmon || monthKey()) + '-01'); d.setMonth(d.getMonth() + +v); S.lmon = iso(d).slice(0, 7); render(); return; }
+  if (a === 'copy') { var txt = t.getAttribute('data-t'); (navigator.clipboard ? navigator.clipboard.writeText(txt) : Promise.reject()).then(function () { toast('Tersalin'); }, function () { waPanel(txt, 'Salin manual'); }); return; }
+  if (a === 'copybrief') { var b = find(v); if (!b) return; var L = lset(), th = L.themes.filter(function (x) { return x.n === b.theme; })[0] || {};
+    waPanel('*Brief LIVE ' + b.brand + ' · ' + b.team + '*\n' + nice(b.date) + ' · ' + (b.time || '') + '–' + (b.tend || '') + ' · host ' + (b.host || '-') + '\nTema: ' + b.title + (b.obj ? '\nObjective: ' + b.obj : '') + '\nKode sesi: ' + lvCode(b)
+      + '\n\n*Checklist persiapan*\n' + (th.chk || []).map(function (c) { return '☐ ' + c; }).join('\n') + '\n\n*Poin pembahasan*\n' + ((b.pts ? b.pts.split('\n') : th.pts || []).filter(Boolean).map(function (p, k) { return (k + 1) + '. ' + p; }).join('\n'))
+      + (b.prod ? '\n\n*Produk fokus*\n' + b.prod.split('\n').filter(Boolean).map(function (p) { return '• ' + p; }).join('\n') : '') + '\n\n*CTA:* ' + (b.cta || L.cta.text) + '\nLink bio: ' + L.cta.bio + (b.faq ? '\n\n*FAQ*\n' + b.faq : '') + (b.brief ? '\n\n*Catatan:* ' + b.brief : '') + '\n\nSelesai live: kirim durasi, viewers, chat, leads, closing, omzet, gift + screenshot.', 'Brief host'); return; }
+  if (role() === 'ks') { toast('Kepala Staf hanya bisa melihat'); return; }
+  if (a === 'save') {
+    var it = v ? find(v) : null, o = lvRead(v, it);
+    if (!o.brand || !o.team || !o.host || !o.date || !o.time || !o.tend || !o.title) { toast('Lengkapi yang bertanda *: brand, cabang, host, tanggal, jam, tema'); return; }
+    if (o.tend <= o.time) { toast('Jam selesai harus setelah jam mulai'); return; }
+    var bentrok = lives().filter(function (i) { return i !== it && i.team === o.team && i.date === o.date && i.time < o.tend && (i.tend || '23:59') > o.time; })[0];
+    if (bentrok && !confirm('Bentrok dengan "' + bentrok.title + '" di ' + o.team + ' jam ' + bentrok.time + '–' + bentrok.tend + '. Tetap simpan?')) return;
+    if (!it) { var rec = (document.getElementById('lv-rec') || {}).checked; log(o, 'jadwal live dibuat'); S.items.push(o); if (rec) { o.rec = true; for (var w = 1; w <= 4; w++) { var c = JSON.parse(JSON.stringify(o)); c.id = uid(); c.date = addDays(o.date, 7 * w); c.chk = {}; c.log = []; log(c, 'jadwal live mingguan dibuat'); S.items.push(c); } } S.lsel = o.id; toast(rec ? 'Live dijadwalkan + 4 minggu ke depan' : 'Live dijadwalkan ' + nice(o.date)); }
+    else { log(o, 'jadwal live diubah'); toast('Perubahan tersimpan'); }
+    save(); render(); return;
+  }
+  if (a === 'dup') { var s0 = find(v); if (!s0) return; var c2 = JSON.parse(JSON.stringify(s0)); c2.id = uid(); c2.date = addDays(s0.date, 7); c2.status = 'Siap tayang'; ['dur', 'lvt', 'lv', 'lchat', 'lleads', 'lc', 'lo', 'lgift', 'lnote', 'shots', 'chk'].forEach(function (k) { delete c2[k]; }); c2.log = []; log(c2, 'diduplikat dari ' + nice(s0.date)); S.items.push(c2); S.lsel = c2.id; save(); render(); toast('Diduplikat ke ' + nice(c2.date)); return; }
+  if (a === 'del') { var d0 = find(v); if (!d0 || !confirm('Hapus jadwal live "' + d0.title + '"?')) return; S.items = S.items.filter(function (i) { return i !== d0; }); S.lsel = ''; save(); render(); toast('Jadwal live dihapus'); return; }
+  if (a === 'res') {
+    var r = find(v); if (!r) return; var g = function (k) { var el = document.getElementById(k); return el ? String(el.value || '').trim() : ''; };
+    if (!(+g('lr-dur'))) { toast('Isi durasi live'); return; }
+    if (ONLINE && !(r.shots || []).length) { toast('Tambahkan screenshot hasil live dulu sebagai bukti'); return; }
+    r.dur = +g('lr-dur'); r.lvt = g('lr-view'); r.lv = g('lr-peak'); r.lchat = g('lr-chat'); r.lleads = g('lr-leads'); r.lc = g('lr-cl'); r.lo = g('lr-omz'); r.lgift = g('lr-gift'); r.lnote = g('lr-note');
+    var first = r.status !== 'Tayang'; r.status = 'Tayang'; log(r, first ? 'hasil live dilaporkan' : 'hasil live diubah'); save(); render(); toast(first ? 'Laporan terkirim' : 'Hasil diperbarui'); return;
+  }
+  if (a === 'apr') { if (S.me !== LEAD) { toast('Hanya Head of Marketing'); return; } var L2 = lset(), mk = S.lmon || monthKey(); L2.appr[mk] = L2.appr[mk] || {}; L2.appr[mk][v] = t.getAttribute('data-s'); save(); render(); toast(t.getAttribute('data-s') === 'ok' ? 'Bonus ' + v + ' disetujui' : 'Bonus ' + v + ' ditolak'); return; }
+  if (a === 'bonuswa') { var mk2 = S.lmon || monthKey(), B2 = lvBonus(lives().filter(function (i) { return i.status === 'Tayang' && monthKey(i.date) === mk2; })), ap = (lset().appr[mk2] || {}); waPanel('*Rekap bonus host Live TikTok · ' + monthName(mk2) + '*\n\n' + (B2.length ? B2.map(function (o, k) { return (k + 1) + '. ' + o.host + ' · ' + o.n + ' live · ' + o.cl + ' closing · bonus Rp' + grp(String(o.bonus)) + ' (' + ({ ok: 'disetujui', tolak: 'ditolak' }[ap[o.host]] || 'menunggu') + ')'; }).join('\n') + '\n\nTotal: Rp' + grp(String(B2.reduce(function (a2, o) { return a2 + o.bonus; }, 0))) : '• Belum ada live selesai'), 'Rekap bonus host'); return; }
+  if (S.me !== LEAD && ['hostadd', 'hostact', 'thadd', 'setsave'].indexOf(a) >= 0) { toast('Hanya Head of Marketing'); return; }
+  var L3 = lset();
+  if (a === 'hostadd') { var hn = (document.getElementById('ls-hn') || {}).value; if (!hn || !hn.trim()) { toast('Isi nama host'); return; } L3.hosts.push({ n: hn.trim(), team: document.getElementById('ls-ht').value, kind: document.getElementById('ls-hk').value, act: true }); save(); render(); toast('Host ditambahkan'); return; }
+  if (a === 'hostact') { var hx = L3.hosts[+v]; if (hx) { hx.act = hx.act === false; save(); render(); } return; }
+  if (a === 'thadd') { L3.themes.push({ n: 'Template baru', chk: [], pts: [] }); save(); render(); return; }
+  if (a === 'setsave') {
+    var gv = function (k) { var el = document.getElementById(k); return el ? String(el.value || '').trim() : ''; };
+    L3.teams = gv('ls-teams').split('\n').map(function (x) { return x.trim(); }).filter(Boolean); L3.plan = +gv('ls-plan') || 10;
+    document.querySelectorAll('[data-ls-th]').forEach(function (el) { var p = el.getAttribute('data-ls-th').split('|'), th = L3.themes[+p[0]]; if (!th) return; th[p[1]] = p[1] === 'n' ? el.value.trim() : el.value.split('\n').map(function (x) { return x.trim(); }).filter(Boolean); });
+    L3.cta = { text: gv('ls-ct'), wa: gv('ls-wa').replace(/\D/g, ''), link: gv('ls-lk'), bio: gv('ls-bio') };
+    L3.bonus = { sesi: +gv('lb-sesi') || 0, minDur: +gv('lb-min') || 0, closing: +gv('lb-cl') || 0, giftPct: +gv('lb-gift') || 0, target: +gv('lb-tg') || 0, targetBonus: +gv('lb-tgb') || 0, checked: true };
+    save(); render(); toast('Pengaturan Live TikTok tersimpan'); return;
+  }
+});
 
 /* ---------- Footage (menu sendiri) ---------- */
 function foots() { S.foot = S.foot || []; return S.foot; }
@@ -1689,7 +1924,7 @@ function vFoot() {
 var SB_URL = 'https://shrvzlltysnbmgpkhjjg.supabase.co', SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNocnZ6bGx0eXNuYm1ncGtoampnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI4NzAzNTYsImV4cCI6MjEwODQ0NjM1Nn0.V0EDK0y3ZFIuNW5uGJjDcHZlEVxAURVC6OJVPaUYUFY', SKEY = 'pokama.session';
 var LOCAL = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
 var ONLINE = false, DOCS = {}, LAST = '1970-01-01T00:00:00Z', SYNC = 'lokal', pushT = null, pushing = false, dirty = false;
-var PERSONAL = ['me', 'brand', 'week', 'plat', 'am', '_auto', 'lweek', 'ftype', 'fq', 'bmode', 'bwho', 'bm'];
+var PERSONAL = ['me', 'brand', 'week', 'plat', 'am', '_auto', 'lweek', 'ftype', 'fq', 'bmode', 'bwho', 'bm', 'ltab', 'lsel', 'lcab'];
 var ARR = ['camps', 'ideas', 'items', 'kols', 'reps', 'foot', 'mps', 'dirs'];
 /* JSON dengan urutan kunci tetap: database (jsonb) menyusun ulang kunci, jadi perbandingan biasa selalu "berubah" dan memicu simpan ulang terus-menerus */
 function canon(v) { if (Array.isArray(v)) return '[' + v.map(canon).join(',') + ']'; if (v && typeof v === 'object') return '{' + Object.keys(v).sort().filter(function (k) { return v[k] !== undefined; }).map(function (k) { return JSON.stringify(k) + ':' + canon(v[k]); }).join(',') + '}'; return JSON.stringify(v === undefined ? null : v); }
@@ -1704,6 +1939,7 @@ function snap() {
   var d = D(); ['ig', 'ads', 'seo'].forEach(function (k) { Object.keys(d[k] || {}).forEach(function (z) { o['dly:' + k + ':' + z] = d[k][z]; }); });
   o.team = { pic: S.pic || {}, slot: S.slot || {}, cap: S.cap, used: S.used || 0 };
   o.budget = S.budget || {}; o.subs = { list: S.subs || [] };
+  if (S.lset) o.liveset = S.lset;
   return o;
 }
 function sess() { try { return JSON.parse(localStorage.getItem(SKEY) || 'null'); } catch (e) { return null; } }
@@ -1748,6 +1984,7 @@ function applyRow(r) {
   else if (kind === 'team' && !r.deleted) { S.pic = r.data.pic || {}; S.slot = r.data.slot || {}; if (r.data.cap) S.cap = r.data.cap; S.used = r.data.used || 0; }
   else if (kind === 'budget' && !r.deleted) S.budget = r.data || {};
   else if (kind === 'subs' && !r.deleted) S.subs = r.data.list || [];
+  else if (kind === 'liveset' && !r.deleted) S.lset = r.data || {};
   if (r.updated_at > LAST) LAST = r.updated_at;
 }
 function busy() { var a = document.activeElement; return cur || (a && /INPUT|SELECT|TEXTAREA/.test(a.tagName) && !a.hasAttribute('data-me')); }
