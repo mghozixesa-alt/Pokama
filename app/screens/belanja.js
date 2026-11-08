@@ -51,19 +51,21 @@ async function klaimView(el, params, reload) {
 export default async function belanja(el, params, reload) {
   if (params.get('tab') === 'klaim') return klaimView(el, params, reload);
   const me = ctx.me.id;
-  const [rabs, items, log] = await Promise.all([
+  /* semua data dimuat bersamaan (dulu berurutan → lambat) */
+  const [rabs, items, log, terms, drafts, klaimRows] = await Promise.all([
     db.get('pk_rab', 'select=*&order=created_at.desc&limit=400'),
     db.get('pk_rab_items', 'select=*&active=eq.true&order=sort'),
     db.get('pk_rab_log', 'select=*&order=at.desc&limit=600'),
+    db.get('pk_rab_termin', 'select=*&order=n').catch(() => []),
+    db.get('pk_rab_drafts', 'select=*&order=updated_at.desc').catch(() => []),
+    db.get('pk_claims', 'select=id,status,approver_id,person_id&status=in.(diajukan,disetujui)').catch(() => null),
   ]);
-  const terms = await db.get('pk_rab_termin', 'select=*&order=n').catch(() => []);
-  const drafts = await db.get('pk_rab_drafts', 'select=*&order=updated_at.desc').catch(() => []);
   const T = (id) => terms.filter(t => t.rab_id === id);
   const plan = (r) => { const ts = T(r.id); const last = ts.length; let acc = 0; return ts.map(t => { const v = t.n === last ? r.total - acc : Math.round(r.total * t.pct / 100); acc += t.n === last ? 0 : v; return { ...t, planned: v }; }); };
   const cairTot = (r) => { const ts = T(r.id); return ts.length ? ts.reduce((s, t) => s + (t.cair_amount || 0), 0) : r.total; };
   const I = (id) => items.filter(i => i.rab_id === id); const L = (id) => log.filter(l => l.rab_id === id);
   const lpjDays = +ctx.settings.lpj_days || 2;
-  const nKlaim = await db.get('pk_claims', 'select=id,status,approver_id,person_id&status=in.(diajukan,disetujui)').then(ks => ks.filter(k => (k.status === 'diajukan' && k.approver_id === me) || (k.status === 'disetujui' && isFin())).length).catch(() => 0);
+  const nKlaim = await Promise.resolve(klaimRows).then(ks => (ks || []).filter(k => (k.status === 'diajukan' && k.approver_id === me) || (k.status === 'disetujui' && isFin())).length).catch(() => 0);
   const lateLpj = (r) => r.status === 'cair' && r.cair_at && (Date.now() - new Date(r.cair_at)) / 864e5 > lpjDays;
   const myTurn = (r) => r.status === 'diajukan' && r.chain[r.step] === me;
   const sets = {

@@ -259,7 +259,20 @@ idleGuard(() => { if (hasSession()) signOut(); });
 const busy = () => document.querySelector('.modal-wrap') || (document.activeElement && /INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName));
 setInterval(() => { if (ctx.me && document.visibilityState === 'visible') badges(); }, 60000);
 let hiddenAt = 0;
+// Kembali ke tab: JANGAN memuat ulang halaman (mengganggu & lambat). Perbarui badge saja;
+// kalau tab ditinggal lama (>10 menit), tampilkan tombol kecil "Perbarui data" yang bisa diketuk kapan saja.
 document.addEventListener('visibilitychange', () => {
   if (document.visibilityState === 'hidden') { hiddenAt = Date.now(); return; }
-  if (ctx.me && Date.now() - hiddenAt > 20000 && !busy()) route();
+  if (!ctx.me) return;
+  badges();
+  if (hiddenAt && Date.now() - hiddenAt > 10 * 60000) showRefreshChip();
 });
+function showRefreshChip() {
+  if (document.getElementById('pk-refresh-chip')) return;
+  const b = document.createElement('button');
+  b.id = 'pk-refresh-chip'; b.type = 'button'; b.textContent = '↻ Perbarui data';
+  b.style.cssText = 'position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom));z-index:400;height:40px;padding:0 16px;border-radius:20px;border:0;background:#1D3149;color:#fff;font:800 14px Nunito,system-ui,sans-serif;box-shadow:0 8px 24px rgba(0,0,0,.18);cursor:pointer';
+  b.onclick = () => { b.remove(); if (!busy()) route(); };
+  document.body.appendChild(b);
+  window.addEventListener('hashchange', () => b.remove(), { once: true });
+}
