@@ -379,7 +379,7 @@ async function render() {
   const { v, a } = route(), my = ++seq;
   markNav(v === 'biaya' && a === 'baru' ? 'biaya/baru' : v);
   if (v === 'biaya' && a === 'baru') document.querySelectorAll('.bk-side [data-nav="b:biaya"]').forEach(x => x.setAttribute('aria-current', 'page'));
-  document.title = ({ dasbor: 'Dasbor', jual: 'Penjualan', beli: 'Pembelian', biaya: 'Biaya', kas: 'Kas & Bank', stok: 'Produk & Stok', aset: 'Aset Tetap', akun: 'Daftar Akun', labarugi: 'Laba Rugi', neraca: 'Neraca', aruskas: 'Arus Kas', jurnal: 'Jurnal Umum', pajak: 'Pajak' }[v] || 'Keuangan') + ' · Pokama';
+  document.title = ({ dasbor: 'Dasbor', jual: 'Penjualan', beli: 'Pembelian', biaya: 'Biaya', kas: 'Kas & Bank', stok: 'Produk & Stok', aset: 'Aset Tetap', akun: 'Daftar Akun', labarugi: 'Laba Rugi', neraca: 'Neraca', aruskas: 'Arus Kas', jurnal: 'Jurnal Umum', pajak: 'Pajak', pendaset: 'Pendapatan per aset' }[v] || 'Keuangan') + ' · Pokama';
   app.innerHTML = '<p class="loading">Memuat…</p>';
   try {
     let html;

@@ -17,7 +17,7 @@ export const MAIN = [['b:dasbor', 'Dasbor', 'dash'], ['b:jual', 'Penjualan', 'ju
   ['b:kas', 'Kas & Bank', 'bank'], ['b:stok', 'Produk & Stok', 'stok'], ['b:aset', 'Aset Tetap', 'aset'], ['b:akun', 'Daftar Akun', 'akun']];
 export const GROUPS = [
   ['Laporan', 'lap', [['b:labarugi', 'Laba Rugi'], ['b:neraca', 'Neraca'], ['b:aruskas', 'Arus Kas'], ['b:bukubesar', 'Buku Besar'], ['b:jurnal', 'Jurnal Umum'], ['b:pajak', 'Pajak'],
-    ['k:unit', 'Kinerja unit bisnis'], ['k:labarugi', 'Laba rugi per lini & divisi'], ['k:pihak', 'Umur hutang & piutang'], ['k:riwayat', 'Riwayat kasir lama'], ['b:laporan', 'Semua laporan']]],
+    ['k:unit', 'Kinerja unit bisnis'], ['b:pendaset', 'Pendapatan per aset'], ['k:labarugi', 'Laba rugi per lini & divisi'], ['k:pihak', 'Umur hutang & piutang'], ['k:riwayat', 'Riwayat kasir lama'], ['b:laporan', 'Semua laporan']]],
   ['Perencanaan', 'plan', [['b:anggaran', 'Anggaran & Target'], ['k:proyeksi', 'Proyeksi kas 13 minggu'], ['k:pf', 'Profit First'], ['k:kewajiban', 'Kewajiban & leasing']]],
   ['Operasional', 'ops', [['k:rab', 'Belanja RAB & LPJ'], ['b:gaji', 'Gaji & klaim petugas'], ['b:persetujuan', 'Persetujuan & antrean'], ['k:kas', 'Mutasi bank (impor & cocokkan)'], ['b:integrasi', 'Integrasi & tutup buku']]],
   ['Pengaturan', 'gear', [['k:akun', 'Akun & rekening'], ['k:saldo', 'Saldo awal'], ['k:jurnal', 'Jurnal manual']]],

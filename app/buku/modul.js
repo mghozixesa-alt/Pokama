@@ -575,10 +575,29 @@ function vLaporan() {
   const R = [['#labarugi', 'pl', 'Laba Rugi', 'Pendapatan, HPP, beban, laba; per unit bisnis dan dibanding periode lalu.'], ['#neraca', 'bs', 'Neraca', 'Aset, kewajiban, ekuitas per tanggal.'], ['#aruskas', 'cash', 'Arus Kas', 'Uang masuk & keluar per aktivitas.'],
     ['#bukubesar', 'jurnal', 'Buku Besar', 'Transaksi satu akun dengan saldo berjalan.'], ['#jurnal', 'akun', 'Jurnal Umum', 'Semua jurnal dari semua sumber.'], ['#pajak', 'biaya', 'Pajak', 'PPN keluaran/masukan dan PPh dipotong.'],
     ['#aset', 'aset', 'Daftar Aset Tetap', 'Perolehan, akumulasi penyusutan, nilai buku.'], ['#stok', 'stok', 'Persediaan', 'Stok & nilai persediaan per produk.'], ['/keuangan#pihak', 'wallet', 'Umur Hutang & Piutang', 'Per pihak, dikelompokkan umur.'],
-    ['/keuangan#unit', 'dash', 'Kinerja Unit Bisnis', 'Setelah biaya holding.'], ['/keuangan#proyeksi', 'pl', 'Proyeksi Kas 13 Minggu', 'Dari kewajiban & cicilan.'], ['/keuangan#pf', 'pl', 'Profit First', 'Pembagian kas per pos.']];
+    ['/keuangan#unit', 'dash', 'Kinerja Unit Bisnis', 'Setelah biaya holding.'], ['#pendaset', 'aset', 'Pendapatan per Aset', 'Sewa, servis, bagi hasil, bersih, balik modal per produk/unit Rentalaja.'], ['/keuangan#proyeksi', 'pl', 'Proyeksi Kas 13 Minggu', 'Dari kewajiban & cicilan.'], ['/keuangan#pf', 'pl', 'Profit First', 'Pembagian kas per pos.']];
   return K.header('Laporan') + `<div class="grid g3">${R.map(([h, ic, t, d]) => `<a class="card rep" href="${h}"><span class="ic">${K.svg(ic, 20)}</span><span><b>${t}</b><small>${d}</small></span></a>`).join('')}</div>`;
 }
 
+
+/* ---------- Pendapatan per aset (data sama dengan Rentalaja › Operasional) ---------- */
+async function vPendAset(a) {
+  const days = [7, 30, 90].indexOf(+a) > -1 ? +a : 30;
+  const R = await K.A.rpc('asset_revenue', { p_days: days, p_branch: null }), T = R.totals || {};
+  const P = (R.products || []).slice().sort((x, y) => (y.rev - x.rev) || (y.util - x.util));
+  const net = (T.rev || 0) - (T.svc || 0), pb = T.priced ? Math.round(100 * (T.life_rev || 0) / Math.max(1, T.cost || 0)) + '%' : '—';
+  const bar = (v) => `<span style="display:inline-block;width:70px;height:7px;border-radius:4px;background:#EEF0F3;vertical-align:middle;margin-right:6px"><i style="display:block;height:7px;border-radius:4px;width:${Math.min(100, +v || 0)}%;background:${(+v || 0) >= 60 ? '#077A70' : (+v || 0) >= 30 ? '#F2A33A' : '#C0392B'}"></i></span>`;
+  const kpi = (l, v, sub, cls) => `<div class="card pad"${cls ? ` style="${cls}"` : ''}><div class="small mute b">${l}</div><div style="font-size:24px;font-weight:800;line-height:30px">${v}</div>${sub ? `<div class="small mute">${sub}</div>` : ''}</div>`;
+  const csv = [['Produk', 'Unit', 'Disewa', 'Nganggur', 'Pendapatan', 'Servis', 'Bagi hasil', 'Bersih', 'Utilisasi %', 'Balik modal %']].concat(P.map(p => [p.name, p.units, p.rented, p.idle, p.rev, p.svc, 0, p.net, p.util, p.payback == null ? '' : p.payback]))
+    .map(r => r.map(x => '"' + String(x).replace(/"/g, '""') + '"').join(',')).join('\n');
+  return K.header('Pendapatan per aset', `<a class="btn" download="pendapatan-aset-${days}hari.csv" href="data:text/csv;charset=utf-8,${encodeURIComponent(csv)}">⤓ Unduh CSV</a>`, '<a href="#laporan">Laporan</a> › Rentalaja › Pendapatan per aset') + `
+    <div class="tools">${[7, 30, 90].map(d => `<a class="btn${d === days ? ' pri' : ''}" href="#pendaset/${d}">${d} hari</a>`).join('')}<span class="small mute">Sumber: booking Rentalaja yang sudah diserahkan · servis dari work order</span></div>
+    <div class="grid g4" style="margin-bottom:14px">${kpi('Pendapatan sewa', rpS(T.rev || 0))}${kpi('Servis & sparepart', '<span class="neg">' + rpS(T.svc || 0) + '</span>')}${kpi('Bagi hasil mitra', 'Rp0', 'belum ada unit milik mitra')}${kpi('Bersih aset', rpS(net), 'balik modal rata-rata ' + pb, 'border:1.5px solid #09BEAF')}</div>
+    <div class="card pad"><h3 style="margin:0 0 8px">Per produk</h3><div style="overflow-x:auto"><table class="tbl"><thead><tr><th>Produk</th><th class="r">Pendapatan</th><th class="r">Servis</th><th class="r">Bagi hasil</th><th class="r">Bersih</th><th>Utilisasi</th><th class="r">Balik modal</th></tr></thead><tbody>
+      ${P.map(p => `<tr><td><b>${K.esc(p.name)}</b><div class="small mute">${p.units} unit · ${p.rented} disewa · ${p.idle} nganggur</div></td><td class="r">${rpS(p.rev)}</td><td class="r neg">${p.svc ? '−' + rpS(p.svc) : '—'}</td><td class="r">—</td><td class="r b">${rpS(p.net)}</td><td>${bar(p.util)}${+p.util || 0}%</td><td class="r">${p.payback == null ? '<span class="small mute">isi harga beli</span>' : p.payback + '%'}</td></tr>`).join('') || '<tr><td colspan="7" class="mute">Belum ada data.</td></tr>'}
+    </tbody></table></div></div>
+    <div class="card pad" style="margin-top:14px;background:#EEF4FD;color:#1E3A6E">Harga beli &amp; tanggal beli diambil dari data unit (Aset Tetap / Lengkapi data unit). ${T.priced ? T.priced + ' unit sudah ada harga beli.' : 'Belum ada unit yang punya harga beli, jadi balik modal belum bisa dihitung.'} Rincian per unit (plat/serial) ada di Rentalaja › Operasional › Pendapatan per aset.</div>`;
+}
 /* ---------- daftar tampilan & aksi ---------- */
 export const views = {
   dasbor: () => vDasbor(),
@@ -586,7 +605,7 @@ export const views = {
   beli: (a) => a === 'baru' ? vDocNew('beli') : a ? vDocDetail('beli', a) : vDocList('beli'),
   stok: (a) => a ? vProduk(a) : vStok(), aset: () => vAset(), pajak: () => vPajak(),
   labarugi: () => vLabaRugi(), neraca: () => vNeraca(), aruskas: () => vArusKas(), jurnal: () => vJurnal(),
-  anggaran: () => vAnggaran(), gaji: () => vGaji(), persetujuan: () => vPersetujuan(), integrasi: () => vIntegrasi(), laporan: () => vLaporan(),
+  anggaran: () => vAnggaran(), gaji: () => vGaji(), persetujuan: () => vPersetujuan(), integrasi: () => vIntegrasi(), laporan: () => vLaporan(), pendaset: (a) => vPendAset(a),
 };
 export function after(v, a) { if ((v === 'jual' || v === 'beli') && a === 'baru') wireDocForm(); }
 const T = {};
