@@ -1,4 +1,4 @@
-import { ctx, db, esc, today, addDays, fdate, ftime, avatar, nick, modal, field, opts, toast, unitName, unitOpts, isAdmin, chip, rp, num, shrinkImage, uploadPhoto, signedPhoto, confirmBox } from '../core.js';
+import { ctx, db, esc, today, addDays, fdate, ftime, avatar, nick, modal, field, opts, toast, unitName, unitOpts, isAdmin, chip, rp, num , confirmBox } from '../core.js';
 
 /* Gudang: stok barang dengan batas minimum, permintaan antar-divisi, serah terima (foto + konfirmasi penerima, tanpa tanda tangan), stok minim → draf RAB. */
 const ST = { baru: ['Menunggu', 'yellow'], disetujui: ['Siap diambil', 'blue'], diserahkan: ['Diserahkan', 'green'], ditolak: ['Ditolak', 'gray'], batal: ['Dibatalkan', 'gray'] };
@@ -31,7 +31,7 @@ export default async function gudang(el, params, reload) {
         ${keeper && r.status === 'baru' ? `<button class="btn sm" data-no="${r.id}">Tolak</button><button class="btn sm" data-ok="${r.id}">Setujui</button>` : ''}
         ${keeper && ['baru', 'disetujui'].includes(r.status) ? `<button class="btn sm pri" data-hand="${r.id}">Serahkan</button>` : ''}
         ${!keeper && r.from_id === me && ['baru', 'disetujui'].includes(r.status) ? `<button class="btn sm" data-cx="${r.id}">Batalkan</button>` : ''}
-        ${r.status === 'diserahkan' && r.photos && r.photos.length ? `<button class="btn sm" data-ph="${r.id}">Lihat foto</button>` : ''}</span></span>
+        ${r.status === 'diserahkan' && r.photos && r.photos.length && /^https:/.test(r.photos[0]) ? `<a class="btn sm" href="${esc(r.photos[0])}" target="_blank" rel="noopener">Foto di Drive ↗</a>` : ''}</span></span>
       ${r.note ? `<span class="small muted">Catatan: ${esc(r.note)}</span>` : ''}</div>`; };
   el.innerHTML = `
   <header class="ph"><div><span class="muted small">Gudang · ${items.length} jenis barang</span><h1>Stok &amp; permintaan</h1></div>
@@ -78,7 +78,6 @@ export default async function gudang(el, params, reload) {
       if (t.dataset.ok) { await db.rpc('pk_gudang_act', { p_id: t.dataset.ok, p_action: 'setujui', p: {} }); toast('Disetujui · siap diambil'); return reload(); }
       if (t.dataset.no) { const r = await modal('Tolak permintaan', field('Alasan', '<textarea name="n" class="inp" rows="3" required></textarea>'), { submit: 'Tolak', onSubmit: (f) => db.rpc('pk_gudang_act', { p_id: t.dataset.no, p_action: 'tolak', p: { note: f.n } }) }); if (r) { toast('Ditolak'); reload(); } return; }
       if (t.dataset.cx) { if (await confirmBox('Batalkan permintaan ini?', 'Batalkan')) { await db.rpc('pk_gudang_act', { p_id: t.dataset.cx, p_action: 'batal', p: {} }); toast('Dibatalkan'); reload(); } return; }
-      if (t.dataset.ph) { const r = reqs.find(x => x.id === t.dataset.ph); const urls = await Promise.all((r.photos || []).map(p => signedPhoto('pk-absen', p).catch(() => ''))); await modal('Foto serah terima ' + (r.code || ''), urls.filter(Boolean).map(u => `<img src="${esc(u)}" alt="" style="width:100%;border-radius:12px;margin-bottom:8px">`).join('') || '<p class="muted">Foto tidak bisa dibuka.</p>', { submit: null }); return; }
       if (t.dataset.hand) return serah(reqs.find(x => x.id === t.dataset.hand));
     } catch (er) { toast(er.message, 'err'); }
   };
@@ -100,18 +99,12 @@ export default async function gudang(el, params, reload) {
   async function serah(r) {
     const its = (r.pk_gudang_req_items || []).map(x => ({ ...x, it: byId[x.item_id] || {} }));
     const after = its.map(x => ({ n: x.it.name, left: +x.it.stock - +x.qty, min: +x.it.min_stock })).filter(x => x.left < x.min);
-    const paths = [];
-    document.addEventListener('modal:open', (ev) => { const fm = ev.detail; const inp = fm.querySelector('#gd-file'); if (!inp) return;
-      inp.addEventListener('change', async () => { const fl = inp.files[0]; if (!fl) return;
-        try { const blob = await shrinkImage(fl); const path = `${me}/gudang-${r.code || r.id}-${Date.now()}.jpg`; await uploadPhoto('pk-absen', path, blob); paths.push(path);
-          fm.querySelector('#gd-ph').insertAdjacentHTML('beforeend', `<img src="${URL.createObjectURL(blob)}" alt="" style="width:72px;height:72px;object-fit:cover;border-radius:10px">`); inp.value = ''; }
-        catch (er) { toast(er.message, 'err'); } }); }, { once: true });
     const res = await modal('Serah terima ' + (r.code || ''), `<p class="small muted" style="margin-top:0">Diminta ${esc(nick(r.from_id))} · ${ftime(r.created_at)}${r.approved_at ? ' · disetujui ' + ftime(r.approved_at) : ''}</p>
       <div>${its.map(x => `<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #EEF0F3"><span>${esc(x.it.name || 'Barang')}</span><b>${+x.qty} ${esc(x.it.uom || '')}</b></div>`).join('')}<div style="display:flex;justify-content:space-between;padding:8px 0"><span>Nilai</span><b>${rp(r.total)}</b></div></div>
-      <b class="lab" style="display:block;margin-top:12px">FOTO BARANG DISERAHKAN</b><div class="row gap6" id="gd-ph"></div><label class="btn sm" style="margin-top:6px">+ Foto<input type="file" accept="image/*" capture="environment" hidden id="gd-file"></label>
+      <label class="fld" style="margin-top:12px"><span>Tautan foto barang di Google Drive (opsional)</span><input name="foto" class="inp" placeholder="https://drive.google.com/…"><small>Foto barang yang diserahkan, simpan di Google Drive lalu tempel tautannya.</small></label>
       <label class="chk" style="margin-top:12px"><input type="checkbox" name="ok"> ${esc(nick(r.from_id))} sudah menerima barang dan jumlahnya sesuai</label>
       ${after.length ? `<p class="note" style="margin-top:10px">Setelah diserahkan: ${after.map(x => esc(x.n) + ' jadi ' + x.left + ' (min ' + x.min + ')').join(', ')} → otomatis masuk daftar "Buat RAB".</p>` : ''}`,
-      { submit: 'Serahkan', onSubmit: (f) => { if (!f.ok) throw new Error('Centang konfirmasi penerima dulu.'); return db.rpc('pk_gudang_act', { p_id: r.id, p_action: 'serahkan', p: { received_ok: true, photos: paths } }); } });
+      { submit: 'Serahkan', onSubmit: (f) => { if (!f.ok) throw new Error('Centang konfirmasi penerima dulu.'); const ln = String(f.foto || '').trim(); if (ln && !/^https:\/\/(drive|docs)\.google\.com\//i.test(ln)) throw new Error('Tautan foto harus dari Google Drive.'); return db.rpc('pk_gudang_act', { p_id: r.id, p_action: 'serahkan', p: { received_ok: true, photos: ln ? [ln] : [] } }); } });
     if (res) { toast('Diserahkan · stok berkurang'); reload(); }
   }
 }
