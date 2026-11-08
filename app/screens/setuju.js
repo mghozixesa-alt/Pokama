@@ -19,7 +19,7 @@ async function holdItems() {
       .concat(wf.filter(mine).map(w => ({ src: 'hold', id: w.id, act: 'hold', t: 'wfa', kind: 'WFA', title: nick(w.person_id), sub: w.reason || '', day: w.day, since: w.created_at })));
   } catch (e) { return []; }
 }
-async function inbox() { const [a, b] = await Promise.all([db.rpc('pk_inbox').catch(() => []), holdItems()]); return b.concat(a || []); }
+export async function inbox() { const [a, b] = await Promise.all([db.rpc('pk_inbox').catch(() => []), holdItems()]); return b.concat(a || []); }
 export async function inboxCount() { try { return (await inbox()).length; } catch (e) { return 0; } }
 
 export default async function setuju(el, params, reload) {
