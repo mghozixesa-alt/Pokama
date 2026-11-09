@@ -1,4 +1,4 @@
-import { ctx, hasSession, takeSessionFromUrl, signInPassword, signInGoogle, loadContext, signOut, esc, avatar, ROLE, toast, reloadSession, modal, field, db } from './core.js';
+import { ctx, hasSession, takeSessionFromUrl, signInPassword, signInGoogle, loadContext, signOut, esc, avatar, ROLE, toast, reloadSession, modal, field, db, isAdmin } from './core.js';
 import { ensureMfa, idleGuard, idleExpired } from './mfa.js';
 import kerja from './screens/kerja.js';
 import tugas from './screens/tugas.js';
@@ -10,6 +10,7 @@ import sistem from './screens/sistem.js';
 import setuju, { inboxCount } from './screens/setuju.js';
 import gudang from './screens/gudang.js';
 import beranda from './screens/beranda.js';
+import notifikasi from './screens/notifikasi.js';
 
 const I = {
   bell: '<path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>',
@@ -49,7 +50,7 @@ const BASE_ROUTES = [
     ['review', 'Review & Revisi', 'check', tugas.review], ['belanja', 'Pengajuan Belanja', 'wallet', belanja],
     ['kehadiran', 'Kehadiran & Cuti', 'clock', kehadiran], ['unit', 'Unit Bisnis', 'trophy', unit]]],
   ['ORANG', [['tim', 'Tim & Peran', 'users', tim.tim], ['performa', 'Performa', 'coin', tim.performa]]],
-  ['SISTEM', [['library', 'Library Dokumen', 'book', sistem.library], ['pengaturan', 'Pengaturan', 'cog', sistem.pengaturan]]],
+  ['SISTEM', [['library', 'Library Dokumen', 'book', sistem.library], ['pengaturan', 'Pengaturan', 'cog', sistem.pengaturan], ['notifikasi', 'Pengaturan Notifikasi', 'inbox', notifikasi]]],
 ];
 /* Gudang = manajemen inventory, menunya di modul Aset (Rentalaja › Aset & servis); halamannya tetap bisa dibuka lewat tautan */
 const EXTRA = [['gudang', 'Gudang & Stok', 'box', gudang]];
@@ -57,7 +58,7 @@ let ROUTES = BASE_ROUTES, FLAT = ROUTES.flatMap(([, r]) => r).concat(EXTRA), MOB
 // Sistem Kerja Operasional punya alamat sendiri: ops.pokama.org (app.pokama.org tetap untuk Sistem Kerja holding)
 const OPS_URL = 'https://ops.pokama.org/';
 function buildRoutes() {
-  ROUTES = BASE_ROUTES; /* petugas lapangan: ops.pokama.org; manajemen Kerja lapangan: Rentalaja → Operasional (OpsKerja) */ MOBILE = ['beranda', 'tugas', 'kkh', 'setuju'];
+  ROUTES = BASE_ROUTES.map(([g, r]) => [g, r.filter(x => x[0] !== 'notifikasi' || isAdmin())]); /* petugas lapangan: ops.pokama.org; manajemen Kerja lapangan: Rentalaja → Operasional (OpsKerja) */ MOBILE = ['beranda', 'tugas', 'kkh', 'setuju'];
   FLAT = ROUTES.flatMap(([, r]) => r).concat(EXTRA);
 }
 const HOME = () => 'kkh';

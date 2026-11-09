@@ -1,0 +1,4 @@
+-- pk_049: Pengaturan notifikasi (sudah diterapkan lewat migrasi Supabase)
+-- pk_notif_rules (topik × orang/peran → mendesak/penting/info/mati), pk_notif_topic(), pk_notif_level(),
+-- pk_notify() membaca aturan; ra_wa_rules + trigger app.ra_wa_rule_filter() untuk WA staf Rentalaja;
+-- RPC admin: pk_notif_admin(), pk_notif_rule_set(), pk_notif_email_set(), ra_wa_rule_set() (CEO / Kepala Staf).
