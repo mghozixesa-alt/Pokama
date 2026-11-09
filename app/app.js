@@ -46,17 +46,19 @@ const svg = (k, s = 18) => `<svg aria-hidden="true" width="${s}" height="${s}" v
 const BASE_ROUTES = [
   ['KERJA HARIAN', [
     ['beranda', 'Beranda', 'grid', beranda], ['setuju', 'Kotak Persetujuan', 'inbox', setuju], ['kkh', 'KKH Saya', 'sun', kerja.saya], ['kkh-tim', 'KKH Tim', 'grid', kerja.tim], ['tugas', 'Proyek & Tugas', 'layers', tugas.board],
-    ['review', 'Review & Revisi', 'check', tugas.review], ['belanja', 'Pengajuan Belanja', 'wallet', belanja], ['gudang', 'Gudang & Permintaan', 'box', gudang],
+    ['review', 'Review & Revisi', 'check', tugas.review], ['belanja', 'Pengajuan Belanja', 'wallet', belanja],
     ['kehadiran', 'Kehadiran & Cuti', 'clock', kehadiran], ['unit', 'Unit Bisnis', 'trophy', unit]]],
   ['ORANG', [['tim', 'Tim & Peran', 'users', tim.tim], ['performa', 'Performa', 'coin', tim.performa]]],
   ['SISTEM', [['library', 'Library Dokumen', 'book', sistem.library], ['pengaturan', 'Pengaturan', 'cog', sistem.pengaturan]]],
 ];
-let ROUTES = BASE_ROUTES, FLAT = ROUTES.flatMap(([, r]) => r), MOBILE = ['beranda', 'tugas', 'kkh', 'setuju'];
+/* Gudang = manajemen inventory, menunya di modul Aset (Rentalaja › Aset & servis); halamannya tetap bisa dibuka lewat tautan */
+const EXTRA = [['gudang', 'Gudang & Stok', 'box', gudang]];
+let ROUTES = BASE_ROUTES, FLAT = ROUTES.flatMap(([, r]) => r).concat(EXTRA), MOBILE = ['beranda', 'tugas', 'kkh', 'setuju'];
 // Sistem Kerja Operasional punya alamat sendiri: ops.pokama.org (app.pokama.org tetap untuk Sistem Kerja holding)
 const OPS_URL = 'https://ops.pokama.org/';
 function buildRoutes() {
   ROUTES = BASE_ROUTES; /* petugas lapangan: ops.pokama.org; manajemen Kerja lapangan: Rentalaja → Operasional (OpsKerja) */ MOBILE = ['beranda', 'tugas', 'kkh', 'setuju'];
-  FLAT = ROUTES.flatMap(([, r]) => r);
+  FLAT = ROUTES.flatMap(([, r]) => r).concat(EXTRA);
 }
 const HOME = () => 'kkh';
 const HIDDEN = { performa: (r) => !['ceo', 'keuangan'].includes(r) && false };

@@ -32,7 +32,7 @@ export default async function beranda(el) {
   const hello = (h < 11 ? 'Selamat pagi' : h < 15 ? 'Selamat siang' : h < 18 ? 'Selamat sore' : 'Selamat malam') + ', ' + (ctx.me.nickname || ctx.me.name || '');
   const ini = String(ctx.me.code || (ctx.me.nickname || ctx.me.name || '?').slice(0, 2)).toUpperCase();
   const menu = [['kkh', 'KKH Saya', 'sun', 'o'], ['kkh-tim', 'KKH Tim', 'grid', 'b'], ['setuju', 'Kotak Persetujuan', 'inbox', 'g', inb.length], ['tugas', 'Proyek & Tugas', 'layers', 'p', tasks.length],
-    ['review', 'Review & Revisi', 'check', 'l', rv.length], ['belanja', 'Pengajuan Belanja', 'wallet', 'r', nb], ['gudang', 'Gudang', 'box', 'y', 0, 1], ['kehadiran', 'Kehadiran & Cuti', 'clock', 'b'],
+    ['review', 'Review & Revisi', 'check', 'l', rv.length], ['belanja', 'Pengajuan Belanja', 'wallet', 'r', nb], ['kehadiran', 'Kehadiran & Cuti', 'clock', 'b'],
     ['unit', 'Unit Bisnis', 'trophy', 's'], ['tim', 'Tim & Peran', 'users', 's']];
   const mods = [['/buku/', 'Keuangan', 'bank', 'l'], ['/marketing/', 'Marketing', 'mega', 'p']];
   const tile = (href, label, ic, tone, n, baru) => `<a class="mb-it" href="${href}"><span class="mb-ic" style="background:${T[tone][0]}">${ico(ic, T[tone][1])}${n ? `<b class="mb-n">${n > 99 ? '99+' : n}</b>` : ''}${baru ? '<b class="mb-baru">Baru</b>' : ''}</span>${esc(label)}</a>`;
