@@ -52,6 +52,9 @@ img { display: block; max-width: 100%; }
 .btn-solid:hover { background: #12CDBD; }
 .btn-white { background: #fff; color: var(--teal); }
 .top .btn { height: 40px; padding: 0 16px; font-size: 14px; }
+.top .lowongan { flex: none; gap: 0; }
+@media (max-width: 900px) { .top .lowongan { margin-left: auto; } .top .masuk { margin-left: 0 !important; } .top .wrap { gap: 10px; } }
+@media (max-width: 420px) { .top .lowongan .hs { display: none; } .top .logo img { height: 26px; } }
 /* menu Masuk */
 .masuk { position: relative; }
 .masuk summary { list-style: none; }
@@ -236,9 +239,9 @@ footer .small { margin-top: 28px; color: #8C97AE; font-size: 14px; }
       <a href="#unit">Unit bisnis</a>
       <a href="#tim">Tim</a>
       <a href="#kerja-sama">Kerja sama &amp; investasi</a>
-      <a href="/karir/">Karir</a>
       <a href="#kontak">Kontak</a>
     </nav>
+    <a class="btn btn-solid lowongan" href="/karir/">Lowongan<span class="hs"> kerja</span></a>
     <details class="masuk" id="masuk">
       <summary class="btn btn-line">Masuk <span class="car" aria-hidden="true"></span></summary>
       <div class="pop" role="menu" aria-label="Pilih tempat masuk">
