@@ -84,6 +84,14 @@ async function letterHtml(l) {
     ${l.valid_until ? `<div class="valid">Berlaku sampai ${tglID(l.valid_until)}.</div>` : ''}</div>
     <div class="foot"><div class="u"><span><img src="/img/ra.png" alt="">Rentalaja</span><span><img src="/img/tr.png" alt="">TripinAja</span><span><img src="/img/na.png" alt="">Niagaaja</span></div><div>${l.number ? esc(l.number) + ' · ' : ''}pokama.org/cek</div></div></div>`;
 }
+function fitPv() {
+  requestAnimationFrame(() => document.querySelectorAll('.pv').forEach(pv => {
+    const sc = pv.querySelector('.sc'), lt = pv.querySelector('.letter'); if (!sc || !lt) return;
+    const k = Math.min(1, (pv.clientWidth - 24) / 794);
+    sc.style.width = Math.floor(794 * k) + 'px'; sc.style.height = Math.floor(1123 * k) + 'px'; lt.style.transform = `scale(${k})`;
+  }));
+}
+addEventListener('resize', fitPv);
 async function downloadPdf(l) {
   await loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js');
   const box = document.createElement('div'); box.style.cssText = 'position:fixed;left:-10000px;top:0';
@@ -110,17 +118,17 @@ export default async function surat(el) {
   const can = { ST: true, SKK: true, SPK: ROLE.admin || ROLE.rec, SP: ROLE.admin || hasTeam, SKA: ROLE.asset };
   let body = '';
   if (S.tab === 'buat') {
-    body = `<div class="ucards" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px">${TYPES.filter(t => can[t.code]).map(t => `<button type="button" class="card" data-new="${t.code}" style="text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:6px">
+    body = `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,250px),1fr));gap:12px">${TYPES.filter(t => can[t.code]).map(t => `<button type="button" class="card" data-new="${t.code}" style="text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:6px">
       <span class="chip gray" style="align-self:flex-start">${esc(t.code)}</span><b style="font-size:16px">${esc(t.name)}</b><span class="muted small">${esc(DESC[t.code] || '')}</span>
       <span class="small" style="color:#077A70;font-weight:700">${t.code === 'SKK' && !ROLE.admin ? 'Minta untuk diri sendiri →' : 'Buat →'}</span></button>`).join('')}</div>
-      <div class="note" style="margin-top:12px">Nomor surat dibuat otomatis saat terbit (contoh <b>001/ST/RA/XI/2026</b>). Surat yang ditandatangani orang lain menunggu persetujuannya dulu. Tanpa tanda tangan basah: nama penanda tangan + QR verifikasi.</div>`;
+      <div class="card" style="margin-top:12px;background:#F2FBFA;border:1px solid #BFEDE8;font-size:13.5px;line-height:1.6;color:#2B3550">Nomor surat dibuat otomatis saat terbit (contoh <span style="font-weight:800;white-space:nowrap">001/ST/RA/XI/2026</span>). Surat yang ditandatangani orang lain menunggu persetujuannya dulu. Tanpa tanda tangan basah: nama penanda tangan + QR verifikasi.</div>`;
   }
   if (S.tab === 'setuju') body = toSign.length ? rows(toSign) : '<div class="card"><p class="muted">Tidak ada surat yang menunggu persetujuan Anda.</p></div>';
   if (S.tab === 'arsip') body = `<div class="row" style="gap:8px;margin-bottom:10px"><input class="inp" id="sq" placeholder="Cari nomor, nama, plat, atau kode unit…" value="${esc(S.q)}" style="max-width:420px;height:40px"><button class="btn" id="sgo" type="button">Cari</button></div>${list.length ? rows(list) : '<div class="card"><p class="muted">Belum ada surat.</p></div>'}`;
   if (S.tab === 'aset') body = '<div id="aset"><p class="muted">Memuat data aset…</p></div>';
 
   el.innerHTML = `<header class="ph"><div><span class="muted small">Surat resmi PT Popo Karya Investama · bernomor, ber-QR, tersimpan di arsip</span><h1>Surat</h1></div></header>
-    <div class="chips">${tabs.map(([k, l]) => `<button class="chipbtn${S.tab === k ? ' on' : ''}" data-tab="${k}">${l}</button>`).join('')}</div>${body}`;
+    <div class="chips" style="flex-wrap:wrap">${tabs.map(([k, l]) => `<button class="chipbtn${S.tab === k ? ' on' : ''}" data-tab="${k}">${l}</button>`).join('')}</div>${body}`;
   const re = () => surat(el);
   el.querySelectorAll('[data-tab]').forEach(b => b.onclick = () => { S.tab = b.dataset.tab; re(); });
   el.querySelectorAll('[data-new]').forEach(b => b.onclick = () => newLetter(TYPES.find(t => t.code === b.dataset.new), re));
@@ -139,9 +147,10 @@ async function drawAssets(box) {
   try { A = await db.rpc('pk_letter_assets', { p_q: null, p_only_missing: false }); } catch (e) { box.innerHTML = `<p class="form-err">${esc(e.message)}</p>`; return; }
   const miss = A.filter(a => a.missing.length);
   const cnt = {}; miss.forEach(a => a.missing.forEach(m => cnt[m] = (cnt[m] || 0) + 1));
-  box.innerHTML = `<div class="note">${miss.length} dari ${A.length} motor & mobil belum siap surat. Lengkapi di Rentalaja App → Aset (data unit). Ditugaskan: Fajar, Yusril, Dzikri.</div>
+  box.innerHTML = `<div class="card" style="background:#FFF8EC;border:1px solid #F1D9AE;font-size:13.5px">${miss.length} dari ${A.length} motor & mobil belum siap surat. Lengkapi di Rentalaja App → Aset (data unit). Ditugaskan: Fajar, Yusril, Dzikri.</div>
     <div class="row" style="gap:6px;flex-wrap:wrap;margin:10px 0">${Object.entries(cnt).sort((a, b) => b[1] - a[1]).map(([k, n]) => `<span class="chip gray">${esc(k)} kosong: <b>${n}</b></span>`).join('')}</div>
-    <div class="scroll-x"><table class="tbl"><thead><tr><th>Unit</th><th>Plat</th><th>Cabang</th><th>Yang kurang</th></tr></thead><tbody>${miss.map(a => `<tr><td><b>${esc(a.code)}</b><br><span class="muted small">${esc(a.product)}</span></td><td>${esc(a.plate || '—')}</td><td>${esc(a.branch || '—')}</td><td class="small">${a.missing.map(esc).join(', ')}</td></tr>`).join('')}</tbody></table></div>`;
+    <div class="stack">${miss.map(a => `<div class="card" style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap"><div><b>${esc(a.code)}</b> <span class="muted small">· ${esc(a.product)}</span><div class="small">${esc(a.plate || 'Plat belum diisi')} · ${esc(a.branch || 'cabang belum diisi')}</div></div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end">${a.missing.map(m => `<span class="chip" style="background:#FFF0DC;color:#9A5B00">${esc(m)}</span>`).join('')}</div></div>`).join('')}</div>`;
 }
 
 /* ---------- buat surat ---------- */
@@ -225,9 +234,10 @@ async function preview(t, p, re) {
   const boss = t.code === 'SP' && p.people[0] ? ctx.byId[(ctx.byId[p.people[0]] || {}).boss_id] : null;
   const l = { status: 'menunggu', biz: p.biz, data: d, tpl: t.tpl, letter_date: p.letter_date, signer_name: sg.name, signer_title: sg.title, known_name: boss && boss.name, known_title: boss && boss.title };
   const self = p.signer_id === ROLE.me;
-  const ok = await modal('Pratinjau ' + t.name, `<style>${LETTER_CSS}.pv{overflow:auto;background:#EEF0F3;border-radius:12px;padding:12px}.pv .letter{transform:scale(.62);transform-origin:top left;margin-bottom:-427px;margin-right:-302px}</style><div class="pv">${await letterHtml(l)}</div>
+  const pr = modal('Pratinjau ' + t.name, `<style>${LETTER_CSS}.pv{background:#EEF0F3;border-radius:12px;padding:12px;overflow:hidden}.pv .sc{margin:0 auto;position:relative;overflow:hidden;box-shadow:0 4px 18px rgba(31,43,77,.14);border-radius:4px}.pv .sc .letter{position:absolute;left:0;top:0;transform-origin:top left}</style><div class="pv"><div class="sc">${await letterHtml(l)}</div></div>
     <p class="small muted" style="margin-top:8px">${self ? 'Anda penanda tangan: surat langsung terbit, nomor dikunci, dan QR verifikasi aktif.' : 'Surat dikirim ke ' + esc(sg.nickname || sg.name || 'penanda tangan') + ' untuk disetujui. Nomor dibuat saat disetujui.'}</p>`,
     { wide: true, submit: self ? 'Terbitkan' : 'Kirim untuk disetujui', onSubmit: async () => await db.rpc('pk_letter_create', { p }) });
+  fitPv(); const ok = await pr;
   if (ok) { toast(ok.status === 'terbit' ? 'Surat terbit' : 'Menunggu persetujuan'); S.tab = ok.status === 'terbit' ? 'arsip' : 'arsip'; re(); }
 }
 
@@ -236,15 +246,16 @@ async function openLetter(l, re) {
   CUR = l;
   const canCancel = ['menunggu', 'terbit'].includes(l.status) && (isAdmin() || l.signer_id === ROLE.me || (l.created_by === ROLE.me && l.status === 'menunggu'));
   const wa = l.status === 'terbit' ? 'https://wa.me/?text=' + encodeURIComponent(`${l.title}\nNomor ${l.number}\nCek keaslian: ${VERIFY}${l.verify_key}`) : '';
-  const res = await modal(l.number || 'Surat', `<style>${LETTER_CSS}.pv{overflow:auto;background:#EEF0F3;border-radius:12px;padding:12px}.pv .letter{transform:scale(.62);transform-origin:top left;margin-bottom:-427px;margin-right:-302px}</style>
+  const pr = modal(l.number || 'Surat', `<style>${LETTER_CSS}.pv{background:#EEF0F3;border-radius:12px;padding:12px;overflow:hidden}.pv .sc{margin:0 auto;position:relative;overflow:hidden;box-shadow:0 4px 18px rgba(31,43,77,.14);border-radius:4px}.pv .sc .letter{position:absolute;left:0;top:0;transform-origin:top left}</style>
     <div class="row" style="gap:8px;flex-wrap:wrap;margin-bottom:10px">${stChip(l.status)}<button type="button" class="btn" data-a="pdf">Unduh PDF</button><button type="button" class="btn" data-a="print">Cetak</button>${wa ? `<a class="btn" href="${wa}" target="_blank" rel="noopener">Kirim via WA</a>` : ''}</div>
     ${l.cancel_reason ? `<div class="note">Dibatalkan: ${esc(l.cancel_reason)}</div>` : ''}${l.decided_note ? `<div class="note">Catatan penolakan: ${esc(l.decided_note)}</div>` : ''}
-    <div class="pv">${await letterHtml(l)}</div>${l.mine_to_sign ? field('Catatan bila menolak', '<input class="inp" name="note">') : ''}${canCancel ? field('Alasan bila membatalkan', '<input class="inp" name="reason" placeholder="Mis. salah tanggal, diganti surat baru">', 'Surat yang dibatalkan tetap di arsip; QR-nya menampilkan "dibatalkan"') : ''}`,
+    <div class="pv"><div class="sc">${await letterHtml(l)}</div></div>${l.mine_to_sign ? field('Catatan bila menolak', '<input class="inp" name="note">') : ''}${canCancel ? field('Alasan bila membatalkan', '<input class="inp" name="reason" placeholder="Mis. salah tanggal, diganti surat baru">', 'Surat yang dibatalkan tetap di arsip; QR-nya menampilkan "dibatalkan"') : ''}`,
     { wide: true, submit: l.mine_to_sign ? 'Setujui & terbitkan' : null, onSubmit: async () => { await db.rpc('pk_letter_decide', { p_id: l.id, p_ok: true, p_note: null }); return 'ok'; },
       extra: l.mine_to_sign ? { label: 'Tolak', onClick: async (f) => { await db.rpc('pk_letter_decide', { p_id: l.id, p_ok: false, p_note: f.note || null }); return 'tolak'; } } : undefined,
       danger: canCancel ? { label: 'Batalkan surat', onClick: async (f) => {
         if (!f.reason || f.reason.trim().length < 5) throw new Error('Tulis alasan pembatalan dulu');
-        await db.rpc('pk_letter_cancel', { p_id: l.id, p_reason: f.reason }); return 'batal'; } } : undefined });
+        await db.rpc('pk_letter_cancel', { p_id: l.id, p_reason: f.reason });
+  fitPv(); const res = await pr; return 'batal'; } } : undefined });
   if (res === 'ok') toast('Surat terbit'); if (res === 'tolak') toast('Surat ditolak'); if (res === 'batal') toast('Surat dibatalkan');
   if (res) re();
 }
