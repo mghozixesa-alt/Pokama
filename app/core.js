@@ -190,7 +190,19 @@ export function modal(title, bodyHtml, { submit = 'Simpan', onSubmit, wide = fal
       ${extra ? `<button type="button" class="btn" data-extra>${esc(extra.label)}</button>` : ''}<button type="button" class="btn" data-close>Batal</button>${submit ? `<button type="submit" class="btn pri">${esc(submit)}</button>` : ''}</div></form></div>`;
     document.body.appendChild(wrap); document.body.classList.add('modal-open');
     const form = wrap.querySelector('form'); const err = wrap.querySelector('.form-err');
-    const close = (v) => { wrap.remove(); if (!document.querySelector('.modal-wrap')) document.body.classList.remove('modal-open'); resolve(v); };
+    /* tombol Back HP menutup modal (bukan pindah halaman): modal menambah satu langkah riwayat */
+    let closed = false; const tok = (window.__pkModalSeq = (window.__pkModalSeq || 0) + 1);
+    const finish = (v) => { wrap.remove(); if (!document.querySelector('.modal-wrap')) document.body.classList.remove('modal-open'); resolve(v); };
+    const onPop = () => { if (closed || (history.state && history.state.pkModal >= tok)) return; closed = true; window.removeEventListener('popstate', onPop); finish(null); };
+    try { history.pushState({ pkModal: tok }, ''); window.addEventListener('popstate', onPop); } catch (e) {}
+    const close = (v) => {
+      if (closed) return; closed = true; window.removeEventListener('popstate', onPop);
+      if (history.state && history.state.pkModal === tok) {
+        // tunggu langkah riwayat selesai dulu, supaya navigasi sesudah modal tidak tertimpa
+        let done = false; const go = () => { if (done) return; done = true; window.removeEventListener('popstate', go); finish(v); };
+        window.addEventListener('popstate', go); setTimeout(go, 400); history.back();
+      } else finish(v);
+    };
     /* sticky: klik di luar / Esc tidak menutup; beforeClose(form) boleh menahan (return false) */
     const tryClose = async () => { if (beforeClose) { try { if (await beforeClose(form) === false) return; } catch (e) { return; } } close(null); };
     wrap.addEventListener('click', (e) => { if (e.target.closest('[data-close]')) return tryClose(); if (e.target === wrap && !sticky) tryClose(); });

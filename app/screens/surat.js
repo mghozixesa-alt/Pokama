@@ -144,9 +144,12 @@ async function load(force) {
   if (!LIST || force) jobs.push(db.rpc('pk_letter_list', { p_q: null }).then(x => LIST = x || []));
   await Promise.all(jobs);
 }
-export default async function surat(el) {
-  if (!LIST) el.innerHTML = '<header class="ph"><div><h1>Surat</h1></div></header><div class="card"><p class="muted">Memuat…</p></div>';
-  await load(!!LIST);
+export default async function surat(el, params) {
+  const tab = params && params.get && params.get('tab');
+  S.tab = ['buat', 'setuju', 'arsip', 'aset'].includes(tab) ? tab : 'buat';
+  if (LIST) { render(el); load(true).then(() => { if (el.isConnected && document.activeElement?.id !== 'sq' && !document.querySelector('.modal-wrap')) render(el); }).catch(() => {}); return; }  // tampil langsung dari cache, segarkan di belakang
+  el.innerHTML = '<header class="ph"><div><h1>Surat</h1></div></header><div class="card"><p class="muted">Memuat…</p></div>';
+  await load(false);
   render(el);
 }
 const matchQ = (l, q) => !q || [l.number, l.title, ...(l.data?.assets || []).flatMap(a => [a.plate, a.code])].some(x => String(x || '').toLowerCase().includes(q));
@@ -176,7 +179,7 @@ function render(el) {
   el.innerHTML = SCSS + `<header class="ph"><div><span class="muted small">Surat resmi PT Popo Karya Investama · bernomor, ber-QR, tersimpan di arsip</span><h1>Surat</h1></div></header>
     <div class="chips" style="flex-wrap:wrap">${tabs.map(([k, l]) => `<button class="chipbtn${S.tab === k ? ' on' : ''}" data-tab="${k}">${l}</button>`).join('')}</div>${body}`;
   const re = async () => { await load(true); ASSETS = null; render(el); };
-  el.querySelectorAll('[data-tab]').forEach(b => b.onclick = () => { S.tab = b.dataset.tab; render(el); });
+  el.querySelectorAll('[data-tab]').forEach(b => b.onclick = () => { if (S.tab === b.dataset.tab) return; location.hash = '#/surat' + (b.dataset.tab === 'buat' ? '' : '?tab=' + b.dataset.tab); });
   el.querySelectorAll('[data-new]').forEach(b => b.onclick = async () => {
     if (b.dataset.busy) return; b.dataset.busy = '1'; b.style.opacity = '.6'; b.style.pointerEvents = 'none';
     try { await newLetter(TYPES.find(t => t.code === b.dataset.new), re); } finally { delete b.dataset.busy; b.style.opacity = ''; b.style.pointerEvents = ''; } });
