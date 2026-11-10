@@ -4,7 +4,7 @@ import { ctx, db, esc, toast, modal, field, opts, fdate, bizOf, isAdmin } from '
 const VERIFY = 'https://pokama.org/cek?k=';
 const BIZ = [['HQ', 'Pokama (holding)'], ['RA', 'Rentalaja'], ['WG', 'TripinAja'], ['NA', 'Niagaaja']];
 const STATUS = { menunggu: ['Menunggu persetujuan', '#9A5B00', '#FFF0DC'], terbit: ['Terbit', '#077A70', '#E3F7F5'], ditolak: ['Ditolak', '#C0392B', '#FDE8E6'], batal: ['Dibatalkan', '#4A5468', '#EEF0F3'] };
-const DESC = { ST: 'Tugas luar kantor untuk satu atau beberapa orang', SKK: 'Keterangan masih bekerja, untuk bank, beasiswa, dll.', SPK: 'Penawaran kerja untuk pelamar dari Rekrutmen', SP: 'SP 1–3, membaca SP yang masih berlaku', SKA: 'Kepemilikan / pengelolaan unit, dari data aset' };
+const DESC = { PKWT: 'Perjanjian kerja waktu tertentu untuk karyawan baru / perpanjangan', BAST: 'Serah terima unit antar cabang, ke/dari investor', SKU: 'Kuasa untuk urus STNK, pajak, ambil unit, dll.', STG: 'Tagihan belum lunas/denda, atau teguran unit belum kembali', ST: 'Tugas luar kantor untuk satu atau beberapa orang', SKK: 'Keterangan masih bekerja, untuk bank, beasiswa, dll.', SPK: 'Penawaran kerja untuk pelamar dari Rekrutmen', SP: 'SP 1–3, membaca SP yang masih berlaku', SKA: 'Kepemilikan / pengelolaan unit, dari data aset' };
 let S = { tab: 'buat', q: '' };
 let TYPES = null, ROLE = null, CUR = null;
 
@@ -18,11 +18,14 @@ const byRole = (r) => people().filter(p => p.role === r);
 function fill(text, d) {
   return esc(text || '')
     .replace(/\{\{\?(\w+)\}\}([\s\S]*?)\{\{\/\1\}\}/g, (m, k, inner) => (d[k] != null && String(d[k]).trim() !== '' ? inner : ''))
-    .replace(/\{\{(\w+)\}\}/g, (m, k) => (d[k] == null || d[k] === '' ? '…' : (k === 'perusahaan' || k === 'level_romawi' ? esc(d[k]) : '<b>' + esc(d[k]) + '</b>')))
+    .replace(/\{\{(\w+)\}\}/g, (m, k) => (d[k] == null || d[k] === '' ? '…' : (['perusahaan', 'level_romawi', 'jenis_judul', 'penanda_tangan', 'jabatan_ttd'].includes(k) ? esc(d[k]) : '<b>' + esc(d[k]) + '</b>')))
     .split('\n').join('<br>');
 }
 function subjectTable(l) {
   const d = l.data || {};
+  if (d.booking) { const b = d.booking, rp = (n) => 'Rp' + Math.round(+n || 0).toLocaleString('id-ID'), dt = (x) => x ? tglID(String(x).slice(0, 10)) : '—';
+    return `<table class="kv"><tr><td>Kode booking</td><td>:</td><td><b>${esc(b.code)}</b></td></tr><tr><td>Barang / unit</td><td>:</td><td><b>${esc(b.items || '—')}</b></td></tr><tr><td>Periode sewa</td><td>:</td><td><b>${dt(b.start)} – ${dt(b.end)}</b></td></tr><tr><td>Cabang</td><td>:</td><td><b>${esc(b.branch || '—')}</b></td></tr></table>
+    <table class="lt"><thead><tr><th>Total sewa</th><th>Denda keterlambatan</th><th>Biaya kerusakan</th><th>Sudah dibayar</th><th>Sisa</th></tr></thead><tbody><tr><td>${rp(b.total)}</td><td>${rp(b.late_fee)}</td><td>${rp(b.damage_fee)}</td><td>${rp(b.paid)}</td><td><b>${rp(b.sisa)}</b></td></tr></tbody></table>`; }
   if (d.assets) return `<table class="lt"><thead><tr><th>Unit</th><th>Plat</th><th>No. rangka / mesin</th><th>BPKB</th><th>STNK s.d.</th><th>Keterangan</th></tr></thead><tbody>${d.assets.map(a => `<tr>
     <td><b>${esc(a.product || '')}</b><br><small>${esc(a.code || '')}${a.color ? ' · ' + esc(a.color) : ''}${a.branch ? ' · ' + esc(a.branch) : ''}</small></td><td>${esc(a.plate || '—')}</td>
     <td>${esc(a.frame_no || '—')}<br>${esc(a.engine_no || '—')}</td><td>a.n. ${esc(a.bpkb_name || '—')}<br><small>disimpan: ${esc(a.bpkb_location || '—')}</small></td>
@@ -52,7 +55,7 @@ const LETTER_CSS = `
 .letter table.lt{width:100%;border-collapse:separate;border-spacing:0;margin-top:12px;font-size:12.5px;line-height:1.5;border:1px solid #E2E6EC;border-radius:12px;overflow:hidden}
 .letter table.lt th{background:#F4F6F9;text-align:left;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#5B6573;padding:9px 12px}
 .letter table.lt td{padding:9px 12px;border-top:1px solid #E2E6EC;vertical-align:top}.letter table.lt small{color:#5B6573}
-.letter table.kv{margin-top:10px;border-collapse:collapse;line-height:1.5}.letter table.kv td{padding:4px 14px 4px 0;vertical-align:top}.letter table.kv td:first-child{color:#5B6573;min-width:120px}
+.letter table.kv{margin-top:10px;border-collapse:collapse;line-height:1.5;font-size:13.5px;color:#1F2B4D}.letter table.kv td{padding:4px 14px 4px 0;vertical-align:top}.letter table.kv td:first-child{color:#5B6573;min-width:120px}
 .letter .sign{margin-top:30px;display:flex;justify-content:space-between;align-items:flex-end;gap:20px}
 .letter .kn{font-size:13px;line-height:1.6}
 .letter .sb{width:340px;font-size:13px;line-height:1.6}
@@ -78,7 +81,7 @@ async function letterHtml(l) {
     <div class="eb">SURAT RESMI</div><h1>${title}</h1>
     <div class="meta"><div><span>NOMOR</span>${esc(l.number || 'Otomatis saat terbit')}</div><div><span>TANGGAL</span>${tglID(l.letter_date)}</div><div><span>UNIT BISNIS</span>${esc(BIZNAME[l.biz] || 'Pokama')}</div></div>
     <p>${fill(tpl.opening, d)}</p>${subjectTable(l)}<p>${fill(tpl.after, d)}</p><p>${fill(tpl.closing, d)}</p>
-    <div class="sign">${l.known_name ? `<div class="kn">Mengetahui,<br>${esc(l.known_title || 'Atasan langsung')}<br><br><br><b>${esc(l.known_name)}</b></div>` : '<div></div>'}
+    <div class="sign">${l.known_name ? `<div class="kn">${esc(d.known_label || 'Mengetahui,')}<br>${esc(l.known_title || 'Atasan langsung')}<br><br><br><b>${esc(l.known_name)}</b></div>` : '<div></div>'}
       <div class="sb">Garut, ${tglID(l.letter_date)}<br>${esc(l.signer_title || '')}, ${esc(pt)}
         <div class="ver${issued ? '' : ' pending'}">${qr ? `<div class="qr">${qr}</div>` : ''}<div><small>${issued ? '✓ DISETUJUI ELEKTRONIK' : 'MENUNGGU PERSETUJUAN'}</small><b>${esc(l.signer_name || '')}</b><span>${issued ? 'Pindai QR atau buka pokama.org/cek untuk memeriksa keaslian.' : 'Nomor dan QR aktif setelah disetujui.'}</span></div></div></div></div>
     ${l.valid_until ? `<div class="valid">Berlaku sampai ${tglID(l.valid_until)}.</div>` : ''}</div>
@@ -115,7 +118,8 @@ export default async function surat(el) {
   const toSign = list.filter(l => l.mine_to_sign);
   const tabs = [['buat', 'Buat surat'], ['setuju', `Perlu saya setujui${toSign.length ? ' (' + toSign.length + ')' : ''}`], ['arsip', 'Arsip'], ...(ROLE.asset ? [['aset', 'Unit belum siap surat']] : [])];
   const hasTeam = (ROLE.team || []).length > 0;
-  const can = { ST: true, SKK: true, SPK: ROLE.admin || ROLE.rec, SP: ROLE.admin || hasTeam, SKA: ROLE.asset };
+  const meU = (ctx.byId[ROLE.me] || {}).unit_code; const inRA = meU && bizOf(meU) === 'RA';
+  const can = { ST: true, SKK: true, SPK: ROLE.admin || ROLE.rec, SP: ROLE.admin || hasTeam, SKA: ROLE.asset, PKWT: ROLE.admin || ROLE.rec, BAST: ROLE.asset, SKU: ROLE.admin, STG: ROLE.admin || ROLE.asset || ROLE.role === 'keuangan' || inRA };
   let body = '';
   if (S.tab === 'buat') {
     body = `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,250px),1fr));gap:12px">${TYPES.filter(t => can[t.code]).map(t => `<button type="button" class="card" data-new="${t.code}" style="text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:6px">
@@ -179,10 +183,11 @@ async function newLetter(t, re) {
   }
   if (t.subject === 'assets') {
     assets = await db.rpc('pk_letter_assets', { p_q: null, p_only_missing: false });
-    const ready = assets.filter(a => !a.missing.length);
-    subjHtml = field(`Unit (${ready.length} siap dari ${assets.length})`, ready.length ? `<div class="stack" style="gap:4px;max-height:240px;overflow:auto;border:1px solid #E1E5EA;border-radius:10px;padding:8px">${ready.map(a => `<label class="chk"><input type="checkbox" name="as_${a.id}"> ${esc(a.code)} · ${esc(a.plate || '')} <span class="muted small">· ${esc(a.product)}${a.investor ? ' · unit investor' : ''}</span></label>`).join('')}</div>`
+    const ready = t.need_complete === false ? assets : assets.filter(a => !a.missing.length);
+    subjHtml = field(t.need_complete === false ? `Unit (${assets.length})` : `Unit (${ready.length} siap dari ${assets.length})`, ready.length ? `<div class="stack" style="gap:4px;max-height:240px;overflow:auto;border:1px solid #E1E5EA;border-radius:10px;padding:8px">${ready.map(a => `<label class="chk"><input type="checkbox" name="as_${a.id}"> ${esc(a.code)} · ${esc(a.plate || '')} <span class="muted small">· ${esc(a.product)}${a.investor ? ' · unit investor' : ''}</span></label>`).join('')}</div>`
       : `<p class="form-err" style="display:block">Belum ada unit yang datanya lengkap. Lihat tab "Unit belum siap surat".</p>`);
   }
+  if (t.subject === 'booking') subjHtml = field('Kode booking', `<div style="display:flex;gap:8px"><input class="inp" name="booking" placeholder="RA-2611-0123" style="text-transform:uppercase"><button type="button" class="btn" data-bk>Cek</button></div><div id="bkinfo" class="small muted" style="margin-top:6px"></div>`, 'Nama penyewa dan sisa tagihan diambil otomatis dari data booking');
   const fieldsHtml = (t.fields || []).map(f => field(f.label + (f.req ? '' : ''), f.type === 'textarea' ? `<textarea class="inp" name="f_${f.k}" rows="3" placeholder="${esc(f.ph || '')}"></textarea>`
     : f.type === 'select' ? `<select class="inp" name="f_${f.k}">${opts(f.opts, '', '— pilih —')}</select>` : `<input class="inp" type="${f.type === 'date' ? 'date' : 'text'}" name="f_${f.k}" placeholder="${esc(f.ph || '')}">`)).join('');
   const bosses = new Set(people().map(p => p.boss_id).filter(Boolean));
@@ -190,17 +195,17 @@ async function newLetter(t, re) {
   const pick = (f) => {
     const subj = t.subject === 'people' ? pool.filter(p => f['pp_' + p.id]).map(p => p.id) : t.subject === 'person' ? [f.person].filter(Boolean) : [];
     const fields = Object.fromEntries((t.fields || []).map(x => [x.k, (f['f_' + x.k] || '').trim()]));
-    return { type: t.code, biz: f.biz, people: subj, candidate_app: f.app || null, assets: t.subject === 'assets' ? assets.filter(a => f['as_' + a.id]).map(a => a.id) : [], fields, signer_id: f.signer, letter_date: f.letter_date };
+    return { type: t.code, biz: f.biz, people: subj, candidate_app: f.app || null, booking: (f.booking || '').trim().toUpperCase() || null, assets: t.subject === 'assets' ? assets.filter(a => f['as_' + a.id]).map(a => a.id) : [], fields, signer_id: f.signer, letter_date: f.letter_date };
   };
   const firstBiz = () => { const p = ctx.byId[ROLE.me]; return p ? bizOf(p.unit_code) : 'HQ'; };
   const draft = await modal(t.name, `${subjHtml}${fieldsHtml}
-    <div class="g2">${t.subject === 'assets' ? '<input type="hidden" name="biz" value="RA">' : field('Unit bisnis (untuk nomor surat)', `<select class="inp" name="biz">${opts(BIZ, ['HQ', 'RA', 'WG', 'NA'].includes(firstBiz()) ? firstBiz() : 'HQ')}</select>`)}
+    <div class="g2">${['assets', 'booking'].includes(t.subject) ? '<input type="hidden" name="biz" value="RA">' : field('Unit bisnis (untuk nomor surat)', `<select class="inp" name="biz">${opts(BIZ, ['HQ', 'RA', 'WG', 'NA'].includes(firstBiz()) ? firstBiz() : 'HQ')}</select>`)}
       ${field('Tanggal surat', `<input class="inp" type="date" name="letter_date" value="${new Date(Date.now() + 7 * 3600e3).toISOString().slice(0, 10)}">`)}</div>
     ${field('Penanda tangan', `<select class="inp" name="signer" id="sg">${opts(signers.map(p => [p.id, (p.nickname || p.name) + ' · ' + (p.title || '')]), '')}</select>`, t.signer === 'boss' ? 'Atasan langsung semua orang yang ditugaskan, atau CEO / Kepala Staf' : t.signer === 'kepala_staf' ? 'Sesuai tingkatan: Kepala Staf' : 'Wajib disetujui CEO')}
     <div id="sphint"></div>`, { submit: 'Pratinjau', wide: true, onSubmit: async (f) => pick(f) });
   // default penanda tangan & petunjuk SP diisi sesudah modal tampil (lihat listener di bawah)
   if (!draft) return;
-  await preview(t, draft, re);
+  try { await preview(t, draft, re); } catch (e) { toast(e.message, 'err'); }
 }
 document.addEventListener('modal:open', (e) => {
   const form = e.detail; const sg = form.querySelector('#sg'); if (!sg || !TYPES) return;
@@ -228,10 +233,17 @@ async function preview(t, p, re) {
   }
   if (t.subject === 'candidate') { const a = (t._cands || []).find(x => x.id === p.candidate_app); if (a) { d.people = [{ Nama: a.cand.name, Kota: a.cand.city || '—' }]; d.nama = a.cand.name; d.unit = (ctx.unit[(t._jobs[a.job_id] || {}).unit_code] || {}).name; } }
   if (t.subject === 'assets') d.assets = (await db.rpc('pk_letter_assets', { p_q: null, p_only_missing: false })).filter(a => p.assets.includes(a.id));
+  if (t.subject === 'booking') {
+    const b = await db.rpc('pk_letter_booking', { p_code: p.booking || '' }); if (!b) throw new Error('Kode booking tidak ditemukan');
+    Object.assign(d, { booking: b, penyewa: b.penyewa, sisa: 'Rp' + Math.round(+b.sisa || 0).toLocaleString('id-ID') });
+  }
   Object.entries(p.fields).forEach(([k, v]) => { d[k] = (t.fields.find(f => f.k === k) || {}).type === 'date' && v ? tglID(v) : v; });
   if (t.code === 'SP' && p.fields.level) d.level_romawi = ['I', 'II', 'III'][+p.fields.level - 1];
   const sg = ctx.byId[p.signer_id] || {};
-  const boss = t.code === 'SP' && p.people[0] ? ctx.byId[(ctx.byId[p.people[0]] || {}).boss_id] : null;
+  Object.assign(d, { penanda_tangan: sg.name, jabatan_ttd: sg.title });
+  if (t.code === 'STG') d.jenis_judul = p.fields.jenis === 'teguran' ? 'TEGURAN' : 'TAGIHAN';
+  if (t.code === 'PKWT') d.known_label = 'Pihak Kedua,';
+  const boss = t.code === 'SP' && p.people[0] ? ctx.byId[(ctx.byId[p.people[0]] || {}).boss_id] : t.code === 'PKWT' && p.people[0] ? ctx.byId[p.people[0]] : null;
   const l = { status: 'menunggu', biz: p.biz, data: d, tpl: t.tpl, letter_date: p.letter_date, signer_name: sg.name, signer_title: sg.title, known_name: boss && boss.name, known_title: boss && boss.title };
   const self = p.signer_id === ROLE.me;
   const pr = modal('Pratinjau ' + t.name, `<style>${LETTER_CSS}.pv{background:#EEF0F3;border-radius:12px;padding:12px;overflow:hidden}.pv .sc{margin:0 auto;position:relative;overflow:hidden;box-shadow:0 4px 18px rgba(31,43,77,.14);border-radius:4px}.pv .sc .letter{position:absolute;left:0;top:0;transform-origin:top left}</style><div class="pv"><div class="sc">${await letterHtml(l)}</div></div>
@@ -265,3 +277,11 @@ document.addEventListener('click', async (e) => {
   b.disabled = true; try { b.dataset.a === 'pdf' ? await downloadPdf(l) : await printLetter(l); } catch (er) { toast(er.message, 'err'); } b.disabled = false;
 });
 export { letterHtml, LETTER_CSS };
+
+document.addEventListener('click', async (e) => {
+  const b = e.target.closest('[data-bk]'); if (!b) return;
+  const form = b.closest('form'); const box = form.querySelector('#bkinfo'); box.textContent = 'Mencari…';
+  try { const r = await db.rpc('pk_letter_booking', { p_code: form.booking.value });
+    box.innerHTML = r ? `<b>${esc(r.penyewa || '')}</b> · ${esc(r.items || '')} · sisa <b>Rp${Math.round(+r.sisa || 0).toLocaleString('id-ID')}</b>` : '<span style="color:#C0392B">Kode booking tidak ditemukan</span>'; }
+  catch (er) { box.textContent = er.message; }
+});

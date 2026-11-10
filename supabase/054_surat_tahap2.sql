@@ -1,4 +1,3 @@
--- DRAF: belum diterapkan ke database (ditahan sampai bug tampilan Surat dicek).
 -- 054: surat tahap 2 — kontrak kerja (PKWT), berita acara serah terima unit (BAST), surat kuasa (SKU), surat tagihan/teguran penyewa (STG)
 alter table public.pk_letter_types add column if not exists need_complete boolean not null default true;
 alter table public.pk_letter_types drop constraint if exists pk_letter_types_subject_check;
@@ -79,6 +78,7 @@ begin
       if t.code = 'SKK' and ppl <> array[me] then raise exception 'Surat keterangan kerja hanya bisa diminta untuk diri sendiri'; end if;
       if t.code in ('ST','SP') and exists (select 1 from unnest(ppl) x where x <> me and not (r->'team') ? x::text) then raise exception 'Hanya untuk anggota tim langsung Anda'; end if;
       if t.code = 'SP' and me = any(ppl) then raise exception 'Tidak bisa membuat SP untuk diri sendiri'; end if;
+      if t.code in ('PKWT','SKU') and not (t.code = 'PKWT' and (r->>'rec')::boolean) then raise exception '% hanya dibuat oleh CEO, Kepala Staf%', t.name, case when t.code = 'PKWT' then ', atau tim rekrutmen' else '' end; end if;
     end if;
   elsif t.subject = 'candidate' then
     if not ((r->>'admin')::boolean or (r->>'rec')::boolean) then raise exception 'Surat penawaran hanya untuk tim rekrutmen'; end if;
@@ -114,7 +114,7 @@ begin
   sub := case t.subject
     when 'candidate' then jsonb_build_object('people', jsonb_build_array(jsonb_build_object('Nama', cand.name, 'Kota', cand.city)), 'nama', cand.name, 'unit', (select name from pk_units where code = j.unit_code))
     when 'assets' then jsonb_build_object('assets', public.pk_letter_asset_rows(ast))
-    when 'booking' then jsonb_build_object('booking', bk, 'penyewa', (bk->>'penyewa'), 'sisa', 'Rp' || to_char((bk->>'sisa')::numeric, 'FM999G999G999'))
+    when 'booking' then jsonb_build_object('booking', bk, 'penyewa', (bk->>'penyewa'), 'sisa', 'Rp' || replace(to_char((bk->>'sisa')::numeric, 'FM999,999,999'), ',', '.'))
     else jsonb_build_object('people', (select jsonb_agg(jsonb_build_object('Nama', q.name, 'Jabatan', coalesce(q.title, initcap(q.role)), 'Unit', coalesce(u.name, '—')) order by array_position(ppl, q.id)) from pk_people q left join pk_units u on u.code = q.unit_code where q.id = any(ppl)),
       'nama', (select name from pk_people where id = ppl[1]), 'jabatan', (select coalesce(title, initcap(role)) from pk_people where id = ppl[1]),
       'unit', (select u.name from pk_people q left join pk_units u on u.code = q.unit_code where q.id = ppl[1]),
