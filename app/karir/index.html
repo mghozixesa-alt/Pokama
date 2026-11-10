@@ -160,7 +160,7 @@ const unitLabel = j => j.unit && j.unit !== bizName(j) ? bizName(j) + ' ' + j.un
 const foot = `<div class="foot">PT Popo Karya Investama · <a href="/">pokama.org</a> · <a href="https://app.pokama.org/privasi">Privasi</a></div>`;
 const waHr = t => 'https://wa.me/' + WA_HR + '?text=' + encodeURIComponent(t);
 function head({ back, title, sub, right = '', extra = '', sm = true }) {
-  return `<section class="hero ${sm ? 'sm' : ''}"><div class="top">${back ? `<a class="back" href="${back}" aria-label="Kembali">${ICON.back}</a>` : '<a href="/" aria-label="Pokama"><img class="logo" src="/img/pokama-logo.png" alt="Pokama"></a>'}${right}</div>
+  return `<section class="hero ${sm ? 'sm' : ''}"><div class="top"><div style="display:flex;align-items:center;gap:10px">${back ? `<a class="back" href="${back}" aria-label="Kembali">${ICON.back}</a>` : ''}<a href="#" aria-label="Karir Pokama"><img class="logo" src="/img/pokama-logo.png" alt="Pokama"></a></div>${right}</div>
     <div style="display:flex;flex-direction:column;gap:2px">${sub ? `<span class="sub">${esc(sub)}</span>` : ''}<h1>${esc(title)}</h1></div>${extra}</section>`;
 }
 async function loadJobs() { if (!JOBS) JOBS = await rpc('rec_jobs'); return JOBS; }
@@ -373,7 +373,7 @@ async function viewTest(appId, code) {
       : `<div class="card" style="margin:-40px 0 0;position:relative;z-index:2"><b style="font-size:15px;line-height:22px">${esc(q.prompt)}</b></div>
          ${q.options.map(o => `<button type="button" class="opt" data-o="${o.i}" aria-pressed="${a === o.i}"><span class="r"></span>${esc(o.t)}</button>`).join('')}`;
     const last = i === QS.length - 1, answered = Object.keys(A).filter(k => disc ? A[k].m != null && A[k].l != null : A[k] != null).length;
-    $app.innerHTML = `<section class="hero sm"><div class="top"><div style="display:flex;flex-direction:column;gap:2px"><span class="sub">${esc(T.name)}</span><b style="font-size:21px;font-weight:800">Soal ${i + 1} dari ${QS.length}</b></div>
+    $app.innerHTML = `<section class="hero sm"><img class="logo" src="/img/pokama-logo.png" alt="Pokama" style="align-self:flex-start"><div class="top"><div style="display:flex;flex-direction:column;gap:2px"><span class="sub">${esc(T.name)}</span><b style="font-size:21px;font-weight:800">Soal ${i + 1} dari ${QS.length}</b></div>
       <span class="timer ${left < 60 ? 'low' : ''}" id="tm" role="timer" aria-label="Sisa waktu">${ICON.clock.replace('#077A70', 'currentColor')}<span>${fmt(left)}</span></span></div>
       <div class="prog" role="progressbar" aria-label="Kemajuan tes" aria-valuemin="0" aria-valuemax="${QS.length}" aria-valuenow="${answered}"><i style="width:${Math.round(answered * 100 / QS.length)}%"></i></div></section>
       <main style="padding-top:0;gap:10px">${body}
