@@ -18,7 +18,7 @@ const byRole = (r) => people().filter(p => p.role === r);
 function fill(text, d) {
   return esc(text || '')
     .replace(/\{\{\?(\w+)\}\}([\s\S]*?)\{\{\/\1\}\}/g, (m, k, inner) => (d[k] != null && String(d[k]).trim() !== '' ? inner : ''))
-    .replace(/\{\{(\w+)\}\}/g, (m, k) => (d[k] == null || d[k] === '' ? '…' : esc(d[k])))
+    .replace(/\{\{(\w+)\}\}/g, (m, k) => (d[k] == null || d[k] === '' ? '…' : (k === 'perusahaan' || k === 'level_romawi' ? esc(d[k]) : '<b>' + esc(d[k]) + '</b>')))
     .split('\n').join('<br>');
 }
 function subjectTable(l) {
@@ -30,7 +30,7 @@ function subjectTable(l) {
   const ps = d.people || [];
   if (ps.length === 1) return `<table class="kv">${Object.entries(ps[0]).map(([k, v]) => `<tr><td>${esc(k)}</td><td>:</td><td><b>${esc(v || '—')}</b></td></tr>`).join('')}</table>`;
   const cols = Object.keys(ps[0] || {});
-  return `<table class="lt"><thead><tr><th>No</th>${cols.map(c => `<th>${esc(c)}</th>`).join('')}</tr></thead><tbody>${ps.map((p, i) => `<tr><td>${i + 1}</td>${cols.map(c => `<td>${esc(p[c] || '—')}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
+  return `<table class="lt"><thead><tr><th>No</th>${cols.map(c => `<th>${esc(c)}</th>`).join('')}</tr></thead><tbody>${ps.map((p, i) => `<tr><td>${i + 1}</td>${cols.map((c, ci) => `<td>${ci === 0 ? '<b>' + esc(p[c] || '—') + '</b>' : esc(p[c] || '—')}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
 }
 async function qrSvg(text) {
   await loadScript('https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js');
@@ -38,36 +38,51 @@ async function qrSvg(text) {
   return q.createSvgTag({ cellSize: 3, margin: 0, scalable: true });
 }
 const LETTER_CSS = `
-.letter{width:794px;min-height:1123px;box-sizing:border-box;padding:56px 72px 64px;background:#fff;color:#111;font:14px/1.6 'Plus Jakarta Sans',Arial,sans-serif;position:relative}
-.letter .kop{display:flex;align-items:center;gap:18px;padding-bottom:14px;border-bottom:3px double #1F2B4D}
-.letter .kop img{height:46px;width:auto}
-.letter .kop b{display:block;font-size:18px;letter-spacing:.04em;color:#1F2B4D}
-.letter .kop span{font-size:12px;color:#4A5468}
-.letter h1{margin:28px 0 2px;text-align:center;font-size:17px;letter-spacing:.06em;text-decoration:underline}
-.letter .no{text-align:center;margin:0 0 22px;font-size:13.5px}
-.letter p{margin:0 0 12px;text-align:justify}
-.letter table.kv{margin:4px 0 14px 24px;border-collapse:collapse}.letter table.kv td{padding:2px 8px 2px 0;vertical-align:top}
-.letter table.lt{width:100%;border-collapse:collapse;margin:6px 0 14px;font-size:12.5px}.letter table.lt th,.letter table.lt td{border:1px solid #9AA3B2;padding:5px 7px;text-align:left;vertical-align:top}.letter table.lt th{background:#F1F3F6}
-.letter .sign{display:flex;justify-content:space-between;align-items:flex-end;margin-top:28px;gap:24px}
-.letter .sign .who{min-width:250px}
-.letter .sign .qr{width:96px;height:96px}.letter .sign .qr svg{width:96px;height:96px;display:block}
-.letter .sign small,.letter .foot small{color:#4A5468;font-size:11px;line-height:1.4;display:block}
-.letter .mark{position:absolute;top:44%;left:0;right:0;text-align:center;font-size:58px;font-weight:800;color:rgba(192,57,43,.14);transform:rotate(-18deg);pointer-events:none}
-.letter .foot{position:absolute;left:72px;right:72px;bottom:28px;border-top:1px solid #E2E6EC;padding-top:6px}`;
+.letter{width:794px;height:1123px;box-sizing:border-box;background:#fff;position:relative;overflow:hidden;color:#1F2B4D;font:13.5px/1.75 'Plus Jakarta Sans',Arial,sans-serif}
+.letter .in{padding:0 64px 70px}
+.letter .kop{display:flex;justify-content:space-between;align-items:center;background:#1F2B4D;margin:0 -64px;padding:28px 64px;border-bottom:5px solid #09BEAF}
+.letter .kop img{height:38px;width:auto;background:#fff;border-radius:10px;padding:6px 10px}
+.letter .co{text-align:right;font-size:11.5px;line-height:1.55;color:#C9D1E2}.letter .co b{display:block;color:#fff;font-size:13px;letter-spacing:.06em}
+.letter .eb{margin-top:26px;font-size:11px;font-weight:800;letter-spacing:.14em;color:#077A70}
+.letter h1{margin:4px 0 0;font-size:26px;line-height:1.2;letter-spacing:-.01em}
+.letter .meta{margin-top:16px;display:grid;grid-template-columns:repeat(3,1fr);border:1px solid #E2E6EC;border-radius:12px;overflow:hidden}
+.letter .meta div{padding:10px 14px;font-size:13.5px;font-weight:700;line-height:1.4}.letter .meta div+div{border-left:1px solid #E2E6EC}
+.letter .meta span{display:block;font-size:10.5px;color:#5B6573;letter-spacing:.06em;font-weight:700}
+.letter p{margin:16px 0 0;color:#2B3550;text-align:justify}
+.letter table.lt{width:100%;border-collapse:separate;border-spacing:0;margin-top:12px;font-size:12.5px;line-height:1.5;border:1px solid #E2E6EC;border-radius:12px;overflow:hidden}
+.letter table.lt th{background:#F4F6F9;text-align:left;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#5B6573;padding:9px 12px}
+.letter table.lt td{padding:9px 12px;border-top:1px solid #E2E6EC;vertical-align:top}.letter table.lt small{color:#5B6573}
+.letter table.kv{margin-top:10px;border-collapse:collapse;line-height:1.5}.letter table.kv td{padding:4px 14px 4px 0;vertical-align:top}.letter table.kv td:first-child{color:#5B6573;min-width:120px}
+.letter .sign{margin-top:30px;display:flex;justify-content:space-between;align-items:flex-end;gap:20px}
+.letter .kn{font-size:13px;line-height:1.6}
+.letter .sb{width:340px;font-size:13px;line-height:1.6}
+.letter .ver{margin-top:12px;display:flex;gap:14px;align-items:center;border:1.5px solid #09BEAF;border-radius:14px;padding:12px;background:#F2FBFA}
+.letter .ver.pending{border-style:dashed;border-color:#C9A15A;background:#FFF8EC}
+.letter .qr{width:78px;height:78px;flex:none;background:#fff;border-radius:6px;padding:4px;box-sizing:border-box}.letter .qr svg{width:100%;height:100%;display:block}
+.letter .ver small{display:block;font-size:10.5px;font-weight:800;letter-spacing:.08em;color:#077A70}.letter .ver.pending small{color:#9A5B00}
+.letter .ver b{display:block;font-size:15px;line-height:1.35}.letter .ver span{display:block;font-size:11px;color:#5B6573;line-height:1.4}
+.letter .valid{margin-top:16px;font-size:12px;color:#5B6573}
+.letter .mark{position:absolute;top:46%;left:0;right:0;text-align:center;font-size:64px;font-weight:800;color:rgba(192,57,43,.12);transform:rotate(-18deg);pointer-events:none;letter-spacing:.06em}
+.letter .foot{position:absolute;left:0;right:0;bottom:0;padding:14px 64px;background:#1F2B4D;color:#C9D1E2;font-size:11px;display:flex;justify-content:space-between;align-items:center}
+.letter .foot .u{display:flex;gap:14px}.letter .foot .u span{display:flex;gap:6px;align-items:center;color:#fff;font-weight:700}.letter .foot img{height:16px;width:16px;background:#fff;border-radius:4px;padding:2px;object-fit:contain}`;
+const BIZNAME = { HQ: 'Pokama', RA: 'Rentalaja', WG: 'TripinAja', NA: 'Niagaaja' };
 async function letterHtml(l) {
   const d = l.data || {}, tpl = l.tpl || {};
   const issued = l.status === 'terbit' || (l.status === 'batal' && l.number);
   const qr = issued && l.verify_key ? await qrSvg(VERIFY + l.verify_key) : '';
   const mark = l.status === 'batal' ? 'DIBATALKAN' : l.status === 'terbit' ? '' : l.status === 'ditolak' ? 'DITOLAK' : 'DRAF';
-  return `<div class="letter">${mark ? `<div class="mark">${mark}</div>` : ''}
-    <div class="kop"><img src="/img/pokama-logo.png" alt="Pokama"><div><b>${esc((d.perusahaan || 'PT Popo Karya Investama').toUpperCase())}</b><span>Induk Rentalaja, TripinAja, dan Niagaaja · Garut, Jawa Barat · pokama.org</span></div></div>
-    <h1>${fill(tpl.title, d)}</h1><div class="no">Nomor: ${esc(l.number || '(otomatis saat terbit)')}</div>
+  const pt = d.perusahaan || 'PT Popo Karya Investama';
+  const title = fill(tpl.title, d).toLowerCase().replace(/(^|\s)\S/g, c => c.toUpperCase()).replace(/\b(Ii|Iii)\b/g, m => m.toUpperCase());
+  return `<div class="letter">${mark ? `<div class="mark">${mark}</div>` : ''}<div class="in">
+    <div class="kop"><img src="/img/pokama-logo.png" alt="Pokama"><div class="co"><b>${esc(pt.toUpperCase())}</b>Induk Rentalaja, TripinAja, dan Niagaaja<br>Garut, Jawa Barat · pokama.org</div></div>
+    <div class="eb">SURAT RESMI</div><h1>${title}</h1>
+    <div class="meta"><div><span>NOMOR</span>${esc(l.number || 'Otomatis saat terbit')}</div><div><span>TANGGAL</span>${tglID(l.letter_date)}</div><div><span>UNIT BISNIS</span>${esc(BIZNAME[l.biz] || 'Pokama')}</div></div>
     <p>${fill(tpl.opening, d)}</p>${subjectTable(l)}<p>${fill(tpl.after, d)}</p><p>${fill(tpl.closing, d)}</p>
-    <div class="sign">${l.known_name ? `<div class="who">Mengetahui,<br>${esc(l.known_title || 'Atasan langsung')}<br><br><br><b>${esc(l.known_name)}</b></div>` : '<div></div>'}
-      <div class="who" style="display:flex;gap:14px;align-items:flex-end">${qr ? `<div class="qr">${qr}</div>` : ''}<div>Garut, ${tglID(l.letter_date)}<br>${esc(l.signer_title || '')}<br>${esc(d.perusahaan || 'PT Popo Karya Investama')}<br><br><b style="text-decoration:underline">${esc(l.signer_name || '')}</b>
-        <small>${issued ? 'Disetujui secara elektronik melalui Sistem Kerja Pokama. Pindai QR untuk memeriksa keaslian.' : 'Belum disetujui penanda tangan.'}</small></div></div></div>
-    ${l.valid_until ? `<p style="margin-top:18px;font-size:12px">Berlaku sampai ${tglID(l.valid_until)}.</p>` : ''}
-    <div class="foot"><small>${l.number ? 'Nomor ' + esc(l.number) + ' · ' : ''}Periksa keaslian: pokama.org/cek${l.verify_key ? '?k=' + esc(l.verify_key) : ''}</small></div></div>`;
+    <div class="sign">${l.known_name ? `<div class="kn">Mengetahui,<br>${esc(l.known_title || 'Atasan langsung')}<br><br><br><b>${esc(l.known_name)}</b></div>` : '<div></div>'}
+      <div class="sb">Garut, ${tglID(l.letter_date)}<br>${esc(l.signer_title || '')}, ${esc(pt)}
+        <div class="ver${issued ? '' : ' pending'}">${qr ? `<div class="qr">${qr}</div>` : ''}<div><small>${issued ? '✓ DISETUJUI ELEKTRONIK' : 'MENUNGGU PERSETUJUAN'}</small><b>${esc(l.signer_name || '')}</b><span>${issued ? 'Pindai QR atau buka pokama.org/cek untuk memeriksa keaslian.' : 'Nomor dan QR aktif setelah disetujui.'}</span></div></div></div></div>
+    ${l.valid_until ? `<div class="valid">Berlaku sampai ${tglID(l.valid_until)}.</div>` : ''}</div>
+    <div class="foot"><div class="u"><span><img src="/img/ra.png" alt="">Rentalaja</span><span><img src="/img/tr.png" alt="">TripinAja</span><span><img src="/img/na.png" alt="">Niagaaja</span></div><div>${l.number ? esc(l.number) + ' · ' : ''}pokama.org/cek</div></div></div>`;
 }
 async function downloadPdf(l) {
   await loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js');
@@ -207,9 +222,9 @@ async function preview(t, p, re) {
   if (t.code === 'SP' && p.fields.level) d.level_romawi = ['I', 'II', 'III'][+p.fields.level - 1];
   const sg = ctx.byId[p.signer_id] || {};
   const boss = t.code === 'SP' && p.people[0] ? ctx.byId[(ctx.byId[p.people[0]] || {}).boss_id] : null;
-  const l = { status: 'menunggu', data: d, tpl: t.tpl, letter_date: p.letter_date, signer_name: sg.name, signer_title: sg.title, known_name: boss && boss.name, known_title: boss && boss.title };
+  const l = { status: 'menunggu', biz: p.biz, data: d, tpl: t.tpl, letter_date: p.letter_date, signer_name: sg.name, signer_title: sg.title, known_name: boss && boss.name, known_title: boss && boss.title };
   const self = p.signer_id === ROLE.me;
-  const ok = await modal('Pratinjau ' + t.name, `<style>${LETTER_CSS}.pv{overflow:auto;background:#EEF0F3;border-radius:12px;padding:12px}.pv .letter{transform:scale(.62);transform-origin:top left;margin-bottom:-420px;margin-right:-300px}</style><div class="pv">${await letterHtml(l)}</div>
+  const ok = await modal('Pratinjau ' + t.name, `<style>${LETTER_CSS}.pv{overflow:auto;background:#EEF0F3;border-radius:12px;padding:12px}.pv .letter{transform:scale(.62);transform-origin:top left;margin-bottom:-427px;margin-right:-302px}</style><div class="pv">${await letterHtml(l)}</div>
     <p class="small muted" style="margin-top:8px">${self ? 'Anda penanda tangan: surat langsung terbit, nomor dikunci, dan QR verifikasi aktif.' : 'Surat dikirim ke ' + esc(sg.nickname || sg.name || 'penanda tangan') + ' untuk disetujui. Nomor dibuat saat disetujui.'}</p>`,
     { wide: true, submit: self ? 'Terbitkan' : 'Kirim untuk disetujui', onSubmit: async () => await db.rpc('pk_letter_create', { p }) });
   if (ok) { toast(ok.status === 'terbit' ? 'Surat terbit' : 'Menunggu persetujuan'); S.tab = ok.status === 'terbit' ? 'arsip' : 'arsip'; re(); }
@@ -220,7 +235,7 @@ async function openLetter(l, re) {
   CUR = l;
   const canCancel = ['menunggu', 'terbit'].includes(l.status) && (isAdmin() || l.signer_id === ROLE.me || (l.created_by === ROLE.me && l.status === 'menunggu'));
   const wa = l.status === 'terbit' ? 'https://wa.me/?text=' + encodeURIComponent(`${l.title}\nNomor ${l.number}\nCek keaslian: ${VERIFY}${l.verify_key}`) : '';
-  const res = await modal(l.number || 'Surat', `<style>${LETTER_CSS}.pv{overflow:auto;background:#EEF0F3;border-radius:12px;padding:12px}.pv .letter{transform:scale(.62);transform-origin:top left;margin-bottom:-420px;margin-right:-300px}</style>
+  const res = await modal(l.number || 'Surat', `<style>${LETTER_CSS}.pv{overflow:auto;background:#EEF0F3;border-radius:12px;padding:12px}.pv .letter{transform:scale(.62);transform-origin:top left;margin-bottom:-427px;margin-right:-302px}</style>
     <div class="row" style="gap:8px;flex-wrap:wrap;margin-bottom:10px">${stChip(l.status)}<button type="button" class="btn" data-a="pdf">Unduh PDF</button><button type="button" class="btn" data-a="print">Cetak</button>${wa ? `<a class="btn" href="${wa}" target="_blank" rel="noopener">Kirim via WA</a>` : ''}</div>
     ${l.cancel_reason ? `<div class="note">Dibatalkan: ${esc(l.cancel_reason)}</div>` : ''}${l.decided_note ? `<div class="note">Catatan penolakan: ${esc(l.decided_note)}</div>` : ''}
     <div class="pv">${await letterHtml(l)}</div>${l.mine_to_sign ? field('Catatan bila menolak', '<input class="inp" name="note">') : ''}${canCancel ? field('Alasan bila membatalkan', '<input class="inp" name="reason" placeholder="Mis. salah tanggal, diganti surat baru">', 'Surat yang dibatalkan tetap di arsip; QR-nya menampilkan "dibatalkan"') : ''}`,
