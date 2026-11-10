@@ -12,6 +12,7 @@ import gudang from './screens/gudang.js';
 import beranda from './screens/beranda.js';
 import notifikasi from './screens/notifikasi.js';
 import rekrutmen, { canRec } from './screens/rekrutmen.js';
+import surat from './screens/surat.js';
 
 const I = {
   bell: '<path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>',
@@ -35,6 +36,7 @@ const I = {
   dash: '<rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/>',
   gauge: '<path d="M3.5 18a9 9 0 1 1 17 0"/><path d="M12 14l4-5"/><circle cx="12" cy="14" r="1.6"/><path d="M6.5 12.5h1M16.5 12.5h1M12 7v1"/>',
   box: '<path d="M21 8 12 3 3 8v8l9 5 9-5z"/><path d="M3 8l9 5 9-5M12 13v8"/>',
+  mail: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>',
   ext: '<path d="M14 4h6v6M20 4l-9 9"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/>',
 };
 const MODIC = { pk_ops: 'clock', ops: 'gauge', pokama: 'sun', marketing: 'mega', keuangan: 'bank', buku: 'bank', affiliate: 'link', investor: 'trend', ra_mgmt: 'gauge', ra_aset: 'box' };
@@ -49,7 +51,7 @@ const BASE_ROUTES = [
   ['KERJA HARIAN', [
     ['beranda', 'Beranda', 'grid', beranda], ['setuju', 'Kotak Persetujuan', 'inbox', setuju], ['kkh', 'KKH Saya', 'sun', kerja.saya], ['kkh-tim', 'KKH Tim', 'grid', kerja.tim], ['tugas', 'Proyek & Tugas', 'layers', tugas.board],
     ['review', 'Review & Revisi', 'check', tugas.review], ['belanja', 'Pengajuan Belanja', 'wallet', belanja],
-    ['kehadiran', 'Kehadiran & Cuti', 'clock', kehadiran], ['unit', 'Unit Bisnis', 'trophy', unit]]],
+    ['kehadiran', 'Kehadiran & Cuti', 'clock', kehadiran], ['surat', 'Surat', 'mail', surat], ['unit', 'Unit Bisnis', 'trophy', unit]]],
   ['ORANG', [['tim', 'Tim & Peran', 'users', tim.tim], ['performa', 'Performa', 'coin', tim.performa], ['rekrutmen', 'Rekrutmen', 'check', rekrutmen]]],
   ['SISTEM', [['library', 'Library Dokumen', 'book', sistem.library], ['pengaturan', 'Pengaturan', 'cog', sistem.pengaturan], ['notifikasi', 'Pengaturan Notifikasi', 'inbox', notifikasi]]],
 ];
