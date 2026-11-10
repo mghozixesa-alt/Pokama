@@ -176,7 +176,8 @@ async function newLetter(t, re) {
   }
   const fieldsHtml = (t.fields || []).map(f => field(f.label + (f.req ? '' : ''), f.type === 'textarea' ? `<textarea class="inp" name="f_${f.k}" rows="3" placeholder="${esc(f.ph || '')}"></textarea>`
     : f.type === 'select' ? `<select class="inp" name="f_${f.k}">${opts(f.opts, '', '— pilih —')}</select>` : `<input class="inp" type="${f.type === 'date' ? 'date' : 'text'}" name="f_${f.k}" placeholder="${esc(f.ph || '')}">`)).join('');
-  const signers = t.signer === 'boss' ? people().filter(p => ['ceo', 'kepala_staf', 'leader'].includes(p.role) || team.length && p.id === ROLE.me) : people().filter(p => ['ceo', 'kepala_staf'].includes(p.role));
+  const bosses = new Set(people().map(p => p.boss_id).filter(Boolean));
+  const signers = t.signer === 'boss' ? people().filter(p => ['ceo', 'kepala_staf'].includes(p.role) || bosses.has(p.id)) : t.signer === 'ceo' ? byRole('ceo') : people().filter(p => ['ceo', 'kepala_staf'].includes(p.role));
   const pick = (f) => {
     const subj = t.subject === 'people' ? pool.filter(p => f['pp_' + p.id]).map(p => p.id) : t.subject === 'person' ? [f.person].filter(Boolean) : [];
     const fields = Object.fromEntries((t.fields || []).map(x => [x.k, (f['f_' + x.k] || '').trim()]));
@@ -186,7 +187,7 @@ async function newLetter(t, re) {
   const draft = await modal(t.name, `${subjHtml}${fieldsHtml}
     <div class="g2">${t.subject === 'assets' ? '<input type="hidden" name="biz" value="RA">' : field('Unit bisnis (untuk nomor surat)', `<select class="inp" name="biz">${opts(BIZ, ['HQ', 'RA', 'WG', 'NA'].includes(firstBiz()) ? firstBiz() : 'HQ')}</select>`)}
       ${field('Tanggal surat', `<input class="inp" type="date" name="letter_date" value="${new Date(Date.now() + 7 * 3600e3).toISOString().slice(0, 10)}">`)}</div>
-    ${field('Penanda tangan', `<select class="inp" name="signer" id="sg">${opts(signers.map(p => [p.id, (p.nickname || p.name) + ' · ' + (p.title || '')]), '')}</select>`, t.signer === 'boss' ? 'Sesuai tingkatan: atasan langsung yang ditugaskan' : t.signer === 'kepala_staf' ? 'Sesuai tingkatan: Kepala Staf' : 'Sesuai tingkatan: CEO')}
+    ${field('Penanda tangan', `<select class="inp" name="signer" id="sg">${opts(signers.map(p => [p.id, (p.nickname || p.name) + ' · ' + (p.title || '')]), '')}</select>`, t.signer === 'boss' ? 'Atasan langsung semua orang yang ditugaskan, atau CEO / Kepala Staf' : t.signer === 'kepala_staf' ? 'Sesuai tingkatan: Kepala Staf' : 'Wajib disetujui CEO')}
     <div id="sphint"></div>`, { submit: 'Pratinjau', wide: true, onSubmit: async (f) => pick(f) });
   // default penanda tangan & petunjuk SP diisi sesudah modal tampil (lihat listener di bawah)
   if (!draft) return;
