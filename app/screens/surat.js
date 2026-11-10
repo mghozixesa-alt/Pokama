@@ -3,8 +3,33 @@ import { ctx, db, esc, toast, modal, field, opts, fdate, bizOf, isAdmin } from '
 /* Menu Surat: surat resmi bernomor, kop PT, nama + QR verifikasi, arsip. Hak akses dicek ulang di server (pk_letter_*). */
 const VERIFY = 'https://pokama.org/cek?k=';
 const BIZ = [['HQ', 'Pokama (holding)'], ['RA', 'Rentalaja'], ['WG', 'TripinAja'], ['NA', 'Niagaaja']];
-const STATUS = { menunggu: ['Menunggu persetujuan', '#9A5B00', '#FFF0DC'], terbit: ['Terbit', '#077A70', '#E3F7F5'], ditolak: ['Ditolak', '#C0392B', '#FDE8E6'], batal: ['Dibatalkan', '#4A5468', '#EEF0F3'] };
+const STATUS = { menunggu: ['Menunggu', '#9A5B00', '#FFF0DC'], terbit: ['Terbit', '#077A70', '#E3F7F5'], ditolak: ['Ditolak', '#C0392B', '#FDE8E6'], batal: ['Dibatalkan', '#4A5468', '#EEF0F3'] };
 const DESC = { PKWT: 'Perjanjian kerja waktu tertentu untuk karyawan baru / perpanjangan', BAST: 'Serah terima unit antar cabang, ke/dari investor', SKU: 'Kuasa untuk urus STNK, pajak, ambil unit, dll.', STG: 'Tagihan belum lunas/denda, atau teguran unit belum kembali', ST: 'Tugas luar kantor untuk satu atau beberapa orang', SKK: 'Keterangan masih bekerja, untuk bank, beasiswa, dll.', SPK: 'Penawaran kerja untuk pelamar dari Rekrutmen', SP: 'SP 1–3, membaca SP yang masih berlaku', SKA: 'Kepemilikan / pengelolaan unit, dari data aset' };
+const GROUPS = [['Karyawan & SDM', ['ST', 'SKK', 'SP', 'PKWT', 'SPK']], ['Aset & operasional', ['SKA', 'BAST', 'SKU']], ['Penyewa', ['STG']]];
+const TIC = {
+  ST: ['#E3F7F5', '#077A70', '<path d="M4 7h16v12H4z"/><path d="M9 7V5h6v2M4 12h16"/>'],
+  SKK: ['#E6EFFD', '#1E5AA8', '<circle cx="12" cy="8" r="3.5"/><path d="M5 20a7 7 0 0 1 14 0"/>'],
+  SP: ['#FDE8E6', '#C0392B', '<path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17v.5"/>'],
+  PKWT: ['#EFEDFF', '#5B4BC4', '<path d="M7 3h8l4 4v14H7z"/><path d="M15 3v4h4M10 13h6M10 17h4"/>'],
+  SPK: ['#E5F4E4', '#2E7D32', '<path d="M4 8h16v11H4z"/><path d="m4 9 8 6 8-6"/>'],
+  SKA: ['#FFF0DC', '#9A5B00', '<circle cx="7" cy="17" r="2.5"/><circle cx="17" cy="17" r="2.5"/><path d="M4.5 17H3v-4l3-5h7l3 5h3l2 2v2h-1.5M9.5 17h5"/>'],
+  BAST: ['#E3F7F5', '#077A70', '<path d="M3 12h7l-2-2M21 12h-7l2 2"/><path d="M8 7h8M8 17h8"/>'],
+  SKU: ['#EEF0F3', '#1F2B4D', '<path d="M8 11V7a4 4 0 0 1 8 0v4"/><rect x="5" y="11" width="14" height="10" rx="2"/>'],
+  STG: ['#FDE8E6', '#C0392B', '<rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18M7 15h4"/>'],
+};
+const tic = (c, sz = 22) => { const x = TIC[c] || TIC.SKU; return `<span style="width:44px;height:44px;border-radius:13px;background:${x[0]};color:${x[1]};display:grid;place-items:center;flex:none"><svg width="${sz}" height="${sz}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${x[2]}</svg></span>`; };
+const SCSS = `<style>.sr-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:10px}
+.sr-tile{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:#fff;border:1px solid #E6E9EE;border-radius:16px;padding:12px 14px;cursor:pointer;font:inherit;color:#1F2B4D;transition:border-color .15s,box-shadow .15s,transform .1s}
+.sr-tile:hover{border-color:#09BEAF;box-shadow:0 4px 14px rgba(31,43,77,.08)}.sr-tile:active{transform:scale(.99)}
+.sr-tile b{display:block;font-size:15px;line-height:1.3}.sr-tile small{display:block;color:#5B6577;font-size:12.5px;line-height:1.4;margin-top:2px}
+.sr-tile .code{margin-left:auto;font-size:11px;font-weight:800;color:#8A93A6;letter-spacing:.04em;flex:none}
+.sr-h{margin:18px 0 8px;font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#5B6577}
+.sr-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:4px 0 14px}
+.sr-stat{background:#fff;border:1px solid #E6E9EE;border-radius:16px;padding:12px 14px}.sr-stat span{display:block;font-size:12px;color:#5B6577;font-weight:600}.sr-stat b{font-size:22px;line-height:1.2}
+.sr-stat.hot{background:#FFF8EC;border-color:#F1D9AE}.sr-stat.hot b{color:#9A5B00}
+.sr-row{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:#fff;border:1px solid #E6E9EE;border-radius:16px;padding:12px 14px;cursor:pointer;font:inherit;color:#1F2B4D}
+.sr-row:hover{border-color:#09BEAF}.sr-row .t{flex:1;min-width:0}.sr-row b{display:block;font-size:14.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.sr-row small{display:block;color:#5B6577;font-size:12px}
+@media (max-width:560px){.sr-stats{gap:8px}.sr-stat{padding:10px 12px}.sr-stat b{font-size:19px}}</style>`;
 let S = { tab: 'buat', q: '' };
 let TYPES = null, ROLE = null, CUR = null;
 
@@ -136,16 +161,19 @@ function render(el) {
   const can = { ST: true, SKK: true, SPK: ROLE.admin || ROLE.rec, SP: ROLE.admin || hasTeam, SKA: ROLE.asset, PKWT: ROLE.admin || ROLE.rec, BAST: ROLE.asset, SKU: ROLE.admin, STG: ROLE.admin || ROLE.asset || ROLE.role === 'keuangan' || inRA };
   let body = '';
   if (S.tab === 'buat') {
-    body = `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,250px),1fr));gap:12px">${TYPES.filter(t => can[t.code]).map(t => `<button type="button" class="card" data-new="${t.code}" style="text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:6px">
-      <span class="chip gray" style="align-self:flex-start">${esc(t.code)}</span><b style="font-size:16px">${esc(t.name)}</b><span class="muted small">${esc(DESC[t.code] || '')}</span>
-      <span class="small" style="color:#077A70;font-weight:700">${t.code === 'SKK' && !ROLE.admin ? 'Minta untuk diri sendiri →' : 'Buat →'}</span></button>`).join('')}</div>
-      <div class="card" style="margin-top:12px;background:#F2FBFA;border:1px solid #BFEDE8;font-size:13.5px;line-height:1.6;color:#2B3550">Nomor surat dibuat otomatis saat terbit (contoh <span style="font-weight:800;white-space:nowrap">001/ST/RA/XI/2026</span>). Surat yang ditandatangani orang lain menunggu persetujuannya dulu. Tanpa tanda tangan basah: nama penanda tangan + QR verifikasi.</div>`;
+    const avail = TYPES.filter(t => can[t.code]); const tmap = Object.fromEntries(avail.map(t => [t.code, t]));
+    const ym = new Date(Date.now() + 7 * 3600e3).toISOString().slice(0, 7);
+    const mine = all.filter(l => l.created_by === ROLE.me && l.status === 'menunggu').length;
+    body = `<div class="sr-stats"><div class="sr-stat${toSign.length ? ' hot' : ''}"><span>Perlu saya setujui</span><b>${toSign.length}</b></div><div class="sr-stat"><span>Ajuan saya menunggu</span><b>${mine}</b></div><div class="sr-stat"><span>Terbit bulan ini</span><b>${all.filter(l => l.status === 'terbit' && (l.issued_at || '').slice(0, 7) === ym).length}</b></div></div>
+      ${GROUPS.map(([g, codes]) => { const ts = codes.map(c => tmap[c]).filter(Boolean); return ts.length ? `<div class="sr-h">${g}</div><div class="sr-grid">${ts.map(t => `<button type="button" class="sr-tile" data-new="${t.code}">${tic(t.code)}<span style="min-width:0"><b>${esc(t.name)}</b><small>${esc(t.code === 'SKK' && !ROLE.admin ? 'Minta untuk diri sendiri' : DESC[t.code] || '')}</small></span><span class="code">${esc(t.code)}</span></button>`).join('')}</div>` : ''; }).join('')}
+      ${all.length ? `<div class="sr-h">Terakhir</div>${rows(all.slice(0, 3))}` : ''}
+      <p class="muted small" style="margin-top:14px">Nomor surat otomatis saat terbit (contoh 001/ST/RA/XI/2026). Surat yang ditandatangani orang lain menunggu persetujuannya. Tanpa tanda tangan basah: nama penanda tangan + QR verifikasi.</p>`;
   }
   if (S.tab === 'setuju') body = toSign.length ? rows(toSign) : '<div class="card"><p class="muted">Tidak ada surat yang menunggu persetujuan Anda.</p></div>';
   if (S.tab === 'arsip') body = `<div class="row" style="gap:8px;margin-bottom:10px"><input class="inp" id="sq" type="search" placeholder="Cari nomor, nama, plat, atau kode unit…" value="${esc(S.q)}" style="max-width:420px;height:40px"></div>${list.length ? rows(list) : '<div class="card"><p class="muted">Belum ada surat.</p></div>'}`;
   if (S.tab === 'aset') body = '<div id="aset"><p class="muted">Memuat data aset…</p></div>';
 
-  el.innerHTML = `<header class="ph"><div><span class="muted small">Surat resmi PT Popo Karya Investama · bernomor, ber-QR, tersimpan di arsip</span><h1>Surat</h1></div></header>
+  el.innerHTML = SCSS + `<header class="ph"><div><span class="muted small">Surat resmi PT Popo Karya Investama · bernomor, ber-QR, tersimpan di arsip</span><h1>Surat</h1></div></header>
     <div class="chips" style="flex-wrap:wrap">${tabs.map(([k, l]) => `<button class="chipbtn${S.tab === k ? ' on' : ''}" data-tab="${k}">${l}</button>`).join('')}</div>${body}`;
   const re = async () => { await load(true); ASSETS = null; render(el); };
   el.querySelectorAll('[data-tab]').forEach(b => b.onclick = () => { S.tab = b.dataset.tab; render(el); });
@@ -158,8 +186,7 @@ function render(el) {
   if (S.tab === 'aset') drawAssets(el.querySelector('#aset'));
 }
 function rows(list) {
-  return `<div class="stack">${list.map(l => `<button type="button" class="card" data-open="${l.id}" style="text-align:left;cursor:pointer;width:100%;display:flex;justify-content:space-between;gap:10px;align-items:flex-start">
-    <span><b>${esc(l.title)}</b><span class="muted small" style="display:block">${l.number ? esc(l.number) + ' · ' : ''}${fdate(l.letter_date)} · ttd ${esc(l.signer_name || '')}${l.valid_until ? ' · berlaku s.d. ' + fdate(l.valid_until) : ''}</span></span>${stChip(l.status)}</button>`).join('')}</div>`;
+  return `<div class="stack" style="gap:8px">${list.map(l => `<button type="button" class="sr-row" data-open="${l.id}">${tic(l.type)}<span class="t"><b>${esc(l.title)}</b><small>${l.number ? esc(l.number) + ' · ' : ''}${fdate(l.letter_date)} · ttd ${esc(l.signer_name || '')}${l.valid_until ? ' · s.d. ' + fdate(l.valid_until) : ''}</small></span>${stChip(l.status)}</button>`).join('')}</div>`;
 }
 
 async function drawAssets(box) {
