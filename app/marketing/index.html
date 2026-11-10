@@ -1065,17 +1065,16 @@ function vAds() {
   return h;
 }
 function vSeo() {
+  var rng = '<div class="acts" style="gap:6px">' + [7, 28, 90].map(function (d) { return '<button class="btn sm' + (GA.days === d ? ' pri' : '') + '" data-gad="' + d + '">' + d + ' hari</button>'; }).join('') + (S.me === LEAD ? isiBtn() : '') + '</div>';
+  var h = header('Analitik · pencarian', 'Analitik SEO', 'Website rentalaja.co.id dari Google Analytics 4 (otomatis tiap hari 06.00 WIB), ditambah isian manual Google Maps.', rng);
+  return h + gaBlock() + vSeoManual();
+}
+function vSeoManual() {
   var k = aMonth(), pk = prevMonth(k), c = seoMonth(k), p = seoMonth(pk);
-  var h = header('Analitik · pencarian', 'Analitik SEO', 'Hanya untuk melihat. Angka diambil dari Isi data harian (bagian SEO mingguan).', monthNav() + (S.me === LEAD ? isiBtn() : ''));
+  var h = '';
   if (!c.weeks) h += '<div class="hint" style="background:#FDF3D7;color:#7A5200">Belum ada angka SEO bulan ini.' + (S.me === LEAD ? ' <a href="#isi" style="color:#7A5200">Isi data harian →</a>' : '') + '</div>';
-  h += kpis([
-    { label: 'Sesi website', ic: 'globe', val: fmt(c.sesi), note: 'Bulan lalu ' + fmt(p.sesi), bar: TEAL },
-    { label: 'Klik WA dari website', ic: 'chat', val: fmt(c.klikwa), note: c.sesi ? pct1(c.klikwa / c.sesi * 100) + '% dari sesi' : '—', bar: TEAL },
-    { label: 'Rating Google Maps', ic: 'star', val: c.rating ? pct1(c.rating / 10) : '—', note: 'Patokan ≥ 4,7', bar: c.rating && c.rating < 47 ? ORG : TEAL },
-    { label: 'Ulasan belum dibalas', ic: 'alert', val: c.belum === '' ? '—' : fmt(c.belum), note: 'Patokan 0', bar: +c.belum ? '#C2410C' : TEAL, nc: +c.belum ? BAD : GOOD }
-  ]);
   var rows = SEOF.map(function (f) { var low = f[0] === 'pos' || f[0] === 'belum'; return '<tr><td><b>' + f[1].replace(' (mis. 4,7 tulis 47)', '') + '</b><div class="sub">' + f[2] + '</div></td><td style="text-align:right"><b>' + (c[f[0]] === '' ? '—' : f[0] === 'rating' ? pct1(c[f[0]] / 10) : fmt(c[f[0]])) + '</b></td><td style="text-align:right">' + (p[f[0]] === '' ? '—' : f[0] === 'rating' ? pct1(p[f[0]] / 10) : fmt(p[f[0]])) + '</td><td style="text-align:right">' + delta(c[f[0]], p[f[0]], low) + '</td></tr>'; }).join('');
-  h += sec(monthName(k), 'search', 'Sesi, klik, dan ulasan baru dijumlah dari angka mingguan. Rating, posisi, dan ulasan belum dibalas memakai angka minggu terakhir.', '', '<div style="overflow-x:auto"><table class="tbl"><thead><tr><th>Ukuran</th><th style="text-align:right">Bulan ini</th><th style="text-align:right">Bulan lalu</th><th style="text-align:right">Perubahan</th></tr></thead><tbody>' + rows + '</tbody></table></div>');
+  h += sec('Isian manual mingguan · ' + monthName(k), 'search', 'Google Maps & Search Console masih diisi tiap Senin lewat Isi data harian. Sesi & klik WA di tabel ini adalah isian manual; angka otomatis ada di atas.', monthNav(), '<div style="overflow-x:auto"><table class="tbl"><thead><tr><th>Ukuran</th><th style="text-align:right">Bulan ini</th><th style="text-align:right">Bulan lalu</th><th style="text-align:right">Perubahan</th></tr></thead><tbody>' + rows + '</tbody></table></div>');
   return h;
 }
 
@@ -2013,6 +2012,52 @@ function startOnline() {
 var ROLE = { 'Head of Marketing': 'head', Dita: 'pic', Nayla: 'pic', Editor: 'editor', 'Admin WA': 'cs', 'Kepala Staf': 'ks' };
 function role() { return ROLE[S.me] || 'pic'; }
 function canSee(el) { var r = el.getAttribute('data-roles'); return !r || r.split(' ').indexOf(role()) >= 0; }
+/* ---------- Google Analytics 4 · data asli (RPC mk_seo_ga4, diisi fungsi ga4-sync tiap 06.00 WIB) ---------- */
+var GA = { days: 28, data: null, loading: false, err: '', at: 0 };
+var GA_CH = { 'Organic Search': 'Google (organik)', 'Direct': 'Langsung', 'Organic Social': 'Sosial media (organik)', 'Paid Social': 'Iklan sosial media', 'Paid Search': 'Iklan Google', 'Referral': 'Rujukan situs lain', 'Unassigned': 'Tidak diketahui', 'Organic Maps': 'Google Maps', 'Email': 'Email', 'Organic Video': 'Video (organik)', 'Cross-network': 'Lintas jaringan' };
+function gaLoad() {
+  if (GA.loading) return; GA.loading = true; GA.err = '';
+  var to = new Date(Date.now() + 7 * 3600e3 - 864e5), from = new Date(to.getTime() - (GA.days - 1) * 864e5);
+  api('rpc/mk_seo_ga4', { method: 'POST', body: JSON.stringify({ p_from: from.toISOString().slice(0, 10), p_to: to.toISOString().slice(0, 10) }) })
+    .then(function (d) { GA.data = d; GA.at = Date.now(); })
+    .catch(function (e) { GA.err = /nologin|expired/.test(e.message) ? 'Masuk dulu dengan akun Sistem Kerja.' : /Tidak berwenang/.test(e.message) ? 'Akun ini belum punya akses data Google Analytics.' : 'Gagal memuat data Google Analytics. Coba muat ulang.'; })
+    .then(function () { GA.loading = false; if (view() === 'seo') render(); });
+}
+function gaBlock() {
+  if (!GA.data || Date.now() - GA.at > 120000) { if (!LOCAL) gaLoad(); }
+  if (GA.err) return '<div class="hint" style="background:#FDF3D7;color:#7A5200">' + esc(GA.err) + '</div>';
+  if (LOCAL && !GA.data) return '<div class="hint">Uji lokal: data Google Analytics hanya tampil di pokama.org setelah masuk.</div>';
+  if (!GA.data) return empty('Memuat data Google Analytics…');
+  var g = GA.data, t = g.totals || {}, pv = g.prev || {}, ls = g.last_sync || null;
+  var st = ls ? (ls.ok ? 'Sinkron terakhir ' + new Date(new Date(ls.at).getTime() + 7 * 3600e3).toISOString().slice(0, 16).replace('T', ' ') + ' WIB' : 'Sinkron gagal: ' + esc(ls.error || '-')) : 'Belum pernah sinkron';
+  if (!g.connected || !(+t.sessions)) {
+    return sec('Google Analytics 4', 'globe', st, '', '<div class="hint" style="background:#FDF3D7;color:#7A5200">' + (!g.connected ? 'Google Analytics belum tersambung. Sambungan siap di server; tinggal isi ID properti GA4 dan kunci akun layanan Google.' : 'Tersambung, tapi belum ada data di rentang ini. Data pertama muncul setelah sinkron berikutnya (06.00 WIB).') + '</div>');
+  }
+  var sess = +t.sessions || 0, org = +t.organic || 0, wa = +g.wa_clicks || 0;
+  var out = kpis([
+    { label: 'Sesi website', ic: 'globe', val: fmt(sess), note: fmt(t.users) + ' pengguna · ' + fmt(t.new_users) + ' baru', bar: TEAL },
+    { label: 'Dari Google (organik)', ic: 'search', val: fmt(org), note: (sess ? Math.round(org / sess * 100) : 0) + '% dari sesi · periode lalu ' + fmt(pv.organic), bar: org >= (+pv.organic || 0) ? TEAL : ORG },
+    { label: 'Klik WA dari website', ic: 'chat', val: fmt(wa), note: sess ? pct1(wa / sess * 100) + '% dari sesi · patokan ≥ 5%' : '—', bar: sess && wa / sess >= 0.05 ? TEAL : ORG, nc: sess && wa / sess < 0.05 ? BAD : GOOD },
+    { label: 'Sesi berinteraksi', ic: 'star', val: sess ? Math.round((+t.engaged || 0) / sess * 100) + '%' : '—', note: fmt(t.engaged) + ' sesi · ' + fmt(t.views) + ' halaman dilihat', bar: TEAL }
+  ]);
+  var ses = [], og = [], wv = []; (g.daily || []).forEach(function (d) { ses.push(+d.sessions || 0); og.push(+d.organic || 0); wv.push(+d.wa || 0); });
+  out += sec('Sesi per hari', 'chart', g.from + ' s.d. ' + g.to + ' · ' + st + ' · batang hijau tua = dari Google organik', '', bars(ses, '#9ADFD8') + '<div style="margin-top:6px"></div>' + bars(og, '#067A70'));
+  var chRows = (g.channels || []).map(function (r) { return Object.assign({}, r, { label: GA_CH[r.channel] || r.channel || 'Lainnya' }); });
+  var srcRows = (g.sources || []).map(function (r) { return Object.assign({}, r, { label: (r.source || '(langsung)') + ' / ' + (r.medium || '-') }); });
+  var pgRows = (g.pages || []).map(function (r) { return Object.assign({}, r, { label: r.page }); });
+  var evRows = (g.events || []).map(function (r) { return Object.assign({}, r, { label: r.event + (r.is_wa ? ' · dihitung klik WA' : '') }); });
+  out += '<div class="grid2" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px">' +
+    sec('Asal pengunjung', 'insta', 'Kanal menurut Google Analytics.', '', lbTable(chRows, [['label', 'Kanal'], ['sessions', 'Sesi'], ['new_users', 'Baru'], ['engaged', 'Berinteraksi']], 'sessions')) +
+    sec('Sumber / medium', 'link', '15 teratas.', '', lbTable(srcRows, [['label', 'Sumber / medium'], ['sessions', 'Sesi'], ['new_users', 'Baru']], 'sessions')) +
+    '</div>';
+  out += sec('Halaman paling banyak dikunjungi', 'list', '20 teratas. Pantau halaman layanan (mis. /sewa/motor-garut.html) dan panduan.', '', lbTable(pgRows, [['label', 'Halaman'], ['sessions', 'Sesi'], ['views', 'Dilihat'], ['users', 'Pengguna']], 'sessions'));
+  out += sec('Event di website', 'flag', wa ? 'Event klik WA ditandai.' : 'Belum ada event klik WA. Pastikan tombol WhatsApp di website mengirim event GA4 (mis. click_wa).', '', lbTable(evRows, [['label', 'Event'], ['cnt', 'Jumlah']], 'cnt'));
+  return out;
+}
+document.addEventListener('click', function (e) {
+  var b = e.target.closest && e.target.closest('[data-gad]'); if (!b) return;
+  GA.days = +b.getAttribute('data-gad'); GA.data = null; render();
+});
 /* ---------- Link bio Rentalaja (rentalaja.co.id/link) · data asli dari aplikasi Rentalaja (RPC ra_link_stats) ---------- */
 var LB = { days: 30, page: 'bio', data: null, loading: false, err: '', at: 0 };
 var LB_SRC = { ig: 'Instagram', tt: 'TikTok', fb: 'Facebook', wa: 'WhatsApp', google: 'Google', langsung: 'Langsung / tidak diketahui', line: 'LINE' };
