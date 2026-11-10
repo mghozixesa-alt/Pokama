@@ -101,7 +101,7 @@ button, input, select, textarea { font-family: inherit; }
 .chip { border: 0; cursor: pointer; padding: 8px 2px; border-radius: 14px; display: flex; flex-direction: column; align-items: center; gap: 6px; color: var(--navy); background: transparent; font-size: 11.5px; font-weight: 700; }
 .chip .dot { width: 40px; height: 40px; border-radius: 13px; display: flex; align-items: center; justify-content: center; font-size: 12.5px; font-weight: 800; }
 .chip[aria-pressed="true"] { background: var(--soft); }
-.chip[aria-pressed="true"] .dot { background: var(--teal) !important; color: var(--navy) !important; }
+.chip[aria-pressed="true"] .dot { background: #fff !important; box-shadow: 0 0 0 2px var(--teal); }
 main { flex: 1; padding: 0 16px 24px; display: flex; flex-direction: column; gap: 10px; }
 .h2row { display: flex; justify-content: space-between; align-items: baseline; padding: 18px 4px 4px; }
 h2 { margin: 0; font-size: 17px; font-weight: 800; }
@@ -260,8 +260,9 @@ const ICON = {
   wa: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20l1.3-3.9A8 8 0 1 1 8 19z"/></svg>',
   warn: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8A4B00" stroke-width="2.4" stroke-linecap="round" aria-hidden="true" style="flex-shrink:0"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.5"/></svg>'
 };
-const BIZ = { RA: ['RA', '#E3F7F5', '#077A70', 'Rentalaja'], WG: ['TA', '#FFF1D6', '#8A4B00', 'TripinAja'], NA: ['NA', '#E8EEF8', '#1F2B4D', 'Niagaaja'], HQ: ['PK', '#EEF0F3', '#1F2B4D', 'Pokama'] };
-const badge = code => { const c = BIZ[code] || BIZ.HQ; return `<span class="badge" style="background:${c[1]};color:${c[2]}">${c[0]}</span>`; };
+const BIZ = { RA: ['/img/ra.png', '#F4F6F9', '', 'Rentalaja'], WG: ['/img/tr.png', '#F4F6F9', '', 'TripinAja'], NA: ['/img/na.png', '#F4F6F9', '', 'Niagaaja'], HQ: ['/img/pk.png', '#F4F6F9', '', 'Pokama'] };
+const lg = (src, sz) => `<img src="${src}" alt="" width="${sz}" height="${sz}" style="width:${sz}px;height:${sz}px;object-fit:contain">`;
+const badge = code => { const c = BIZ[code] || BIZ.HQ; return `<span class="badge" style="background:${c[1]}" title="${c[3]}">${lg(c[0], 28)}</span>`; };
 const bizName = j => (BIZ[j.biz_code] || [])[3] || j.biz;
 const unitLabel = j => j.unit && j.unit !== bizName(j) ? bizName(j) + ' ' + j.unit : bizName(j);
 const foot = '';
@@ -286,9 +287,9 @@ async function viewList() {
   drawList();
 }
 function drawList() {
-  const units = [['Semua', 'All', '#EEF0F3', '#1F2B4D'], ['RA', ...BIZ.RA.slice(0, 3)], ['WG', ...BIZ.WG.slice(0, 3)], ['NA', ...BIZ.NA.slice(0, 3)]];
+  const units = [['Semua', '/img/pk.png'], ['RA', BIZ.RA[0]], ['WG', BIZ.WG[0]], ['NA', BIZ.NA[0]]];
   const labels = { Semua: 'Semua', RA: 'Rentalaja', WG: 'TripinAja', NA: 'Niagaaja' };
-  document.getElementById('chips').innerHTML = units.map(u => `<button type="button" class="chip" data-u="${u[0]}" aria-pressed="${UNIT === u[0]}"><span class="dot" style="background:${u[2]};color:${u[3]}">${u[1]}</span>${labels[u[0]]}</button>`).join('');
+  document.getElementById('chips').innerHTML = units.map(u => `<button type="button" class="chip" data-u="${u[0]}" aria-pressed="${UNIT === u[0]}"><span class="dot" style="background:#F4F6F9">${lg(u[1], 26)}</span>${labels[u[0]]}</button>`).join('');
   document.querySelectorAll('[data-u]').forEach(b => b.onclick = () => { UNIT = b.dataset.u; drawList(); });
   const ql = Q.trim().toLowerCase();
   const list = (JOBS || []).filter(j => (UNIT === 'Semua' || j.biz_code === UNIT) && (!ql || [j.title, j.city, j.unit, j.biz].join(' ').toLowerCase().includes(ql)));
