@@ -65,11 +65,9 @@ begin
   if v_biz not in ('HQ','RA','WG','NA') then raise exception 'Unit bisnis tidak dikenal'; end if;
   ppl := coalesce(array(select (x)::uuid from jsonb_array_elements_text(coalesce(p->'people', '[]')) x), '{}');
   ast := coalesce(array(select (x)::uuid from jsonb_array_elements_text(coalesce(p->'assets', '[]')) x), '{}');
-  -- isian wajib
   for fd in select * from jsonb_array_elements(t.fields) loop
     if coalesce((fd->>'req')::boolean, false) and nullif(btrim(coalesce(f->>(fd->>'k'), '')), '') is null then raise exception 'Isi %', lower(fd->>'label'); end if;
   end loop;
-  -- hak membuat
   if t.subject in ('people','person') then
     if cardinality(ppl) = 0 then raise exception 'Pilih karyawan'; end if;
     if t.subject = 'person' and cardinality(ppl) <> 1 then raise exception 'Surat ini untuk satu orang'; end if;
@@ -98,7 +96,6 @@ begin
     if bk is null or bk->>'code' is null then raise exception 'Kode booking tidak ditemukan'; end if;
     v_biz := 'RA';
   end if;
-  -- penanda tangan
   select * into sg from pk_people where id = (p->>'signer_id')::uuid and is_active;
   if sg.id is null then raise exception 'Pilih penanda tangan'; end if;
   if t.signer in ('ceo','kepala_staf') and sg.role not in ('ceo','kepala_staf') then raise exception 'Surat ini ditandatangani CEO atau Kepala Staf'; end if;
@@ -110,7 +107,6 @@ begin
     if jsonb_array_length(sp) > 0 then f := f || jsonb_build_object('sp_aktif', (select string_agg('SP ' || (x->>'level') || ' nomor ' || (x->>'number'), ', ') from jsonb_array_elements(sp) x)); end if;
     f := f || jsonb_build_object('level_romawi', pk_roman(lvl));
   end if;
-  -- potret data subjek (diambil dari server, bukan dari isian)
   sub := case t.subject
     when 'candidate' then jsonb_build_object('people', jsonb_build_array(jsonb_build_object('Nama', cand.name, 'Kota', cand.city)), 'nama', cand.name, 'unit', (select name from pk_units where code = j.unit_code))
     when 'assets' then jsonb_build_object('assets', public.pk_letter_asset_rows(ast))
@@ -120,7 +116,6 @@ begin
       'unit', (select u.name from pk_people q left join pk_units u on u.code = q.unit_code where q.id = ppl[1]),
       'tgl_masuk', (select case when joined_on is null then null else pk_tgl(joined_on) end from pk_people where id = ppl[1])) end;
   if t.code = 'SKK' and sub->>'tgl_masuk' is null then raise exception 'Tanggal masuk karyawan belum diisi di Tim & Peran'; end if;
-  -- tanggal di isian ditulis lengkap
   for fd in select * from jsonb_array_elements(t.fields) where value->>'type' = 'date' loop
     if nullif(f->>(fd->>'k'), '') is not null then f := f || jsonb_build_object(fd->>'k', pk_tgl((f->>(fd->>'k'))::date)); end if;
   end loop;
