@@ -1,0 +1,417 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Karir Pokama · Lowongan Rentalaja, TripinAja, Niagaaja</title>
+<meta name="description" content="Lowongan kerja di grup Pokama: Rentalaja, TripinAja, dan Niagaaja. Lamar lewat HP, masuk dengan kode WhatsApp, ikuti tes online, pantau status lamaran.">
+<meta name="theme-color" content="#077A70">
+<meta property="og:title" content="Karir Pokama">
+<meta property="og:description" content="Lowongan kerja di Rentalaja, TripinAja, dan Niagaaja.">
+<meta property="og:image" content="https://pokama.org/img/pokama-logo.png">
+<link rel="icon" href="/img/pk.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root { --navy: #1F2B4D; --teal: #09BEAF; --teal-d: #077A70; --bg: #F4F6F9; --muted: #5B6577; --line: #E1E5EA; --soft: #E3F7F5; --warn-bg: #FFF1D6; --warn: #8A4B00; --rust: #A14B12; }
+* { box-sizing: border-box; }
+html, body { margin: 0; background: var(--bg); color: var(--navy); font-family: 'Plus Jakarta Sans', system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+body { min-height: 100vh; }
+a { color: var(--navy); }
+button, input, select, textarea { font-family: inherit; }
+.app { max-width: 560px; margin: 0 auto; min-height: 100vh; display: flex; flex-direction: column; }
+.hero { background: linear-gradient(160deg, #09BEAF 0%, #077A70 100%); color: #fff; padding: 16px 20px 64px; position: relative; overflow: hidden; display: flex; flex-direction: column; gap: 14px; }
+.hero.sm { padding-bottom: 58px; }
+.hero::after { content: ''; position: absolute; right: -60px; top: -70px; width: 200px; height: 200px; border-radius: 50%; border: 30px solid rgba(255,255,255,.18); pointer-events: none; }
+.hero > * { position: relative; z-index: 1; }
+.top { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.logo { height: 26px; width: auto; background: #fff; border-radius: 8px; padding: 4px 8px; display: block; }
+.pill { height: 32px; padding: 0 12px; border-radius: 16px; background: rgba(255,255,255,.22); color: #fff; font-size: 12px; font-weight: 800; display: inline-flex; align-items: center; text-decoration: none; border: 0; cursor: pointer; }
+.back { width: 40px; height: 40px; border-radius: 12px; background: rgba(255,255,255,.22); color: #fff; display: inline-flex; align-items: center; justify-content: center; text-decoration: none; border: 0; cursor: pointer; }
+.hero h1 { margin: 0; font-size: 22px; line-height: 28px; font-weight: 800; }
+.hero .sub { font-size: 13px; opacity: .92; }
+.search { height: 48px; border-radius: 14px; background: #fff; display: flex; align-items: center; gap: 10px; padding: 0 14px; }
+.search input { border: 0; outline: none; flex: 1; font: 500 15px inherit; font-family: inherit; color: var(--navy); background: transparent; min-width: 0; }
+.float { margin: -44px 16px 0; background: #fff; border-radius: 20px; box-shadow: 0 6px 20px rgba(31,43,77,.10); padding: 14px 16px; position: relative; z-index: 2; }
+.chips { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 6px; padding: 12px; }
+.chip { border: 0; cursor: pointer; padding: 8px 2px; border-radius: 14px; display: flex; flex-direction: column; align-items: center; gap: 6px; color: var(--navy); background: transparent; font-size: 11.5px; font-weight: 700; }
+.chip .dot { width: 40px; height: 40px; border-radius: 13px; display: flex; align-items: center; justify-content: center; font-size: 12.5px; font-weight: 800; }
+.chip[aria-pressed="true"] { background: var(--soft); }
+.chip[aria-pressed="true"] .dot { background: var(--teal) !important; color: var(--navy) !important; }
+main { flex: 1; padding: 0 16px 24px; display: flex; flex-direction: column; gap: 10px; }
+.h2row { display: flex; justify-content: space-between; align-items: baseline; padding: 18px 4px 4px; }
+h2 { margin: 0; font-size: 17px; font-weight: 800; }
+.card { background: #fff; border-radius: 20px; box-shadow: 0 2px 12px rgba(31,43,77,.07); padding: 14px 16px; }
+.job { display: flex; flex-direction: column; gap: 10px; }
+.job .row { display: flex; gap: 12px; align-items: center; }
+.badge { width: 44px; height: 44px; flex-shrink: 0; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800; }
+.job b { font-size: 15px; font-weight: 800; line-height: 20px; display: block; }
+.meta { font-size: 12.5px; color: var(--muted); }
+.job .jf { display: flex; justify-content: space-between; align-items: center; gap: 8px; border-top: 1px solid #EEF0F3; padding-top: 10px; }
+.tag { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); }
+.btn { height: 50px; border-radius: 14px; background: var(--teal); color: var(--navy); font-weight: 800; font-size: 15px; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; border: 0; cursor: pointer; padding: 0 20px; gap: 8px; }
+.btn.sm { height: 38px; padding: 0 16px; border-radius: 12px; font-size: 13.5px; }
+.btn.navy { background: var(--navy); color: #fff; }
+.btn.line { background: #fff; border: 1.5px solid var(--navy); }
+.btn.ghost { background: #fff; border: 1.5px solid var(--line); }
+.btn[disabled] { background: var(--line); color: #4A5468; cursor: default; }
+.btn.block { width: 100%; }
+.pool { border-radius: 20px; background: var(--navy); color: #fff; padding: 14px 14px 14px 16px; display: flex; align-items: center; gap: 12px; position: relative; overflow: hidden; }
+.pool b { font-size: 14.5px; }
+.pool span { font-size: 12px; line-height: 17px; color: #C8D0DE; }
+.pool .btn { background: #fff; color: var(--navy); height: 40px; font-size: 13px; padding: 0 14px; white-space: nowrap; }
+.empty { text-align: center; padding: 28px 16px; color: var(--muted); font-size: 14px; }
+.sec { display: flex; flex-direction: column; gap: 6px; }
+.sec h3 { margin: 0; font-size: 14px; font-weight: 800; }
+.sec p, .pre { margin: 0; font-size: 14px; line-height: 21px; color: #333C52; white-space: pre-line; }
+label.f { display: flex; flex-direction: column; gap: 5px; font-size: 12px; font-weight: 700; color: var(--muted); }
+.in { height: 48px; border: 1px solid #D5D9E0; border-radius: 12px; padding: 0 12px; font: 600 15px inherit; font-family: inherit; color: var(--navy); background: #fff; width: 100%; }
+textarea.in { height: auto; padding: 10px 12px; resize: vertical; min-height: 72px; }
+.in:focus { outline: 2px solid var(--teal); outline-offset: 0; border-color: var(--teal); }
+.grid2 { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 10px; }
+.otp { display: flex; flex-direction: column; gap: 6px; background: var(--soft); border-radius: 14px; padding: 10px 12px; }
+.otp .in { font-weight: 800; font-size: 20px; letter-spacing: .3em; border-color: #A6E3DC; }
+.hint { font-size: 11.5px; color: var(--muted); font-weight: 500; }
+.check { display: flex; gap: 10px; align-items: flex-start; font-size: 12.5px; line-height: 18px; color: #4A5468; }
+.check input { width: 20px; height: 20px; margin: 0; accent-color: var(--teal); flex-shrink: 0; }
+.err { background: #FDECEC; color: #9B1C1C; border-radius: 12px; padding: 10px 12px; font-size: 13px; font-weight: 600; }
+.ok { background: var(--soft); color: var(--teal-d); border-radius: 12px; padding: 10px 12px; font-size: 13px; font-weight: 700; }
+.bar { position: sticky; bottom: 0; background: #fff; box-shadow: 0 -6px 20px rgba(31,43,77,.10); border-radius: 20px 20px 0 0; padding: 12px 16px calc(16px + env(safe-area-inset-bottom)); display: flex; align-items: center; gap: 10px; z-index: 5; }
+.bar .grow { flex: 1; display: flex; flex-direction: column; }
+.steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 8px; }
+.steps li { display: flex; flex-direction: column; gap: 6px; font-size: 12px; font-weight: 600; color: var(--muted); }
+.steps li span { height: 5px; border-radius: 3px; background: var(--line); }
+.steps li.on { color: var(--teal-d); font-weight: 800; }
+.steps li.on span { background: var(--teal); }
+.timer { height: 36px; padding: 0 12px; border-radius: 18px; background: rgba(255,255,255,.22); display: inline-flex; align-items: center; gap: 6px; font-weight: 800; font-size: 15px; }
+.timer.low { background: #fff; color: var(--rust); }
+.prog { height: 6px; border-radius: 3px; background: rgba(255,255,255,.25); overflow: hidden; }
+.prog i { display: block; height: 6px; border-radius: 3px; background: #fff; }
+.drow { display: grid; grid-template-columns: 1fr 56px 56px; gap: 8px; align-items: center; background: #fff; border-radius: 18px; box-shadow: 0 2px 12px rgba(31,43,77,.07); padding: 10px 10px 10px 14px; border: 2px solid transparent; }
+.drow.m { border-color: var(--teal); }
+.drow.l { border-color: #E8B48F; }
+.drow span { font-size: 14px; line-height: 20px; font-weight: 600; }
+.dh { display: grid; grid-template-columns: 1fr 56px 56px; gap: 8px; padding: 0 10px 0 14px; font-size: 11px; font-weight: 800; text-align: center; }
+.pk { width: 56px; height: 48px; border-radius: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; border: 1.5px solid var(--line); background: #fff; color: #8A93A6; }
+.pk.m[aria-pressed="true"] { border: 0; background: var(--teal); color: var(--navy); }
+.pk.l[aria-pressed="true"] { border: 0; background: var(--rust); color: #fff; }
+.opt { display: flex; gap: 12px; align-items: center; background: #fff; border-radius: 16px; box-shadow: 0 2px 12px rgba(31,43,77,.07); padding: 14px; border: 2px solid transparent; cursor: pointer; font-size: 14.5px; line-height: 20px; font-weight: 600; text-align: left; color: var(--navy); width: 100%; }
+.opt .r { width: 22px; height: 22px; border-radius: 50%; border: 2px solid #C5CBD5; flex-shrink: 0; }
+.opt[aria-pressed="true"] { border-color: var(--teal); }
+.opt[aria-pressed="true"] .r { border: 7px solid var(--teal); }
+.note { display: flex; gap: 8px; align-items: center; background: var(--warn-bg); border-radius: 14px; padding: 10px 12px; font-size: 12px; line-height: 17px; color: var(--warn); }
+.tl { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.tl li { display: grid; grid-template-columns: 28px 1fr; gap: 12px; }
+.tl .c { display: flex; flex-direction: column; align-items: center; }
+.tl .d { width: 24px; height: 24px; border-radius: 12px; border: 2px solid #D5D9E0; background: #fff; display: flex; align-items: center; justify-content: center; }
+.tl .ln { width: 2px; flex: 1; min-height: 18px; background: var(--line); }
+.tl li.done .d { background: var(--teal); border: 0; }
+.tl li.done .ln { background: var(--teal); }
+.tl li.now .d { border: 3px solid var(--teal); }
+.tl li.now b { color: var(--teal-d); font-weight: 800; }
+.tl .t { display: flex; flex-direction: column; padding-bottom: 14px; }
+.tl b { font-size: 14px; font-weight: 700; }
+.tl small { font-size: 12px; color: var(--muted); }
+.st { height: 26px; padding: 0 10px; border-radius: 13px; font-size: 12px; font-weight: 800; display: inline-flex; align-items: center; white-space: nowrap; }
+.trow { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-top: 1px solid #EEF0F3; }
+.trow:first-child { border-top: 0; }
+.trow .grow { flex: 1; display: flex; flex-direction: column; }
+.trow b { font-size: 14px; }
+.toast { position: fixed; left: 50%; bottom: 90px; transform: translateX(-50%); background: var(--navy); color: #fff; padding: 10px 16px; border-radius: 12px; font-size: 13px; font-weight: 700; z-index: 50; max-width: 90vw; }
+.foot { text-align: center; padding: 18px 16px 28px; font-size: 12px; color: var(--muted); }
+.foot a { color: var(--muted); }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+@media (min-width: 600px) { .app { box-shadow: 0 0 0 1px #E6E9EE; background: var(--bg); } }
+</style>
+</head>
+<body>
+<div class="app" id="app" aria-live="polite"></div>
+<script type="module">
+const SB_URL = 'https://shrvzlltysnbmgpkhjjg.supabase.co';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNocnZ6bGx0eXNuYm1ncGtoampnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI4NzAzNTYsImV4cCI6MjEwODQ0NjM1Nn0.V0EDK0y3ZFIuNW5uGJjDcHZlEVxAURVC6OJVPaUYUFY';
+const WA_HR = '6289657573488';
+const TK = 'pokama.karir.tok';
+const $app = document.getElementById('app');
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const ls = { get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }, set(k, v) { try { v == null ? localStorage.removeItem(k) : localStorage.setItem(k, v); } catch (e) {} } };
+let TOKEN = ls.get(TK);
+let JOBS = null, ME = null, UNIT = 'Semua', Q = '';
+
+async function rpc(fn, args = {}) {
+  const r = await fetch(SB_URL + '/rest/v1/rpc/' + fn, { method: 'POST', headers: { apikey: SB_KEY, Authorization: 'Bearer ' + SB_KEY, 'Content-Type': 'application/json' }, body: JSON.stringify(args) });
+  const t = await r.text(); let j = null; try { j = t ? JSON.parse(t) : null; } catch (e) { j = t; }
+  if (!r.ok) throw new Error((j && (j.message || j.hint)) || 'Gagal terhubung, coba lagi.');
+  return j;
+}
+function toast(m) { const d = document.createElement('div'); d.className = 'toast'; d.textContent = m; document.body.appendChild(d); setTimeout(() => d.remove(), 2600); }
+const ICON = {
+  back: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>',
+  clock: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#077A70" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2"/></svg>',
+  check: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1F2B4D" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
+  search: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5B6577" stroke-width="2.4" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>',
+  wa: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20l1.3-3.9A8 8 0 1 1 8 19z"/></svg>',
+  warn: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8A4B00" stroke-width="2.4" stroke-linecap="round" aria-hidden="true" style="flex-shrink:0"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.5"/></svg>'
+};
+const BIZ = { RA: ['RA', '#E3F7F5', '#077A70', 'Rentalaja'], WG: ['TA', '#FFF1D6', '#8A4B00', 'TripinAja'], NA: ['NA', '#E8EEF8', '#1F2B4D', 'Niagaaja'], HQ: ['PK', '#EEF0F3', '#1F2B4D', 'Pokama'] };
+const badge = code => { const c = BIZ[code] || BIZ.HQ; return `<span class="badge" style="background:${c[1]};color:${c[2]}">${c[0]}</span>`; };
+const bizName = j => (BIZ[j.biz_code] || [])[3] || j.biz;
+const unitLabel = j => j.unit && j.unit !== bizName(j) ? bizName(j) + ' ' + j.unit : bizName(j);
+const foot = `<div class="foot">PT Popo Karya Investama · <a href="/">pokama.org</a> · <a href="https://app.pokama.org/privasi">Privasi</a></div>`;
+const waHr = t => 'https://wa.me/' + WA_HR + '?text=' + encodeURIComponent(t);
+function head({ back, title, sub, right = '', extra = '', sm = true }) {
+  return `<section class="hero ${sm ? 'sm' : ''}"><div class="top">${back ? `<a class="back" href="${back}" aria-label="Kembali">${ICON.back}</a>` : '<a href="/" aria-label="Pokama"><img class="logo" src="/img/pokama-logo.png" alt="Pokama"></a>'}${right}</div>
+    <div style="display:flex;flex-direction:column;gap:2px">${sub ? `<span class="sub">${esc(sub)}</span>` : ''}<h1>${esc(title)}</h1></div>${extra}</section>`;
+}
+async function loadJobs() { if (!JOBS) JOBS = await rpc('rec_jobs'); return JOBS; }
+async function loadMe() { if (!TOKEN) return null; const r = await rpc('rec_me', { p_token: TOKEN }); if (!r || !r.ok) { TOKEN = null; ls.set(TK, null); return null; } ME = r; return r; }
+
+/* ---------- daftar lowongan ---------- */
+async function viewList() {
+  document.title = 'Karir Pokama · Lowongan Rentalaja, TripinAja, Niagaaja';
+  $app.innerHTML = head({ title: 'Kerja bareng Rentalaja, TripinAja & Niagaaja', sub: 'Karir di grup Pokama', sm: false,
+    right: `<a class="pill" href="#status">${TOKEN ? 'Lamaran saya' : 'Status lamaran'}</a>`,
+    extra: `<label class="search">${ICON.search}<input id="q" type="search" placeholder="Cari posisi atau kota…" aria-label="Cari posisi atau kota" value="${esc(Q)}"></label>` }) +
+    `<nav class="float chips" aria-label="Unit bisnis" id="chips"></nav><main id="list"><div class="empty">Memuat lowongan…</div></main>${foot}`;
+  const q = document.getElementById('q');
+  q.addEventListener('input', () => { Q = q.value; drawList(); });
+  try { await loadJobs(); } catch (e) { document.getElementById('list').innerHTML = `<div class="err">${esc(e.message)}</div>`; return; }
+  drawList();
+}
+function drawList() {
+  const units = [['Semua', 'All', '#EEF0F3', '#1F2B4D'], ['RA', ...BIZ.RA.slice(0, 3)], ['WG', ...BIZ.WG.slice(0, 3)], ['NA', ...BIZ.NA.slice(0, 3)]];
+  const labels = { Semua: 'Semua', RA: 'Rentalaja', WG: 'TripinAja', NA: 'Niagaaja' };
+  document.getElementById('chips').innerHTML = units.map(u => `<button type="button" class="chip" data-u="${u[0]}" aria-pressed="${UNIT === u[0]}"><span class="dot" style="background:${u[2]};color:${u[3]}">${u[1]}</span>${labels[u[0]]}</button>`).join('');
+  document.querySelectorAll('[data-u]').forEach(b => b.onclick = () => { UNIT = b.dataset.u; drawList(); });
+  const ql = Q.trim().toLowerCase();
+  const list = (JOBS || []).filter(j => (UNIT === 'Semua' || j.biz_code === UNIT) && (!ql || [j.title, j.city, j.unit, j.biz].join(' ').toLowerCase().includes(ql)));
+  const pool = `<div class="pool"><div style="flex:1;display:flex;flex-direction:column;gap:2px"><b>${list.length ? 'Belum ada yang cocok?' : 'Tetap kirim profil Anda'}</b><span>Masuk talent pool, kami hubungi saat ada posisi yang pas.</span></div><a class="btn" href="#lamar/pool">Daftar</a></div>`;
+  document.getElementById('list').innerHTML = `<div class="h2row"><h2>${list.length ? list.length + ' lowongan dibuka' : 'Belum ada lowongan' + (UNIT !== 'Semua' || ql ? ' yang cocok' : ' saat ini')}</h2></div>` +
+    list.map(j => `<article class="card job"><a href="#job/${j.id}" style="text-decoration:none;color:inherit" class="row">${badge(j.biz_code)}<div style="flex:1;min-width:0"><b>${esc(j.title)}</b><span class="meta">${esc(unitLabel(j))} · ${esc(j.city)} · ${esc(j.type)}</span></div></a>
+      <div class="jf"><span class="tag">${ICON.clock}Tes online ±${j.minutes} menit</span><a class="btn sm" href="#lamar/${j.id}">Lamar</a></div></article>`).join('') + pool;
+}
+
+/* ---------- detail lowongan ---------- */
+async function viewJob(id) {
+  try { await loadJobs(); } catch (e) {}
+  const j = (JOBS || []).find(x => x.id === id);
+  if (!j) { $app.innerHTML = head({ back: '#', title: 'Lowongan tidak ditemukan' }) + `<main><div class="float card empty">Lowongan ini sudah ditutup atau tautannya salah.<br><br><a class="btn sm" href="#">Lihat lowongan lain</a></div></main>`; return; }
+  document.title = j.title + ' · Karir Pokama';
+  const sec = (t, v) => v ? `<div class="sec"><h3>${t}</h3><p>${esc(v)}</p></div>` : '';
+  $app.innerHTML = head({ back: '#', title: j.title, sub: `${unitLabel(j)} · ${j.city} · ${j.type}` }) +
+    `<main><div class="float card" style="margin:-40px 0 0;display:flex;flex-direction:column;gap:14px">${sec('Tentang posisi ini', j.summary)}${sec('Tugas utama', j.duties)}${sec('Syarat', j.reqs)}
+      <div class="sec"><h3>Tahap seleksi</h3><p>1. Isi data diri dan verifikasi nomor WhatsApp.\n2. Tes online ±${j.minutes} menit lewat HP: ${esc((j.tests || []).join(', '))}.\n3. Review tim, lalu wawancara bila lolos.</p></div></div></main>
+    <div class="bar"><div class="grow"><span class="hint">Langkah berikutnya</span><b style="font-size:15px">Tes online ±${j.minutes} menit</b></div><a class="btn" href="#lamar/${j.id}">Lamar sekarang</a></div>`;
+}
+
+/* ---------- form lamaran ---------- */
+async function viewApply(id) {
+  const pool = id === 'pool';
+  let j = null;
+  if (!pool) { try { await loadJobs(); } catch (e) {} j = (JOBS || []).find(x => x.id === id); if (!j) return viewJob(id); }
+  try { await loadMe(); } catch (e) {}
+  const me = ME?.me || {};
+  document.title = (pool ? 'Daftar talent pool' : 'Lamar ' + j.title) + ' · Karir Pokama';
+  $app.innerHTML = head({ back: pool ? '#' : '#job/' + id, title: pool ? 'Daftar talent pool' : j.title, sub: pool ? 'Kami hubungi saat ada posisi yang pas' : `${unitLabel(j)} · ${j.city} · ${j.type}` }) +
+  `<div class="float" style="margin-top:-40px"><ol class="steps" aria-label="Tahap lamaran"><li class="on"><span></span>1 · Data diri</li><li><span></span>2 · Tes online</li><li><span></span>3 · Wawancara</li></ol></div>
+  <main><form id="f" novalidate style="display:flex;flex-direction:column;gap:12px;padding-top:14px">
+    <label class="f">Nama lengkap<input class="in" name="name" autocomplete="name" placeholder="Sesuai KTP" value="${esc(me.name || '')}" required></label>
+    ${TOKEN ? `<div class="f" style="font-size:12px;font-weight:700;color:var(--muted)">Nomor WhatsApp<div class="ok">${esc(me.wa_masked || 'Terverifikasi')} · terverifikasi</div><button type="button" class="hint" id="ganti" style="border:0;background:none;text-align:left;padding:0;text-decoration:underline;cursor:pointer">Pakai nomor lain</button></div>` :
+    `<div style="display:flex;flex-direction:column;gap:5px"><label for="wa" class="f" style="display:block">Nomor WhatsApp</label>
+      <div style="display:flex;gap:8px"><input id="wa" class="in" name="wa" type="tel" inputmode="tel" autocomplete="tel" placeholder="08xx xxxx xxxx" style="flex:1;min-width:0"><button type="button" class="btn navy" id="kirim" style="height:48px;border-radius:12px;font-size:13px;padding:0 14px;white-space:nowrap">Kirim kode</button></div>
+      <div id="otpbox"></div><span class="hint">Untuk masuk lagi, kabar hasil, dan undangan wawancara. Tanpa password.</span></div>`}
+    <div class="grid2"><label class="f">Kota domisili<input class="in" name="city" list="kota" placeholder="Garut" value="${esc(me.city || '')}"><datalist id="kota"><option>Garut</option><option>Bandung</option><option>Ciputat</option><option>Tangerang Selatan</option></datalist></label>
+      <label class="f">Punya SIM C?<select class="in" name="has_sim_c"><option value="">Pilih</option><option value="true" ${me.has_sim_c === true ? 'selected' : ''}>Ya</option><option value="false" ${me.has_sim_c === false ? 'selected' : ''}>Tidak</option></select></label></div>
+    ${pool ? `<label class="f">Minat posisi<input class="in" name="interests" placeholder="Contoh: runner, kasir, admin, guide"></label>` : ''}
+    <label class="f">Pengalaman kerja singkat<textarea class="in" name="experience" rows="3" placeholder="Contoh: 1 tahun kurir di …">${esc(me.experience || '')}</textarea></label>
+    <label class="f">Tautan CV (opsional)<input class="in" name="cv_url" type="url" inputmode="url" placeholder="https://drive.google.com/…" value="${esc(me.cv_url || '')}"><span class="hint">Unggah CV ke Google Drive lalu tempel tautannya (akses: siapa saja yang memiliki link).</span></label>
+    <label class="check"><input type="checkbox" name="consent" ${me.consent ? 'checked' : ''}><span>Saya setuju data saya disimpan di talent pool Pokama hingga 2 tahun untuk keperluan rekrutmen. Bisa minta dihapus kapan saja lewat WhatsApp tim rekrutmen.</span></label>
+    <div id="msg"></div>
+  </form></main>
+  <div class="bar"><div class="grow"><span class="hint">Langkah berikutnya</span><b style="font-size:15px">${pool ? 'Tes gaya kerja ±' + 27 + ' menit' : 'Tes online ±' + j.minutes + ' menit'}</b></div><button class="btn" id="go" type="button">${pool ? 'Kirim profil' : 'Kirim lamaran'}</button></div>`;
+  const f = document.getElementById('f'), msg = document.getElementById('msg');
+  const say = (m, ok) => { msg.innerHTML = m ? `<div class="${ok ? 'ok' : 'err'}">${esc(m)}</div>` : ''; };
+  document.getElementById('ganti')?.addEventListener('click', () => { TOKEN = null; ME = null; ls.set(TK, null); viewApply(id); });
+  const kirim = document.getElementById('kirim');
+  if (kirim) kirim.onclick = async () => {
+    say(''); kirim.disabled = true;
+    try {
+      const r = await rpc('rec_otp_send', { p_wa: f.wa.value });
+      document.getElementById('otpbox').innerHTML = `<div class="otp" style="margin-top:6px"><label for="otp" style="font-size:12px;font-weight:700;color:var(--teal-d)">Kode 6 angka sudah dikirim ke WhatsApp ${esc(r.wa_masked)}</label><input id="otp" class="in" name="otp" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="• • • • • •"></div>`;
+      document.getElementById('otp').focus();
+      let s = 60; kirim.textContent = 'Kirim ulang (60)';
+      const t = setInterval(() => { s--; kirim.textContent = s > 0 ? `Kirim ulang (${s})` : 'Kirim ulang'; if (s <= 0) { clearInterval(t); kirim.disabled = false; } }, 1000);
+    } catch (e) { say(e.message); kirim.disabled = false; }
+  };
+  document.getElementById('go').onclick = async () => {
+    const b = document.getElementById('go'); say('');
+    if (f.name.value.trim().length < 3) return say('Isi nama lengkap.');
+    if (!f.consent.checked) return say('Centang persetujuan penyimpanan data dulu.');
+    b.disabled = true; b.textContent = 'Mengirim…';
+    try {
+      if (!TOKEN) {
+        if (!f.otp) throw new Error('Tekan "Kirim kode" lalu masukkan kode dari WhatsApp.');
+        const v = await rpc('rec_otp_verify', { p_wa: f.wa.value, p_code: f.otp.value });
+        if (!v.ok) throw new Error(v.error);
+        TOKEN = v.token; ls.set(TK, TOKEN);
+      }
+      const p = { name: f.name.value, city: f.city.value, has_sim_c: f.has_sim_c.value === '' ? null : f.has_sim_c.value === 'true', experience: f.experience.value, cv_url: f.cv_url.value.trim(), consent: true };
+      if (f.interests) p.interests = f.interests.value.split(',').map(s => s.trim()).filter(Boolean);
+      const r = await rpc('rec_apply', { p_token: TOKEN, p_job: pool ? null : id, p });
+      ME = null; location.hash = '#lamaran/' + r.application_id;
+    } catch (e) { say(e.message); b.disabled = false; b.textContent = pool ? 'Kirim profil' : 'Kirim lamaran'; }
+  };
+}
+
+/* ---------- status & daftar tes ---------- */
+const STAGE = { tes: ['Menunggu tes', '#FFF1D6', '#8A4B00'], review: ['Direview', '#FFF1D6', '#8A4B00'], wawancara: ['Wawancara', '#E3F7F5', '#077A70'], tawaran: ['Penawaran', '#E3F7F5', '#077A70'], diterima: ['Diterima', '#09BEAF', '#1F2B4D'], tidak_lanjut: ['Talent pool', '#EEF0F3', '#4A5468'] };
+function timeline(a) {
+  const order = ['tes', 'review', 'wawancara', 'tawaran'];
+  const idx = a.stage === 'diterima' || a.stage === 'tidak_lanjut' ? 4 : order.indexOf(a.stage) + 1;
+  const iv = a.interview_at ? new Date(a.interview_at).toLocaleString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Jakarta' }) + ' WIB' : '';
+  const steps = [
+    ['Lamaran diterima', 'Data diri dan nomor WhatsApp terverifikasi'],
+    ['Tes online', a.stage === 'tes' ? 'Selesaikan semua tes di bawah' : 'Semua tes sudah tersimpan'],
+    ['Review tim', 'Hasil dikabari lewat WhatsApp'],
+    ['Wawancara', iv ? iv + (a.interview_place ? ' · ' + a.interview_place : '') : 'Jadwal dan lokasi muncul di sini'],
+    ['Hasil akhir', a.stage === 'diterima' ? 'Selamat, Anda diterima!' : a.stage === 'tidak_lanjut' ? 'Belum lanjut untuk posisi ini. Profil Anda tetap di talent pool.' : a.stage === 'tawaran' ? 'Tim akan menghubungi Anda untuk penawaran kerja' : 'Diterima, atau disimpan di talent pool']
+  ];
+  return `<ol class="tl" aria-label="Tahap seleksi">${steps.map((s, i) => { const st = i < idx ? 'done' : i === idx ? 'now' : ''; return `<li class="${st}"><span class="c"><span class="d">${st === 'done' ? ICON.check : ''}</span>${i < 4 ? '<span class="ln"></span>' : ''}</span><span class="t"><b>${s[0]}</b><small>${esc(s[1])}</small></span></li>`; }).join('')}</ol>`;
+}
+function appCard(a, open) {
+  const s = STAGE[a.stage] || STAGE.tes;
+  const title = a.job ? a.job.title : 'Talent pool Pokama';
+  const sub = a.job ? `${a.job.unit || ''} · ${a.job.city || ''}` : 'Profil umum';
+  const tests = (a.tests || []);
+  const todo = tests.filter(t => !t.done);
+  return `<div class="card" style="display:flex;flex-direction:column;gap:12px">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><div><b style="font-size:15.5px;font-weight:800;display:block">${esc(title)}</b><span class="meta">${esc(sub)}</span></div><span class="st" style="background:${s[1]};color:${s[2]}">${s[0]}</span></div>
+    ${a.stage === 'tes' && tests.length ? `<div>${tests.map(t => `<div class="trow"><div class="grow"><b>${esc(t.name)}</b><span class="meta">±${t.minutes} menit${t.started && !t.done ? ' · sedang berjalan' : ''}</span></div>${t.done ? `<span class="st" style="background:#E3F7F5;color:#077A70">Selesai</span>` : `<a class="btn sm" href="#tes/${a.id}/${t.code}">${t.started ? 'Lanjutkan' : 'Mulai'}</a>`}</div>`).join('')}</div>
+      ${todo.length ? `<div class="note">${ICON.warn}<span>Kerjakan di tempat tenang dengan sinyal stabil. Waktu berjalan sejak tes dimulai; pindah aplikasi akan tercatat.</span></div>` : ''}` : ''}
+    ${open ? timeline(a) : `<a href="#lamaran/${a.id}" class="hint" style="font-weight:700;color:var(--teal-d)">Lihat tahap seleksi →</a>`}
+  </div>`;
+}
+async function viewStatus(appId) {
+  document.title = 'Status lamaran · Karir Pokama';
+  if (!TOKEN) return viewLogin(appId);
+  $app.innerHTML = head({ back: '#', title: 'Lamaran saya', right: `<button class="pill" id="out" type="button">Keluar</button>` }) + `<main><div class="float card empty" style="margin:-40px 0 0">Memuat…</div></main>`;
+  try { ME = null; await loadMe(); } catch (e) { $app.querySelector('main').innerHTML = `<div class="float err" style="margin:-40px 0 0">${esc(e.message)}</div>`; return; }
+  if (!ME) return viewLogin(appId);
+  const apps = ME.apps || [];
+  let a = appId ? apps.find(x => x.id === appId) : null;
+  const done = a && a.stage !== 'tes';
+  const hero = a ? head({ back: '#status', title: a.stage === 'tes' ? 'Tinggal tes online' : done && a.stage === 'review' ? 'Tes selesai, terima kasih!' : (STAGE[a.stage] || STAGE.tes)[0], sub: a.stage === 'tes' ? 'Lamaran tersimpan. Selesaikan tes di bawah.' : a.stage === 'review' ? 'Lamaran Anda sedang direview tim.' : 'Status lamaran Anda', right: `<a class="pill" href="#">Lowongan lain</a>` })
+    : head({ back: '#', title: 'Lamaran saya', sub: ME.me?.name ? 'Halo, ' + ME.me.name : '', right: `<button class="pill" id="out" type="button">Keluar</button>` });
+  $app.innerHTML = hero + `<main style="gap:12px"><div style="margin-top:-46px;position:relative;z-index:2;display:flex;flex-direction:column;gap:12px">
+    ${a ? appCard(a, true) : apps.length ? apps.map(x => appCard(x, false)).join('') : `<div class="card empty">Belum ada lamaran.<br><br><a class="btn sm" href="#">Lihat lowongan</a></div>`}</div>
+    <div class="card" style="display:flex;gap:12px;align-items:center"><span class="badge" style="background:#E8EEF8;color:#1F2B4D;width:40px;height:40px">★</span><span style="font-size:12.5px;line-height:18px;color:#4A5468">Apa pun hasilnya, profil Anda tersimpan di <b style="color:var(--navy)">talent pool Pokama</b> dan bisa dipanggil untuk posisi lain.</span></div>
+    <a class="btn line block" href="${waHr('Halo tim rekrutmen Pokama, saya ingin bertanya tentang lamaran saya.')}" target="_blank" rel="noopener">${ICON.wa}Tanya tim rekrutmen</a></main>${foot}`;
+  document.getElementById('out')?.addEventListener('click', () => { TOKEN = null; ME = null; ls.set(TK, null); location.hash = '#'; });
+}
+function viewLogin(appId) {
+  $app.innerHTML = head({ back: '#', title: 'Cek status lamaran', sub: 'Masuk dengan kode WhatsApp' }) +
+  `<main><form id="f" class="float card" style="margin:-40px 0 0;display:flex;flex-direction:column;gap:12px" novalidate>
+    <label class="f">Nomor WhatsApp yang dipakai melamar<input class="in" name="wa" type="tel" inputmode="tel" autocomplete="tel" placeholder="08xx xxxx xxxx"></label>
+    <div id="otpbox"></div><div id="msg"></div>
+    <button class="btn block" id="go" type="submit">Kirim kode</button></form></main>${foot}`;
+  const f = document.getElementById('f'), msg = document.getElementById('msg'); let sent = false;
+  f.onsubmit = async ev => {
+    ev.preventDefault(); const b = document.getElementById('go'); msg.innerHTML = ''; b.disabled = true;
+    try {
+      if (!sent) {
+        const r = await rpc('rec_otp_send', { p_wa: f.wa.value }); sent = true;
+        document.getElementById('otpbox').innerHTML = `<div class="otp"><label for="otp" style="font-size:12px;font-weight:700;color:var(--teal-d)">Kode 6 angka sudah dikirim ke ${esc(r.wa_masked)}</label><input id="otp" class="in" name="otp" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="• • • • • •"></div>`;
+        document.getElementById('otp').focus(); b.textContent = 'Masuk';
+      } else {
+        const v = await rpc('rec_otp_verify', { p_wa: f.wa.value, p_code: f.otp.value });
+        if (!v.ok) throw new Error(v.error);
+        TOKEN = v.token; ls.set(TK, TOKEN); viewStatus(appId); return;
+      }
+    } catch (e) { msg.innerHTML = `<div class="err">${esc(e.message)}</div>`; }
+    b.disabled = false;
+  };
+}
+
+/* ---------- tes ---------- */
+let TIMER = null;
+async function viewTest(appId, code) {
+  if (!TOKEN) return viewLogin(appId);
+  clearInterval(TIMER);
+  $app.innerHTML = head({ back: '#lamaran/' + appId, title: 'Menyiapkan tes…' }) + `<main></main>`;
+  let T;
+  try { T = await rpc('rec_test_start', { p_token: TOKEN, p_app: appId, p_test: code }); }
+  catch (e) { $app.querySelector('main').innerHTML = `<div class="float err" style="margin:-40px 0 0">${esc(e.message)}</div>`; return; }
+  if (T.done) { toast(T.reused ? 'Skor tes Anda 6 bulan terakhir dipakai ulang' : 'Tes ini sudah selesai'); location.hash = '#lamaran/' + appId; return; }
+  const KEY = 'pokama.karir.ans.' + T.attempt_id;
+  let A = {}; try { A = JSON.parse(ls.get(KEY) || '{}'); } catch (e) {}
+  let blur = +(ls.get(KEY + '.b') || 0);
+  const QS = T.questions || [];
+  let i = Math.min(+(ls.get(KEY + '.i') || 0), QS.length - 1);
+  const deadline = Date.now() + T.seconds_left * 1000;
+  const save = () => { ls.set(KEY, JSON.stringify(A)); ls.set(KEY + '.i', String(i)); ls.set(KEY + '.b', String(blur)); };
+  const onVis = () => { if (document.hidden) { blur++; save(); } };
+  document.addEventListener('visibilitychange', onVis);
+  let sending = false;
+  async function submit(auto) {
+    if (sending) return; sending = true; clearInterval(TIMER);
+    try {
+      await rpc('rec_test_submit', { p_token: TOKEN, p_attempt: T.attempt_id, p_answers: A, p_blur: blur });
+      document.removeEventListener('visibilitychange', onVis);
+      ls.set(KEY, null); ls.set(KEY + '.i', null); ls.set(KEY + '.b', null);
+      toast(auto ? 'Waktu habis, jawaban tersimpan' : 'Tes tersimpan'); location.hash = '#lamaran/' + appId;
+    } catch (e) { sending = false; toast(e.message); }
+  }
+  const disc = T.kind === 'disc';
+  function draw() {
+    const q = QS[i], a = A[q.n];
+    const ready = disc ? a && a.m != null && a.l != null : a != null;
+    const left = Math.max(0, Math.round((deadline - Date.now()) / 1000));
+    const body = disc
+      ? `<div class="card" style="margin:-40px 0 0;position:relative;z-index:2"><b style="font-size:14.5px;line-height:21px">Pilih satu yang <span style="color:var(--teal-d)">paling mirip</span> dan satu yang <span style="color:var(--rust)">paling tidak mirip</span> dengan Anda.</b><div class="hint" style="margin-top:4px">Tidak ada jawaban benar atau salah. Jawab sesuai diri Anda di tempat kerja.</div></div>
+         <div class="dh" style="margin-top:6px"><span></span><span style="color:var(--teal-d)">Paling mirip</span><span style="color:var(--rust)">Paling tidak</span></div>
+         ${q.options.map(o => { const m = a?.m === o.i, l = a?.l === o.i; return `<div class="drow ${m ? 'm' : l ? 'l' : ''}"><span>${esc(o.t)}</span><button type="button" class="pk m" data-m="${o.i}" aria-pressed="${m}" aria-label="Paling mirip: ${esc(o.t)}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button><button type="button" class="pk l" data-l="${o.i}" aria-pressed="${l}" aria-label="Paling tidak mirip: ${esc(o.t)}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" aria-hidden="true"><path d="M6 12h12"/></svg></button></div>`; }).join('')}`
+      : `<div class="card" style="margin:-40px 0 0;position:relative;z-index:2"><b style="font-size:15px;line-height:22px">${esc(q.prompt)}</b></div>
+         ${q.options.map(o => `<button type="button" class="opt" data-o="${o.i}" aria-pressed="${a === o.i}"><span class="r"></span>${esc(o.t)}</button>`).join('')}`;
+    const last = i === QS.length - 1, answered = Object.keys(A).filter(k => disc ? A[k].m != null && A[k].l != null : A[k] != null).length;
+    $app.innerHTML = `<section class="hero sm"><div class="top"><div style="display:flex;flex-direction:column;gap:2px"><span class="sub">${esc(T.name)}</span><b style="font-size:21px;font-weight:800">Soal ${i + 1} dari ${QS.length}</b></div>
+      <span class="timer ${left < 60 ? 'low' : ''}" id="tm" role="timer" aria-label="Sisa waktu">${ICON.clock.replace('#077A70', 'currentColor')}<span>${fmt(left)}</span></span></div>
+      <div class="prog" role="progressbar" aria-label="Kemajuan tes" aria-valuemin="0" aria-valuemax="${QS.length}" aria-valuenow="${answered}"><i style="width:${Math.round(answered * 100 / QS.length)}%"></i></div></section>
+      <main style="padding-top:0;gap:10px">${body}
+      ${i === 0 && T.intro ? `<div class="hint" style="padding:0 4px">${esc(T.intro)}</div>` : ''}
+      <div class="note">${ICON.warn}<span>Tetap di halaman ini sampai selesai. Pindah aplikasi akan tercatat${blur ? ` (sudah ${blur}×)` : ''}.</span></div></main>
+      <div class="bar"><button type="button" class="btn ghost" id="prev" style="width:104px" ${i === 0 ? 'disabled' : ''}>Kembali</button>
+        ${last ? `<button type="button" class="btn" id="next" style="flex:1" ${answered < QS.length ? 'disabled' : ''}>${answered < QS.length ? `Jawab semua dulu (${answered}/${QS.length})` : 'Kirim jawaban'}</button>`
+               : `<button type="button" class="btn" id="next" style="flex:1" ${ready ? '' : 'disabled'}>${ready ? 'Soal berikutnya' : disc ? 'Pilih dua jawaban dulu' : 'Pilih jawaban dulu'}</button>`}</div>`;
+    $app.querySelectorAll('[data-m]').forEach(b => b.onclick = () => { const v = +b.dataset.m, c = A[q.n] || {}; A[q.n] = { m: v, l: c.l === v ? null : c.l }; save(); draw(); });
+    $app.querySelectorAll('[data-l]').forEach(b => b.onclick = () => { const v = +b.dataset.l, c = A[q.n] || {}; A[q.n] = { l: v, m: c.m === v ? null : c.m }; save(); draw(); });
+    $app.querySelectorAll('[data-o]').forEach(b => b.onclick = () => { A[q.n] = +b.dataset.o; save(); draw(); });
+    document.getElementById('prev').onclick = () => { if (i > 0) { i--; save(); draw(); scrollTo(0, 0); } };
+    document.getElementById('next').onclick = () => { if (last) submit(false); else { i++; save(); draw(); scrollTo(0, 0); } };
+  }
+  const fmt = s => String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0');
+  draw();
+  TIMER = setInterval(() => {
+    if (!location.hash.startsWith('#tes/')) { clearInterval(TIMER); document.removeEventListener('visibilitychange', onVis); return; }
+    const left = Math.max(0, Math.round((deadline - Date.now()) / 1000));
+    const tm = document.getElementById('tm'); if (tm) { tm.lastElementChild.textContent = fmt(left); tm.classList.toggle('low', left < 60); }
+    if (left <= 0) submit(true);
+  }, 1000);
+}
+
+/* ---------- router ---------- */
+function route() {
+  clearInterval(TIMER);
+  const h = location.hash.replace(/^#\/?/, ''); const [p, a, b] = h.split('/');
+  scrollTo(0, 0);
+  if (p === 'job' && a) return viewJob(a);
+  if (p === 'lamar' && a) return viewApply(a);
+  if (p === 'lamaran' && a) return viewStatus(a);
+  if (p === 'tes' && a && b) return viewTest(a, b);
+  if (p === 'status') return viewStatus(null);
+  return viewList();
+}
+addEventListener('hashchange', route);
+route();
+</script>
+</body>
+</html>

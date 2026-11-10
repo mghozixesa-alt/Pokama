@@ -11,6 +11,7 @@ import setuju, { inboxCount } from './screens/setuju.js';
 import gudang from './screens/gudang.js';
 import beranda from './screens/beranda.js';
 import notifikasi from './screens/notifikasi.js';
+import rekrutmen, { canRec } from './screens/rekrutmen.js';
 
 const I = {
   bell: '<path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>',
@@ -49,7 +50,7 @@ const BASE_ROUTES = [
     ['beranda', 'Beranda', 'grid', beranda], ['setuju', 'Kotak Persetujuan', 'inbox', setuju], ['kkh', 'KKH Saya', 'sun', kerja.saya], ['kkh-tim', 'KKH Tim', 'grid', kerja.tim], ['tugas', 'Proyek & Tugas', 'layers', tugas.board],
     ['review', 'Review & Revisi', 'check', tugas.review], ['belanja', 'Pengajuan Belanja', 'wallet', belanja],
     ['kehadiran', 'Kehadiran & Cuti', 'clock', kehadiran], ['unit', 'Unit Bisnis', 'trophy', unit]]],
-  ['ORANG', [['tim', 'Tim & Peran', 'users', tim.tim], ['performa', 'Performa', 'coin', tim.performa]]],
+  ['ORANG', [['tim', 'Tim & Peran', 'users', tim.tim], ['performa', 'Performa', 'coin', tim.performa], ['rekrutmen', 'Rekrutmen', 'check', rekrutmen]]],
   ['SISTEM', [['library', 'Library Dokumen', 'book', sistem.library], ['pengaturan', 'Pengaturan', 'cog', sistem.pengaturan], ['notifikasi', 'Pengaturan Notifikasi', 'inbox', notifikasi]]],
 ];
 /* Gudang = manajemen inventory, menunya di modul Aset (Rentalaja › Aset & servis); halamannya tetap bisa dibuka lewat tautan */
@@ -58,7 +59,7 @@ let ROUTES = BASE_ROUTES, FLAT = ROUTES.flatMap(([, r]) => r).concat(EXTRA), MOB
 // Sistem Kerja Operasional punya alamat sendiri: ops.pokama.org (app.pokama.org tetap untuk Sistem Kerja holding)
 const OPS_URL = 'https://ops.pokama.org/';
 function buildRoutes() {
-  ROUTES = BASE_ROUTES.map(([g, r]) => [g, r.filter(x => x[0] !== 'notifikasi' || isAdmin())]); /* petugas lapangan: ops.pokama.org; manajemen Kerja lapangan: Rentalaja → Operasional (OpsKerja) */ MOBILE = ['beranda', 'tugas', 'kkh', 'setuju'];
+  ROUTES = BASE_ROUTES.map(([g, r]) => [g, r.filter(x => (x[0] !== 'notifikasi' || isAdmin()) && (x[0] !== 'rekrutmen' || canRec()))]); /* petugas lapangan: ops.pokama.org; manajemen Kerja lapangan: Rentalaja → Operasional (OpsKerja) */ MOBILE = ['beranda', 'tugas', 'kkh', 'setuju'];
   FLAT = ROUTES.flatMap(([, r]) => r).concat(EXTRA);
 }
 const HOME = () => 'kkh';
