@@ -149,7 +149,7 @@ function defaultSigner(t, subj) {
   if (t.signer === 'ceo') return (byRole('ceo')[0] || {}).id;
   if (t.signer === 'kepala_staf') return (byRole('kepala_staf')[0] || byRole('ceo')[0] || {}).id;
   const team = ROLE.team || [];
-  if (subj.length && subj.every(id => id === ROLE.me || team.includes(id)) && (team.length || ROLE.admin)) return ROLE.me;
+  if ((team.length || ROLE.admin) && subj.every(id => id === ROLE.me || team.includes(id) || ROLE.admin)) return ROLE.me;
   const p = ctx.byId[subj[0] || ROLE.me]; return (p && p.boss_id) || (byRole('kepala_staf')[0] || {}).id;
 }
 async function newLetter(t, re) {
