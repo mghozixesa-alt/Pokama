@@ -110,12 +110,26 @@ async function printLetter(l) {
 }
 
 /* ---------- layar ---------- */
+let LIST = null, ASSETS = null;
+/* data dimuat sekali per kunjungan; pindah tab / cari tidak memanggil server lagi */
+async function load(force) {
+  const jobs = [];
+  if (!TYPES) jobs.push(db.get('pk_letter_types', 'select=*&is_active=eq.true&order=sort').then(x => TYPES = x));
+  if (!ROLE || force) jobs.push(db.rpc('pk_letter_role').then(x => ROLE = x));
+  if (!LIST || force) jobs.push(db.rpc('pk_letter_list', { p_q: null }).then(x => LIST = x || []));
+  await Promise.all(jobs);
+}
 export default async function surat(el) {
-  if (!TYPES) TYPES = await db.get('pk_letter_types', 'select=*&is_active=eq.true&order=sort');
-  ROLE = await db.rpc('pk_letter_role');
+  if (!LIST) el.innerHTML = '<header class="ph"><div><h1>Surat</h1></div></header><div class="card"><p class="muted">Memuat…</p></div>';
+  await load(!!LIST);
+  render(el);
+}
+const matchQ = (l, q) => !q || [l.number, l.title, ...(l.data?.assets || []).flatMap(a => [a.plate, a.code])].some(x => String(x || '').toLowerCase().includes(q));
+function render(el) {
   if (!ROLE) { el.innerHTML = '<div class="card"><p class="muted">Akun Anda belum terdaftar di Data Karyawan.</p></div>'; return; }
-  const list = await db.rpc('pk_letter_list', { p_q: S.q || null });
-  const toSign = list.filter(l => l.mine_to_sign);
+  const all = LIST || [];
+  const list = all.filter(l => matchQ(l, (S.q || '').toLowerCase()));
+  const toSign = all.filter(l => l.mine_to_sign);
   const tabs = [['buat', 'Buat surat'], ['setuju', `Perlu saya setujui${toSign.length ? ' (' + toSign.length + ')' : ''}`], ['arsip', 'Arsip'], ...(ROLE.asset ? [['aset', 'Unit belum siap surat']] : [])];
   const hasTeam = (ROLE.team || []).length > 0;
   const meU = (ctx.byId[ROLE.me] || {}).unit_code; const inRA = meU && bizOf(meU) === 'RA';
@@ -128,17 +142,19 @@ export default async function surat(el) {
       <div class="card" style="margin-top:12px;background:#F2FBFA;border:1px solid #BFEDE8;font-size:13.5px;line-height:1.6;color:#2B3550">Nomor surat dibuat otomatis saat terbit (contoh <span style="font-weight:800;white-space:nowrap">001/ST/RA/XI/2026</span>). Surat yang ditandatangani orang lain menunggu persetujuannya dulu. Tanpa tanda tangan basah: nama penanda tangan + QR verifikasi.</div>`;
   }
   if (S.tab === 'setuju') body = toSign.length ? rows(toSign) : '<div class="card"><p class="muted">Tidak ada surat yang menunggu persetujuan Anda.</p></div>';
-  if (S.tab === 'arsip') body = `<div class="row" style="gap:8px;margin-bottom:10px"><input class="inp" id="sq" placeholder="Cari nomor, nama, plat, atau kode unit…" value="${esc(S.q)}" style="max-width:420px;height:40px"><button class="btn" id="sgo" type="button">Cari</button></div>${list.length ? rows(list) : '<div class="card"><p class="muted">Belum ada surat.</p></div>'}`;
+  if (S.tab === 'arsip') body = `<div class="row" style="gap:8px;margin-bottom:10px"><input class="inp" id="sq" type="search" placeholder="Cari nomor, nama, plat, atau kode unit…" value="${esc(S.q)}" style="max-width:420px;height:40px"></div>${list.length ? rows(list) : '<div class="card"><p class="muted">Belum ada surat.</p></div>'}`;
   if (S.tab === 'aset') body = '<div id="aset"><p class="muted">Memuat data aset…</p></div>';
 
   el.innerHTML = `<header class="ph"><div><span class="muted small">Surat resmi PT Popo Karya Investama · bernomor, ber-QR, tersimpan di arsip</span><h1>Surat</h1></div></header>
     <div class="chips" style="flex-wrap:wrap">${tabs.map(([k, l]) => `<button class="chipbtn${S.tab === k ? ' on' : ''}" data-tab="${k}">${l}</button>`).join('')}</div>${body}`;
-  const re = () => surat(el);
-  el.querySelectorAll('[data-tab]').forEach(b => b.onclick = () => { S.tab = b.dataset.tab; re(); });
-  el.querySelectorAll('[data-new]').forEach(b => b.onclick = () => newLetter(TYPES.find(t => t.code === b.dataset.new), re));
+  const re = async () => { await load(true); ASSETS = null; render(el); };
+  el.querySelectorAll('[data-tab]').forEach(b => b.onclick = () => { S.tab = b.dataset.tab; render(el); });
+  el.querySelectorAll('[data-new]').forEach(b => b.onclick = async () => {
+    if (b.dataset.busy) return; b.dataset.busy = '1'; b.style.opacity = '.6'; b.style.pointerEvents = 'none';
+    try { await newLetter(TYPES.find(t => t.code === b.dataset.new), re); } finally { delete b.dataset.busy; b.style.opacity = ''; b.style.pointerEvents = ''; } });
   el.querySelectorAll('[data-open]').forEach(b => b.onclick = () => openLetter(list.find(l => l.id === b.dataset.open), re));
-  const go = () => { S.q = el.querySelector('#sq').value.trim(); re(); };
-  el.querySelector('#sgo')?.addEventListener('click', go); el.querySelector('#sq')?.addEventListener('keydown', e => { if (e.key === 'Enter') go(); });
+  const sq = el.querySelector('#sq');
+  if (sq) { let tm; sq.addEventListener('input', () => { clearTimeout(tm); tm = setTimeout(() => { S.q = sq.value.trim(); const pos = sq.selectionStart; render(el); const n = el.querySelector('#sq'); n.focus(); n.setSelectionRange(pos, pos); }, 200); }); }
   if (S.tab === 'aset') drawAssets(el.querySelector('#aset'));
 }
 function rows(list) {
@@ -148,7 +164,7 @@ function rows(list) {
 
 async function drawAssets(box) {
   let A = [];
-  try { A = await db.rpc('pk_letter_assets', { p_q: null, p_only_missing: false }); } catch (e) { box.innerHTML = `<p class="form-err">${esc(e.message)}</p>`; return; }
+  try { A = ASSETS || (ASSETS = await db.rpc('pk_letter_assets', { p_q: null, p_only_missing: false })); } catch (e) { box.innerHTML = `<p class="form-err">${esc(e.message)}</p>`; return; }
   const miss = A.filter(a => a.missing.length);
   const cnt = {}; miss.forEach(a => a.missing.forEach(m => cnt[m] = (cnt[m] || 0) + 1));
   box.innerHTML = `<div class="card" style="background:#FFF8EC;border:1px solid #F1D9AE;font-size:13.5px">${miss.length} dari ${A.length} motor & mobil belum siap surat. Lengkapi di Rentalaja App → Aset (data unit). Ditugaskan: Fajar, Yusril, Dzikri.</div>
@@ -182,7 +198,7 @@ async function newLetter(t, re) {
     t._jobs = jobs; t._cands = cands;
   }
   if (t.subject === 'assets') {
-    assets = await db.rpc('pk_letter_assets', { p_q: null, p_only_missing: false });
+    assets = ASSETS || (ASSETS = await db.rpc('pk_letter_assets', { p_q: null, p_only_missing: false }));
     const ready = t.need_complete === false ? assets : assets.filter(a => !a.missing.length);
     subjHtml = field(t.need_complete === false ? `Unit (${assets.length})` : `Unit (${ready.length} siap dari ${assets.length})`, ready.length ? `<div class="stack" style="gap:4px;max-height:240px;overflow:auto;border:1px solid #E1E5EA;border-radius:10px;padding:8px">${ready.map(a => `<label class="chk"><input type="checkbox" name="as_${a.id}"> ${esc(a.code)} · ${esc(a.plate || '')} <span class="muted small">· ${esc(a.product)}${a.investor ? ' · unit investor' : ''}</span></label>`).join('')}</div>`
       : `<p class="form-err" style="display:block">Belum ada unit yang datanya lengkap. Lihat tab "Unit belum siap surat".</p>`);
@@ -232,7 +248,7 @@ async function preview(t, p, re) {
     const q = ps[0] || {}; Object.assign(d, { nama: q.name, jabatan: q.title, unit: (ctx.unit[q.unit_code] || {}).name, tgl_masuk: q.joined_on ? tglID(q.joined_on) : '' });
   }
   if (t.subject === 'candidate') { const a = (t._cands || []).find(x => x.id === p.candidate_app); if (a) { d.people = [{ Nama: a.cand.name, Kota: a.cand.city || '—' }]; d.nama = a.cand.name; d.unit = (ctx.unit[(t._jobs[a.job_id] || {}).unit_code] || {}).name; } }
-  if (t.subject === 'assets') d.assets = (await db.rpc('pk_letter_assets', { p_q: null, p_only_missing: false })).filter(a => p.assets.includes(a.id));
+  if (t.subject === 'assets') d.assets = (ASSETS || (ASSETS = await db.rpc('pk_letter_assets', { p_q: null, p_only_missing: false }))).filter(a => p.assets.includes(a.id));
   if (t.subject === 'booking') {
     const b = await db.rpc('pk_letter_booking', { p_code: p.booking || '' }); if (!b) throw new Error('Kode booking tidak ditemukan');
     Object.assign(d, { booking: b, penyewa: b.penyewa, sisa: 'Rp' + Math.round(+b.sisa || 0).toLocaleString('id-ID') });
