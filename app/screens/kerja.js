@@ -16,12 +16,24 @@ async function dayLeave(day, ids) {
   const m = {}; rows.forEach(r => { if (!ids || ids.includes(r.person_id)) m[r.person_id] = r.kind; }); return m;
 }
 
+// prioritas dari sistem (keluhan lewat batas, unit tertahan, shift belum tutup, dll.): wajib masuk KKH hari ini
+function sysCard(tasks, rows, day) {
+  const RK = { urgent: 0, high: 1, normal: 2 };
+  const st = tasks.filter(t => t.source === 'sistem').sort((a, b) => (RK[a.sys_prio] ?? 3) - (RK[b.sys_prio] ?? 3)); if (!st.length) return '';
+  const PR = { urgent: ['Darurat', 'red'], high: ['Tinggi', 'red'], normal: ['Normal', 'yellow'] };
+  const inKkh = new Set(rows.filter(r => r.task_id).map(r => r.task_id));
+  const must = st.filter(t => ['urgent', 'high'].includes(t.sys_prio) && (!t.due || t.due <= day) && !inKkh.has(t.id)).length;
+  return `<section class="card sys-pri"><div class="row between wrap gap"><b>Prioritas dari sistem · ${st.length}</b>${must ? `<span class="chip red">${must} belum masuk KKH</span>` : '<span class="chip green">✓ semua sudah dijadwalkan</span>'}</div>
+    <p class="muted small">Pilih tugas ini di salah satu jam KKH hari ini (kolom "Bagian dari pekerjaan"). Prioritas Darurat/Tinggi wajib dijadwalkan sebelum KKH bisa ditandai siap divalidasi. Tugas selesai otomatis begitu masalahnya beres.</p>
+    <ul class="sys-list">${st.map(t => { const p = PR[t.sys_prio] || PR.normal; return `<li><span class="chip ${p[1]}">${p[0]}</span><span class="grow">${esc(String(t.title).replace('[Sistem] ', ''))}${t.due ? `<small class="muted"> · tenggat ${fdate(t.due, false)}</small>` : ''}</span>${inKkh.has(t.id) ? '<span class="chip green">di KKH</span>' : '<span class="chip gray">belum di KKH</span>'}${t.sys_link ? `<a class="small nw" href="${esc(t.sys_link)}" target="_blank" rel="noopener">Buka ↗</a>` : ''}</li>`; }).join('')}</ul></section>`;
+}
+
 // ================= KKH Saya =================
 async function saya(el, params, reload) {
   const me = ctx.me.id; const day = params.get('d') || today();
   const [rows, tasks, toVal, leave, att, wfa, miss] = await Promise.all([
     db.get('pk_kkh', `select=*&person_id=eq.${me}&day=eq.${day}`),
-    db.get('pk_tasks', `select=id,title,status&pic_id=eq.${me}&status=in.(todo,doing,revisi,review)&order=due.asc.nullslast`),
+    db.get('pk_tasks', `select=id,title,status,source,sys_prio,due,sys_link&pic_id=eq.${me}&status=in.(todo,doing,revisi,review)&order=due.asc.nullslast`),
     db.get('pk_kkh', `select=id,person_id,day,hour,code,note,mode,status,task_id&status=eq.siap&order=day.desc,hour.asc&limit=200`),
     dayLeave(day, [me]),
     db.get('pk_attendance', `select=*&person_id=eq.${me}&day=eq.${day}`).then(r => r[0] || null),
@@ -48,6 +60,7 @@ async function saya(el, params, reload) {
   ${day === today() && !off ? (att ? `<section class="card absen ok"><div class="row gap wrap"><b>✓ Sudah absen</b>${attChip(att)}${att.lat ? `<a class="small" href="https://maps.google.com/?q=${att.lat},${att.lng}" target="_blank" rel="noopener">lihat lokasi ↗</a>` : ''}${att.photo ? '<span class="small muted">· foto tersimpan</span>' : ''}</div></section>`
     : `<section class="card absen"><div class="row between wrap gap"><span class="absen-t"><b>Absen masuk dulu sebelum mulai kerja</b><small class="muted">jam masuk ${String(+ctx.settings.work_start || 8).padStart(2, '0')}.00, toleransi ${+ctx.settings.late_grace_min || 5} menit${wfa ? ' · hari ini Anda WFA' : ''}</small></span><button class="btn pri" data-a="absen">Absen sekarang</button></div></section>`) : ''}
   ${miss ? `<div class="note err"><b>Telat isi KKH hari ini.</b> Baru ${miss.filled}/${NEED()} jam saat ${String(+ctx.settings.kkh_fill_deadline || 10).padStart(2, '0')}.00 · potongan disiplin ${+ctx.settings.late_penalty_pct || 0}%.</div>` : (day === today() && !off && filled < NEED() ? `<div class="note warn"><b>KKH baru ${filled}/${NEED()} jam.</b> Lengkapi ${NEED()} jam sebelum ${String(+ctx.settings.kkh_fill_deadline || 10).padStart(2, '0')}.00. Lewat itu tercatat telat isi KKH (potongan disiplin ${+ctx.settings.late_penalty_pct || 0}%).</div>` : '')}
+  ${sysCard(tasks, rows, day)}
   <div class="tiles">
     <div class="tile"><span>Jam kerja terisi</span><b class="${filled >= NEED() ? 'green-t' : ''}">${filled} / ${NEED()} jam</b><small>KKH dibuka ${hh(H[0])}–${hh(H[H.length - 1] + 1)} · istirahat ${hh(BRK())}–${hh(BRK() + 1)}</small></div>
     <div class="tile"><span>Sudah divalidasi</span><b>${valid}</b></div>

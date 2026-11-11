@@ -345,3 +345,10 @@ body.modal-open{overflow:hidden}
 body.modal-open .bottom,body.modal-open .m-bell{visibility:hidden;pointer-events:none}
 @media (max-width:760px){.modal-f{position:sticky;bottom:0;background:#fff;padding-top:10px;padding-bottom:calc(10px + env(safe-area-inset-bottom));margin-bottom:-1px;z-index:2}}
 .mini>div.grp>span:first-child{font-weight:700}.mini>div.sub{font-size:12px}.mini>div.sub>span:first-child{padding-left:14px;color:var(--mut)}.mini>div.sub .bar{height:4px}
+
+/* KKH: prioritas dari sistem */
+.sys-pri{border-left:4px solid #C2410C;display:flex;flex-direction:column;gap:8px}
+.sys-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.sys-list li{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:8px 0;border-top:1px solid var(--line2)}
+.sys-list li:first-child{border-top:0}
+.sys-list .grow{flex:1;min-width:180px;font-weight:600}
