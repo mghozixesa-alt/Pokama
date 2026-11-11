@@ -87,7 +87,7 @@ begin
       pic := pk_sys_pick(c.grp, null); rev := pk_sys_pick(c.grp, pic);
       if pic is null then continue; end if;
       insert into pk_tasks(unit_code, title, dod, pic_id, reviewer_id, due, status, source, sys_key, sys_prio, sys_group, sys_link)
-      values ((select unit_code from pk_people where id = pic), '[Sistem] ' || c.title, c.dod, pic, nullif(rev, pic), c.due, 'todo', 'sistem', c.key, c.prio, c.grp, c.link);
+      values ((select unit_code from pk_people where id = pic), '[Sistem] ' || c.title, c.dod, pic, nullif(rev, pic), case when wib::time >= '15:00' then greatest(c.due, d + 1) else c.due end, 'todo', 'sistem', c.key, c.prio, c.grp, c.link);
       n_new := n_new + 1;
     elsif t.title is distinct from '[Sistem] ' || c.title or t.sys_prio is distinct from c.prio or t.dod is distinct from c.dod then
       update pk_tasks set title = '[Sistem] ' || c.title, dod = c.dod, sys_prio = c.prio, sys_link = c.link where id = t.id;
