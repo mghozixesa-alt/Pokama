@@ -2,7 +2,7 @@
 -- Sudah diterapkan ke proyek Supabase shrvzlltysnbmgpkhjjg (migrasi pk_omzet_dari_rentalaja).
 -- Aturan: omzet unit per hari = total pembayaran lunas (DP + pelunasan + lainnya) dikurangi refund, menurut tanggal bayar WIB.
 -- Pemetaan cabang Rentalaja -> unit KKH: GRT->GK, BDG-HUB/BDG-JKL->BD, WNR->WN, RM/ERT/DDH->EX, JEEP->JP, MPT->MP, LPA->NL.
--- Pergi Piknik (PPK) belum dipetakan.
+-- PPK (Pergi Piknik) -> RA (Rentalaja), keputusan Ghozy 11 Nov 2026.
 -- Mati otomatis kalau pk_fin_sources 'rentalaja' sudah aktif + feeds_omzet (setelah cutover keuangan), supaya tidak dobel.
 
 create table if not exists public.pk_omzet_branch_map (
@@ -15,7 +15,7 @@ revoke all on public.pk_omzet_branch_map from anon, authenticated;
 insert into public.pk_omzet_branch_map(branch_id, unit_code, note)
 select b.id, m.u, b.name from public.branches b join (values
   ('GRT','GK'), ('BDG-HUB','BD'), ('BDG-JKL','BD'), ('WNR','WN'),
-  ('RM','EX'), ('ERT','EX'), ('DDH','EX'), ('JEEP','JP'), ('MPT','MP'), ('LPA','NL')) m(c, u) on m.c = b.code
+  ('RM','EX'), ('ERT','EX'), ('DDH','EX'), ('JEEP','JP'), ('MPT','MP'), ('LPA','NL'), ('PPK','RA')) m(c, u) on m.c = b.code
 on conflict (branch_id) do update set unit_code = excluded.unit_code;
 
 create or replace function app.pk_omzet_recalc(p_unit text, p_day date)
