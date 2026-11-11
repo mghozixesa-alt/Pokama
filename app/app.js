@@ -109,8 +109,8 @@ function shell() {
       <button class="link mute" type="button" id="logout">Keluar</button></div></nav>
     <button type="button" class="bell m-bell" data-bell aria-label="Notifikasi">${svg('bell', 22)}<b class="badge" data-badge="ntf" hidden></b></button>
     <main class="main" id="view" tabindex="-1"></main>
-    <nav class="bottom" aria-label="Menu bawah">${MOBILE.map(k => { const r = FLAT.find(x => x[0] === k); return `<a href="#/${k}" data-k="${k}">${svg(r[2], 22)}<span>${r[1].split(' ')[0]}</span><b class="badge" data-badge="${k}" hidden></b></a>`; }).join('')}
-      <a href="#/menu" data-k="menu">${svg('menu', 22)}<span>Lainnya</span></a></nav>
+    <nav class="bottom" aria-label="Menu bawah">${MOBILE.map(k => { const r = FLAT.find(x => x[0] === k); return `<a href="#/${k}" data-k="${k}"${k === 'kkh' ? ' class="mid"' : ''}><i>${svg(r[2], k === 'kkh' ? 24 : 22)}</i><span>${r[1].split(' ')[0]}</span><b class="badge" data-badge="${k}" hidden></b></a>`; }).join('')}
+      <a href="#/menu" data-k="menu"><i>${svg('menu', 22)}</i><span>Menu</span></a></nav>
   </div>`;
   root.querySelector('#logout').onclick = () => signOut();
   root.querySelectorAll('[data-bell]').forEach(b => b.onclick = openNotifs);

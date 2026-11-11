@@ -11,7 +11,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=1">
+<link rel="stylesheet" href="style.css?v=2">
 </head>
 <body>
 <div id="app"><div class="loading full">Memuat…</div></div>
@@ -19,6 +19,6 @@
 <script>/* login Google mitra yang mendarat di halaman utama → teruskan ke portal mitra */
 try { var t = +localStorage.getItem('pokama.mitra.go') || 0; if (location.hash.indexOf('access_token=') >= 0 && Date.now() - t < 15 * 60e3) { localStorage.removeItem('pokama.mitra.go'); location.replace('/mitra/' + location.hash); } } catch (e) {}
 </script>
-<script type="module" src="app.js?v=1"></script>
+<script type="module" src="app.js?v=2"></script>
 </body>
 </html>
