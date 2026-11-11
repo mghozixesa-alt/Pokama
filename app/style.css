@@ -344,3 +344,4 @@ table.kkh.few{min-width:0;width:auto;align-self:flex-start;justify-self:start;ma
 body.modal-open{overflow:hidden}
 body.modal-open .bottom,body.modal-open .m-bell{visibility:hidden;pointer-events:none}
 @media (max-width:760px){.modal-f{position:sticky;bottom:0;background:#fff;padding-top:10px;padding-bottom:calc(10px + env(safe-area-inset-bottom));margin-bottom:-1px;z-index:2}}
+.mini>div.grp>span:first-child{font-weight:700}.mini>div.sub{font-size:12px}.mini>div.sub>span:first-child{padding-left:14px;color:var(--mut)}.mini>div.sub .bar{height:4px}

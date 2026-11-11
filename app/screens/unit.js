@@ -7,7 +7,13 @@ export default async function unit(el, params, reload) {
   const me = ctx.me.id; const canProp = (code) => isAdmin() || isFin() || (ctx.me.role === 'leader' && bizOf(ctx.me.unit_code) === code); const m = params.get('m') || monthStart(today()); const nm = nextMonth(m);
   const end = addDays(nm, -1); const wk = weekStart(today());
   const bizUnits = ctx.units.filter(u => u.kind === 'bisnis' && u.in_liga);
-  const lines = (code) => ctx.units.filter(u => u.parent === code);
+  // Bandung & Experience dilapor per cabang/properti; baris induk = subtotal (+ angka gabungan lama bila ada)
+  const SPLIT = { BD: ['BDH', 'BDJ'], EX: ['EXR', 'EXE', 'EXD'] };
+  const isSub = (c) => Object.values(SPLIT).some(a => a.includes(c));
+  const fam = (c) => [c, ...(SPLIT[c] || []).filter(x => ctx.unit[x])];
+  const kids = (code) => ctx.units.filter(u => u.parent === code);
+  const lines = (code) => kids(code).filter(u => !isSub(u.code));
+  const tLines = (code) => kids(code).filter(u => !SPLIT[u.code]);
   const [omzet, targets, liga, todayRows] = await Promise.all([
     db.get('pk_omzet', `select=unit_code,day,amount&day=gte.${m}&day=lte.${end}`),
     db.get('pk_targets', `select=*&month=in.(${m},${nm})`),
@@ -21,20 +27,23 @@ export default async function unit(el, params, reload) {
   const pts = (code, w) => { const r = liga.find(x => x.unit_code === code && x.week_start === w); return r ? r.kas + r.profit + r.kapasitas + r.growth : null; };
   // target bulan depan: unit dengan lini = jumlah target per lini
   const ST = { usulan: 'Diusulkan', dicek: 'Dicek Keuangan', sah: 'Disahkan CEO' };
-  const nextT = (code) => { const ls = lines(code).map(l => tgt(l.code, nm)).filter(Boolean);
+  const nextT = (code) => { const ls = tLines(code).map(l => tgt(l.code, nm)).filter(Boolean);
     if (!ls.length) { const x = tgt(code, nm); return x ? { ...x, ids: [x.id], rows: [] } : null; }
     const st = ls.every(x => x.status === 'sah') ? 'sah' : ls.every(x => x.status !== 'usulan') ? 'dicek' : 'usulan';
     return { amount: ls.reduce((s, x) => s + +x.amount, 0), status: st, ids: ls.map(x => x.id), rows: ls, lined: true, proposed_by: ls[0].proposed_by }; };
   const cards = bizUnits.map(u => {
-    const codes = [u.code, ...lines(u.code).map(l => l.code)];
+    const codes = [u.code, ...kids(u.code).map(l => l.code)];
     const a = sumOm(codes);
-    const lt = lines(u.code).map(l => tgt(l.code, m)).filter(Boolean);
+    const lt = kids(u.code).map(l => tgt(l.code, m)).filter(Boolean);
+    const tSum = (cs) => cs.reduce((s, c) => s + (tgt(c, m) ? +tgt(c, m).amount : 0), 0);
     const t = lt.length ? lt.reduce((s, x) => s + +x.amount, 0) : tgt(u.code, m) ? +tgt(u.code, m).amount : 0;
-    return { u, a, t, p: pts(u.code, latestWeek), pp: pts(u.code, prevWeek), lines: lines(u.code).map(l => ({ l, a: sumOm([l.code]), t: tgt(l.code, m) ? +tgt(l.code, m).amount : 0 })) };
+    return { u, a, t, p: pts(u.code, latestWeek), pp: pts(u.code, prevWeek), lines: lines(u.code).map(l => ({ l, a: sumOm(fam(l.code)), t: tSum(fam(l.code)),
+      subs: SPLIT[l.code] ? fam(l.code).map(c => ({ l: c === l.code ? { code: c, name: 'Gabungan (laporan lama)' } : { code: c, name: ctx.unit[c].name.replace(l.name + ' · ', '') }, a: sumOm([c]), t: tSum([c]) })).filter(x => x.l.code !== l.code || x.a || x.t) : null })),
+      tl: tLines(u.code) };
   }).sort((x, y) => (y.p ?? -1) - (x.p ?? -1));
   const lead = (code) => ctx.people.find(p => p.role === 'leader' && (p.unit_code === code || (ctx.unit[p.unit_code] || {}).parent === code));
   const grpA = cards.reduce((s, c) => s + c.a, 0), grpT = cards.reduce((s, c) => s + c.t, 0);
-  const reporters = ctx.units.filter(u => ['WG', 'NL', 'NJ', 'MP', 'EX', 'JP', 'GK', 'BD', 'WN', 'CP'].includes(u.code));
+  const reporters = ctx.units.filter(u => ['WG', 'NL', 'NJ', 'MP', 'EXR', 'EXE', 'EXD', 'JP', 'GK', 'BDH', 'BDJ', 'WN', 'CP'].includes(u.code));
   const lw = ctx.settings.liga_weights || { kas: 35, profit: 30, kapasitas: 20, growth: 15 };
   el.innerHTML = `
   <header class="ph"><div><span class="muted small">${latestWeek ? 'Poin Liga minggu ' + fdate(latestWeek, false) : 'Poin Liga belum diisi'} · omzet ${fmonth(m)}</span><h1>Unit Bisnis</h1></div>
@@ -46,12 +55,12 @@ export default async function unit(el, params, reload) {
       <div><div class="row between"><span class="lab">OMZET ${fmonth(m).toUpperCase()}</span>${s ? chip(s[0], s[1]) : chip('Target belum ada')}</div>
         <div class="row between"><b class="big">${jt(c.a)}</b><span class="muted small">${c.t ? 'dari ' + jt(c.t) + ' · <b>' + Math.round(p * 100) + '%</b>' : ''}</span></div>
         <span class="bar lg"><i style="width:${p ? Math.min(100, p * 100) : 0}%;background:${s ? s[2] : '#C9CED6'}"></i></span></div>
-      ${c.lines.length ? `<div class="mini">${c.lines.map(x => { const q = x.t ? x.a / x.t : null; const ss = q !== null ? stOf(q) : null;
-        return `<div><span>${esc(x.l.name)}</span><span class="bar"><i style="width:${q ? Math.min(100, q * 100) : 0}%;background:${ss ? ss[2] : '#C9CED6'}"></i></span><b class="${q !== null && q < .75 ? 'red' : ''}">${jt(x.a)}<small>${x.t ? 'dari ' + jt(x.t) + ' · ' + Math.round(q * 100) + '%' : 'belum ada target'}</small></b></div>`; }).join('')}</div>` : ''}
+      ${c.lines.length ? `<div class="mini">${c.lines.flatMap(x => [x, ...(x.subs || []).map(y => ({ ...y, sub: true }))]).map(x => { const q = x.t ? x.a / x.t : null; const ss = q !== null ? stOf(q) : null;
+        return `<div${x.sub ? ' class="sub"' : x.subs ? ' class="grp"' : ''}><span>${esc(x.l.name)}</span><span class="bar"><i style="width:${q ? Math.min(100, q * 100) : 0}%;background:${ss ? ss[2] : '#C9CED6'}"></i></span><b class="${q !== null && q < .75 ? 'red' : ''}">${jt(x.a)}<small>${x.t ? 'dari ' + jt(x.t) + ' · ' + Math.round(q * 100) + '%' : x.sub ? '' : 'belum ada target'}</small></b></div>`; }).join('')}</div>` : ''}
       <div><span class="lab">KPI UTAMA</span><b>${esc(c.u.kpi || '—')}</b></div>
       <div class="tbox"><div class="row between small"><span class="lab">TARGET ${fmonth(nm).toUpperCase()}</span><span class="${tn ? 'green-t' : 'red'}">${tn ? ST[tn.status] : 'Belum diisi'}</span></div>
         ${tn ? `<div class="row between"><b>${rp(tn.amount)}</b><span class="row gap6">${isFin() && tn.status === 'usulan' ? `<button class="btn sm" data-ts="${tn.ids.join(',')}" data-s="dicek">Tandai dicek</button>` : ''}${isCeo() && tn.status !== 'sah' ? `<button class="btn sm pri" data-ts="${tn.ids.join(',')}" data-s="sah">Sahkan</button>` : ''}${!tn.lined && (isCeo() || (tn.status === 'usulan' && (tn.proposed_by === me || isFin() || isAdmin()))) ? `<button class="btn sm danger" data-tdel="${tn.id}">${tn.status === 'usulan' ? 'Hapus usulan' : 'Hapus target'}</button>` : ''}</span></div>` : ''}
-        ${tn && tn.lined ? `<div class="tlines">${c.lines.map(x => { const r = tn.rows.find(y => y.unit_code === x.l.code); return `<div><span>${esc(x.l.name)}</span><b>${r ? jt(r.amount) : '—'}</b></div>`; }).join('')}</div>` : ''}
+        ${tn && tn.lined ? `<div class="tlines">${c.tl.map(l => ({ l })).map(x => { const r = tn.rows.find(y => y.unit_code === x.l.code); return `<div><span>${esc(x.l.name)}</span><b>${r ? jt(r.amount) : '—'}</b></div>`; }).join('')}</div>` : ''}
         ${canProp(c.u.code) && (c.lines.length || !tn || tn.status === 'usulan') ? (c.lines.length
           ? `<button class="btn sm pri" data-tl="${c.u.code}">Atur target tiap cabang / lini</button>`
           : `<div class="row gap"><span class="pre grow"><b>Rp</b><input class="inp-n" data-tin="${c.u.code}" inputmode="numeric" placeholder="${c.a ? Math.round(c.a * 1.05).toLocaleString('id-ID') + ' (usulan +5%)' : 'isi target'}"></span><button class="btn sm pri" data-tp="${c.u.code}">${tn ? 'Ubah' : 'Usulkan'}</button></div>`) : ''}</div>
@@ -103,7 +112,7 @@ export default async function unit(el, params, reload) {
         if (r) { toast(`Omzet tersimpan · ${r} lini`); reload(); } return;
       }
       const tl = e.target.closest('[data-tl]');
-      if (tl) { const code = tl.dataset.tl; const u = ctx.unit[code]; const ls = lines(code);
+      if (tl) { const code = tl.dataset.tl; const u = ctx.unit[code]; const ls = tLines(code);
         const allT = await db.get('pk_targets', `select=*&month=in.(${m},${nm})&unit_code=in.(${ls.map(l => l.code).join(',')})`);
         const body = field('Bulan', `<select name="mon" class="inp">${opts([[nm, fmonth(nm)], [m, fmonth(m)]], nm)}</select>`) +
           `<p class="muted small" style="margin-top:0">Target masing-masing cabang / lini ${esc(u.name)}. Isi satu per satu.</p>
@@ -140,7 +149,8 @@ export default async function unit(el, params, reload) {
         const late = rowsAll.filter(u => !todayRows.some(r => r.unit_code === u.code)).map(u => u.name);
         let t = `*Laporan Omzet Pokama*\n${fdate(day)}\n\n*HARI INI*\n`;
         for (const c of cards) { const codes = [c.u.code, ...c.lines.map(x => x.l.code)]; t += `*${c.u.name}*: ${rp(dsum(codes))}\n`;
-          for (const x of c.lines) { const v = dsum([x.l.code]); t += `  • ${x.l.name}: ${todayRows.some(r => r.unit_code === x.l.code) ? rp(v) : '_belum lapor_'}\n`; } }
+          for (const x of c.lines) { const fc = fam(x.l.code), sub = fc.length > 1; const v = dsum(fc); t += `  • ${x.l.name}: ${todayRows.some(r => fc.includes(r.unit_code)) ? rp(v) : '_belum lapor_'}\n`;
+            if (sub) for (const cc of fc.slice(1)) t += `     – ${ctx.unit[cc].name.replace(x.l.name + ' · ', '')}: ${todayRows.some(r => r.unit_code === cc) ? rp(dsum([cc])) : '_belum lapor_'}\n`; } }
         t += `Total hari ini: *${rp(todayRows.reduce((s, r) => s + +r.amount, 0))}*\n`;
         if (late.length) t += `Belum lapor: ${late.join(', ')}\n`;
         t += `\n*${fmonth(m).toUpperCase()} (s.d. hari ini)*\n`;
