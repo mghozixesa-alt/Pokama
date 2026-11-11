@@ -2013,18 +2013,19 @@ var ROLE = { 'Head of Marketing': 'head', Dita: 'pic', Nayla: 'pic', Editor: 'ed
 function role() { return ROLE[S.me] || 'pic'; }
 function canSee(el) { var r = el.getAttribute('data-roles'); return !r || r.split(' ').indexOf(role()) >= 0; }
 /* ---------- Google Analytics 4 · data asli (RPC mk_seo_ga4, diisi fungsi ga4-sync tiap 06.00 WIB) ---------- */
-var GA = { days: 28, data: null, loading: false, err: '', at: 0 };
+var GA = { days: 28, data: null, loading: false, err: '', at: 0, errAt: 0 };
 var GA_CH = { 'Organic Search': 'Google (organik)', 'Direct': 'Langsung', 'Organic Social': 'Sosial media (organik)', 'Paid Social': 'Iklan sosial media', 'Paid Search': 'Iklan Google', 'Referral': 'Rujukan situs lain', 'Unassigned': 'Tidak diketahui', 'Organic Maps': 'Google Maps', 'Email': 'Email', 'Organic Video': 'Video (organik)', 'Cross-network': 'Lintas jaringan' };
 function gaLoad() {
   if (GA.loading) return; GA.loading = true; GA.err = '';
   var to = new Date(Date.now() + 7 * 3600e3 - 864e5), from = new Date(to.getTime() - (GA.days - 1) * 864e5);
   api('rpc/mk_seo_ga4', { method: 'POST', body: JSON.stringify({ p_from: from.toISOString().slice(0, 10), p_to: to.toISOString().slice(0, 10) }) })
     .then(function (d) { GA.data = d; GA.at = Date.now(); })
-    .catch(function (e) { GA.err = /nologin|expired/.test(e.message) ? 'Masuk dulu dengan akun Sistem Kerja.' : /Tidak berwenang/.test(e.message) ? 'Akun ini belum punya akses data Google Analytics.' : 'Gagal memuat data Google Analytics. Coba muat ulang.'; })
-    .then(function () { GA.loading = false; if (view() === 'seo') render(); });
+    .catch(function (e) { GA.errAt = Date.now(); GA.err = /nologin|expired/.test(e.message) ? 'Masuk dulu dengan akun Sistem Kerja.' : /Tidak berwenang/.test(e.message) ? 'Akun ini belum punya akses data Google Analytics.' : 'Gagal memuat data Google Analytics. Coba muat ulang.'; })
+    .then(function () { GA.loading = false; if (view() === 'seo') setTimeout(render, 0); });
 }
 function gaBlock() {
-  if (!GA.data || Date.now() - GA.at > 120000) { if (!LOCAL) gaLoad(); }
+  /* jangan muat ulang terus saat gagal (mis. belum login): coba lagi paling cepat 60 detik */
+  if ((!GA.data || Date.now() - GA.at > 120000) && !GA.loading && (!GA.err || Date.now() - GA.errAt > 60000)) { if (!LOCAL) gaLoad(); }
   if (GA.err) return '<div class="hint" style="background:#FDF3D7;color:#7A5200">' + esc(GA.err) + '</div>';
   if (LOCAL && !GA.data) return '<div class="hint">Uji lokal: data Google Analytics hanya tampil di pokama.org setelah masuk.</div>';
   if (!GA.data) return empty('Memuat data Google Analytics…');
@@ -2056,7 +2057,7 @@ function gaBlock() {
 }
 document.addEventListener('click', function (e) {
   var b = e.target.closest && e.target.closest('[data-gad]'); if (!b) return;
-  GA.days = +b.getAttribute('data-gad'); GA.data = null; render();
+  GA.days = +b.getAttribute('data-gad'); GA.data = null; GA.err = ''; render();
 });
 /* ---------- Link bio Rentalaja (rentalaja.co.id/link) · data asli dari aplikasi Rentalaja (RPC ra_link_stats) ---------- */
 var LB = { days: 30, page: 'bio', data: null, loading: false, err: '', at: 0 };
@@ -2110,8 +2111,8 @@ function lbLoad() {
   var to = new Date(Date.now() + 7 * 3600e3), from = new Date(to.getTime() - (LB.days - 1) * 864e5);
   api('rpc/ra_link_stats_page', { method: 'POST', body: JSON.stringify({ p_from: from.toISOString().slice(0, 10), p_to: to.toISOString().slice(0, 10), p_page: LB.page }) })
     .then(function (d) { LB.data = d; LB.at = Date.now(); })
-    .catch(function (e) { LB.err = /nologin|expired/.test(e.message) ? 'Masuk dulu dengan akun Sistem Kerja.' : /Tidak berwenang/.test(e.message) ? 'Akun ini belum punya akses data link bio.' : 'Gagal memuat data link bio. Coba muat ulang.'; })
-    .then(function () { LB.loading = false; if (view() === 'link') render(); });
+    .catch(function (e) { LB.errAt = Date.now(); LB.err = /nologin|expired/.test(e.message) ? 'Masuk dulu dengan akun Sistem Kerja.' : /Tidak berwenang/.test(e.message) ? 'Akun ini belum punya akses data link bio.' : 'Gagal memuat data link bio. Coba muat ulang.'; })
+    .then(function () { LB.loading = false; if (view() === 'link') setTimeout(render, 0); });
 }
 function lbTable(rows, cols, barKey) {
   if (!rows || !rows.length) return empty('Belum ada data.');
@@ -2125,7 +2126,7 @@ function vLink() {
   var rng = '<div class="acts" style="gap:6px">' + [7, 30, 90].map(function (d) { return '<button class="btn sm' + (LB.days === d ? ' pri' : '') + '" data-lbd="' + d + '">' + d + ' hari</button>'; }).join('') +
     '<a class="btn sm" href="' + lbUrl() + '" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;text-decoration:none">' + ic('link', 14) + '&nbsp;Buka halaman</a></div>';
   var h = header('Analitik · link bio', 'Link bio · ' + lbP().name, 'Pengganti Linktree di ' + lbUrl().replace('https://', '') + '. Kunjungan, klik per tombol, asal pengunjung' + (LB.page === 'atv' ? ', dan klik reservasi WA.' : ', sampai booking & omzet dari link.') + ' Data langsung dari aplikasi Rentalaja.', tabs + rng);
-  if (!LB.data || Date.now() - LB.at > 120000) { if (!LOCAL) lbLoad(); }
+  if ((!LB.data || Date.now() - LB.at > 120000) && !LB.loading && (!LB.err || Date.now() - (LB.errAt || 0) > 60000)) { if (!LOCAL) lbLoad(); }
   if (LB.err) return h + '<div class="hint" style="background:#FDF3D7;color:#7A5200">' + esc(LB.err) + '</div>';
   if (LOCAL && !LB.data) return h + '<div class="hint">Uji lokal: data link bio hanya tampil di pokama.org setelah masuk.</div>';
   if (!LB.data) return h + empty('Memuat data link bio…');
@@ -2157,8 +2158,8 @@ function vLink() {
 }
 document.addEventListener('click', function (e) {
   var b = e.target.closest && e.target.closest('[data-lbd],[data-lbcopy],[data-lbp]'); if (!b) return;
-  if (b.hasAttribute('data-lbp')) { LB.page = b.getAttribute('data-lbp'); LB.data = null; render(); return; }
-  if (b.hasAttribute('data-lbd')) { LB.days = +b.getAttribute('data-lbd'); LB.data = null; render(); return; }
+  if (b.hasAttribute('data-lbp')) { LB.page = b.getAttribute('data-lbp'); LB.data = null; LB.err = ''; render(); return; }
+  if (b.hasAttribute('data-lbd')) { LB.days = +b.getAttribute('data-lbd'); LB.data = null; LB.err = ''; render(); return; }
   var u = b.getAttribute('data-lbcopy'); if (navigator.clipboard) navigator.clipboard.writeText(u).then(function () { toast('Link disalin'); }); else toast(u);
 });
 var VIEWS = { link: vLink, hasil: vHasil, mp: vMp, papan: vPapan, live: vLive, foot: vFoot, appr: vAppr, isi: vIsi, dash: vDash, tim: vTim, set: vSet, ig: vIg, ads: vAds, seo: vSeo, kol: vKol, wa: vAdmin, campaign: vCampaign, today: vToday, plan: vPlan, bank: vBank, editor: vEditor };
