@@ -1,4 +1,4 @@
-/* Notifikasi langsung ke HP (Web Push). Sementara hanya ditawarkan ke CEO untuk uji coba. */
+/* Notifikasi langsung ke HP (Web Push) untuk semua staf Sistem Kerja. */
 import { ctx, db, callFn, toast } from './core.js';
 
 const ok = () => 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window;
@@ -37,7 +37,7 @@ function bar(html) {
 
 export async function initPush() {
   try {
-    if (!ctx.me || ctx.me.role !== 'ceo') return; // uji coba dulu
+    if (!ctx.me) return;
     if (!ok() && !ios()) return;
     // sudah diizinkan: pastikan langganan tersimpan (diam-diam)
     if (ok() && Notification.permission === 'granted') {
