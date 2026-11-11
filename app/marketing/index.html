@@ -1066,8 +1066,8 @@ function vAds() {
 }
 function vSeo() {
   var rng = '<div class="acts" style="gap:6px">' + [7, 28, 90].map(function (d) { return '<button class="btn sm' + (GA.days === d ? ' pri' : '') + '" data-gad="' + d + '">' + d + ' hari</button>'; }).join('') + (S.me === LEAD ? isiBtn() : '') + '</div>';
-  var h = header('Analitik · pencarian', 'Analitik SEO', 'Website rentalaja.co.id dari Google Analytics 4 (otomatis tiap hari 06.00 WIB), ditambah isian manual Google Maps.', rng);
-  return h + gaBlock() + vSeoManual();
+  var h = header('Analitik · pencarian', 'Analitik SEO', 'Website rentalaja.co.id dari Google Analytics 4 dan Google Search Console (otomatis tiap pagi), ditambah isian manual Google Maps.', rng);
+  return h + gaBlock() + gscBlock() + vSeoManual();
 }
 function vSeoManual() {
   var k = aMonth(), pk = prevMonth(k), c = seoMonth(k), p = seoMonth(pk);
@@ -2057,8 +2057,47 @@ function gaBlock() {
 }
 document.addEventListener('click', function (e) {
   var b = e.target.closest && e.target.closest('[data-gad]'); if (!b) return;
-  GA.days = +b.getAttribute('data-gad'); GA.data = null; GA.err = ''; render();
+  GA.days = +b.getAttribute('data-gad'); GA.data = null; GA.err = ''; GS.err = ''; render();
 });
+/* ---------- Google Search Console · data asli (RPC mk_seo_gsc, diisi fungsi gsc-sync tiap 06.10 WIB) ---------- */
+var GS = { data: null, loading: false, err: '', at: 0, errAt: 0, days: 0 };
+function gsLoad() {
+  if (GS.loading) return; GS.loading = true; GS.err = '';
+  var to = new Date(Date.now() + 7 * 3600e3 - 864e5), from = new Date(to.getTime() - (GA.days - 1) * 864e5), d = GA.days;
+  api('rpc/mk_seo_gsc', { method: 'POST', body: JSON.stringify({ p_from: from.toISOString().slice(0, 10), p_to: to.toISOString().slice(0, 10) }) })
+    .then(function (x) { GS.data = x; GS.at = Date.now(); GS.days = d; })
+    .catch(function (e) { GS.errAt = Date.now(); GS.err = /nologin|expired/.test(e.message) ? '' : /Tidak berwenang/.test(e.message) ? 'Akun ini belum punya akses data Search Console.' : 'Gagal memuat data Search Console. Coba muat ulang.'; })
+    .then(function () { GS.loading = false; if (view() === 'seo') setTimeout(render, 0); });
+}
+function gsPos(v) { return v == null || v === '' ? '—' : String(v).replace('.', ','); }
+function gscBlock() {
+  if ((!GS.data || GS.days !== GA.days || Date.now() - GS.at > 120000) && !GS.loading && (!GS.err || Date.now() - GS.errAt > 60000)) { if (!LOCAL) gsLoad(); }
+  if (GS.err) return '<div class="hint" style="background:#FDF3D7;color:#7A5200">' + esc(GS.err) + '</div>';
+  if (!GS.data) return '';
+  var g = GS.data, t = g.totals || {}, pv = g.prev || {}, ls = g.last_sync || null;
+  var st = ls ? (ls.ok ? 'Data Google sampai ' + (g.last_day || '-') + ' (Search Console terlambat 2–3 hari)' : 'Sinkron gagal: ' + esc(ls.error || '-')) : 'Belum pernah sinkron';
+  if (!(+t.impressions)) return sec('Pencarian Google · Search Console', 'search', st, '', empty('Belum ada data pencarian di rentang ini.'));
+  var ctr = t.impressions ? Math.round(t.clicks / t.impressions * 1000) / 10 : 0;
+  var top5 = (g.targets || []).filter(function (k) { return k.position != null && +k.position <= 5; }).length;
+  var out = kpis([
+    { label: 'Tampil di Google', ic: 'search', val: fmt(t.impressions), note: 'Periode lalu ' + fmt(pv.impressions), bar: +t.impressions >= (+pv.impressions || 0) ? TEAL : ORG },
+    { label: 'Klik dari Google', ic: 'link', val: fmt(t.clicks), note: 'CTR ' + String(ctr).replace('.', ',') + '% · periode lalu ' + fmt(pv.clicks), bar: TEAL },
+    { label: 'Posisi rata-rata', ic: 'chart', val: gsPos(t.position), note: 'Periode lalu ' + gsPos(pv.position) + ' · makin kecil makin baik', bar: t.position && +t.position <= 10 ? TEAL : ORG },
+    { label: 'Kata kunci utama di halaman 1 atas', ic: 'star', val: top5 + ' / ' + (g.targets || []).length, note: 'Posisi ≤ 5 (patokan)', bar: top5 ? TEAL : ORG, nc: top5 ? GOOD : BAD }
+  ]);
+  var im = [], cl = []; (g.daily || []).forEach(function (d) { im.push(+d.impressions || 0); cl.push(+d.clicks || 0); });
+  out += sec('Tampil & klik per hari', 'chart', st + ' · batang hijau tua = klik', '', bars(im, '#9ADFD8') + '<div style="margin-top:6px"></div>' + bars(cl, '#067A70'));
+  var posCell = function (v) { return '<b style="color:' + (v == null ? '#5B6573' : +v <= 5 ? GOOD : +v <= 10 ? '#7A5200' : BAD) + '">' + gsPos(v) + '</b>'; };
+  var tRows = (g.targets || []).map(function (k) { return '<tr><td><b>' + esc(k.query) + '</b></td><td style="text-align:right">' + fmt(k.impressions) + '</td><td style="text-align:right">' + fmt(k.clicks) + '</td><td style="text-align:right">' + (k.impressions ? posCell(k.position) : '<span class="sub">belum muncul</span>') + '</td></tr>'; }).join('');
+  out += sec('Kata kunci utama', 'flag', 'Patokan posisi ≤ 5. Hijau ≤ 5, kuning 6–10 (halaman 1), merah > 10 (halaman 2 ke bawah). Daftar kata kunci diatur di pengaturan gsc_keywords.', '',
+    '<div style="overflow-x:auto"><table class="tbl"><thead><tr><th>Kata kunci</th><th style="text-align:right">Tampil</th><th style="text-align:right">Klik</th><th style="text-align:right">Posisi</th></tr></thead><tbody>' + tRows + '</tbody></table></div>');
+  var qRows = (g.queries || []).map(function (q) { return '<tr><td><b>' + esc(q.query) + '</b>' + (q.target ? ' <span class="sub">· utama</span>' : '') + '<div class="sub">' + esc((q.page || '').replace(/^https?:\/\/[^/]+/, '')) + '</div></td><td style="text-align:right">' + fmt(q.impressions) + '</td><td style="text-align:right">' + fmt(q.clicks) + '</td><td style="text-align:right">' + (q.impressions ? String(Math.round(q.clicks / q.impressions * 1000) / 10).replace('.', ',') + '%' : '—') + '</td><td style="text-align:right">' + posCell(q.position) + '</td></tr>'; }).join('');
+  out += sec('Pencarian yang memunculkan rentalaja.co.id', 'search', '30 teratas menurut tampil. Kata kunci dengan banyak tampil tapi posisi > 10 = peluang: perbaiki halaman tujuannya.', '',
+    qRows ? '<div style="overflow-x:auto"><table class="tbl"><thead><tr><th>Kata kunci · halaman tujuan</th><th style="text-align:right">Tampil</th><th style="text-align:right">Klik</th><th style="text-align:right">CTR</th><th style="text-align:right">Posisi</th></tr></thead><tbody>' + qRows + '</tbody></table></div>' : empty('Belum ada.'));
+  out += sec('Halaman di Google', 'list', '15 teratas menurut klik.', '', lbTable((g.pages || []).map(function (r) { return Object.assign({}, r, { label: r.page || '/' }); }), [['label', 'Halaman'], ['impressions', 'Tampil'], ['clicks', 'Klik']], 'impressions'));
+  return out;
+}
+
 /* ---------- Link bio Rentalaja (rentalaja.co.id/link) · data asli dari aplikasi Rentalaja (RPC ra_link_stats) ---------- */
 var LB = { days: 30, page: 'bio', data: null, loading: false, err: '', at: 0 };
 var LB_SRC = { ig: 'Instagram', tt: 'TikTok', fb: 'Facebook', wa: 'WhatsApp', google: 'Google', langsung: 'Langsung / tidak diketahui', line: 'LINE' };
