@@ -246,6 +246,7 @@ async function boot() {
   window.onhashchange = route;
   route();
   askPhone();
+  import('./push.js').then(m => m.initPush()).catch(() => {});
 }
 
 // nomor WA dipakai untuk peringatan keamanan & notifikasi; minta sekali bila belum ada
