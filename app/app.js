@@ -156,7 +156,7 @@ async function route() {
   window.scrollTo(0, 0);
   try {
     if (k === 'shift') { location.href = OPS_URL; return; }
-    if (k === 'ops') { location.href = 'https://demo.rentalaja.co.id/#/OpsKerja'; return; }
+    if (k === 'ops') { location.href = 'https://rentalaja.co.id/#/OpsKerja'; return; }
     if (k === 'menu') { menuView(el); document.title = 'Menu · Pokama'; return; }
     if (!r) { location.hash = '#/' + HOME(); return; }
     document.title = r[1] + ' · Pokama';

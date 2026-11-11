@@ -1611,7 +1611,7 @@ function lset() {
   if (!d.teams || !d.teams.length) d.teams = ['Wanaraja', 'Garut Kota', 'Bandung Hub', 'Jackal Point', 'Tim marketing'];
   if (!d.hosts) d.hosts = [];
   if (!d.themes || !d.themes.length) d.themes = JSON.parse(JSON.stringify(LV_THEMES));
-  d.cta = Object.assign({ text: 'Klik link di bio untuk booking sekarang', wa: '6281324700077', link: 'https://rentalaja.co.id', bio: 'https://demo.rentalaja.co.id/link' }, d.cta || {});
+  d.cta = Object.assign({ text: 'Klik link di bio untuk booking sekarang', wa: '6281324700077', link: 'https://rentalaja.co.id', bio: 'https://rentalaja.co.id/link' }, d.cta || {});
   d.bonus = Object.assign({}, LV_DEF_BONUS, d.bonus || {});
   d.appr = d.appr || {}; d.plan = d.plan || 10;
   return d;
@@ -2101,7 +2101,7 @@ function gscBlock() {
 /* ---------- Link bio Rentalaja (rentalaja.co.id/link) · data asli dari aplikasi Rentalaja (RPC ra_link_stats) ---------- */
 var LB = { days: 30, page: 'bio', data: null, loading: false, err: '', at: 0 };
 var LB_SRC = { ig: 'Instagram', tt: 'TikTok', fb: 'Facebook', wa: 'WhatsApp', google: 'Google', langsung: 'Langsung / tidak diketahui', line: 'LINE' };
-var LB_HOST = 'https://demo.rentalaja.co.id';
+var LB_HOST = 'https://rentalaja.co.id';
 var LB_URL = LB_HOST + '/link';
 var LB_BTNS = [
   ['Banner geser', [['banner_motor', 'Motor matic siap diantar ke hotel'], ['banner_gadget', 'iPhone & kamera buat konten'], ['banner_inap', 'Nginep cozy di Ruma Metua'], ['banner_ajak', 'Ajak teman, dapat saldo']]],

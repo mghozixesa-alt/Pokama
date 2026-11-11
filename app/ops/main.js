@@ -398,7 +398,7 @@ async function vAkun(el) { const me = ctx.byId[ctx.me.id] || ctx.me, A = H.assig
   <section class="card"><div class="list menu-l">
     <a class="li" href="#/slip">${ri('slip', 20)} <span>Slip gaji</span>›</a><a class="li" href="#/jadwal">${ri('jadwal', 20)} <span>Jadwal & penugasan</span>›</a><a class="li" href="#/kehadiran">${ri('riwayat', 20)} <span>Riwayat kehadiran</span>›</a>
     <a class="li" href="#/performa">${ri('performa', 20)} <span>Performa & lencana</span>›</a><a class="li" href="#/pengajuan">${ri('reimburse', 20)} <span>Pengajuan saya</span>›</a>
-    ${WHO.mgr ? `<a class="li" href="https://demo.rentalaja.co.id/#/OpsKerja" target="_blank" rel="noopener">${ri('tim', 20)} <span>Kelola petugas (Rentalaja Operasional)</span>↗</a>` : ''}
+    ${WHO.mgr ? `<a class="li" href="https://rentalaja.co.id/#/OpsKerja" target="_blank" rel="noopener">${ri('tim', 20)} <span>Kelola petugas (Rentalaja Operasional)</span>↗</a>` : ''}
     <button class="li" type="button" data-out>${ri('keluar', 20)} <span>Keluar</span></button></div></section>
   <p class="muted small" style="text-align:center">Kerja Lapangan · PT Popo Karya Investama</p></div>`; }
 
@@ -435,7 +435,7 @@ async function boot() {
   if (!ok) { try { localStorage.removeItem('pokama.session'); } catch (e) {} loginView('Akun ini belum terdaftar sebagai petugas operasional. Minta Operasional mendaftarkan email Anda.'); return; }
   WHO = ctx.who || {};
   if (ctx.me.role !== 'lapangan' && !WHO.field && !WHO.mgr) {
-    gate('Halaman ini untuk petugas operasional', 'Kerja Lapangan dipakai kasir, CS, runner, sopir, QC, teknisi, dan kepala cabang. Manajemen petugas ada di <a href="https://demo.rentalaja.co.id/#/OpsKerja">Rentalaja → Operasional → Kerja lapangan</a>.'); return;
+    gate('Halaman ini untuk petugas operasional', 'Kerja Lapangan dipakai kasir, CS, runner, sopir, QC, teknisi, dan kepala cabang. Manajemen petugas ada di <a href="https://rentalaja.co.id/#/OpsKerja">Rentalaja → Operasional → Kerja lapangan</a>.'); return;
   }
   loadCache();
   shell(); window.onhashchange = route; if (!location.hash || location.hash === '#/') location.hash = '#/beranda'; route();
