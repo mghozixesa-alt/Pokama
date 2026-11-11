@@ -81,6 +81,8 @@ Deno.serve(async (req) => {
       ["sessions", "totalUsers", "newUsers", "engagedSessions", "screenPageViews"]);
     const p = await report(token, prop, from, to, ["date", "pagePath"], ["sessions", "screenPageViews", "totalUsers"]);
     const e = await report(token, prop, from, to, ["date", "eventName"], ["eventCount"]);
+    // total harian tanpa dimensi kanal: satu sesi bisa tercatat di lebih dari satu kanal, jadi total TIDAK boleh dari penjumlahan baris kanal
+    const t = await report(token, prop, from, to, ["date"], ["sessions", "totalUsers", "newUsers", "engagedSessions", "screenPageViews"]);
 
     await upsert("mk_ga4_daily", a.map((x) => ({ day: ymd(x.d[0]), channel: x.d[1] || "", source: x.d[2] || "", medium: x.d[3] || "",
       sessions: x.m[0], users: x.m[1], new_users: x.m[2], engaged: x.m[3], views: x.m[4] })), from, to);
@@ -91,7 +93,9 @@ Deno.serve(async (req) => {
     await upsert("mk_ga4_pages", [...pm.values()], from, to);
     await upsert("mk_ga4_events", e.map((x) => ({ day: ymd(x.d[0]), event_name: x.d[1], cnt: x.m[0] })), from, to);
 
-    const n = a.length + pm.size + e.length;
+    await upsert("mk_ga4_totals", t.map((x) => ({ day: ymd(x.d[0]), sessions: x.m[0], users: x.m[1], new_users: x.m[2], engaged: x.m[3], views: x.m[4] })), from, to);
+
+    const n = a.length + pm.size + e.length + t.length;
     await log(true, n, null);
     return json({ ok: true, from, to, rows: n });
   } catch (err) {

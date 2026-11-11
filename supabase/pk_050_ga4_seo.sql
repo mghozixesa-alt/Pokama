@@ -74,3 +74,13 @@ grant execute on function public.mk_seo_ga4(date, date) to authenticated;
 
 select cron.schedule('mk-ga4-sync', '0 23 * * *',
   $c$select net.http_post(url := 'https://shrvzlltysnbmgpkhjjg.supabase.co/functions/v1/ga4-sync', headers := '{"Content-Type":"application/json"}'::jsonb, body := '{"days":3}'::jsonb, timeout_milliseconds := 60000)$c$);
+
+-- 11 Nov 2026: total harian diambil langsung dari GA4 (tanpa dimensi kanal). Satu sesi bisa tercatat di lebih dari satu kanal,
+-- jadi menjumlah baris kanal melebihkan total (contoh 28 hari: 325 vs 244 di GA4).
+create table if not exists public.mk_ga4_totals (
+  day date primary key, sessions int not null default 0, users int not null default 0, new_users int not null default 0,
+  engaged int not null default 0, views int not null default 0, synced_at timestamptz not null default now());
+alter table public.mk_ga4_totals enable row level security;
+revoke all on public.mk_ga4_totals from anon, authenticated;
+-- mk_seo_ga4 versi terbaru (totals/prev/daily dari mk_ga4_totals) diterapkan lewat migrasi mk_ga4_totals di Supabase.
+-- Properti GA4 Rentalaja: 563319806 · event klik WA: klik_whatsapp · service account pokama-ga4@popoproject.iam.gserviceaccount.com (Viewer).
