@@ -37,7 +37,6 @@ export default async function HomePage() {
         <div className="flex items-center justify-between px-5 pt-[18px]">
           <span className="inline-flex items-center h-12 px-3.5 rounded-2xl bg-white"><Logo height={34} /></span>
           <div className="flex items-center gap-2.5">
-            <Link href="/akun#tersimpan" aria-label="Tersimpan" className="w-11 h-11 rounded-full bg-white flex items-center justify-center text-brand-navy"><Icon.Heart /></Link>
             <a href={`https://wa.me/${process.env.NEXT_PUBLIC_WA_NUMBER ?? ""}`} aria-label="Chat WhatsApp" className="w-11 h-11 rounded-full bg-white/20 flex items-center justify-center text-white"><Icon.Chat /></a>
           </div>
         </div>
