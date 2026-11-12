@@ -1,9 +1,8 @@
-import Image from "next/image";
 import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { Shell, TopBar } from "@/components/Shell";
 import { GradeBadge } from "@/components/GradeBadge";
-import { unitTitle } from "@/components/UnitCard";
+import { unitTitle, Photo } from "@/components/UnitCard";
 import { rupiah, BRANCH_LABEL } from "@/lib/format";
 import type { Unit } from "@/lib/types";
 import { createOrder } from "./actions";
@@ -33,11 +32,11 @@ export default async function BookingPage({ params }: { params: Promise<{ public
     <Shell withNav={false}>
       <TopBar title="Booking & bayar" back={`/unit/${publicId}`} />
       <div className="mx-4 card p-3 flex gap-3">
-        <span className="relative w-16 h-16 rounded-xl overflow-hidden bg-white border border-page shrink-0">{u.photos[0] && <Image src={u.photos[0]} alt="" fill className="object-contain p-1" />}</span>
+        <span className="relative w-16 h-16 rounded-xl overflow-hidden bg-white border border-page shrink-0"><Photo u={u} sizes="64px" /></span>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-1.5"><GradeBadge grade={u.grade} /><span className="text-[10px] text-muted">{u.public_id}</span></div>
-          <p className="text-sm font-bold truncate">{unitTitle(u)}</p>
-          <p className="text-base font-bold text-brand-navy">{rupiah(price)}{offer && <span className="text-[10px] font-bold text-teal-dark ml-2">harga tawaran</span>}</p>
+          <p className="text-sm font-semibold truncate">{unitTitle(u)}</p>
+          <p className="text-base font-bold text-brand-navy">{rupiah(price)}{offer && <span className="text-[10px] font-semibold text-brand-dark ml-2">harga tawaran</span>}</p>
         </div>
       </div>
 
@@ -47,13 +46,13 @@ export default async function BookingPage({ params }: { params: Promise<{ public
         {offer && <input type="hidden" name="offer_id" value={offer.id} />}
 
         <div className="card p-4 flex flex-col gap-3">
-          <h3 className="text-sm font-bold text-brand-navy">Data penerima</h3>
+          <h3 className="text-sm font-semibold text-brand-navy">Data penerima</h3>
           <div><label className="label">Nama lengkap</label><input name="full_name" required defaultValue={profile?.full_name ?? ""} className="input" /></div>
           <div><label className="label">Nomor WhatsApp</label><input name="phone" required inputMode="tel" defaultValue={profile?.phone ?? ""} placeholder="08xxxxxxxxxx" className="input" /></div>
         </div>
 
         <div className="card p-4 flex flex-col gap-3">
-          <h3 className="text-sm font-bold text-brand-navy">Cara terima unit</h3>
+          <h3 className="text-sm font-semibold text-brand-navy">Cara terima unit</h3>
           <label className="flex items-start gap-3 p-3 rounded-xl border border-line has-[:checked]:border-brand has-[:checked]:bg-brand-light">
             <input type="radio" name="fulfillment" value="ambil_di_toko" defaultChecked className="mt-1 accent-brand" />
             <span><b className="text-sm">Ambil di toko {BRANCH_LABEL[u.branch]}</b><br /><span className="text-[11px] text-muted">Gratis · cek unit langsung sebelum bawa pulang</span></span>
@@ -66,7 +65,7 @@ export default async function BookingPage({ params }: { params: Promise<{ public
         </div>
 
         <div className="card p-4 flex flex-col gap-2">
-          <h3 className="text-sm font-bold text-brand-navy">Cara bayar</h3>
+          <h3 className="text-sm font-semibold text-brand-navy">Cara bayar</h3>
           <label className="flex items-center gap-3 p-3 rounded-xl border border-line has-[:checked]:border-brand has-[:checked]:bg-brand-light"><input type="radio" name="method" value="transfer" defaultChecked className="accent-brand" /><span className="text-sm"><b>Transfer bank</b> — nomor rekening tampil setelah booking</span></label>
           <label className="flex items-center gap-3 p-3 rounded-xl border border-line has-[:checked]:border-brand has-[:checked]:bg-brand-light"><input type="radio" name="method" value="tunai" className="accent-brand" /><span className="text-sm"><b>Tunai di toko</b> — bayar saat ambil unit</span></label>
           <p className="text-[11px] text-muted">Unit ditahan 24 jam untuk Anda. Tanpa DP, tanpa biaya tambahan.</p>

@@ -32,11 +32,11 @@ export function OfferForm({ unitId, publicId, price, loggedIn, disabled }: { uni
   return (
     <div className="card p-4">
       <div className="flex items-center justify-between">
-        <h3 className="text-sm font-bold text-brand-navy">Tawar harga</h3>
-        <span className="text-[10px] font-bold text-teal-dark bg-teal-light px-2 py-0.5 rounded-md">Tanpa DP</span>
+        <h3 className="text-sm font-semibold text-brand-navy">Tawar harga</h3>
+        <span className="text-[10px] font-semibold text-brand-dark bg-brand-light px-2 h-5 inline-flex items-center rounded-md">Tanpa DP</span>
       </div>
       {done ? (
-        <p className="text-sm text-teal-dark mt-3">{done} <Link href="/pesanan" className="font-bold underline">Lihat</Link></p>
+        <p className="text-sm text-brand-dark mt-3">{done} <Link href="/pesanan" className="font-bold underline">Lihat</Link></p>
       ) : (
         <>
           <div className="mt-3 flex items-center gap-2">
