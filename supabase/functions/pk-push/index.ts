@@ -72,7 +72,7 @@ async function pushOne(sub: any, msg: Record<string, unknown>, urgent: boolean) 
   return "ok";
 }
 
-const msgOf = (n: any) => ({ title: n.title, body: n.body || "", url: APP + (n.link || ""), tag: n.id, urgent: !!n.urgent });
+const msgOf = (n: any) => ({ title: n.title, body: n.body || "", url: /^https?:\/\//.test(n.link || "") ? n.link : APP + (n.link || ""), tag: n.id, urgent: !!n.urgent });
 
 async function queue() {
   const { data: rows, error } = await db.rpc("pk_push_claim", { p_limit: 200 });
