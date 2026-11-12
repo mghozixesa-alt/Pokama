@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { Logo } from "./Logo";
 
 export type Slide = { kicker: string; title: string; sub: string; cta: string; href: string; img: string; sticker: { big: string; small: string; tone: "white" | "navy" | "teal" } };
 
@@ -25,7 +26,7 @@ export function BannerCarousel({ slides }: { slides: Slide[] }) {
         <div className="absolute inset-0 bg-gradient-to-r from-[rgba(16,54,92,0.9)] via-[rgba(16,54,92,0.86)] to-transparent" style={{ backgroundImage: "linear-gradient(90deg, rgba(16,54,92,0.9) 0%, rgba(16,54,92,0.86) 28%, rgba(16,54,92,0) 64%)" }} />
         <div className="absolute inset-0 p-4 flex flex-col justify-center gap-1 text-white max-w-[62%]">
           <span className="inline-flex items-center gap-2 self-start">
-            <span className="inline-flex items-center h-[22px] px-1.5 rounded-md bg-white"><Image src="/logo.png" alt="Niagaaja" width={56} height={14} className="h-3.5 w-auto" /></span>
+            <span className="inline-flex items-center h-[22px] px-1.5 rounded-md bg-white"><Logo height={14} /></span>
             <span className="text-[9px] font-bold tracking-wider uppercase opacity-85">{s.kicker}</span>
           </span>
           <h3 className="text-[18px] leading-[22px] font-extrabold mt-1">{s.title}</h3>

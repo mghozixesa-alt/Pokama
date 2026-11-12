@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { Logo } from "@/components/Logo";
 import { Shell } from "@/components/Shell";
 import { GoogleButton } from "@/components/GoogleButton";
 import { EmailLogin } from "@/components/EmailLogin";
@@ -10,7 +10,7 @@ export default async function MasukPage({ searchParams }: { searchParams: Promis
   return (
     <Shell withNav={false}>
       <div className="min-h-dvh flex flex-col items-center justify-center px-6 text-center">
-        <Image src="/logo.png" alt="Niagaaja" width={180} height={54} className="h-12 w-auto" priority />
+        <Logo height={48} />
         <h1 className="text-xl font-extrabold text-brand-navy mt-6">Masuk ke Niagaaja</h1>
         <p className="text-sm text-muted mt-1">Untuk booking, tawar harga, dan melihat pesanan. Cukup pakai akun Google.</p>
         <div className="w-full mt-6"><GoogleButton next={next ?? "/"} /></div>

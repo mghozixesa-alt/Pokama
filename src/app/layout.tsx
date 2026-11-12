@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   title: { default: "Niagaaja — Elektronik bekas bersertifikat", template: "%s · Niagaaja" },
   description:
     "Jual beli HP, laptop, kamera, konsol, dan elektronik bekas di Garut. Semua unit dicek 8 langkah, bergaransi, bisa ditawar.",
-  icons: { icon: "/icon.svg", apple: "/apple-icon.png" },
+  icons: { icon: "/icon.svg" },
 };
 
 export const viewport: Viewport = {

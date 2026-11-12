@@ -1,7 +1,7 @@
 import Link from "next/link";
-import Image from "next/image";
 import { createClient } from "@/lib/supabase/server";
 import { Shell } from "@/components/Shell";
+import { Logo } from "@/components/Logo";
 import { Icon, CategoryIcon } from "@/components/Icons";
 import { UnitCardGrid } from "@/components/UnitCard";
 import { BannerCarousel, type Slide } from "@/components/BannerCarousel";
@@ -35,7 +35,7 @@ export default async function HomePage() {
       {/* Hero biru */}
       <section className="relative h-[292px] bg-gradient-to-b from-[#2F8AD6] to-[#1F5F9E] rounded-b-[32px]">
         <div className="flex items-center justify-between px-5 pt-[18px]">
-          <span className="inline-flex items-center h-12 px-3.5 rounded-2xl bg-white"><Image src="/logo.png" alt="Niagaaja" width={120} height={36} className="h-9 w-auto" priority /></span>
+          <span className="inline-flex items-center h-12 px-3.5 rounded-2xl bg-white"><Logo height={34} /></span>
           <div className="flex items-center gap-2.5">
             <Link href="/akun#tersimpan" aria-label="Tersimpan" className="w-11 h-11 rounded-full bg-white flex items-center justify-center text-brand-navy"><Icon.Heart /></Link>
             <a href={`https://wa.me/${process.env.NEXT_PUBLIC_WA_NUMBER ?? ""}`} aria-label="Chat WhatsApp" className="w-11 h-11 rounded-full bg-white/20 flex items-center justify-center text-white"><Icon.Chat /></a>
