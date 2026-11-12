@@ -9,7 +9,7 @@ import type { Category, Unit } from "@/lib/types";
 export const metadata = { title: "Katalog" };
 export const revalidate = 30;
 
-type Search = { q?: string; kategori?: string; grade?: string; maks?: string; urut?: string };
+type Search = { q?: string; kategori?: string; merek?: string; grade?: string; maks?: string; urut?: string };
 
 const CHIPS: { label: string; params: Partial<Search> }[] = [
   { label: "Semua", params: {} },
@@ -33,19 +33,26 @@ export default async function KatalogPage({ searchParams }: { searchParams: Prom
   const supabase = createPublicClient();
   let q = supabase.from("units").select("*").eq("status", "tersedia");
   if (sp.kategori) q = q.eq("category", sp.kategori as Category);
+  if (sp.merek) q = q.ilike("brand", sp.merek);
   if (sp.grade) q = q.eq("grade", sp.grade);
   if (sp.maks) q = q.lte("price_sell", Number(sp.maks));
   if (sp.q) q = q.or(`model.ilike.%${sp.q}%,brand.ilike.%${sp.q}%,variant.ilike.%${sp.q}%`);
   if (sp.urut === "murah") q = q.order("price_sell", { ascending: true });
   else if (sp.urut === "mahal") q = q.order("price_sell", { ascending: false });
   else q = q.order("created_at", { ascending: false });
-  const { data } = await q.limit(40);
+  // daftar merek dari stok tersedia (mengikuti kategori yang dipilih)
+  let bq = supabase.from("units").select("brand").eq("status", "tersedia");
+  if (sp.kategori) bq = bq.eq("category", sp.kategori as Category);
+  const [{ data }, { data: brandRows }] = await Promise.all([q.limit(40), bq]);
   const units = (data ?? []) as Unit[];
+  const brandCount = new Map<string, number>();
+  for (const r of (brandRows ?? []) as { brand: string }[]) brandCount.set(r.brand, (brandCount.get(r.brand) ?? 0) + 1);
+  const brands = [...brandCount.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])).map(([b]) => b);
 
   const isActive = (p: Partial<Search>) =>
     Object.keys(p).length === 0 ? !sp.kategori && !sp.grade && !sp.maks : Object.entries(p).every(([k, v]) => sp[k as keyof Search] === v);
 
-  const hasFilter = !!(sp.q || sp.kategori || sp.grade || sp.maks);
+  const hasFilter = !!(sp.q || sp.kategori || sp.merek || sp.grade || sp.maks);
   const SORTS: [string, string][] = [["baru", "Terbaru"], ["murah", "Termurah"], ["mahal", "Termahal"]];
   const curSort = sp.urut ?? "baru";
 
@@ -61,6 +68,7 @@ export default async function KatalogPage({ searchParams }: { searchParams: Prom
             <Icon.Search size={18} stroke="#8a93a6" />
             <input name="q" defaultValue={sp.q} placeholder="Cari merek, model, atau spesifikasi" className="flex-1 bg-transparent text-sm outline-none min-w-0" />
             {sp.kategori && <input type="hidden" name="kategori" value={sp.kategori} />}
+            {sp.merek && <input type="hidden" name="merek" value={sp.merek} />}
           </div>
         </form>
         <div className="flex gap-2 mt-3 -mx-4 px-4 overflow-x-auto no-scrollbar">
@@ -72,6 +80,18 @@ export default async function KatalogPage({ searchParams }: { searchParams: Prom
           })}
         </div>
       </div>
+
+      {brands.length > 1 && (
+        <div className="flex gap-2 mt-3 px-4 overflow-x-auto no-scrollbar">
+          <span className="shrink-0 h-8 flex items-center text-[11px] font-bold text-muted">Merek</span>
+          {brands.map((b) => {
+            const on = (sp.merek ?? "").toLowerCase() === b.toLowerCase();
+            return (
+              <Link key={b} href={`/katalog${qs({ ...sp, merek: on ? undefined : b })}`} className={`shrink-0 h-8 px-3 rounded-full text-[11px] font-bold border flex items-center ${on ? "bg-brand text-white border-brand" : "bg-white text-ink border-line"}`}>{b}</Link>
+            );
+          })}
+        </div>
+      )}
 
       <div className="px-4 mt-4 flex items-center justify-between text-[12px]">
         <p className="text-muted"><b className="text-brand">{units.length} unit</b> · semua dicek ✓</p>
