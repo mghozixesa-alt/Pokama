@@ -26,7 +26,7 @@ export default async function StokPage({ searchParams }: { searchParams: Promise
   return (
     <div>
       <div className="flex items-center justify-between gap-3 flex-wrap">
-        <h1 className="text-2xl font-extrabold text-brand-navy">Stok & kepemilikan</h1>
+        <h1 className="text-2xl font-bold text-brand-navy">Stok & kepemilikan</h1>
         <Link href="/admin/stok/baru" className="btn-primary h-10">+ Unit baru</Link>
       </div>
       <form className="mt-4 flex gap-2"><input name="q" defaultValue={sp.q} placeholder="Cari NJ-… / model" className="input max-w-xs" />{sp.status && <input type="hidden" name="status" value={sp.status} />}<button className="btn-soft h-12 px-4">Cari</button></form>
@@ -46,7 +46,7 @@ export default async function StokPage({ searchParams }: { searchParams: Promise
                   <td className="px-3 py-2"><GradeBadge grade={r.grade} /></td>
                   <td className="px-3 py-2 text-xs">{own ? <>{own.owner_type}{own.owners?.name ? ` · ${own.owners.name}` : ""}{own.owner_type !== "sendiri" && <span className="text-muted"> ({own.share_owner_pct}%)</span>}</> : "-"}</td>
                   <td className="px-3 py-2 text-xs">{SOURCE_LABEL[r.source]}{r.rentalaja_asset_id ? ` · ${r.rentalaja_asset_id}` : ""}</td>
-                  <td className="px-3 py-2"><span className={`text-[10px] font-extrabold px-2 py-0.5 rounded-md ${STATUS_TONE[r.status] ?? ""}`}>{r.status}</span></td>
+                  <td className="px-3 py-2"><span className={`text-[10px] font-bold px-2 py-0.5 rounded-md ${STATUS_TONE[r.status] ?? ""}`}>{r.status}</span></td>
                   <td className="px-3 py-2 font-bold whitespace-nowrap">{rupiah(r.price_sell)}</td>
                   <td className="px-3 py-2 text-xs whitespace-nowrap">{rupiah(own?.cost_basis)}</td>
                   <td className="px-3 py-2 text-xs">{BRANCH_LABEL[r.branch]}</td>

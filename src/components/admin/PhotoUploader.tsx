@@ -50,7 +50,7 @@ export function PhotoUploader({ initial, name = "photos" }: { initial: string[];
           <div key={u} className="relative w-20 h-20 rounded-xl overflow-hidden border border-line bg-white group">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={u} alt="" className="w-full h-full object-contain" />
-            {i === 0 && <span className="absolute top-1 left-1 px-1 rounded bg-brand text-white text-[8px] font-extrabold">UTAMA</span>}
+            {i === 0 && <span className="absolute top-1 left-1 px-1 rounded bg-brand text-white text-[8px] font-bold">UTAMA</span>}
             <div className="absolute bottom-0 inset-x-0 flex justify-between bg-white/90 text-[10px]">
               <button type="button" onClick={() => move(i, -1)} className="px-1.5 py-0.5 font-bold" aria-label="Geser kiri">‹</button>
               <button type="button" onClick={() => setUrls((x) => x.filter((_, k) => k !== i))} className="px-1.5 py-0.5 font-bold text-[#a12d2d]" aria-label="Hapus">×</button>

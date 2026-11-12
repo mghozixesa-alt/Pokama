@@ -9,8 +9,8 @@ export default function SertifikatInfoPage() {
     <Shell withNav={false}>
       <TopBar title="Grade & sertifikat" back="/katalog" />
       <div className="mx-4 card p-5">
-        <h2 className="text-base font-extrabold text-brand-navy">Setiap unit dicek 8 langkah</h2>
-        <ol className="mt-3 grid grid-cols-2 gap-2">{STEPS.map((s, i) => <li key={s} className="flex items-center gap-2 text-sm"><span className="w-6 h-6 rounded-full bg-brand-light text-brand text-[11px] font-extrabold flex items-center justify-center">{i + 1}</span>{s}</li>)}</ol>
+        <h2 className="text-base font-bold text-brand-navy">Setiap unit dicek 8 langkah</h2>
+        <ol className="mt-3 grid grid-cols-2 gap-2">{STEPS.map((s, i) => <li key={s} className="flex items-center gap-2 text-sm"><span className="w-6 h-6 rounded-full bg-brand-light text-brand text-[11px] font-bold flex items-center justify-center">{i + 1}</span>{s}</li>)}</ol>
       </div>
       <div className="mx-4 mt-3 card p-5 flex flex-col gap-3 text-sm">
         <div><b className="text-brand-navy">Grade A · mulus</b><p className="text-muted">Seperti baru, tanpa goresan terlihat. Harga penuh, garansi 30 hari.</p></div>

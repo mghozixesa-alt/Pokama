@@ -37,7 +37,7 @@ export default async function BookingPage({ params }: { params: Promise<{ public
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-1.5"><GradeBadge grade={u.grade} /><span className="text-[10px] text-muted">{u.public_id}</span></div>
           <p className="text-sm font-bold truncate">{unitTitle(u)}</p>
-          <p className="text-base font-extrabold text-brand-navy">{rupiah(price)}{offer && <span className="text-[10px] font-bold text-teal-dark ml-2">harga tawaran</span>}</p>
+          <p className="text-base font-bold text-brand-navy">{rupiah(price)}{offer && <span className="text-[10px] font-bold text-teal-dark ml-2">harga tawaran</span>}</p>
         </div>
       </div>
 
@@ -47,13 +47,13 @@ export default async function BookingPage({ params }: { params: Promise<{ public
         {offer && <input type="hidden" name="offer_id" value={offer.id} />}
 
         <div className="card p-4 flex flex-col gap-3">
-          <h3 className="text-sm font-extrabold text-brand-navy">Data penerima</h3>
+          <h3 className="text-sm font-bold text-brand-navy">Data penerima</h3>
           <div><label className="label">Nama lengkap</label><input name="full_name" required defaultValue={profile?.full_name ?? ""} className="input" /></div>
           <div><label className="label">Nomor WhatsApp</label><input name="phone" required inputMode="tel" defaultValue={profile?.phone ?? ""} placeholder="08xxxxxxxxxx" className="input" /></div>
         </div>
 
         <div className="card p-4 flex flex-col gap-3">
-          <h3 className="text-sm font-extrabold text-brand-navy">Cara terima unit</h3>
+          <h3 className="text-sm font-bold text-brand-navy">Cara terima unit</h3>
           <label className="flex items-start gap-3 p-3 rounded-xl border border-line has-[:checked]:border-brand has-[:checked]:bg-brand-light">
             <input type="radio" name="fulfillment" value="ambil_di_toko" defaultChecked className="mt-1 accent-brand" />
             <span><b className="text-sm">Ambil di toko {BRANCH_LABEL[u.branch]}</b><br /><span className="text-[11px] text-muted">Gratis · cek unit langsung sebelum bawa pulang</span></span>
@@ -66,7 +66,7 @@ export default async function BookingPage({ params }: { params: Promise<{ public
         </div>
 
         <div className="card p-4 flex flex-col gap-2">
-          <h3 className="text-sm font-extrabold text-brand-navy">Cara bayar</h3>
+          <h3 className="text-sm font-bold text-brand-navy">Cara bayar</h3>
           <label className="flex items-center gap-3 p-3 rounded-xl border border-line has-[:checked]:border-brand has-[:checked]:bg-brand-light"><input type="radio" name="method" value="transfer" defaultChecked className="accent-brand" /><span className="text-sm"><b>Transfer bank</b> — nomor rekening tampil setelah booking</span></label>
           <label className="flex items-center gap-3 p-3 rounded-xl border border-line has-[:checked]:border-brand has-[:checked]:bg-brand-light"><input type="radio" name="method" value="tunai" className="accent-brand" /><span className="text-sm"><b>Tunai di toko</b> — bayar saat ambil unit</span></label>
           <p className="text-[11px] text-muted">Unit ditahan 24 jam untuk Anda. Tanpa DP, tanpa biaya tambahan.</p>
@@ -75,7 +75,7 @@ export default async function BookingPage({ params }: { params: Promise<{ public
         <div className="card p-4">
           <div className="flex justify-between text-sm"><span className="text-muted">Harga unit</span><span className="font-bold">{rupiah(price)}</span></div>
           <div className="flex justify-between text-sm mt-1"><span className="text-muted">Biaya layanan</span><span className="font-bold">Rp 0</span></div>
-          <div className="flex justify-between text-base mt-2 pt-2 border-t border-page"><span className="font-extrabold">Total</span><span className="font-extrabold text-brand-navy">{rupiah(price)}</span></div>
+          <div className="flex justify-between text-base mt-2 pt-2 border-t border-page"><span className="font-bold">Total</span><span className="font-bold text-brand-navy">{rupiah(price)}</span></div>
         </div>
 
         <button className="btn-primary w-full">Booking sekarang</button>

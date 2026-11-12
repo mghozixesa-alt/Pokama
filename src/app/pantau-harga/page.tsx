@@ -22,7 +22,7 @@ export default async function PantauHargaPage({ searchParams }: { searchParams: 
     <Shell withNav={false}>
       <TopBar title="Pantau harga" back="/katalog" />
       <div className="mx-4 card p-4">
-        <h2 className="text-base font-extrabold text-brand-navy">Dikabari saat ada unit yang cocok</h2>
+        <h2 className="text-base font-bold text-brand-navy">Dikabari saat ada unit yang cocok</h2>
         <p className="text-sm text-muted mt-1">Isi model dan harga maksimal Anda. Begitu unit masuk dan lolos cek, kami kirim WhatsApp.</p>
         {sp.ok && <p className="text-sm text-teal-dark mt-2">Pantauan disimpan. Kami kabari begitu ada yang cocok.</p>}
         <form action={submitPriceWatch} className="mt-4 flex flex-col gap-3">
@@ -39,7 +39,7 @@ export default async function PantauHargaPage({ searchParams }: { searchParams: 
 
       {watches && watches.length > 0 && (
         <section className="px-4 mt-5">
-          <h2 className="text-sm font-extrabold text-brand-navy mb-2">Pantauan aktif</h2>
+          <h2 className="text-sm font-bold text-brand-navy mb-2">Pantauan aktif</h2>
           <div className="flex flex-col gap-2">
             {watches.map((w) => (
               <div key={w.id} className="card p-3 flex items-center gap-3 text-sm">

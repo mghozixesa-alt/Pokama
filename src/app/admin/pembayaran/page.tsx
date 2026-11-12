@@ -22,8 +22,8 @@ export default async function PembayaranPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-extrabold text-brand-navy">Konfirmasi pembayaran</h1>
-      <h2 className="text-sm font-extrabold text-muted mt-4">Bukti masuk · {withProof.length}</h2>
+      <h1 className="text-2xl font-bold text-brand-navy">Konfirmasi pembayaran</h1>
+      <h2 className="text-sm font-bold text-muted mt-4">Bukti masuk · {withProof.length}</h2>
       <div className="grid lg:grid-cols-2 gap-3 mt-2">
         {await Promise.all(withProof.map(async (r) => {
           const p = r.payments.sort((a, b) => b.created_at.localeCompare(a.created_at))[0];
@@ -33,7 +33,7 @@ export default async function PembayaranPage() {
               <div className="flex items-center justify-between"><b>{r.public_id}</b><span className="text-[11px] text-muted">{tanggal(p?.created_at ?? r.created_at)}</span></div>
               <p className="text-sm">{r.units?.brand} {r.units?.model} {r.units?.variant} · <span className="font-mono text-xs">{r.units?.public_id}</span></p>
               <p className="text-sm text-muted">{r.profiles?.full_name ?? "-"} · {r.profiles?.phone ?? "-"}</p>
-              <div className="rounded-xl bg-brand-light p-3 text-sm"><p className="text-[11px] text-brand-dark">Nominal yang harus masuk</p><p className="text-lg font-extrabold text-brand-navy">{rupiah(transferAmount(r.amount, r.unique_code))}</p><p className="text-[11px] text-muted">Pengirim: {p?.sender_name ?? "-"} · {p?.bank_name ?? "-"}</p></div>
+              <div className="rounded-xl bg-brand-light p-3 text-sm"><p className="text-[11px] text-brand-dark">Nominal yang harus masuk</p><p className="text-lg font-bold text-brand-navy">{rupiah(transferAmount(r.amount, r.unique_code))}</p><p className="text-[11px] text-muted">Pengirim: {p?.sender_name ?? "-"} · {p?.bank_name ?? "-"}</p></div>
               {url ? <a href={url} target="_blank" className="btn-soft self-start">Lihat bukti transfer</a> : <span className="text-xs text-muted">Bukti tidak ditemukan</span>}
               <form action={confirmPayment} className="flex gap-2 items-center flex-wrap mt-1">
                 <input type="hidden" name="payment_id" value={p?.id} /><input type="hidden" name="order_id" value={r.id} />
@@ -47,7 +47,7 @@ export default async function PembayaranPage() {
         {!withProof.length && <p className="text-sm text-muted">Tidak ada bukti yang menunggu.</p>}
       </div>
 
-      <h2 className="text-sm font-extrabold text-muted mt-8">Menunggu pembayaran · {waiting.length}</h2>
+      <h2 className="text-sm font-bold text-muted mt-8">Menunggu pembayaran · {waiting.length}</h2>
       <div className="card mt-2 divide-y divide-page">
         {waiting.map((r) => {
           const p = r.payments[0];

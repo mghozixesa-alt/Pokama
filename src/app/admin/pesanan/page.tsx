@@ -14,7 +14,7 @@ export default async function AdminPesananPage() {
   const rows = (data ?? []) as unknown as Row[];
   return (
     <div>
-      <h1 className="text-2xl font-extrabold text-brand-navy">Pesanan</h1>
+      <h1 className="text-2xl font-bold text-brand-navy">Pesanan</h1>
       <div className="card mt-4 overflow-x-auto">
         <table className="w-full text-sm min-w-[820px]">
           <thead className="text-[11px] text-muted text-left"><tr className="border-b border-page">{["Pesanan", "Unit", "Pelanggan", "Nominal", "Ambil / kirim", "Status", "Ubah"].map((h) => <th key={h} className="px-3 py-2 font-bold">{h}</th>)}</tr></thead>

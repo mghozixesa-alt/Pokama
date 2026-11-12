@@ -17,7 +17,7 @@ export function BottomNav({ active }: { active?: Tab }) {
   const item = (id: Tab, href: string, label: string, icon: React.ReactNode) => {
     const on = id === active;
     return (
-      <Link key={id} href={href} aria-current={on ? "page" : undefined} className={`flex flex-col items-center justify-end gap-1 pb-1 text-[10px] ${on ? "text-brand font-bold" : "text-[#8a93a6] font-semibold"}`}>
+      <Link key={id} href={href} aria-current={on ? "page" : undefined} className={`flex flex-col items-center justify-end gap-1 pb-1 text-[10px] font-medium transition-colors ${on ? "text-brand" : "text-[#8a93a6]"}`}>
         <span className={on ? "text-brand" : ""}>{icon}</span>
         {label}
       </Link>
@@ -31,8 +31,8 @@ export function BottomNav({ active }: { active?: Tab }) {
     >
       {item("beranda", "/", "Beranda", <Icon.Home />)}
       {item("katalog", "/katalog", "Cari", <Icon.Search size={22} />)}
-      <Link href="/tukar-tambah" aria-label="Jual / tukar tambah" className="relative -top-[18px] flex flex-col items-center gap-1 text-[10px] font-extrabold text-brand-navy">
-        <span className="w-14 h-14 rounded-full bg-gradient-to-b from-[#2F8AD6] to-[#1F5F9E] border-4 border-page flex items-center justify-center shadow-[0_10px_22px_rgba(42,125,193,0.45)]">
+      <Link href="/tukar-tambah" aria-label="Jual / tukar tambah" className="relative -top-[18px] flex flex-col items-center gap-1 text-[10px] font-semibold text-brand-navy">
+        <span className="w-14 h-14 rounded-full bg-gradient-to-b from-[#2F8AD6] to-[#1F5F9E] border-4 border-page flex items-center justify-center shadow-[0_8px_18px_rgba(42,125,193,0.35)]">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>
         </span>
         Jual
@@ -49,7 +49,7 @@ export function TopBar({ title, back = "/", right }: { title: string; back?: str
       <Link href={back} aria-label="Kembali" className="w-10 h-10 rounded-full bg-white border border-line flex items-center justify-center">
         <Icon.ArrowLeft />
       </Link>
-      <h1 className="text-lg font-extrabold text-brand-navy flex-1 truncate">{title}</h1>
+      <h1 className="text-lg font-bold text-brand-navy flex-1 truncate">{title}</h1>
       {right}
     </header>
   );

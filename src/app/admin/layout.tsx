@@ -22,7 +22,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   if (!profile?.role || !["admin", "qc", "cs"].includes(profile.role)) {
     return (
       <div className="min-h-dvh flex items-center justify-center p-6 text-center">
-        <div className="card p-6 max-w-sm"><p className="font-extrabold text-brand-navy">Akses admin diperlukan</p><p className="text-sm text-muted mt-2">Akun {user.email} belum punya peran staf. Minta admin menjalankan: <code className="text-xs">update profiles set role = &apos;admin&apos; where id = &apos;{user.id}&apos;;</code></p><Link href="/" className="btn-outline mt-4">Ke beranda</Link></div>
+        <div className="card p-6 max-w-sm"><p className="font-bold text-brand-navy">Akses admin diperlukan</p><p className="text-sm text-muted mt-2">Akun {user.email} belum punya peran staf. Minta admin menjalankan: <code className="text-xs">update profiles set role = &apos;admin&apos; where id = &apos;{user.id}&apos;;</code></p><Link href="/" className="btn-outline mt-4">Ke beranda</Link></div>
       </div>
     );
   }

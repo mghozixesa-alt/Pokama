@@ -16,7 +16,7 @@ export function UnitForm({ unit, ownership, owners }: { unit?: Unit; ownership?:
     <form action={upsertUnit} className="grid lg:grid-cols-2 gap-4">
       {unit && <input type="hidden" name="id" value={unit.id} />}
       <section className="card p-4 flex flex-col gap-3">
-        <h3 className="text-sm font-extrabold text-brand-navy">Identitas unit</h3>
+        <h3 className="text-sm font-bold text-brand-navy">Identitas unit</h3>
         <div className="grid grid-cols-2 gap-3">
           <div><label className="label">Kategori</label><select name="category" defaultValue={unit?.category ?? "hp"} className="input">{CATS.map((c) => <option key={c} value={c}>{c}</option>)}</select></div>
           <div><label className="label">Cabang</label><select name="branch" defaultValue={unit?.branch ?? "garut_kota"} className="input"><option value="garut_kota">Garut Kota</option><option value="wanaraja">Wanaraja</option><option value="bandung">Bandung</option></select></div>
@@ -29,7 +29,7 @@ export function UnitForm({ unit, ownership, owners }: { unit?: Unit; ownership?:
       </section>
 
       <section className="card p-4 flex flex-col gap-3">
-        <h3 className="text-sm font-extrabold text-brand-navy">Harga & status</h3>
+        <h3 className="text-sm font-bold text-brand-navy">Harga & status</h3>
         <div className="grid grid-cols-3 gap-3">
           <div><label className="label">Harga baru</label><input name="price_new" inputMode="numeric" defaultValue={unit?.price_new ?? ""} className="input" /></div>
           <div><label className="label">Harga jual</label><input name="price_sell" required inputMode="numeric" defaultValue={unit?.price_sell ?? ""} className="input" /></div>
@@ -45,7 +45,7 @@ export function UnitForm({ unit, ownership, owners }: { unit?: Unit; ownership?:
       </section>
 
       <section className="card p-4 flex flex-col gap-3">
-        <h3 className="text-sm font-extrabold text-brand-navy">Kepemilikan & bagi hasil</h3>
+        <h3 className="text-sm font-bold text-brand-navy">Kepemilikan & bagi hasil</h3>
         <div className="grid grid-cols-2 gap-3">
           <div><label className="label">Jenis pemilik</label><select name="owner_type" defaultValue={ownership?.owner_type ?? "sendiri"} className="input"><option value="sendiri">Sendiri (Niagaaja)</option><option value="investor">Investor</option><option value="titipan">Titipan</option></select></div>
           <div><label className="label">Pemilik</label><select name="owner_id" defaultValue={ownership?.owner_id ?? ""} className="input"><option value="">—</option>{owners.map((o) => <option key={o.id} value={o.id}>{o.name} ({o.type})</option>)}</select></div>
@@ -56,7 +56,7 @@ export function UnitForm({ unit, ownership, owners }: { unit?: Unit; ownership?:
       </section>
 
       <section className="card p-4 flex flex-col gap-3">
-        <h3 className="text-sm font-extrabold text-brand-navy">Spesifikasi</h3>
+        <h3 className="text-sm font-bold text-brand-navy">Spesifikasi</h3>
         <div className="grid grid-cols-2 gap-3">{SPECS.map(([k, l]) => <div key={k}><label className="label">{l}</label><input name={`spec_${k}`} defaultValue={s[k] != null ? String(s[k]) : ""} className="input" /></div>)}</div>
       </section>
 

@@ -46,7 +46,7 @@ export default async function UnitPage({ params }: { params: Promise<{ publicId:
         <div className="relative aspect-square bg-white">
           {u.photos?.[0] ? <Image src={u.photos[0]} alt={unitTitle(u)} fill sizes="480px" className="object-contain p-6" priority /> : <div className="absolute inset-0 flex items-center justify-center text-muted text-sm">Belum ada foto</div>}
           {inspection && <CheckedBadge className="absolute top-3 left-3" />}
-          {u.is_hot && u.hot_label && <span className="absolute top-3 right-3 px-2 py-1 rounded-full bg-[#e5636b] text-white text-[10px] font-extrabold">{u.hot_label}</span>}
+          {u.is_hot && u.hot_label && <span className="absolute top-3 right-3 px-2 py-1 rounded-full bg-[#e5636b] text-white text-[10px] font-bold">{u.hot_label}</span>}
         </div>
         {u.photos.length > 1 && (
           <div className="flex gap-2 p-3 overflow-x-auto no-scrollbar">
@@ -58,11 +58,11 @@ export default async function UnitPage({ params }: { params: Promise<{ publicId:
       {/* Judul & harga */}
       <div className="px-4 mt-4">
         <div className="flex items-center gap-2"><GradeBadge grade={u.grade} /><span className="text-[11px] text-muted">{CATEGORY_LABEL[u.category]} · {BRANCH_LABEL[u.branch]}</span></div>
-        <h1 className="text-xl font-extrabold text-ink mt-1">{u.brand} {u.model}</h1>
+        <h1 className="text-xl font-bold text-ink mt-1">{u.brand} {u.model}</h1>
         <p className="text-sm text-muted">{u.variant}</p>
         <div className="flex items-baseline gap-2 mt-2">
-          <span className="text-[26px] font-extrabold text-brand-navy">{rupiah(u.price_sell)}</span>
-          {save && <span className="text-xs font-extrabold text-teal-dark bg-teal-light px-2 py-0.5 rounded-md">{save}</span>}
+          <span className="text-[26px] font-bold text-brand-navy">{rupiah(u.price_sell)}</span>
+          {save && <span className="text-xs font-semibold text-brand-dark bg-brand-light px-2 py-0.5 rounded-md">{save}</span>}
         </div>
         {u.price_new && <p className="text-xs text-[#8a93a6]">Harga baru <span className="line-through">{rupiah(u.price_new)}</span></p>}
       </div>
@@ -76,7 +76,7 @@ export default async function UnitPage({ params }: { params: Promise<{ publicId:
         <Link href={`/cek/${inspection.qr_token}`} className="mx-4 mt-3 card p-4 flex items-center gap-3 block">
           <span className="w-11 h-11 rounded-xl bg-brand-navy flex items-center justify-center"><Icon.Shield size={22} stroke="#20B4A9" /></span>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-extrabold text-brand-navy">Sertifikat cek 8 langkah</p>
+            <p className="text-sm font-bold text-brand-navy">Sertifikat cek 8 langkah</p>
             <p className="text-[11px] text-muted truncate">{inspection.certificate_no} · dicek {tanggal(inspection.inspected_at)} · {inspection.checklist.filter((c) => c.status === "lolos").length}/8 lolos</p>
             <p className="text-[11px] text-muted">Sumber unit: <b className="text-ink">{SOURCE_LABEL[u.source]}</b></p>
           </div>
@@ -87,7 +87,7 @@ export default async function UnitPage({ params }: { params: Promise<{ publicId:
       {/* Spesifikasi */}
       {specs.length > 0 && (
         <div className="mx-4 mt-3 card p-4">
-          <h3 className="text-sm font-extrabold text-brand-navy mb-2">Spesifikasi</h3>
+          <h3 className="text-sm font-bold text-brand-navy mb-2">Spesifikasi</h3>
           <dl className="grid grid-cols-2 gap-x-3 gap-y-2">
             {specs.map(([k, v]) => (
               <div key={k}><dt className="text-[10px] text-muted">{SPEC_LABEL[k] ?? k}</dt><dd className="text-sm font-semibold">{k === "battery_health" ? `${v}%` : k === "megapixel" ? `${v} MP` : String(v)}</dd></div>
@@ -100,7 +100,7 @@ export default async function UnitPage({ params }: { params: Promise<{ publicId:
       {/* Jaminan */}
       <div className="mx-4 mt-3 grid grid-cols-3 gap-2">
         {[["Garansi", u.grade === "C" ? "7 hari" : "30 hari"], ["Ambil di", BRANCH_LABEL[u.branch]], ["Bisa tawar", "tanpa DP"]].map(([a, b]) => (
-          <div key={a} className="card p-3"><p className="text-[10px] text-muted">{a}</p><p className="text-sm font-extrabold text-brand-navy">{b}</p></div>
+          <div key={a} className="card p-3"><p className="text-[10px] text-muted">{a}</p><p className="text-sm font-bold text-brand-navy">{b}</p></div>
         ))}
       </div>
 
@@ -111,7 +111,7 @@ export default async function UnitPage({ params }: { params: Promise<{ publicId:
 
       {related && related.length > 0 && (
         <section className="px-4 mt-6">
-          <h2 className="text-base font-extrabold text-brand-navy mb-3">Dilihat juga</h2>
+          <h2 className="text-base font-bold text-brand-navy mb-3">Dilihat juga</h2>
           <div className="grid grid-cols-2 gap-3">{(related as Unit[]).map((r) => <UnitCardGrid key={r.id} u={r} />)}</div>
         </section>
       )}

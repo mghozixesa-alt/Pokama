@@ -31,7 +31,7 @@ export function ProofUpload({ orderId, paymentId }: { orderId: string; paymentId
 
   return (
     <div className="flex flex-col gap-3">
-      <h4 className="text-sm font-extrabold text-brand-navy">Kirim bukti transfer</h4>
+      <h4 className="text-sm font-bold text-brand-navy">Kirim bukti transfer</h4>
       <div className="grid grid-cols-2 gap-2">
         <div><label className="label">Nama pengirim</label><input value={sender} onChange={(e) => setSender(e.target.value)} className="input" placeholder="Sesuai rekening" /></div>
         <div><label className="label">Bank pengirim</label><input value={bank} onChange={(e) => setBank(e.target.value)} className="input" placeholder="BCA / Mandiri / …" /></div>

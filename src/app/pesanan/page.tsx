@@ -24,11 +24,11 @@ export default async function PesananPage() {
 
   return (
     <Shell active="pesanan">
-      <div className="px-4 pt-5"><h1 className="text-2xl font-extrabold text-brand-navy">Pesanan</h1></div>
+      <div className="px-4 pt-5"><h1 className="text-2xl font-bold text-brand-navy">Pesanan</h1></div>
 
       {offers && offers.length > 0 && (
         <section className="px-4 mt-4">
-          <h2 className="text-sm font-extrabold text-brand-navy mb-2">Tawaran aktif</h2>
+          <h2 className="text-sm font-bold text-brand-navy mb-2">Tawaran aktif</h2>
           <div className="flex flex-col gap-2">
             {offers.map((o) => {
               const u = o.units as unknown as { public_id: string; model: string; variant: string | null };
@@ -53,9 +53,9 @@ export default async function PesananPage() {
           <Link key={o.id} href={`/pesanan/${o.public_id}`} className="card p-3 flex gap-3">
             <span className="relative w-16 h-16 rounded-xl overflow-hidden bg-white border border-page shrink-0">{o.units?.photos?.[0] && <Image src={o.units.photos[0]} alt="" fill className="object-contain p-1" />}</span>
             <div className="flex-1 min-w-0">
-              <div className="flex items-center justify-between gap-2"><span className="text-[10px] text-muted">{o.public_id} · {tanggal(o.created_at)}</span><span className={`text-[10px] font-extrabold px-2 py-0.5 rounded-md ${TONE[o.status]}`}>{ORDER_STATUS_LABEL[o.status]}</span></div>
+              <div className="flex items-center justify-between gap-2"><span className="text-[10px] text-muted">{o.public_id} · {tanggal(o.created_at)}</span><span className={`text-[10px] font-bold px-2 py-0.5 rounded-md ${TONE[o.status]}`}>{ORDER_STATUS_LABEL[o.status]}</span></div>
               <p className="text-sm font-bold truncate mt-0.5">{o.units?.brand} {o.units?.model} {o.units?.variant}</p>
-              <p className="text-base font-extrabold text-brand-navy">{rupiah(o.amount)}</p>
+              <p className="text-base font-bold text-brand-navy">{rupiah(o.amount)}</p>
             </div>
           </Link>
         ))}

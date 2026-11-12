@@ -3,7 +3,7 @@ import Image from "next/image";
 import type { Unit } from "@/lib/types";
 import { rupiahShort, savePct, BRANCH_LABEL } from "@/lib/format";
 import { GradeBadge } from "./GradeBadge";
-import { Icon } from "./Icons";
+import { CategoryIcon } from "./Icons";
 
 export function unitTitle(u: Unit) {
   const withCap = ["hp", "tablet", "konsol"].includes(u.category) && u.variant;
@@ -20,44 +20,45 @@ export function unitMeta(u: Unit): string {
   return parts.slice(0, 2).join(" · ");
 }
 
-function Photo({ u, className }: { u: Unit; className?: string }) {
+export function unitSub(u: Unit): string {
+  return (["hp", "tablet", "konsol"].includes(u.category) ? u.variant?.split(" · ").slice(1).join(" · ") : u.variant) || BRANCH_LABEL[u.branch];
+}
+
+/** Foto unit; placeholder seragam (latar putih + ikon kategori) kalau belum ada foto. */
+export function Photo({ u, sizes = "(max-width: 480px) 50vw, 240px" }: { u: Unit; sizes?: string }) {
   const src = u.photos?.[0];
   if (!src) {
     return (
-      <div className={`flex items-center justify-center bg-page text-muted text-xs ${className}`}>Belum ada foto</div>
+      <div className="absolute inset-0 flex flex-col items-center justify-center gap-1 bg-white text-[#b3bccb]">
+        <CategoryIcon category={u.category} size={28} stroke="#b3bccb" />
+        <span className="text-[9px] font-semibold">Foto menyusul</span>
+      </div>
     );
   }
-  return <Image src={src} alt={unitTitle(u)} fill sizes="(max-width: 480px) 50vw, 240px" className="object-contain p-2" />;
+  return <Image src={src} alt={unitTitle(u)} fill sizes={sizes} className="object-cover" />;
 }
 
-/** Gaya A — kartu grid (Beranda, "Dilihat juga"). */
+/** Gaya A — kartu grid (Beranda). Seluruh kartu adalah tautan; CTA ada di halaman unit. */
 export function UnitCardGrid({ u }: { u: Unit }) {
   const save = savePct(u.price_new, u.price_sell);
   return (
-    <div className="card overflow-hidden flex flex-col">
-      <Link href={`/unit/${u.public_id}`} className="block">
-        <div className="relative aspect-square bg-white border-b border-page">
-          <Photo u={u} className="absolute inset-0" />
-          <GradeBadge grade={u.grade} className="absolute top-2 left-2" />
-          {u.is_hot && u.hot_label && (
-            <span className="absolute top-2 right-2 px-2 py-0.5 rounded-full bg-[#e5636b] text-white text-[9px] font-extrabold">{u.hot_label}</span>
-          )}
-        </div>
-        <div className="px-3 pt-2.5 pb-2 flex flex-col gap-0.5">
-          <span className="text-xs font-semibold leading-4 h-8 overflow-hidden">{unitTitle(u)}</span>
-          <span className="text-[10px] text-muted">{unitMeta(u)}</span>
-          <div className="flex items-baseline gap-1.5 mt-0.5">
-            <span className="text-base font-extrabold text-brand-navy">{rupiahShort(u.price_sell)}</span>
-            {save && <span className="text-[10px] font-extrabold text-teal-dark">{save}</span>}
-          </div>
-          {u.price_new && <span className="text-[10px] text-[#8a93a6] line-through">Baru {rupiahShort(u.price_new)}</span>}
-        </div>
-      </Link>
-      <div className="flex gap-1.5 px-3 pb-3">
-        <Link href={`/unit/${u.public_id}#tawar`} className="btn-soft flex-1">Tawar</Link>
-        <button aria-label="Simpan" className="w-9 h-9 rounded-xl bg-page flex items-center justify-center text-brand-navy"><Icon.Heart size={16} /></button>
+    <Link href={`/unit/${u.public_id}`} className="card overflow-hidden flex flex-col active:scale-[0.99] transition">
+      <div className="relative aspect-square bg-white">
+        <Photo u={u} />
+        <GradeBadge grade={u.grade} className="absolute top-2 left-2" />
+        {u.is_hot && u.hot_label && (
+          <span className="absolute top-2 right-2 px-2 h-5 inline-flex items-center rounded-md bg-[#e5636b] text-white text-[9px] font-bold">{u.hot_label}</span>
+        )}
       </div>
-    </div>
+      <div className="px-3 pt-2.5 pb-3 flex flex-col gap-1">
+        <span className="text-[13px] font-semibold leading-[17px] h-[34px] overflow-hidden">{unitTitle(u)}</span>
+        <span className="text-[11px] text-muted truncate">{unitMeta(u) || unitSub(u)}</span>
+        <div className="flex items-baseline gap-1.5 mt-0.5">
+          <span className="text-[15px] font-bold text-brand-navy">{rupiahShort(u.price_sell)}</span>
+          {save && <span className="text-[10px] font-semibold text-brand">{save}</span>}
+        </div>
+      </div>
+    </Link>
   );
 }
 
@@ -65,28 +66,26 @@ export function UnitCardGrid({ u }: { u: Unit }) {
 export function UnitCardRow({ u }: { u: Unit }) {
   const save = savePct(u.price_new, u.price_sell);
   return (
-    <div className="bg-white rounded-2xl p-2.5 flex gap-3 shadow-[0_4px_14px_rgba(16,54,92,0.06)]">
-      <Link href={`/unit/${u.public_id}`} className="relative shrink-0 w-[88px] h-[88px] rounded-xl overflow-hidden bg-page">
-        <Photo u={u} className="absolute inset-0" />
-      </Link>
-      <div className="flex-1 min-w-0 flex flex-col gap-0.5">
-        <Link href={`/unit/${u.public_id}`} className="flex flex-col gap-0.5">
-          <div className="flex items-center gap-1.5"><GradeBadge grade={u.grade} /><span className="text-[10px] text-muted truncate">{unitMeta(u)}</span></div>
-          <span className="text-[13px] font-bold leading-[17px] truncate">{unitTitle(u)}</span>
-          <span className="text-[11px] text-muted leading-[15px] truncate">{["hp", "tablet", "konsol"].includes(u.category) ? u.variant?.split(" · ").slice(1).join(" · ") || BRANCH_LABEL[u.branch] : u.variant}</span>
-        </Link>
-        <div className="flex items-end justify-between gap-2 mt-0.5">
+    <Link href={`/unit/${u.public_id}`} className="card p-2.5 flex gap-3 active:scale-[0.99] transition">
+      <div className="relative shrink-0 w-[92px] h-[92px] rounded-xl overflow-hidden bg-white border border-page">
+        <Photo u={u} sizes="92px" />
+      </div>
+      <div className="flex-1 min-w-0 flex flex-col">
+        <div className="flex items-center gap-2"><GradeBadge grade={u.grade} /><span className="text-[11px] text-muted truncate">{unitMeta(u)}</span></div>
+        <span className="text-[14px] font-semibold leading-[18px] mt-1 truncate">{unitTitle(u)}</span>
+        <span className="text-[11px] text-muted leading-[15px] truncate">{unitSub(u)}</span>
+        <div className="flex items-end justify-between gap-2 mt-auto pt-1.5">
           <div className="min-w-0">
-            <div className="flex flex-wrap items-baseline gap-1.5">
-              <span className="text-base font-extrabold text-brand-navy whitespace-nowrap">{rupiahShort(u.price_sell)}</span>
-              {u.price_new && <span className="text-[10px] text-[#8a93a6] line-through whitespace-nowrap">{rupiahShort(u.price_new)}</span>}
-              {save && <span className="text-[10px] font-extrabold text-teal-dark">{save}</span>}
+            <div className="flex items-baseline gap-1.5">
+              <span className="text-[16px] font-bold text-brand-navy whitespace-nowrap">{rupiahShort(u.price_sell)}</span>
+              {u.price_new && <span className="text-[10px] text-[#9aa4b5] line-through whitespace-nowrap">{rupiahShort(u.price_new)}</span>}
+              {save && <span className="text-[10px] font-semibold text-brand">{save}</span>}
             </div>
-            <div className="flex items-center gap-1 text-[10px] text-muted"><Icon.Shield size={11} stroke="#0e8f85" />Garansi {u.grade === "C" ? "7" : "30"} hr · {BRANCH_LABEL[u.branch]}</div>
+            <div className="text-[10px] text-muted">Garansi {u.grade === "C" ? "7" : "30"} hari · {BRANCH_LABEL[u.branch]}</div>
           </div>
-          <Link href={`/unit/${u.public_id}#tawar`} className="shrink-0 px-3 py-1.5 rounded-lg bg-brand text-white text-[11px] font-extrabold">Tawar</Link>
+          <span className="shrink-0 h-8 px-3 inline-flex items-center rounded-lg bg-brand-light text-brand-dark text-[11px] font-semibold">Lihat</span>
         </div>
       </div>
-    </div>
+    </Link>
   );
 }

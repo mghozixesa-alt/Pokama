@@ -45,20 +45,20 @@ export default async function PesananDetail({ params }: { params: Promise<{ publ
         <div className="flex-1 min-w-0">
           <p className="text-[10px] text-muted">{u.public_id} · {tanggal(o.created_at)}</p>
           <p className="text-sm font-bold truncate">{u.brand} {u.model} {u.variant}</p>
-          <p className="text-base font-extrabold text-brand-navy">{rupiah(o.amount)}</p>
+          <p className="text-base font-bold text-brand-navy">{rupiah(o.amount)}</p>
         </div>
       </div>
 
       {/* Status */}
       <div className="mx-4 mt-3 card p-4">
-        <p className="text-sm font-extrabold text-brand-navy">{ORDER_STATUS_LABEL[o.status]}</p>
+        <p className="text-sm font-bold text-brand-navy">{ORDER_STATUS_LABEL[o.status]}</p>
         {!cancelled && (
           <ol className="mt-3 flex flex-col gap-2">
             {STEPS.map((s, i) => {
               const reached = ORDER_FLOW.indexOf(s.key[0]) <= stepIdx;
               return (
                 <li key={s.label} className="flex items-center gap-3 text-sm">
-                  <span className={`w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-extrabold ${reached ? "bg-brand text-white" : "bg-page text-muted"}`}>{i + 1}</span>
+                  <span className={`w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-bold ${reached ? "bg-brand text-white" : "bg-page text-muted"}`}>{i + 1}</span>
                   <span className={reached ? "font-semibold" : "text-muted"}>{s.label}</span>
                 </li>
               );
@@ -72,14 +72,14 @@ export default async function PesananDetail({ params }: { params: Promise<{ publ
       {/* Instruksi bayar manual */}
       {o.status === "menunggu_bayar" && pay?.method === "transfer" && (
         <div className="mx-4 mt-3 card p-4">
-          <h3 className="text-sm font-extrabold text-brand-navy">Transfer ke rekening Niagaaja</h3>
+          <h3 className="text-sm font-bold text-brand-navy">Transfer ke rekening Niagaaja</h3>
           <div className="mt-3 rounded-xl bg-page p-3">
             <p className="text-[10px] text-muted">{acct.bank ?? "Bank"} · a.n. {acct.holder ?? "Niagaaja"}</p>
-            <div className="flex items-center justify-between mt-1"><span className="text-lg font-extrabold tracking-wider">{acct.number ?? "-"}</span><CopyButton text={acct.number ?? ""} label="Salin" /></div>
+            <div className="flex items-center justify-between mt-1"><span className="text-lg font-bold tracking-wider">{acct.number ?? "-"}</span><CopyButton text={acct.number ?? ""} label="Salin" /></div>
           </div>
           <div className="mt-2 rounded-xl bg-brand-light p-3">
             <p className="text-[10px] text-brand-dark">Nominal transfer (sudah termasuk kode unik 3 digit)</p>
-            <div className="flex items-center justify-between mt-1"><span className="text-xl font-extrabold text-brand-navy">{rupiah(total)}</span><CopyButton text={String(total)} label="Salin" /></div>
+            <div className="flex items-center justify-between mt-1"><span className="text-xl font-bold text-brand-navy">{rupiah(total)}</span><CopyButton text={String(total)} label="Salin" /></div>
             <p className="text-[10px] text-brand-dark mt-1">Transfer <b>persis</b> nominal ini supaya admin bisa mencocokkan otomatis.</p>
           </div>
           <div className="mt-4"><ProofUpload orderId={o.id} paymentId={pay.id} /></div>
@@ -87,7 +87,7 @@ export default async function PesananDetail({ params }: { params: Promise<{ publ
       )}
       {o.status === "menunggu_bayar" && pay?.method === "tunai" && (
         <div className="mx-4 mt-3 card p-4">
-          <h3 className="text-sm font-extrabold text-brand-navy">Bayar tunai di toko</h3>
+          <h3 className="text-sm font-bold text-brand-navy">Bayar tunai di toko</h3>
           <p className="text-sm mt-1">Datang ke Niagaaja {BRANCH_LABEL[u.branch]}, sebutkan kode <b>{o.public_id}</b>. Unit ditahan 24 jam.</p>
         </div>
       )}
@@ -101,7 +101,7 @@ export default async function PesananDetail({ params }: { params: Promise<{ publ
 
       {/* Penerima */}
       <div className="mx-4 mt-3 card p-4">
-        <h3 className="text-sm font-extrabold text-brand-navy">Pengambilan</h3>
+        <h3 className="text-sm font-bold text-brand-navy">Pengambilan</h3>
         <p className="text-sm mt-1">{o.fulfillment === "kirim" ? `Dikirim ke: ${o.shipping_address ?? "-"}` : `Ambil di toko ${BRANCH_LABEL[u.branch]}`}</p>
       </div>
 

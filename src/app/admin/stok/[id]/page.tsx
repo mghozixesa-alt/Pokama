@@ -26,7 +26,7 @@ export default async function UnitAdminPage({ params }: { params: Promise<{ id: 
   return (
     <div>
       <div className="flex items-center gap-3 flex-wrap">
-        <h1 className="text-2xl font-extrabold text-brand-navy">{u.public_id} · {u.brand} {u.model}</h1>
+        <h1 className="text-2xl font-bold text-brand-navy">{u.public_id} · {u.brand} {u.model}</h1>
         <GradeBadge grade={u.grade} /><span className="text-xs font-bold px-2 py-0.5 rounded-md bg-page">{u.status}</span>
         <Link href={`/unit/${u.public_id}`} className="btn-soft ml-auto" target="_blank">Lihat halaman publik</Link>
       </div>
@@ -34,7 +34,7 @@ export default async function UnitAdminPage({ params }: { params: Promise<{ id: 
       <div className="mt-4"><UnitForm unit={u} ownership={ownership} owners={owners ?? []} /></div>
 
       <section className="card p-4 mt-6">
-        <h2 className="text-base font-extrabold text-brand-navy">Sertifikat cek 8 langkah</h2>
+        <h2 className="text-base font-bold text-brand-navy">Sertifikat cek 8 langkah</h2>
         {(inspections as Inspection[] | null)?.map((i) => (
           <div key={i.id} className="mt-3 p-3 rounded-xl bg-page flex items-center gap-3 flex-wrap text-sm">
             <GradeBadge grade={i.result_grade} /><b>{i.certificate_no}</b><span className="text-muted">{tanggal(i.inspected_at)} · {i.checklist.filter((c) => c.status === "lolos").length}/8 lolos</span>
@@ -46,7 +46,7 @@ export default async function UnitAdminPage({ params }: { params: Promise<{ id: 
           <p className="text-xs text-muted">Buat sertifikat baru (unit masuk / kembali dari sewa). Grade hasil akan disalin ke unit dan status jadi <i>tersedia</i>.</p>
           {LABELS.map((l, i) => (
             <div key={l} className="grid grid-cols-[28px_1fr_140px_1fr] gap-2 items-center">
-              <span className="w-7 h-7 rounded-full bg-brand-light text-brand text-xs font-extrabold flex items-center justify-center">{i + 1}</span>
+              <span className="w-7 h-7 rounded-full bg-brand-light text-brand text-xs font-bold flex items-center justify-center">{i + 1}</span>
               <span className="text-sm font-semibold">{l}</span>
               <select name={`s${i + 1}`} defaultValue="lolos" className="input h-10"><option value="lolos">Lolos</option><option value="minus">Ada minus</option><option value="gagal">Gagal</option></select>
               <input name={`n${i + 1}`} placeholder="Catatan (opsional)" className="input h-10" />

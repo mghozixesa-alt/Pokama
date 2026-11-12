@@ -14,7 +14,7 @@ export default async function AdminTradeIns() {
   const rows = (data ?? []) as unknown as Row[];
   return (
     <div>
-      <h1 className="text-2xl font-extrabold text-brand-navy">Tukar tambah & jual dari pelanggan</h1>
+      <h1 className="text-2xl font-bold text-brand-navy">Tukar tambah & jual dari pelanggan</h1>
       <p className="text-sm text-muted mt-1">Balas estimasi lewat WhatsApp, jadwalkan cek, lalu isi harga final. Saat <b>deal</b>, buat unit baru di Stok dengan sumber <i>tukar_tambah</i>.</p>
       <div className="card mt-4 divide-y divide-page">
         {rows.map((r) => (

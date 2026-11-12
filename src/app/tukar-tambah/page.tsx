@@ -24,7 +24,7 @@ export default async function TukarTambahPage({ searchParams }: { searchParams: 
     <Shell withNav={false}>
       <TopBar title="Jual / tukar tambah" />
       <div className="mx-4 rounded-2xl bg-gradient-to-br from-[#2F8AD6] to-[#1F5F9E] text-white p-4">
-        <p className="text-sm font-extrabold">Isi 1 menit, dapat estimasi langsung</p>
+        <p className="text-sm font-bold">Isi 1 menit, dapat estimasi langsung</p>
         <p className="text-[11px] opacity-90 mt-1">Harga final ditentukan setelah cek fisik 8 langkah di toko — gratis. Dibayar hari itu juga, atau jadi potongan unit Niagaaja.</p>
       </div>
 
@@ -46,7 +46,7 @@ export default async function TukarTambahPage({ searchParams }: { searchParams: 
         </div>
 
         <div className="card p-4 flex flex-col gap-3">
-          <h3 className="text-sm font-extrabold text-brand-navy">Kondisi</h3>
+          <h3 className="text-sm font-bold text-brand-navy">Kondisi</h3>
           <div><label className="label">Fisik</label><select name="fisik" className="input"><option value="mulus">Mulus, tanpa goresan</option><option value="lecet">Lecet pakai wajar</option><option value="rusak">Ada retak / penyok</option></select></div>
           <div><label className="label">Fungsi</label><select name="fungsi" className="input"><option value="normal">Semua normal</option><option value="minor">Ada minus kecil (baterai, speaker)</option><option value="ada_masalah">Ada masalah serius</option></select></div>
           <div><label className="label">Kelengkapan</label><select name="kelengkapan" className="input"><option value="fullset">Fullset (dus, charger)</option><option value="unit">Unit saja</option></select></div>
@@ -64,7 +64,7 @@ export default async function TukarTambahPage({ searchParams }: { searchParams: 
 
       {mine && mine.length > 0 && (
         <section className="px-4 mt-6">
-          <h2 className="text-sm font-extrabold text-brand-navy mb-2">Pengajuan saya</h2>
+          <h2 className="text-sm font-bold text-brand-navy mb-2">Pengajuan saya</h2>
           <div className="flex flex-col gap-2">
             {mine.map((t) => (
               <Link key={t.id} href={`/tukar-tambah/${t.id}`} className="card p-3 text-sm">

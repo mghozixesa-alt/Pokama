@@ -29,13 +29,13 @@ export function BannerCarousel({ slides }: { slides: Slide[] }) {
             <span className="inline-flex items-center h-[22px] px-1.5 rounded-md bg-white"><Logo height={14} /></span>
             <span className="text-[9px] font-bold tracking-wider uppercase opacity-85">{s.kicker}</span>
           </span>
-          <h3 className="text-[18px] leading-[22px] font-extrabold mt-1">{s.title}</h3>
+          <h3 className="text-[18px] leading-[22px] font-bold mt-1">{s.title}</h3>
           <p className="text-[11px] leading-4 opacity-90">{s.sub}</p>
-          <Link href={s.href} className="inline-flex items-center self-start h-8 px-3.5 mt-1.5 rounded-full bg-white text-brand-dark text-xs font-extrabold">{s.cta}</Link>
+          <Link href={s.href} className="inline-flex items-center self-start h-8 px-3.5 mt-1.5 rounded-full bg-white text-brand-dark text-xs font-bold">{s.cta}</Link>
         </div>
         <span className={`absolute right-3.5 top-3.5 w-[92px] h-[68px] px-1 rounded-2xl flex flex-col items-center justify-center text-center shadow-[0_10px_24px_rgba(0,0,0,0.18)] ${STICKER[s.sticker.tone]}`}>
-          <span className="text-[19px] leading-6 font-extrabold whitespace-nowrap">{s.sticker.big}</span>
-          <span className="text-[8px] font-extrabold tracking-wide leading-3">{s.sticker.small}</span>
+          <span className="text-[19px] leading-6 font-bold whitespace-nowrap">{s.sticker.big}</span>
+          <span className="text-[8px] font-bold tracking-wide leading-3">{s.sticker.small}</span>
         </span>
         <div className="absolute bottom-3 right-4 flex gap-1.5">
           {slides.map((_, k) => (

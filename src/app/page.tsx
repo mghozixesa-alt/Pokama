@@ -11,8 +11,8 @@ import type { Category, Unit } from "@/lib/types";
 export const revalidate = 60;
 
 const CATEGORIES: { id: Category; badge?: string }[] = [
-  { id: "hp", badge: "TERLARIS" }, { id: "laptop" }, { id: "kamera" }, { id: "tablet" }, { id: "konsol" },
-  { id: "audio" }, { id: "smartwatch" }, { id: "drone", badge: "BARU" }, { id: "aksesori" },
+  { id: "hp" }, { id: "laptop" }, { id: "kamera" }, { id: "tablet" }, { id: "konsol" },
+  { id: "audio" }, { id: "smartwatch" }, { id: "drone" }, { id: "aksesori" },
 ];
 
 const SLIDES: Slide[] = [
@@ -43,9 +43,9 @@ export default async function HomePage() {
         </div>
         <div className="px-5 mt-6 text-white">
           <p className="text-sm opacity-90">Halo, mau cari apa hari ini?</p>
-          <button className="flex items-center gap-2 text-[30px] leading-9 font-extrabold tracking-tight">Garut Kota <Icon.ChevronDown size={22} /></button>
+          <button className="flex items-center gap-2 text-[28px] leading-9 font-bold tracking-tight">Garut Kota <Icon.ChevronDown size={22} /></button>
         </div>
-        <form action="/katalog" className="absolute left-5 right-5 top-[172px] h-[54px] bg-white rounded-2xl shadow-[0_10px_30px_rgba(10,60,55,0.18)] flex items-center gap-3 px-[18px]">
+        <form action="/katalog" className="absolute left-5 right-5 top-[172px] h-[54px] bg-white rounded-2xl shadow-[0_8px_24px_rgba(16,54,92,0.16)] flex items-center gap-3 px-[18px]">
           <Icon.Search stroke="#2A7DC1" />
           <input name="q" placeholder="Cari iPhone 13, ThinkPad, PS5…" className="flex-1 h-full bg-transparent text-sm outline-none placeholder:text-[#8a93a6]" />
         </form>
@@ -54,18 +54,18 @@ export default async function HomePage() {
       {/* Kategori */}
       <section className="mx-4 -mt-[50px] relative card p-4">
         <div className="flex items-center justify-between mb-3">
-          <h2 className="text-base font-extrabold text-brand-navy">Kategori</h2>
-          <Link href="/katalog" className="text-xs font-bold text-brand">Semua</Link>
+          <h2 className="section-title">Kategori</h2>
+          <Link href="/katalog" className="text-xs font-semibold text-brand">Semua</Link>
         </div>
         <div className="grid grid-cols-5 gap-x-2 gap-y-4">
           {CATEGORIES.map((c) => (
-            <Link key={c.id} href={`/katalog?kategori=${c.id}`} className="flex flex-col items-center gap-2 text-[11px] font-semibold text-ink text-center">
-              <span className="relative w-14 h-14 rounded-2xl bg-white border-[1.5px] border-line flex items-center justify-center"><CategoryIcon category={c.id} />{c.badge && <span className="absolute -top-2 left-1/2 -translate-x-1/2 px-1.5 py-0.5 rounded-full bg-[#e5636b] text-white text-[8px] font-extrabold whitespace-nowrap">{c.badge}</span>}</span>
+            <Link key={c.id} href={`/katalog?kategori=${c.id}`} className="flex flex-col items-center gap-2 text-[11px] font-medium text-ink text-center">
+              <span className="w-14 h-14 rounded-2xl bg-page flex items-center justify-center"><CategoryIcon category={c.id} /></span>
               {CATEGORY_LABEL[c.id]}
             </Link>
           ))}
-          <Link href="/katalog" className="flex flex-col items-center gap-2 text-[11px] font-semibold text-ink">
-            <span className="w-14 h-14 rounded-2xl bg-brand-light flex items-center justify-center text-brand font-extrabold text-lg">+</span>Lainnya
+          <Link href="/katalog" className="flex flex-col items-center gap-2 text-[11px] font-medium text-ink">
+            <span className="w-14 h-14 rounded-2xl bg-brand-light flex items-center justify-center text-brand font-bold text-lg">+</span>Lainnya
           </Link>
         </div>
       </section>
@@ -75,8 +75,8 @@ export default async function HomePage() {
       {/* Baru masuk */}
       <section className="px-4 mt-6">
         <div className="flex items-center justify-between mb-3">
-          <h2 className="text-xl font-extrabold text-brand-navy">Baru masuk</h2>
-          <Link href="/katalog" className="text-xs font-bold text-brand">Lihat semua</Link>
+          <h2 className="section-title">Baru masuk</h2>
+          <Link href="/katalog" className="text-xs font-semibold text-brand">Lihat semua</Link>
         </div>
         <div className="grid grid-cols-2 gap-3">
           {(units as Unit[] | null)?.map((u) => <UnitCardGrid key={u.id} u={u} />)}
@@ -87,7 +87,7 @@ export default async function HomePage() {
       {/* Jaminan */}
       <section className="px-4 mt-6 grid grid-cols-3 gap-2">
         {[["8 langkah", "dicek teknisi"], ["30 hari", "garansi tukar"], ["Bisa tawar", "tanpa DP"]].map(([a, b]) => (
-          <div key={a} className="card p-3 text-center"><p className="text-sm font-extrabold text-brand-navy">{a}</p><p className="text-[10px] text-muted">{b}</p></div>
+          <div key={a} className="card p-3 text-center"><p className="text-[13px] font-bold text-brand-navy">{a}</p><p className="text-[11px] text-muted">{b}</p></div>
         ))}
       </section>
     </Shell>

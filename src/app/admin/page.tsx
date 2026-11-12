@@ -25,10 +25,10 @@ export default async function AdminHome() {
   ];
   return (
     <div>
-      <h1 className="text-2xl font-extrabold text-brand-navy">Ringkasan hari ini</h1>
+      <h1 className="text-2xl font-bold text-brand-navy">Ringkasan hari ini</h1>
       <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 mt-4">
         {cards.map(([label, val, href]) => (
-          <Link key={label} href={href} className="card p-4"><p className="text-[11px] text-muted">{label}</p><p className="text-2xl font-extrabold text-brand-navy mt-1">{val}</p></Link>
+          <Link key={label} href={href} className="card p-4"><p className="text-[11px] text-muted">{label}</p><p className="text-2xl font-bold text-brand-navy mt-1">{val}</p></Link>
         ))}
       </div>
       <div className="card p-4 mt-4 text-sm text-muted">
