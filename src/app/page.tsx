@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/server";
+import { createPublicClient } from "@/lib/supabase/public";
 import { Shell } from "@/components/Shell";
 import { Logo } from "@/components/Logo";
 import { Icon, CategoryIcon } from "@/components/Icons";
@@ -22,7 +22,7 @@ const SLIDES: Slide[] = [
 ];
 
 export default async function HomePage() {
-  const supabase = await createClient();
+  const supabase = createPublicClient();
   const { data: units } = await supabase
     .from("units")
     .select("*")

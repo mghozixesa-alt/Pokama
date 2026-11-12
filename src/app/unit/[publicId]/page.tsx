@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { createPublicClient } from "@/lib/supabase/public";
 import { Shell, TopBar } from "@/components/Shell";
 import { GradeBadge, CheckedBadge } from "@/components/GradeBadge";
 import { GradePicker } from "@/components/GradePicker";
@@ -20,14 +21,15 @@ const SPEC_LABEL: Record<string, string> = {
 
 export default async function UnitPage({ params }: { params: Promise<{ publicId: string }> }) {
   const { publicId } = await params;
+  const pub = createPublicClient();
   const supabase = await createClient();
-  const { data: unit } = await supabase.from("units").select("*").eq("public_id", publicId).maybeSingle();
+  const { data: unit } = await pub.from("units").select("*").eq("public_id", publicId).maybeSingle();
   if (!unit) notFound();
   const u = unit as Unit;
 
   const [{ data: insp }, { data: related }, { data: auth }] = await Promise.all([
-    supabase.from("inspections").select("*").eq("unit_id", u.id).order("inspected_at", { ascending: false }).limit(1).maybeSingle(),
-    supabase.from("units").select("*").eq("status", "tersedia").eq("category", u.category).neq("id", u.id).limit(4),
+    pub.from("inspections").select("*").eq("unit_id", u.id).order("inspected_at", { ascending: false }).limit(1).maybeSingle(),
+    pub.from("units").select("*").eq("status", "tersedia").eq("category", u.category).neq("id", u.id).limit(4),
     supabase.auth.getUser(),
   ]);
   const inspection = insp as Inspection | null;

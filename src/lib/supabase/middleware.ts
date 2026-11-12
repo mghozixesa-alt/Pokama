@@ -20,13 +20,15 @@ export async function updateSession(request: NextRequest) {
     }
   );
 
+  const path = request.nextUrl.pathname;
+  const needsLogin = path.startsWith("/pesanan") || path.startsWith("/akun") || path.startsWith("/booking") || path.startsWith("/admin");
+  // Halaman publik tidak perlu memanggil server auth di tiap request
+  if (!needsLogin) return response;
+
   const {
     data: { user },
   } = await supabase.auth.getUser();
-
-  const path = request.nextUrl.pathname;
-  const needsLogin = path.startsWith("/pesanan") || path.startsWith("/akun") || path.startsWith("/booking") || path.startsWith("/admin");
-  if (needsLogin && !user) {
+  if (!user) {
     const url = request.nextUrl.clone();
     url.pathname = "/masuk";
     url.searchParams.set("next", path);

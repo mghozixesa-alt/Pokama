@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/server";
+import { createPublicClient } from "@/lib/supabase/public";
 import { Shell } from "@/components/Shell";
 import { Icon } from "@/components/Icons";
 import { UnitCardRow } from "@/components/UnitCard";
@@ -7,7 +7,7 @@ import { CATEGORY_LABEL } from "@/lib/format";
 import type { Category, Unit } from "@/lib/types";
 
 export const metadata = { title: "Katalog" };
-export const dynamic = "force-dynamic";
+export const revalidate = 30;
 
 type Search = { q?: string; kategori?: string; grade?: string; maks?: string; urut?: string };
 
@@ -30,7 +30,7 @@ function qs(p: Record<string, string | undefined>) {
 
 export default async function KatalogPage({ searchParams }: { searchParams: Promise<Search> }) {
   const sp = await searchParams;
-  const supabase = await createClient();
+  const supabase = createPublicClient();
   let q = supabase.from("units").select("*").eq("status", "tersedia");
   if (sp.kategori) q = q.eq("category", sp.kategori as Category);
   if (sp.grade) q = q.eq("grade", sp.grade);

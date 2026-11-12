@@ -1,14 +1,14 @@
 import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
+import { createPublicClient } from "@/lib/supabase/public";
 import { Shell, TopBar } from "@/components/Shell";
 import { Icon } from "@/components/Icons";
 import { GradeBadge } from "@/components/GradeBadge";
 import { SOURCE_LABEL, tanggal, GRADE_LABEL } from "@/lib/format";
 import type { Inspection, Unit } from "@/lib/types";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 300;
 export const metadata = { title: "Sertifikat cek" };
 
 const STATUS_STYLE = { lolos: "bg-teal-light text-teal-dark", minus: "bg-[#fdf1dc] text-[#7a4a00]", gagal: "bg-[#fde8e8] text-[#a12d2d]" };
@@ -16,7 +16,7 @@ const STATUS_LABEL = { lolos: "Lolos", minus: "Ada minus", gagal: "Gagal" };
 
 export default async function CekPage({ params }: { params: Promise<{ token: string }> }) {
   const { token } = await params;
-  const supabase = await createClient();
+  const supabase = createPublicClient();
   const { data } = await supabase.from("inspections").select("*, units(*)").eq("qr_token", token).maybeSingle();
   if (!data) notFound();
   const insp = data as Inspection & { units: Unit };
