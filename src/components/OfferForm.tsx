@@ -3,6 +3,7 @@ import { useState, useTransition } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { rupiah } from "@/lib/format";
+import { notifyNewOffer } from "@/app/actions/notify";
 
 const MIN_PCT = 0.85;
 
@@ -22,7 +23,8 @@ export function OfferForm({ unitId, publicId, price, loggedIn, disabled }: { uni
       const supabase = createClient();
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) { setErr("Masuk dulu untuk mengirim tawaran."); return; }
-      const { error } = await supabase.from("offers").insert({ unit_id: unitId, customer_id: user.id, amount });
+      const { data: ins, error } = await supabase.from("offers").insert({ unit_id: unitId, customer_id: user.id, amount }).select("id").single();
+      if (!error && ins) { try { await notifyNewOffer(ins.id); } catch {} }
       if (error) setErr(error.message); else setDone(`Tawaran ${rupiah(amount)} terkirim. Admin menjawab maksimal 24 jam lewat WhatsApp dan halaman Pesanan.`);
     });
   }

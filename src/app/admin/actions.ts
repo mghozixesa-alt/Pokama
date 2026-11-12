@@ -2,6 +2,9 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { sendWa, WA } from "@/lib/wa";
+import { rupiah, ORDER_STATUS_LABEL } from "@/lib/format";
+import type { OrderStatus } from "@/lib/types";
 
 async function staff() {
   const supabase = await createClient();
@@ -89,12 +92,17 @@ export async function confirmPayment(formData: FormData) {
   const paymentId = String(formData.get("payment_id"));
   const orderId = String(formData.get("order_id"));
   const action = String(formData.get("action"));
+  const { data: o } = await supabase.from("orders").select("public_id, profiles(phone), units(brand, model)").eq("id", orderId).single();
+  const ord = o as unknown as { public_id: string; profiles: { phone: string | null } | null; units: { brand: string; model: string } | null } | null;
   if (action === "terima") {
     await supabase.from("payments").update({ confirmed_by: user.id, paid_at: new Date().toISOString(), rejected_reason: null }).eq("id", paymentId);
     await supabase.from("orders").update({ status: "dibayar" }).eq("id", orderId);
+    if (ord) await sendWa(ord.profiles?.phone, WA.paymentConfirmed(ord.public_id, `${ord.units?.brand ?? ""} ${ord.units?.model ?? ""}`.trim()));
   } else {
-    await supabase.from("payments").update({ rejected_reason: str(formData, "reason") ?? "Bukti tidak sesuai" }).eq("id", paymentId);
+    const reason = str(formData, "reason") ?? "Bukti tidak sesuai";
+    await supabase.from("payments").update({ rejected_reason: reason }).eq("id", paymentId);
     await supabase.from("orders").update({ status: "menunggu_bayar" }).eq("id", orderId);
+    if (ord) await sendWa(ord.profiles?.phone, WA.paymentRejected(ord.public_id, reason));
   }
   revalidatePath("/admin/pembayaran"); revalidatePath("/admin");
 }
@@ -103,8 +111,12 @@ export async function setOrderStatus(formData: FormData) {
   const { supabase } = await staff();
   const orderId = String(formData.get("order_id"));
   const status = String(formData.get("status"));
-  const { data: o } = await supabase.from("orders").select("customer_id, amount, points_earned, status").eq("id", orderId).single();
+  const { data: o } = await supabase.from("orders").select("customer_id, amount, points_earned, status, public_id, profiles(phone)").eq("id", orderId).single();
   await supabase.from("orders").update({ status }).eq("id", orderId);
+  if (o) {
+    const ph = (o as unknown as { profiles: { phone: string | null } | null }).profiles?.phone;
+    await sendWa(ph, WA.orderStatus(o.public_id, ORDER_STATUS_LABEL[status as OrderStatus] ?? status));
+  }
   if (status === "selesai" && o && o.status !== "selesai" && !o.points_earned) {
     const pts = Math.floor(o.amount / 10000);
     await supabase.from("points_ledger").insert({ customer_id: o.customer_id, delta: pts, reason: "Pembelian selesai", order_id: orderId });
@@ -119,8 +131,24 @@ export async function answerOffer(formData: FormData) {
   const action = String(formData.get("action"));
   const counter = num(formData, "counter_amount");
   const expires = new Date(Date.now() + 24 * 3600 * 1000).toISOString();
-  if (action === "setuju") await supabase.from("offers").update({ status: "disetujui", expires_at: expires }).eq("id", id);
-  else if (action === "counter" && counter) await supabase.from("offers").update({ status: "disetujui", counter_amount: counter, expires_at: expires }).eq("id", id);
+  const { data: of } = await supabase.from("offers").select("amount, profiles(phone), units(public_id, brand, model)").eq("id", id).single();
+  const offer = of as unknown as { amount: number; profiles: { phone: string | null } | null; units: { public_id: string; brand: string; model: string } | null } | null;
+  let result = "Ditolak";
+  if (action === "setuju") { await supabase.from("offers").update({ status: "disetujui", expires_at: expires }).eq("id", id); result = `Disetujui ${rupiah(offer?.amount)}`; }
+  else if (action === "counter" && counter) { await supabase.from("offers").update({ status: "disetujui", counter_amount: counter, expires_at: expires }).eq("id", id); result = `Disetujui dengan harga ${rupiah(counter)}`; }
   else await supabase.from("offers").update({ status: "ditolak" }).eq("id", id);
+  if (offer?.units) await sendWa(offer.profiles?.phone, WA.offerAnswered(`${offer.units.brand} ${offer.units.model}`, result, offer.units.public_id));
   revalidatePath("/admin/tawaran"); revalidatePath("/admin");
+}
+
+export async function updateTradeIn(formData: FormData) {
+  const { supabase } = await staff();
+  const id = String(formData.get("id"));
+  const status = String(formData.get("status"));
+  const final = num(formData, "final_price");
+  const { data: t } = await supabase.from("trade_ins").select("brand, model, profiles(phone)").eq("id", id).single();
+  await supabase.from("trade_ins").update({ status, final_price: final, scheduled_at: status === "dijadwalkan" ? new Date().toISOString() : undefined }).eq("id", id);
+  const ph = (t as unknown as { profiles: { phone: string | null } | null } | null)?.profiles?.phone;
+  if (t && ph && final) await sendWa(ph, `Niagaaja: pengajuan ${t.brand} ${t.model} — status ${status}${final ? `, harga ${rupiah(final)}` : ""}. Detail: ${process.env.NEXT_PUBLIC_SITE_URL ?? ""}/tukar-tambah/${id}`);
+  revalidatePath("/admin/tukar-tambah");
 }

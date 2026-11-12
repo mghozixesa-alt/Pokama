@@ -1,6 +1,7 @@
 "use server";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { sendWaAdmin, WA } from "@/lib/wa";
 
 export async function createOrder(formData: FormData) {
   const supabase = await createClient();
@@ -35,6 +36,7 @@ export async function createOrder(formData: FormData) {
   if (error || !order) redirect(`/unit/${publicId}?gagal=${encodeURIComponent(error?.message ?? "booking")}`);
 
   await supabase.from("payments").insert({ order_id: order.id, method, amount });
+  await sendWaAdmin(WA.newOrder(order.public_id, publicId, fullName || "pelanggan", method));
   if (offerId) await supabase.from("offers").update({ status: "dipakai" }).eq("id", offerId);
 
   redirect(`/pesanan/${order.public_id}`);

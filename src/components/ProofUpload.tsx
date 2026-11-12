@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { Icon } from "./Icons";
+import { notifyProofReceived } from "@/app/actions/notify";
 
 export function ProofUpload({ orderId, paymentId }: { orderId: string; paymentId: string }) {
   const [file, setFile] = useState<File | null>(null);
@@ -23,6 +24,7 @@ export function ProofUpload({ orderId, paymentId }: { orderId: string; paymentId
     const { error } = await supabase.from("payments").update({ proof_url: path, sender_name: sender || null, bank_name: bank || null, rejected_reason: null }).eq("id", paymentId);
     if (error) { setErr(error.message); setBusy(false); return; }
     await supabase.from("orders").update({ status: "menunggu_konfirmasi" }).eq("id", orderId);
+    try { await notifyProofReceived(orderId); } catch {}
     setBusy(false);
     router.refresh();
   }

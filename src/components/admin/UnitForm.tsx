@@ -1,5 +1,6 @@
 import type { Unit } from "@/lib/types";
 import { upsertUnit } from "@/app/admin/actions";
+import { PhotoUploader } from "./PhotoUploader";
 
 type Ownership = { owner_type: string; owner_id: string | null; cost_basis: number; share_owner_pct: number; share_niagaaja_pct: number } | null;
 type Owner = { id: string; name: string; type: string };
@@ -24,7 +25,7 @@ export function UnitForm({ unit, ownership, owners }: { unit?: Unit; ownership?:
         </div>
         <div><label className="label">Varian (mis. 128 GB Midnight · fullset)</label><input name="variant" defaultValue={unit?.variant ?? ""} className="input" /></div>
         <div><label className="label">Catatan kondisi (tampil ke pembeli)</label><textarea name="condition_note" rows={2} defaultValue={unit?.condition_note ?? ""} className="input h-auto py-3" /></div>
-        <div><label className="label">URL foto (satu per baris; unggah ke Supabase Storage bucket <code>units</code>)</label><textarea name="photos" rows={3} defaultValue={unit?.photos?.join("\n") ?? ""} className="input h-auto py-3 font-mono text-xs" /></div>
+        <div><label className="label">Foto unit</label><PhotoUploader initial={unit?.photos ?? []} /></div>
       </section>
 
       <section className="card p-4 flex flex-col gap-3">
