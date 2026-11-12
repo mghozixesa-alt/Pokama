@@ -1,0 +1,38 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+html, body {
+  background: #f3f5f9;
+  color: #141a26;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Sembunyikan scrollbar pada rail horizontal */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center justify-center h-12 px-5 rounded-2xl bg-brand text-white font-extrabold text-sm shadow-[0_10px_24px_rgba(42,125,193,0.35)] active:scale-[0.98] transition disabled:opacity-50 disabled:shadow-none;
+  }
+  .btn-outline {
+    @apply inline-flex items-center justify-center h-12 px-5 rounded-2xl border-2 border-brand text-brand font-extrabold text-sm bg-white active:scale-[0.98] transition;
+  }
+  .btn-soft {
+    @apply inline-flex items-center justify-center h-9 px-3 rounded-xl bg-brand-light text-brand-dark font-extrabold text-xs;
+  }
+  .card {
+    @apply bg-white rounded-2xl border border-line shadow-[0_2px_10px_rgba(16,54,92,0.05)];
+  }
+  .input {
+    @apply w-full h-12 px-4 rounded-xl border border-line bg-white text-sm outline-none focus:border-brand focus:ring-2 focus:ring-brand-light;
+  }
+  .label {
+    @apply block text-xs font-bold text-muted mb-1.5;
+  }
+}
