@@ -2,7 +2,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import type { Grade } from "@/lib/types";
-import { rupiah, GRADE_LABEL } from "@/lib/format";
+import { rupiah, rupiahShort, GRADE_LABEL } from "@/lib/format";
 import { priceForGrade } from "@/lib/pricing";
 
 const DESC: Record<Grade, string> = {
@@ -31,7 +31,7 @@ export function GradePicker({ basePrice, available, publicId, variant }: { baseP
             <button key={k} onClick={() => setG(k)} aria-pressed={on} className={`rounded-xl border-2 p-2.5 text-left ${on ? "border-brand bg-brand-light" : "border-line bg-white"}`}>
               <p className="text-sm font-extrabold text-brand-navy">Grade {k}</p>
               <p className="text-[10px] text-muted leading-3 mt-0.5">{GRADE_LABEL[k].split(" · ")[1]}</p>
-              <p className="text-xs font-extrabold mt-1.5">{rupiah(priceForGrade(basePriceA, k))}</p>
+              <p className="text-xs font-extrabold mt-1.5 whitespace-nowrap">{rupiahShort(priceForGrade(basePriceA, k))}</p>
             </button>
           );
         })}

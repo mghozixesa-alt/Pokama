@@ -6,7 +6,8 @@ import { GradeBadge } from "./GradeBadge";
 import { Icon } from "./Icons";
 
 export function unitTitle(u: Unit) {
-  return `${u.model}${u.variant ? " " + u.variant.split(" · ")[0] : ""}`;
+  const withCap = ["hp", "tablet", "konsol"].includes(u.category) && u.variant;
+  return withCap ? `${u.model} ${u.variant!.split(" · ")[0]}` : `${u.brand} ${u.model}`;
 }
 
 export function unitMeta(u: Unit): string {
@@ -71,7 +72,7 @@ export function UnitCardRow({ u }: { u: Unit }) {
       <Link href={`/unit/${u.public_id}`} className="flex-1 min-w-0 flex flex-col gap-0.5">
         <div className="flex items-center gap-1.5"><GradeBadge grade={u.grade} /><span className="text-[10px] text-muted">{unitMeta(u)}</span></div>
         <span className="text-[13px] font-bold leading-[17px]">{unitTitle(u)}</span>
-        <span className="text-[11px] text-muted leading-[15px] truncate">{u.variant}</span>
+        <span className="text-[11px] text-muted leading-[15px] truncate">{["hp", "tablet", "konsol"].includes(u.category) ? u.variant?.split(" · ").slice(1).join(" · ") || BRANCH_LABEL[u.branch] : u.variant}</span>
         <div className="flex flex-wrap items-baseline gap-1.5 mt-0.5">
           <span className="text-base font-extrabold text-brand-navy whitespace-nowrap">{rupiahShort(u.price_sell)}</span>
           {u.price_new && <span className="text-[10px] text-[#8a93a6] line-through whitespace-nowrap">{rupiahShort(u.price_new)}</span>}

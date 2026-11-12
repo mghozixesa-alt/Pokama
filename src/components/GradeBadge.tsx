@@ -9,7 +9,7 @@ const STYLE: Record<Grade, string> = {
 export function GradeBadge({ grade, className = "" }: { grade: Grade | null; className?: string }) {
   if (!grade) return null;
   return (
-    <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-extrabold ${STYLE[grade]} ${className}`}>
+    <span className={`inline-flex items-center whitespace-nowrap px-2 py-0.5 rounded-md text-[10px] font-extrabold ${STYLE[grade]} ${className}`}>
       Grade {grade}
     </span>
   );

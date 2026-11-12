@@ -11,7 +11,7 @@ import type { Category, Unit } from "@/lib/types";
 export const revalidate = 60;
 
 const CATEGORIES: { id: Category; badge?: string }[] = [
-  { id: "hp", badge: "🔥 Terlaris" }, { id: "laptop" }, { id: "kamera" }, { id: "tablet" }, { id: "konsol" },
+  { id: "hp", badge: "TERLARIS" }, { id: "laptop" }, { id: "kamera" }, { id: "tablet" }, { id: "konsol" },
   { id: "audio" }, { id: "smartwatch" }, { id: "drone", badge: "BARU" }, { id: "aksesori" },
 ];
 
@@ -33,7 +33,7 @@ export default async function HomePage() {
   return (
     <Shell active="beranda">
       {/* Hero biru */}
-      <section className="relative h-[292px] bg-gradient-to-b from-[#2F8AD6] to-[#1F5F9E] rounded-b-[32px]">
+      <section className="relative h-[292px] bg-gradient-to-b from-[#2F8AD6] to-[#1F5F9E] rounded-b-[28px]">
         <div className="flex items-center justify-between px-5 pt-[18px]">
           <span className="inline-flex items-center h-12 px-3.5 rounded-2xl bg-white"><Logo height={34} /></span>
           <div className="flex items-center gap-2.5">
@@ -59,10 +59,9 @@ export default async function HomePage() {
         </div>
         <div className="grid grid-cols-5 gap-x-2 gap-y-4">
           {CATEGORIES.map((c) => (
-            <Link key={c.id} href={`/katalog?kategori=${c.id}`} className="relative flex flex-col items-center gap-2 text-[11px] font-semibold text-ink">
-              <span className="w-14 h-14 rounded-2xl bg-white border-[1.5px] border-line flex items-center justify-center"><CategoryIcon category={c.id} /></span>
+            <Link key={c.id} href={`/katalog?kategori=${c.id}`} className="flex flex-col items-center gap-2 text-[11px] font-semibold text-ink text-center">
+              <span className="relative w-14 h-14 rounded-2xl bg-white border-[1.5px] border-line flex items-center justify-center"><CategoryIcon category={c.id} />{c.badge && <span className="absolute -top-2 left-1/2 -translate-x-1/2 px-1.5 py-0.5 rounded-full bg-[#e5636b] text-white text-[8px] font-extrabold whitespace-nowrap">{c.badge}</span>}</span>
               {CATEGORY_LABEL[c.id]}
-              {c.badge && <span className="absolute -top-2 -right-1 px-1.5 py-0.5 rounded-full bg-[#e5636b] text-white text-[8px] font-extrabold whitespace-nowrap">{c.badge}</span>}
             </Link>
           ))}
           <Link href="/katalog" className="flex flex-col items-center gap-2 text-[11px] font-semibold text-ink">

@@ -78,12 +78,12 @@ export default async function KatalogPage({ searchParams }: { searchParams: Prom
         <Link href="/sertifikat" className="ml-auto font-bold text-brand">Info</Link>
       </div>
 
-      <div className="px-4 mt-3 flex items-center justify-between">
+      <div className="px-4 mt-3 flex flex-col gap-2">
         <p className="text-sm text-muted">{units.length} unit tersedia · <b className="text-brand-navy">semua dicek</b></p>
         <form className="flex items-center gap-2 text-sm">
           {Object.entries(sp).filter(([k]) => k !== "urut").map(([k, v]) => v && <input key={k} type="hidden" name={k} value={v} />)}
-          <span className="font-bold">Urutkan</span>
-          <select name="urut" defaultValue={sp.urut ?? "baru"} className="h-9 px-2 rounded-lg border border-line bg-white text-sm">
+          <span className="text-xs font-bold text-muted">Urutkan</span>
+          <select name="urut" defaultValue={sp.urut ?? "baru"} className="h-9 px-2 rounded-lg border border-line bg-white text-sm flex-1 max-w-[200px]">
             <option value="baru">Terbaru</option>
             <option value="murah">Harga terendah</option>
             <option value="mahal">Harga tertinggi</option>
