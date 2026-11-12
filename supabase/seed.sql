@@ -20,3 +20,11 @@ select u.id,
   'NJC-' || to_char(now(), 'YYMM') || '-' || lpad(row_number() over ()::text, 4, '0'),
   true
 from units u;
+
+-- Foto contoh (Unsplash, hotlink) — ganti dengan foto unit asli di bucket `units`
+update units set photos = '{https://images.unsplash.com/photo-1570642193983-c5c23fc09eba?auto=format&fit=crop&w=900&q=80}' where public_id = 'NJ-0001';
+update units set photos = '{https://images.unsplash.com/photo-1570642193983-c5c23fc09eba?auto=format&fit=crop&w=900&q=80}' where public_id = 'NJ-0006';
+update units set photos = '{https://images.unsplash.com/photo-1632803227975-b6a5688c9c46?auto=format&fit=crop&w=900&q=80}' where public_id = 'NJ-0002';
+update units set photos = '{https://images.unsplash.com/photo-1696330743697-7f40d6839fdc?auto=format&fit=crop&w=900&q=80}' where public_id = 'NJ-0003';
+update units set photos = '{https://images.unsplash.com/photo-1696330743697-7f40d6839fdc?auto=format&fit=crop&w=900&q=80}' where public_id = 'NJ-0005';
+update units set photos = '{https://images.unsplash.com/photo-1614292306505-a52af90aff38?auto=format&fit=crop&w=900&q=80}' where public_id = 'NJ-0004';

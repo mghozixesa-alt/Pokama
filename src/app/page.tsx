@@ -16,9 +16,9 @@ const CATEGORIES: { id: Category; badge?: string }[] = [
 ];
 
 const SLIDES: Slide[] = [
-  { kicker: "Tukar tambah", title: "HP lama jadi potongan harga", sub: "Cek estimasi 1 menit, dicek fisik di toko.", cta: "Cek estimasi", href: "/tukar-tambah", img: "/seed/banner1.jpg", sticker: { big: "+Rp 3,5 jt", small: "POTONGAN MAKS", tone: "white" } },
-  { kicker: "Promo bulan ini", title: "Laptop kerja grade A", sub: "Bersertifikat cek 8 langkah, garansi 30 hari.", cta: "Lihat laptop", href: "/katalog?kategori=laptop", img: "/seed/banner2.jpg", sticker: { big: "10%", small: "HEMAT", tone: "navy" } },
-  { kicker: "Jual ke Niagaaja", title: "Jual elektronik tanpa ribet", sub: "Dicek gratis, dibayar hari itu juga.", cta: "Jual sekarang", href: "/tukar-tambah", img: "/seed/banner3.jpg", sticker: { big: "Rp 0", small: "BIAYA CEK", tone: "teal" } },
+  { kicker: "Tukar tambah", title: "HP lama jadi potongan harga", sub: "Cek estimasi 1 menit, dicek fisik di toko.", cta: "Cek estimasi", href: "/tukar-tambah", img: "https://images.unsplash.com/photo-1758876018661-41b3c4012df8?auto=format&fit=crop&w=900&q=80", sticker: { big: "+Rp 3,5 jt", small: "POTONGAN MAKS", tone: "white" } },
+  { kicker: "Promo bulan ini", title: "Laptop kerja grade A", sub: "Bersertifikat cek 8 langkah, garansi 30 hari.", cta: "Lihat laptop", href: "/katalog?kategori=laptop", img: "https://images.unsplash.com/photo-1503945438517-f65904a52ce6?auto=format&fit=crop&w=900&q=80", sticker: { big: "10%", small: "HEMAT", tone: "navy" } },
+  { kicker: "Jual ke Niagaaja", title: "Jual elektronik tanpa ribet", sub: "Dicek gratis, dibayar hari itu juga.", cta: "Jual sekarang", href: "/tukar-tambah", img: "https://images.unsplash.com/photo-1493863641943-9b68992a8d07?auto=format&fit=crop&w=900&q=80", sticker: { big: "Rp 0", small: "BIAYA CEK", tone: "teal" } },
 ];
 
 export default async function HomePage() {
