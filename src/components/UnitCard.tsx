@@ -65,24 +65,27 @@ export function UnitCardGrid({ u }: { u: Unit }) {
 export function UnitCardRow({ u }: { u: Unit }) {
   const save = savePct(u.price_new, u.price_sell);
   return (
-    <div className="card p-2.5 flex gap-3">
-      <Link href={`/unit/${u.public_id}`} className="relative shrink-0 w-[84px] h-[84px] rounded-xl overflow-hidden bg-white border border-[#eef1f6]">
+    <div className="bg-white rounded-2xl p-2.5 flex gap-3 shadow-[0_4px_14px_rgba(16,54,92,0.06)]">
+      <Link href={`/unit/${u.public_id}`} className="relative shrink-0 w-[88px] h-[88px] rounded-xl overflow-hidden bg-page">
         <Photo u={u} className="absolute inset-0" />
       </Link>
-      <Link href={`/unit/${u.public_id}`} className="flex-1 min-w-0 flex flex-col gap-0.5">
-        <div className="flex items-center gap-1.5"><GradeBadge grade={u.grade} /><span className="text-[10px] text-muted">{unitMeta(u)}</span></div>
-        <span className="text-[13px] font-bold leading-[17px]">{unitTitle(u)}</span>
-        <span className="text-[11px] text-muted leading-[15px] truncate">{["hp", "tablet", "konsol"].includes(u.category) ? u.variant?.split(" · ").slice(1).join(" · ") || BRANCH_LABEL[u.branch] : u.variant}</span>
-        <div className="flex flex-wrap items-baseline gap-1.5 mt-0.5">
-          <span className="text-base font-extrabold text-brand-navy whitespace-nowrap">{rupiahShort(u.price_sell)}</span>
-          {u.price_new && <span className="text-[10px] text-[#8a93a6] line-through whitespace-nowrap">{rupiahShort(u.price_new)}</span>}
-          {save && <span className="text-[10px] font-extrabold text-teal-dark">{save}</span>}
+      <div className="flex-1 min-w-0 flex flex-col gap-0.5">
+        <Link href={`/unit/${u.public_id}`} className="flex flex-col gap-0.5">
+          <div className="flex items-center gap-1.5"><GradeBadge grade={u.grade} /><span className="text-[10px] text-muted truncate">{unitMeta(u)}</span></div>
+          <span className="text-[13px] font-bold leading-[17px] truncate">{unitTitle(u)}</span>
+          <span className="text-[11px] text-muted leading-[15px] truncate">{["hp", "tablet", "konsol"].includes(u.category) ? u.variant?.split(" · ").slice(1).join(" · ") || BRANCH_LABEL[u.branch] : u.variant}</span>
+        </Link>
+        <div className="flex items-end justify-between gap-2 mt-0.5">
+          <div className="min-w-0">
+            <div className="flex flex-wrap items-baseline gap-1.5">
+              <span className="text-base font-extrabold text-brand-navy whitespace-nowrap">{rupiahShort(u.price_sell)}</span>
+              {u.price_new && <span className="text-[10px] text-[#8a93a6] line-through whitespace-nowrap">{rupiahShort(u.price_new)}</span>}
+              {save && <span className="text-[10px] font-extrabold text-teal-dark">{save}</span>}
+            </div>
+            <div className="flex items-center gap-1 text-[10px] text-muted"><Icon.Shield size={11} stroke="#0e8f85" />Garansi {u.grade === "C" ? "7" : "30"} hr · {BRANCH_LABEL[u.branch]}</div>
+          </div>
+          <Link href={`/unit/${u.public_id}#tawar`} className="shrink-0 px-3 py-1.5 rounded-lg bg-brand text-white text-[11px] font-extrabold">Tawar</Link>
         </div>
-        <div className="flex items-center gap-1 text-[10px] text-muted"><Icon.Shield size={11} stroke="#0e8f85" />Garansi {u.grade === "C" ? "7" : "30"} hr · {BRANCH_LABEL[u.branch]}</div>
-      </Link>
-      <div className="flex flex-col justify-between items-end shrink-0">
-        <button aria-label="Simpan" className="w-[30px] h-[30px] rounded-full border border-line bg-white flex items-center justify-center text-brand-navy"><Icon.Heart size={14} /></button>
-        <Link href={`/unit/${u.public_id}#tawar`} className="px-3 py-1.5 rounded-lg bg-brand-light text-brand-dark text-[11px] font-extrabold">Tawar</Link>
       </div>
     </div>
   );

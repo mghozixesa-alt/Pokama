@@ -45,51 +45,41 @@ export default async function KatalogPage({ searchParams }: { searchParams: Prom
   const isActive = (p: Partial<Search>) =>
     Object.keys(p).length === 0 ? !sp.kategori && !sp.grade && !sp.maks : Object.entries(p).every(([k, v]) => sp[k as keyof Search] === v);
 
+  const hasFilter = !!(sp.q || sp.kategori || sp.grade || sp.maks);
+  const SORTS: [string, string][] = [["baru", "Terbaru"], ["murah", "Termurah"], ["mahal", "Termahal"]];
+  const curSort = sp.urut ?? "baru";
+
   return (
     <Shell active="katalog">
-      <div className="px-4 pt-5 flex items-center justify-between">
-        <h1 className="text-2xl font-extrabold text-brand-navy">Katalog</h1>
-        <Link href="/katalog" className="card px-3 h-10 flex items-center gap-2 text-sm font-bold">Reset</Link>
-      </div>
-
-      <form className="px-4 mt-4">
-        <label className="label">Cari di katalog</label>
-        <div className="card h-12 flex items-center gap-3 px-4">
-          <Icon.Search size={18} stroke="#8a93a6" />
-          <input name="q" defaultValue={sp.q} placeholder="Merek, model, atau spesifikasi" className="flex-1 bg-transparent text-sm outline-none" />
-          {sp.kategori && <input type="hidden" name="kategori" value={sp.kategori} />}
+      <div className="bg-brand-navy text-white px-4 pt-5 pb-4 rounded-b-[26px]">
+        <div className="flex items-center justify-between">
+          <h1 className="text-2xl font-extrabold">Katalog</h1>
+          {hasFilter && <Link href="/katalog" className="h-9 px-3 rounded-full bg-white/15 flex items-center text-xs font-bold">Reset</Link>}
         </div>
-      </form>
-
-      <div className="flex gap-2 px-4 mt-3 overflow-x-auto no-scrollbar">
-        {CHIPS.map((c) => {
-          const on = isActive(c.params);
-          return (
-            <Link key={c.label} href={`/katalog${qs({ q: sp.q, ...c.params })}`} className={`shrink-0 h-10 px-3.5 rounded-full text-[13px] font-bold border ${on ? "bg-brand-navy border-brand-navy text-white" : "bg-white border-line text-ink"}`}>{c.label}</Link>
-          );
-        })}
-      </div>
-
-      <div className="mx-4 mt-3 card px-3 py-2 flex items-center gap-2 text-[11px]">
-        <span className="font-bold text-brand-navy">Grade:</span>
-        <span className="flex items-center gap-1"><i className="w-2 h-2 rounded-full bg-brand inline-block" />A mulus</span>
-        <span className="flex items-center gap-1"><i className="w-2 h-2 rounded-full bg-[#f2a93b] inline-block" />B lecet pakai</span>
-        <span className="flex items-center gap-1"><i className="w-2 h-2 rounded-full bg-[#8a93a6] inline-block" />C ada minus</span>
-        <Link href="/sertifikat" className="ml-auto font-bold text-brand">Info</Link>
-      </div>
-
-      <div className="px-4 mt-3 flex flex-col gap-2">
-        <p className="text-sm text-muted">{units.length} unit tersedia · <b className="text-brand-navy">semua dicek</b></p>
-        <form className="flex items-center gap-2 text-sm">
-          {Object.entries(sp).filter(([k]) => k !== "urut").map(([k, v]) => v && <input key={k} type="hidden" name={k} value={v} />)}
-          <span className="text-xs font-bold text-muted">Urutkan</span>
-          <select name="urut" defaultValue={sp.urut ?? "baru"} className="h-9 px-2 rounded-lg border border-line bg-white text-sm flex-1 max-w-[200px]">
-            <option value="baru">Terbaru</option>
-            <option value="murah">Harga terendah</option>
-            <option value="mahal">Harga tertinggi</option>
-          </select>
-          <button className="btn-soft">OK</button>
+        <form className="mt-3">
+          <div className="bg-white rounded-2xl h-12 flex items-center gap-3 px-4 text-ink">
+            <Icon.Search size={18} stroke="#8a93a6" />
+            <input name="q" defaultValue={sp.q} placeholder="Cari merek, model, atau spesifikasi" className="flex-1 bg-transparent text-sm outline-none min-w-0" />
+            {sp.kategori && <input type="hidden" name="kategori" value={sp.kategori} />}
+          </div>
         </form>
+        <div className="flex gap-2 mt-3 -mx-4 px-4 overflow-x-auto no-scrollbar">
+          {CHIPS.map((c) => {
+            const on = isActive(c.params);
+            return (
+              <Link key={c.label} href={`/katalog${qs({ q: sp.q, urut: sp.urut, ...c.params })}`} className={`shrink-0 h-9 px-3.5 rounded-full text-[12px] font-bold flex items-center ${on ? "bg-white text-brand-navy" : "bg-white/15 text-white"}`}>{c.label}</Link>
+            );
+          })}
+        </div>
+      </div>
+
+      <div className="px-4 mt-4 flex items-center justify-between text-[12px]">
+        <p className="text-muted"><b className="text-brand">{units.length} unit</b> · semua dicek ✓</p>
+        <div className="flex items-center gap-1.5 text-[11px]">
+          {SORTS.map(([v, l]) => (
+            <Link key={v} href={`/katalog${qs({ ...sp, urut: v === "baru" ? undefined : v })}`} className={`px-2 py-1 rounded-md font-bold ${curSort === v ? "bg-brand-light text-brand-dark" : "text-muted"}`}>{l}</Link>
+          ))}
+        </div>
       </div>
 
       <div className="px-4 mt-3 flex flex-col gap-2.5">
