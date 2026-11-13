@@ -386,9 +386,14 @@ function offerPanel(o) {
       <label class="f">Ringkasan (kenapa dibutuhkan, dari data apa)<textarea class="inp" name="summary">${esc(o.summary || '')}</textarea></label>
       <div class="g3"><label class="f">Kebutuhan dana<input class="inp" name="target_amount" inputmode="numeric" value="${o.target_amount ? Math.round(o.target_amount) : ''}"></label><label class="f">Minimal<input class="inp" name="min_amount" inputmode="numeric" value="${o.min_amount ? Math.round(o.min_amount) : ''}"></label><label class="f">Tenor (bulan)<input class="inp" name="tenor_months" inputmode="numeric" value="${o.tenor_months || ''}"></label></div>
       <label class="f">Estimasi hasil (teks)<input class="inp" name="est_return" value="${esc(o.est_return || '')}" placeholder="mis. Rp1,2–1,6 jt/bulan per unit dari data 6 bulan"></label>
+      <div class="g3"><label class="f">Estimasi % per tahun<input class="inp" name="est_yield_pct" inputmode="decimal" value="${o.est_yield_pct != null ? String(+o.est_yield_pct).replace('.', ',') : ''}" placeholder="mis. 24"></label>
+        <label class="f">Risiko<select class="inp" name="risk"><option value="">—</option>${['rendah', 'sedang', 'tinggi'].map(r => `<option value="${r}"${o.risk === r ? ' selected' : ''}>${r[0].toUpperCase() + r.slice(1)}</option>`).join('')}</select></label>
+        <label class="f">Sudah terkumpul<input class="inp" name="raised_amount" inputmode="numeric" value="${o.raised_amount ? Math.round(o.raised_amount) : ''}"></label></div>
+      <label class="f">Sorotan singkat (tampil sebagai label)<input class="inp" name="highlight" value="${esc(o.highlight || '')}" placeholder="mis. Utilisasi 78% · paling dicari"></label>
+      <label class="f">Link foto (https, opsional)<input class="inp" name="photo_url" value="${esc(o.photo_url || '')}" placeholder="https://…"></label>
       <label class="f">Status<select class="inp" name="status"><option value="dibuka"${o.status === 'dibuka' ? ' selected' : ''}>Dibuka</option><option value="ditutup"${o.status === 'ditutup' ? ' selected' : ''}>Ditutup</option></select></label>
       <div id="oe"></div><button class="btn pri" type="submit">Simpan</button></form>`,
-  (p) => { const f = p.querySelector('#fo'); f.onsubmit = async (e) => { e.preventDefault(); const d = Object.fromEntries(new FormData(f)); if (o.id) d.id = o.id; ['target_amount', 'min_amount'].forEach(k => d[k] = num(d[k]) || '');
+  (p) => { const f = p.querySelector('#fo'); f.onsubmit = async (e) => { e.preventDefault(); const d = Object.fromEntries(new FormData(f)); if (o.id) d.id = o.id; ['target_amount', 'min_amount', 'raised_amount'].forEach(k => d[k] = num(d[k]) || '');
     try { await A.rpc('iv_admin_offer_save', { p: d }); toast('Peluang tersimpan'); close(); render(); } catch (er) { p.querySelector('#oe').innerHTML = `<div class="alert"><b>${esc(er.message)}</b></div>`; } }; });
 }
 
