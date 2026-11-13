@@ -9,10 +9,22 @@ import { GradePicker } from "@/components/GradePicker";
 import { OfferForm } from "@/components/OfferForm";
 import { UnitCardGrid, unitTitle, unitSub, Photo } from "@/components/UnitCard";
 import { Icon } from "@/components/Icons";
+import { ShareButton } from "@/components/ShareButton";
+import { SaveButton } from "@/components/SaveButton";
+import type { Metadata } from "next";
 import { rupiah, savePct, SOURCE_LABEL, BRANCH_LABEL, CATEGORY_LABEL, tanggal, waLink } from "@/lib/format";
 import type { Inspection, Unit } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
+
+export async function generateMetadata({ params }: { params: Promise<{ publicId: string }> }): Promise<Metadata> {
+  const { publicId } = await params;
+  const { data } = await createPublicClient().from("units").select("brand, model, variant, price_sell, grade, public_id").eq("public_id", publicId).maybeSingle();
+  if (!data) return { title: "Unit tidak ditemukan" };
+  const title = `${data.brand} ${data.model}${data.variant ? ` ${data.variant}` : ""} — ${rupiah(data.price_sell)}`;
+  const description = `Grade ${data.grade ?? "-"}, dicek 8 langkah, garansi ${data.grade === "C" ? 7 : 30} hari, bisa tawar. Kode ${data.public_id}.`;
+  return { title, description, openGraph: { title, description, url: `/unit/${publicId}` }, twitter: { card: "summary_large_image", title, description } };
+}
 
 const SPEC_LABEL: Record<string, string> = {
   storage: "Penyimpanan", battery_health: "Kesehatan baterai", color: "Warna", kelengkapan: "Kelengkapan", cpu: "Prosesor",
@@ -32,6 +44,7 @@ export default async function UnitPage({ params }: { params: Promise<{ publicId:
     pub.from("units").select("*").eq("status", "tersedia").eq("category", u.category).neq("id", u.id).limit(4),
     supabase.auth.getUser(),
   ]);
+  const saved = auth.user ? !!(await supabase.from("saved_units").select("unit_id").eq("unit_id", u.id).eq("customer_id", auth.user.id).maybeSingle()).data : false;
   const inspection = insp as Inspection | null;
   const save = savePct(u.price_new, u.price_sell);
   const sold = u.status !== "tersedia";
@@ -39,7 +52,7 @@ export default async function UnitPage({ params }: { params: Promise<{ publicId:
 
   return (
     <Shell withNav={false}>
-      <TopBar title={u.public_id} back="/katalog" right={<a href={waLink(`Halo Niagaaja, saya mau tanya unit ${u.public_id} ${u.brand} ${u.model}`)} aria-label="Tanya via WhatsApp" className="w-10 h-10 rounded-full bg-white border border-line flex items-center justify-center text-brand-navy"><Icon.Chat size={18} /></a>} />
+      <TopBar title={u.public_id} back="/katalog" right={<div className="flex gap-2"><SaveButton unitId={u.id} publicId={u.public_id} initial={saved} /><ShareButton title={`${u.brand} ${u.model}`} text={`${u.brand} ${u.model} ${rupiah(u.price_sell)} — Niagaaja, dicek & bergaransi`} path={`/unit/${u.public_id}`} /><a href={waLink(`Halo Niagaaja, saya mau tanya unit ${u.public_id} ${u.brand} ${u.model}`)} aria-label="Tanya via WhatsApp" className="w-10 h-10 rounded-full bg-white border border-line flex items-center justify-center text-brand-navy"><Icon.Chat size={18} /></a></div>} />
 
       {/* Foto */}
       <div className="mx-4 card overflow-hidden">

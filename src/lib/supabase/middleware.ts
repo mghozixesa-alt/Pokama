@@ -21,7 +21,7 @@ export async function updateSession(request: NextRequest) {
   );
 
   const path = request.nextUrl.pathname;
-  const needsLogin = path.startsWith("/pesanan") || path.startsWith("/akun") || path.startsWith("/booking") || path.startsWith("/admin");
+  const needsLogin = path.startsWith("/pesanan") || path.startsWith("/akun") || path.startsWith("/tersimpan") || path.startsWith("/servis") || path.startsWith("/booking") || path.startsWith("/admin");
   // Halaman publik tidak perlu memanggil server auth di tiap request
   if (!needsLogin) return response;
 

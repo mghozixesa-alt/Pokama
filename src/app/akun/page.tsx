@@ -37,7 +37,7 @@ export default async function AkunPage() {
       {isStaff && <Link href="/admin" className="mx-4 mt-3 card p-4 flex items-center gap-3 border-brand"><span className="w-10 h-10 rounded-xl bg-brand-navy text-white flex items-center justify-center font-bold">A</span><span className="flex-1 text-sm font-semibold">Panel admin Niagaaja</span><Icon.ChevronRight stroke="#8a93a6" /></Link>}
 
       <section className="mx-4 mt-4 card divide-y divide-page">
-        {[["/pesanan", "Pesanan & tawaran saya"], ["/tukar-tambah", "Jual / tukar tambah"], ["/pantau-harga", "Pantau harga"], ["/sertifikat", "Cara kami cek & grade unit"]].map(([href, label]) => (
+        {[["/pesanan", "Pesanan & tawaran saya"], ["/tersimpan", "Unit tersimpan"], ["/tukar-tambah", "Jual / tukar tambah"], ["/pantau-harga", "Pantau harga"], ["/sertifikat", "Cara kami cek & grade unit"]].map(([href, label]) => (
           <Link key={href} href={href} className="flex items-center justify-between p-4 text-sm font-semibold"><span>{label}</span><Icon.ChevronRight stroke="#8a93a6" /></Link>
         ))}
       </section>

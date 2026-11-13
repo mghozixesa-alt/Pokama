@@ -3,6 +3,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { sendWa, WA } from "@/lib/wa";
+import { notifyPriceWatches } from "@/lib/priceWatch";
 import { rupiah, ORDER_STATUS_LABEL } from "@/lib/format";
 import type { OrderStatus } from "@/lib/types";
 
@@ -46,13 +47,21 @@ export async function upsertUnit(formData: FormData) {
     hot_label: str(formData, "hot_label"),
   };
   let unitId = id;
+  let becameAvailable = unit.status === "tersedia";
   if (id) {
+    const { data: before } = await supabase.from("units").select("status").eq("id", id).maybeSingle();
+    becameAvailable = unit.status === "tersedia" && before?.status !== "tersedia";
     const { error } = await supabase.from("units").update(unit).eq("id", id);
     if (error) throw new Error(error.message);
   } else {
     const { data, error } = await supabase.from("units").insert(unit).select("id").single();
     if (error) throw new Error(error.message);
     unitId = data.id;
+  }
+  // Kabari pelanggan yang memantau model ini (hanya saat unit baru jadi "tersedia")
+  if (becameAvailable && unitId) {
+    const { data: full } = await supabase.from("units").select("id, public_id, category, brand, model, variant, grade, price_sell, status").eq("id", unitId).single();
+    if (full) { try { await notifyPriceWatches(supabase, full); } catch (e) { console.error("[pantau]", e); } }
   }
   // kepemilikan aktif
   const ownerType = str(formData, "owner_type") ?? "sendiri";
@@ -151,4 +160,19 @@ export async function updateTradeIn(formData: FormData) {
   const ph = (t as unknown as { profiles: { phone: string | null } | null } | null)?.profiles?.phone;
   if (t && ph && final) await sendWa(ph, `Niagaaja: pengajuan ${t.brand} ${t.model} — status ${status}${final ? `, harga ${rupiah(final)}` : ""}. Detail: ${process.env.NEXT_PUBLIC_SITE_URL ?? ""}/tukar-tambah/${id}`);
   revalidatePath("/admin/tukar-tambah");
+}
+
+export async function updateClaim(formData: FormData) {
+  const { supabase } = await staff();
+  const id = String(formData.get("id"));
+  const status = String(formData.get("status"));
+  const note = str(formData, "admin_note");
+  const { data: c } = await supabase.from("service_claims").select("public_id, status, admin_note, profiles(phone)").eq("id", id).single();
+  await supabase.from("service_claims").update({ status, admin_note: note, updated_at: new Date().toISOString() }).eq("id", id);
+  const ph = (c as unknown as { profiles: { phone: string | null } | null } | null)?.profiles?.phone;
+  if (c && ph && (c.status !== status || c.admin_note !== note)) {
+    const LABEL: Record<string, string> = { diajukan: "diajukan", dijadwalkan: "dijadwalkan untuk dicek", dicek: "sedang dicek teknisi", diperbaiki: "diperbaiki tanpa biaya", ditukar: "ditukar dengan unit lain", ditolak: "di luar cakupan garansi", selesai: "selesai" };
+    await sendWa(ph, `Niagaaja: klaim servis ${c.public_id} — ${LABEL[status] ?? status}.${note ? ` Catatan teknisi: ${note}.` : ""} Detail: ${process.env.NEXT_PUBLIC_SITE_URL ?? ""}/servis`);
+  }
+  revalidatePath("/admin/servis");
 }

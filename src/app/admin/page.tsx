@@ -6,13 +6,14 @@ export const metadata = { title: "Admin" };
 
 export default async function AdminHome() {
   const supabase = await createClient();
-  const [tersedia, dipesan, konfirmasi, tawaran, nilai, titipan] = await Promise.all([
+  const [tersedia, dipesan, konfirmasi, tawaran, nilai, titipan, klaim] = await Promise.all([
     supabase.from("units").select("id", { count: "exact", head: true }).eq("status", "tersedia"),
     supabase.from("units").select("id", { count: "exact", head: true }).eq("status", "dipesan"),
     supabase.from("orders").select("id", { count: "exact", head: true }).eq("status", "menunggu_konfirmasi"),
     supabase.from("offers").select("id", { count: "exact", head: true }).eq("status", "diajukan"),
     supabase.from("units").select("price_sell").eq("status", "tersedia"),
     supabase.from("units").select("id", { count: "exact", head: true }).eq("status", "dititip_rentalaja"),
+    supabase.from("service_claims").select("id", { count: "exact", head: true }).in("status", ["diajukan", "dijadwalkan", "dicek"]),
   ]);
   const totalNilai = (nilai.data ?? []).reduce((s, r) => s + (r.price_sell ?? 0), 0);
   const cards = [
@@ -22,6 +23,7 @@ export default async function AdminHome() {
     ["Bukti bayar perlu konfirmasi", String(konfirmasi.count ?? 0), "/admin/pembayaran"],
     ["Tawaran belum dijawab", String(tawaran.count ?? 0), "/admin/tawaran"],
     ["Dititip ke Rentalaja", String(titipan.count ?? 0), "/admin/stok?status=dititip_rentalaja"],
+    ["Klaim servis terbuka", String(klaim.count ?? 0), "/admin/servis"],
   ];
   return (
     <div>

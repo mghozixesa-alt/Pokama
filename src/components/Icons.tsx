@@ -24,6 +24,9 @@ export const Icon = {
       <path d="M12 21s-7.5-4.6-9.5-9.2C1.2 8.6 3.2 5 6.8 5c2 0 3.4 1.1 5.2 3 1.8-1.9 3.2-3 5.2-3 3.6 0 5.6 3.6 4.3 6.8C19.5 16.4 12 21 12 21z" />
     </svg>
   ),
+  Share: ({ size = 20, className, stroke = "currentColor" }: P) => (
+    <svg {...base(size, stroke, className)}><path d="M12 3v12" /><path d="M8 7l4-4 4 4" /><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" /></svg>
+  ),
   Home: ({ size = 22, className, stroke = "currentColor" }: P) => (
     <svg {...base(size, stroke, className)}><path d="M3 11l9-7 9 7" /><path d="M5 10v10h14V10" /></svg>
   ),
