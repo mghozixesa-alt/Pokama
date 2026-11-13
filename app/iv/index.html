@@ -118,6 +118,19 @@ nav.bottom a[aria-current="page"]{color:var(--navy);font-weight:800}nav.bottom a
 .offer form,.topup form{display:flex;flex-direction:column;gap:8px}
 .leg{display:flex;align-items:center;gap:8px;font-size:13px}.leg i{width:10px;height:10px;border-radius:5px;flex:none}.leg span{flex:1;color:var(--mut)}
 .trust{gap:14px}
+/* v2b */
+.src{font-weight:800;color:var(--amb)}.src.ok2{color:var(--grn)}
+.bench{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;background:var(--bg);border-radius:12px;padding:10px}.bench div{display:flex;flex-direction:column;gap:2px;min-width:0}.bench b{font-size:13px}
+.own{display:flex;gap:8px;align-items:flex-start;background:var(--mint);color:var(--teal);border-radius:12px;padding:10px;font-size:13px;font-weight:600}.own svg{flex:none;margin-top:1px}
+.sw{position:relative;width:46px;height:28px;flex:none;cursor:pointer}.sw input{opacity:0;width:0;height:0;position:absolute}.sw i{position:absolute;inset:0;background:#D5D9E0;border-radius:14px;transition:.2s}
+.sw i::after{content:'';position:absolute;left:3px;top:3px;width:22px;height:22px;border-radius:11px;background:#fff;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}.sw input:checked+i{background:var(--teal2)}.sw input:checked+i::after{left:21px}
+.rein .feat{align-items:center}
+.bell{position:relative;color:var(--navy);width:38px;height:38px;display:flex;align-items:center;justify-content:center;border-radius:19px;background:#fff;border:1px solid var(--line)}.bell i{position:absolute;top:-2px;right:-2px;background:var(--red);color:#fff;font-size:10px;font-weight:800;font-style:normal;min-width:17px;height:17px;border-radius:9px;display:flex;align-items:center;justify-content:center;padding:0 4px}
+.welcome{background:var(--navy);color:#fff;border:0}.welcome>span{font-size:13px;line-height:19px;color:#D5DCEA}.welcome .steps b{background:var(--teal2);color:var(--navy)}.welcome .steps span{color:#C9D1E2}
+.rekap{position:fixed;inset:0;background:rgba(31,43,77,.5);z-index:60;overflow:auto;padding:16px}.rk{background:#fff;max-width:780px;margin:auto;border-radius:14px;padding:20px;font-size:13px}
+.rk h1{font-size:18px;line-height:24px}.rk table{width:100%;border-collapse:collapse;margin-top:14px}.rk th,.rk td{padding:7px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}.rk th{font-size:11px;text-transform:uppercase;color:var(--mut2)}.rk .r{text-align:right}.rk tfoot td{font-weight:800}.rk small{color:var(--mut2)}
+.rk .hd{display:flex;justify-content:space-between;align-items:center;gap:10px;border-bottom:3px solid var(--teal2);padding-bottom:10px}
+@media print{body.printing .wrap{display:none}body.printing .rekap{position:static;background:none;padding:0}}
 @media (min-width:520px){.wrap{border-left:1px solid var(--line);border-right:1px solid var(--line)}}
 @media print{nav.bottom,.plain,.noprint{display:none!important}}
 </style>
@@ -136,7 +149,7 @@ const IC = {
   user: '<circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/>', back: '<path d="M15 6l-6 6 6 6"/>', next: '<path d="M9 6l6 6-6 6"/>',
   bike: '<circle cx="6" cy="17" r="3"/><circle cx="18" cy="17" r="3"/><path d="M6 17l4-7h5l3 7M10 10L8 6H5"/>', chart: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
   shield: '<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/>', star: '<path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/>',
-  plus: '<path d="M12 5v14M5 12h14"/>', bank: '<path d="M3 10l9-6 9 6M5 10v8M19 10v8M9 10v8M15 10v8M3 20h18"/>', compass: '<circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/>', bed: '<path d="M3 18V7M3 14h18v4M21 14v-2a3 3 0 0 0-3-3h-7v5"/><circle cx="7" cy="11" r="2"/>', clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+  plus: '<path d="M12 5v14M5 12h14"/>', bank: '<path d="M3 10l9-6 9 6M5 10v8M19 10v8M9 10v8M15 10v8M3 20h18"/>', compass: '<circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/>', bed: '<path d="M3 18V7M3 14h18v4M21 14v-2a3 3 0 0 0-3-3h-7v5"/><circle cx="7" cy="11" r="2"/>', bell: '<path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4z"/><path d="M10 20a2 2 0 0 0 4 0"/>', clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
 };
 const svg = (k, n = 22, c = 'currentColor') => `<svg width="${n}" height="${n}" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[k]}</svg>`;
 const LOGO = { RA: '/img/ra.png', WG: '/img/tr.png', NA: '/img/na.png', PK: '/img/pk.png' };
@@ -206,7 +219,7 @@ function gate(title, text, extra = '') {
 /* ---------- kerangka aplikasi ---------- */
 function nav() {
   const it = [['beranda', 'Beranda', 'home'], ['investasi', 'Portofolio', 'pie'], ['peluang', 'Jelajahi', 'compass'], ['laporan', 'Laporan', 'doc'], ['akun', 'Akun', 'user']];
-  const cur = VIEW === 'inv' ? 'investasi' : VIEW === 'dana' ? 'beranda' : VIEW;
+  const cur = VIEW === 'inv' ? 'investasi' : VIEW === 'dana' || VIEW === 'kabar' ? 'beranda' : VIEW;
   return `<nav class="bottom" aria-label="Menu investor">${it.map(([k, l, i]) => `<a href="#${k}"${cur === k ? ' aria-current="page"' : ''}><span>${svg(i, 22)}</span>${l}</a>`).join('')}</nav>`;
 }
 const plain = (title, back = '#beranda') => `<header class="plain"><a class="back" href="${back}" aria-label="Kembali">${svg('back', 20)}</a><h1>${esc(title)}</h1><img src="/img/pokama-logo.png" alt="Pokama" style="height:20px"></header>`;
@@ -252,6 +265,7 @@ function series() {
   let c = 0; return pts.map(p => ({ l: p.l, v: (c += p.v) }));
 }
 function lineChart(pts, w = 350, h = 130) {
+  if (pts && pts.length >= 2 && !pts[pts.length - 1].v) return '<div class="chartempty">Grafik terisi setelah hasil pertama masuk.</div>';
   if (!pts || pts.length < 2) return `<div class="chartempty">${pts && pts.length === 1 ? 'Grafik muncul setelah ada data 2 periode.' : 'Belum ada hasil di periode ini.'}</div>`;
   const max = Math.max(1, ...pts.map(p => p.v)), X = (i) => i / (pts.length - 1) * w, Y = (v) => h - 6 - v / max * (h - 18);
   const d = pts.map((p, i) => (i ? 'L' : 'M') + X(i).toFixed(1) + ' ' + Y(p.v).toFixed(1)).join(' ');
@@ -276,53 +290,93 @@ async function loadGrowth() {
 }
 function wireRange() { app.querySelectorAll('[data-range]').forEach(b => b.onclick = () => { RANGE = b.dataset.range; app.querySelector('#growth').innerHTML = growthBox(); wireRange(); }); }
 const RISK = { rendah: ['Risiko rendah', 'p-good'], sedang: ['Risiko sedang', 'p-warn'], tinggi: ['Risiko tinggi', 'p-bad'] };
+let EX = { reinvest: false, book: {}, feed: [] };
+const SRC = { web: 'Web Rentalaja', app: 'Aplikasi', wa: 'WhatsApp', whatsapp: 'WhatsApp', telepon: 'Telepon', walkin: 'Datang langsung', walk_in: 'Datang langsung', kasir: 'Kasir cabang', ota: 'OTA', airbnb: 'Airbnb', agoda: 'Agoda', booking: 'Booking.com', traveloka: 'Traveloka', tiket: 'Tiket.com', travel: 'Travel lokal', sistem_lama: 'Pelanggan lama', ig: 'Instagram', tiktok: 'TikTok' };
+const srcName = (s) => s ? (SRC[String(s).toLowerCase()] || String(s).replace(/_/g, ' ')) : '';
+/* imbal per tahun: hasil ÷ modal ÷ lama investasi. Baru dihitung setelah 90 hari supaya tidak menyesatkan (bulan pertama yang ramai bisa terlihat 100%/thn). */
+const yrs = (h) => Math.max(1 / 12, (Date.now() - new Date(h.started_on)) / 31557600000);
+const ripe = (h) => (Date.now() - new Date(h.started_on)) >= 90 * 864e5;
+const annual = (h, ret) => +h.principal && ripe(h) ? ret / h.principal / yrs(h) * 100 : null;
+const daysIn = (h) => Math.max(1, Math.round((Date.now() - new Date(h.started_on)) / 864e5));
+const retTxt = (h, ret) => { const a = annual(h, ret); return a != null ? pctx(a) + '/thn' : pctx(+h.principal ? ret / h.principal * 100 : 0) + ' · baru ' + daysIn(h) + ' hari'; };
+function annualOf(xs) { const r = xs.filter(x => ripe(x.h)); const p = r.reduce((a, x) => a + +x.h.principal * yrs(x.h), 0); return p ? r.reduce((a, x) => a + holdRet(x), 0) / p * 100 : null; }
+function ownCat(cat) { const xs = D.holdings.filter(x => x.h.status === 'aktif' && x.h.jenis === 'aset' && (x.h.cat || (catv(x.h).stay ? 'penginapan' : '')) === cat); if (!xs.length) return null;
+  const p = xs.reduce((a, x) => a + +x.h.principal * yrs(x.h), 0); return p ? xs.reduce((a, x) => a + holdRet(x), 0) / p * 100 : null; }
 function offerCard(o, full) {
-  const prog = o.target_amount && o.raised_amount ? Math.min(100, o.raised_amount / o.target_amount * 100) : null;
-  const ret = o.est_yield_pct != null ? `<b class="yield">${pctx(o.est_yield_pct)}</b><span class="small">estimasi per tahun</span>` : o.est_return ? `<b class="yield sm">${esc(o.est_return)}</b><span class="small">estimasi</span>` : '<span class="small">Estimasi dijelaskan tim</span>';
+  const prog = o.target_amount && o.raised_amount ? Math.min(100, o.raised_amount / o.target_amount * 100) : null, B = o.bench;
+  const fromData = B && B.yield_avg != null;
+  const ret = fromData ? `<b class="yield">${pctx(B.yield_avg)}</b><span class="small">per tahun · <span class="src ok2">dari data asli</span></span>`
+    : o.est_yield_pct != null ? `<b class="yield">${pctx(o.est_yield_pct)}</b><span class="small">per tahun · <span class="src">perkiraan tim</span></span>`
+    : o.est_return ? `<b class="yield sm">${esc(o.est_return)}</b><span class="small">perkiraan tim</span>` : '<span class="small">Estimasi dijelaskan tim</span>';
+  const own = o.category ? ownCat(o.category) : null;
   return `<article class="offer${full ? ' full' : ''}">
     <div class="ophoto"${o.photo_url ? ` style="background-image:url('${esc(o.photo_url)}')"` : ''}><img src="${LOGO[o.unit_code]}" alt="${esc(o.unit)}">${o.highlight ? `<span class="hl2">${esc(o.highlight)}</span>` : ''}</div>
-    <div class="obody"><div class="otags">${pill(JENIS[o.jenis], o.jenis === 'aset' ? 'p-teal' : o.jenis === 'proyek' ? 'p-info' : 'p-warn')}${o.risk ? pill(...RISK[o.risk]) : ''}</div>
-      <strong class="otitle">${esc(o.title)}</strong><span class="small">${esc(o.unit)}</span>
+    <div class="obody"><div class="otags">${pill(o.category && CATN[o.category] ? CATN[o.category] : JENIS[o.jenis], o.jenis === 'aset' ? 'p-teal' : o.jenis === 'proyek' ? 'p-info' : 'p-warn')}${o.risk ? pill(...RISK[o.risk]) : ''}</div>
+      <strong class="otitle">${esc(o.title)}</strong><span class="small">${esc(o.category === 'penginapan' ? 'Rentalaja Experience' : o.unit)}${o.branch_name ? ' · ' + esc(o.branch_name) : ''}</span>
       <div class="oret">${ret}</div>
+      ${fromData && full ? `<div class="bench"><div><span class="small">Rentang wajar</span><b>${pctx(B.yield_low)} – ${pctx(B.yield_high)}</b></div><div><span class="small">Per unit/bln</span><b>${rpk(B.month_avg)}</b></div><div><span class="small">Dasar</span><b>${B.units} unit · 6 bln</b></div></div>
+        <span class="small">Dihitung dari sewa ${B.units} unit ${esc(CATN[o.category] || o.category)}${o.branch_name ? ' di ' + esc(o.branch_name) : ''} 6 bulan terakhir × porsi investor ${pctx(o.share_pct)} ÷ harga beli unit. Belum dikurangi servis.</span>` : ''}
+      ${own != null ? `<div class="own">${svg('star', 16)}<span>Aset ${esc(CATN[o.category] || '')} Anda saat ini menghasilkan <b>${pctx(own)} per tahun</b></span></div>` : ''}
       ${prog != null ? `<div><div class="bar"><i style="width:${prog}%"></i></div><div class="small" style="display:flex;justify-content:space-between;margin-top:4px"><span>Terkumpul ${rpk(o.raised_amount)}</span><span>dari ${rpk(o.target_amount)}</span></div></div>` : ''}
       <div class="ometa">${o.min_amount ? `<span>Mulai <b>${rpk(o.min_amount)}</b></span>` : ''}${o.tenor_months ? `<span>Tenor <b>${o.tenor_months} bln</b></span>` : ''}</div>
-      ${full ? `${o.summary ? `<p class="osum">${esc(o.summary)}</p>` : ''}${o.est_return && o.est_yield_pct != null ? `<div class="ok" style="font-weight:600">${esc(o.est_return)}</div>` : ''}
+      ${full ? `${o.summary ? `<p class="osum">${esc(o.summary)}</p>` : ''}${o.est_return && (fromData || o.est_yield_pct != null) ? `<div class="ok" style="font-weight:600">${esc(o.est_return)}</div>` : ''}
         ${o.mine ? `<div class="ok">Minat Anda sudah terkirim. Tim investor relations menghubungi lewat WhatsApp.</div>` : `<form class="fi" data-offer="${o.id}"><input class="inp" name="amount" inputmode="numeric" placeholder="Rencana dana (opsional)"><input type="hidden" name="note" value=""><button class="btn dark" type="submit" style="height:48px">Saya tertarik</button></form>`}`
       : `<a class="btn sm pri" href="#peluang/${o.id}">Lihat detail</a>`}</div></article>`;
 }
 function portRow(x) {
-  const h = x.h, ret = holdRet(x), pc = +h.principal ? ret / h.principal * 100 : 0;
+  const h = x.h, ret = holdRet(x);
   return `<a class="prow" href="#inv/${h.id}"><img src="${LOGO[h.unit_code]}" alt=""><div class="t"><strong>${esc(h.title)}</strong><span class="small">${esc(unitName(h))} · ${esc(catName(h))}${h.status !== 'aktif' ? ' · selesai' : ''}</span></div>
-    <div class="r"><b>${rp(+h.principal + ret)}</b><span class="gain">+${rpk(ret)} (${pctx(pc)})</span></div></a>`;
+    <div class="r"><b>+${rpk(ret)}</b><span class="gain">${retTxt(h, ret)}</span><span class="small">modal ${rpk(h.principal)}</span></div></a>`;
 }
+const FEEDIC = { tim: 'star', laporan: 'doc', dana: 'wallet', mulai: 'pie' };
+const feedRow = (f) => `<div class="row"><span class="av" style="background:var(--mint);color:var(--teal);width:36px;height:36px">${svg(FEEDIC[f.kind] || 'star', 18)}</span><div class="t"><strong>${esc(f.title)}</strong>${f.body ? `<span class="small">${esc(f.body)}</span>` : ''}<span class="small">${tgl(f.at)}${f.holding ? ' · ' + esc(f.holding) : ''}${f.kind === 'tim' ? ' · dari tim Pokama' : ''}</span></div></div>`;
+function reinvestCard() {
+  return `<section class="card rein"><div class="feat"><span class="ic">${svg('plus')}</span><div style="flex:1"><b>Investasikan ulang hasil</b><span>${EX.reinvest ? `Aktif sejak ${tgl(EX.reinvest_since)}. Hasil dikumpulkan di saldo; tim menghubungi saat cukup untuk unit atau proyek berikutnya.` : 'Hasil tidak ditarik, dikumpulkan untuk menambah unit berikutnya. Aset bertambah, hasil ikut bertambah.'}</span></div>
+    <label class="sw"><input type="checkbox" data-reinvest ${EX.reinvest ? 'checked' : ''} aria-label="Investasikan ulang hasil"><i></i></label></div>
+    ${EX.reinvest && +D.balance.withdrawable ? `<div class="small" style="display:flex;justify-content:space-between"><span>Terkumpul untuk investasi berikutnya</span><b>${rp(D.balance.withdrawable)}</b></div>` : ''}</section>`;
+}
+function isNew() { const act = D.holdings.filter(x => x.h.status === 'aktif'); return act.length && act.every(x => Date.now() - new Date(x.h.started_on) < 7 * 864e5) && !+D.all_total; }
 
 /* ---------- Beranda ---------- */
 let OFFERS = null;
 function vBeranda() {
   const b = D.balance, act = D.holdings.filter(x => x.h.status === 'aktif');
-  const hasil = +D.all_total + +D.month_live, total = +D.principal + +b.withdrawable + +b.in_process + +D.month_live, pc = +D.principal ? hasil / D.principal * 100 : 0;
-  const hasAuto = act.some(x => x.month && x.month.auto);
-  return `<header class="whead"><div class="av" style="background:var(--navy)">${esc(initials(D.me.name))}</div><div style="flex:1"><span class="small">Selamat datang,</span><br><b>${esc(D.me.name.split(' ')[0])}</b></div><img src="/img/pokama-logo.png" alt="Pokama" style="height:22px"></header>
+  const hasil = +D.all_total + +D.month_live, total = +D.principal + +b.withdrawable + +b.in_process + +D.month_live;
+  const ann = annualOf(act);
+  const bk = Object.values(EX.book || {}), bookSum = bk.reduce((a, k) => a + +k.book, 0), priceSum = bk.reduce((a, k) => a + +k.price, 0);
+  const hasAuto = act.some(x => x.month && x.month.auto), news = (EX.feed || []).slice(0, 3);
+  const fresh = (EX.feed || []).filter(f => Date.now() - new Date(f.at) < 7 * 864e5).length;
+  return `<header class="whead"><div class="av" style="background:var(--navy)">${esc(initials(D.me.name))}</div><div style="flex:1"><span class="small">Selamat datang,</span><br><b>${esc(D.me.name.split(' ')[0])}</b></div>
+      <a href="#kabar" class="bell" aria-label="Kabar">${svg('bell', 22)}${fresh ? `<i>${fresh}</i>` : ''}</a><img src="/img/pokama-logo.png" alt="Pokama" style="height:22px"></header>
     <main style="padding-top:6px">
+      ${isNew() ? `<section class="card welcome"><b>Selamat bergabung, ${esc(D.me.name.split(' ')[0])}</b><span>Investasi Anda sudah aktif. Hasil pertama muncul di sini setelah ada sewa yang lunas, biasanya 1–2 hari. Laporan final dikirim tiap awal bulan lewat WhatsApp dan email.</span>
+        <ol class="steps"><li><b>1</b><div><strong>Cek data diri dan rekening</strong><span>Menu Akun. Penarikan butuh rekening terverifikasi.</span></div></li><li><b>2</b><div><strong>Lihat aset Anda</strong><span>Ketuk investasi di Portofolio untuk melihat unit dan statusnya.</span></div></li><li><b>3</b><div><strong>Pilih: tarik atau investasikan ulang</strong><span>Atur di bawah, bisa diubah kapan saja.</span></div></li></ol></section>` : ''}
       <section class="card pf">
-        <span class="lbl">Total nilai investasi</span><div class="tv">${rp(total)}</div>
-        <div class="gainrow"><span class="gainpill">▲ ${rp(hasil)} · ${pctx(pc)}</span><span class="small">total hasil dari modal ${rpk(D.principal)}</span></div>
+        <span class="lbl">Modal + hasil</span><div class="tv">${rp(total)}</div>
+        <div class="gainrow"><span class="gainpill">▲ ${rp(hasil)}</span>${ann != null ? `<span class="gainpill">${pctx(ann)} per tahun</span>` : `<span class="gainpill">${pctx(+D.principal ? hasil / D.principal * 100 : 0)} sejak awal</span>`}</div>
+        <span class="small">Modal ${rp(D.principal)}${bk.length ? ` · nilai buku aset sekarang ±${rpk(bookSum)} dari harga beli ${rpk(priceSum)}` : ''}</span>
         <div id="growth">${growthBox()}</div>
         ${hasAuto ? `<div class="today"><span>Hasil hari ini</span><b class="up">+${rp(D.today)}</b><span class="small">kemarin ${rp(D.yesterday)}</span></div>` : ''}
       </section>
       <nav class="acts" aria-label="Aksi cepat">
         <a href="#dana"><span>${svg('wallet')}</span>Tarik</a><a href="#peluang"><span>${svg('plus')}</span>Investasi lagi</a>
-        <a href="#laporan"><span>${svg('doc')}</span>Laporan</a><a href="#investasi"><span>${svg('pie')}</span>Portofolio</a></nav>
+        <a href="#laporan"><span>${svg('doc')}</span>Laporan</a><a href="#kabar"><span>${svg('bell')}</span>Kabar</a></nav>
       <section class="card salbox"><div style="flex:1"><span class="lbl">Saldo bisa ditarik</span><div class="big">${rp(b.withdrawable)}</div><span class="small">${+b.in_process ? rp(b.in_process) + ' sedang diproses · ' : ''}+${rp(D.month_live)} masuk setelah tutup buku</span></div><a class="btn dark sm" href="#dana" style="height:40px">Tarik</a></section>
+      ${reinvestCard()}
       ${D.me.kyc_status !== 'terverifikasi' ? `<div class="warn">Data diri dan rekening belum terverifikasi. Penarikan bisa dilakukan setelah tim Keuangan memverifikasi.</div>` : ''}
       <div class="sechead"><span>Portofolio Anda</span><a href="#investasi" style="text-transform:none;letter-spacing:0">Semua</a></div>
       <section class="card list">${act.length ? act.map(portRow).join('') : `<p class="empty">Belum ada investasi aktif. Perjanjian yang sudah disetujui akan muncul di sini.</p>`}</section>
+      ${news.length ? `<div class="sechead"><span>Kabar terbaru</span><a href="#kabar" style="text-transform:none;letter-spacing:0">Semua</a></div><section class="card list">${news.map(feedRow).join('')}</section>` : ''}
       <div class="sechead"><span>Peluang untuk Anda</span><a href="#peluang" style="text-transform:none;letter-spacing:0">Jelajahi</a></div>
       <div class="hs" id="offers">${OFFERS ? offersStrip() : '<div class="card" style="min-width:100%"><p class="empty">Memuat peluang…</p></div>'}</div>
       <section class="card trust"><div class="feat"><span class="ic">${svg('shield')}</span><div><b>Angka dari transaksi asli</b><span>Hasil dihitung otomatis dari pembayaran lunas di sistem kasir, bukan diketik manual. Nama penyewa tidak ditampilkan.</span></div></div>
         <div class="feat"><span class="ic">${svg('doc')}</span><div><b>Perjanjian dengan PT</b><span>Setiap investasi punya perjanjian tertulis dengan PT Popo Karya Investama dan laporan bulanan final.</span></div></div></section>
-      <p class="note">Program terbatas berdasarkan undangan, bukan penawaran umum. Kinerja masa lalu tidak menjamin hasil ke depan.</p>
+      <p class="note">"Modal + hasil" bukan harga jual aset: motor, iPhone, kamera, dan kendaraan turun nilainya seiring waktu. Program terbatas berdasarkan undangan, bukan penawaran umum. Kinerja masa lalu tidak menjamin hasil ke depan.</p>
     </main>`;
+}
+function vKabar() {
+  const f = EX.feed || [];
+  return `${plain('Kabar')}<main><section class="card list">${f.length ? f.map(feedRow).join('') : '<p class="empty">Belum ada kabar. Laporan bulanan, penarikan, dan info dari tim tentang aset Anda muncul di sini.</p>'}</section></main>`;
 }
 function offersStrip() { return OFFERS.length ? OFFERS.slice(0, 6).map(o => offerCard(o)).join('') : `<a class="card" href="#peluang" style="min-width:100%;text-decoration:none;color:inherit"><b>Belum ada peluang dibuka</b><span class="small">Tulis unit atau proyek yang Anda minati, tim kami menghubungi.</span></a>`; }
 async function loadOffers() {
@@ -342,7 +396,7 @@ function vInvestasi() {
   return `${plain('Portofolio')}<main>
     <section class="card"><div style="display:flex;gap:16px;align-items:center"><svg viewBox="0 0 42 42" width="112" height="112" aria-hidden="true"><circle r="15.9" cx="21" cy="21" fill="none" stroke="#E6E8EC" stroke-width="6"/>${segs}</svg>
       <div style="flex:1;display:flex;flex-direction:column;gap:8px">${['aset', 'proyek', 'saham'].map(k => `<div class="leg"><i style="background:${COL[k]}"></i><span>${JENIS[k]}</span><b>${pctx((by[k] || 0) / tot * 100)}</b></div>`).join('')}</div></div>
-      <div class="g2 split"><div class="kpi"><span class="lbl">Modal aktif</span><b>${rp(D.principal)}</b></div><div class="kpi"><span class="lbl">Total hasil</span><b class="up">+${rp(hasil)}</b></div></div></section>
+      <div class="g2 split"><div class="kpi"><span class="lbl">Modal aktif</span><b>${rp(D.principal)}</b></div><div class="kpi"><span class="lbl">Total hasil</span><b class="up">+${rp(hasil)}</b><span class="small">${(() => { const a = annualOf(D.holdings.filter(x => x.h.status === 'aktif')); return a != null ? pctx(a) + ' per tahun (investasi ≥ 90 hari)' : ''; })()}</span></div></div></section>
     <div class="chips" role="group" aria-label="Saring">${[['aktif', 'Aktif'], ['selesai', 'Selesai'], ['semua', 'Semua']].map(([k, l]) => `<button data-invf="${k}" aria-pressed="${INVF === k}">${l}</button>`).join('')}</div>
     <section class="card list">${list.length ? list.map(portRow).join('') : '<p class="empty">Tidak ada.</p>'}</section>
     <a class="btn dark" href="#peluang" style="height:50px">${svg('plus', 18)} Tambah investasi</a></main>`;
@@ -374,8 +428,10 @@ async function vInv(id) {
         <div><span>Biaya pengelolaan cabang${h.rp_ops_pct ? ' (' + pctx(h.rp_ops_pct) + ')' : ''}</span><span>− ${rp(m.ops)}</span></div><div class="tot"><span>Laba bersih</span><span>${rp(m.net)}</span></div>
         <div class="mine"><span>Bagian Anda · ${esc(returnLine(h))}</span><span>${rp(m.share)}</span></div></div>
         <p class="note">${V.stay ? 'Dihitung dari pembayaran tamu yang sudah lunas, termasuk tamu dari Airbnb, Agoda, dan Booking.com yang sudah dicatat tim.' : 'Dihitung dari pembayaran yang sudah lunas. Denda telat dan biaya kerusakan yang ditagih ke penyewa ikut masuk pendapatan unit.'}</p>`}</section>
+      ${(() => { const c = {}; (X.activity || []).forEach(a => { if (a.source) c[srcName(a.source)] = (c[srcName(a.source)] || 0) + 1; }); const e = Object.entries(c).sort((a, b) => b[1] - a[1]); const n = e.reduce((a, x) => a + x[1], 0);
+        return e.length > 1 || (e.length && V.stay) ? `<section class="card"><h2>Dari mana ${V.stay ? 'tamu' : 'penyewa'} datang</h2><span class="small">${n} ${V.bookings} terakhir</span>${e.map(([k, v]) => `<div><div class="small" style="display:flex;justify-content:space-between"><span>${esc(k)}</span><b>${v}</b></div><div class="bar"><i style="width:${v / n * 100}%"></i></div></div>`).join('')}</section>` : ''; })()}
       <section class="card list"><div class="sechead" style="padding-top:12px"><span>${V.act}</span></div>
-        ${(X.activity || []).length ? X.activity.map(a => `<div class="row"><span class="av" style="background:var(--mint);color:var(--teal);width:32px;height:32px">${svg(V.stay ? 'bed' : 'clock', 16)}</span><div class="t"><strong>${esc(a.unit)}</strong><span class="small">${tgl(a.at)} · ${esc(a.branch)}</span></div><div class="r small">${V.stay ? Math.max(1, Math.round(a.hours / 24)) + ' malam' : a.hours >= 24 ? Math.round(a.hours / 24) + ' hari' : a.hours + ' jam'}</div></div>`).join('') : `<p class="empty">Belum ada ${V.bookings}.</p>`}
+        ${(X.activity || []).length ? X.activity.map(a => `<div class="row"><span class="av" style="background:var(--mint);color:var(--teal);width:32px;height:32px">${svg(V.stay ? 'bed' : 'clock', 16)}</span><div class="t"><strong>${esc(a.unit)}</strong><span class="small">${tgl(a.at)} · ${esc(a.branch)}${a.source ? ' · ' + esc(srcName(a.source)) : ''}</span></div><div class="r small">${V.stay ? Math.max(1, Math.round(a.hours / 24)) + ' malam' : a.hours >= 24 ? Math.round(a.hours / 24) + ' hari' : a.hours + ' jam'}</div></div>`).join('') : `<p class="empty">Belum ada ${V.bookings}.</p>`}
         <p class="note" style="padding:4px 0 12px">Nama ${V.stay ? 'tamu' : 'penyewa'} tidak ditampilkan untuk melindungi data pelanggan.</p></section>`;
   } else if (h.jenis === 'proyek') {
     const s = new Date(h.started_on), e = h.ends_on ? new Date(h.ends_on) : null, now = new Date();
@@ -403,7 +459,8 @@ async function vInv(id) {
   return `${plain(h.title, '#investasi')}<main>
     <section class="card" style="background:var(--navy);color:#fff;border:0"><div style="display:flex;align-items:center;gap:10px"><img src="${LOGO[h.unit_code]}" alt="" style="width:36px;height:36px;background:#fff;border-radius:10px;padding:5px"><div style="flex:1"><b>${esc(unitName(h))} · ${esc(catName(h))}</b><br><span class="small" style="color:#C9D1E2">${esc(h.jenis === 'aset' ? SCHEME[h.rp_scheme] : returnLine(h))}</span></div>${h.status === 'selesai' ? pill('Selesai', 'p-mute') : pill('Aktif', 'p-good')}</div>
       <div class="g3"><div class="kpi"><span class="small" style="color:#C9D1E2">Modal</span><b>${rpk(h.principal)}</b></div><div class="kpi"><span class="small" style="color:#C9D1E2">${m.auto ? 'Bulan ini' : 'Bulan lalu'}</span><b>${rpk(m.auto ? m.share : pv.share)}</b></div><div class="kpi"><span class="small" style="color:#C9D1E2">Total diterima</span><b>${rpk(X.total)}</b></div></div>
-      ${+h.principal ? `<span class="gainpill dark">▲ ${pctx((+X.total + (m.auto ? +m.share : 0)) / h.principal * 100)} total hasil dari modal</span>` : ''}
+      ${+h.principal ? `<div class="gainrow"><span class="gainpill dark">▲ ${pctx((+X.total + (m.auto ? +m.share : 0)) / h.principal * 100)} sejak awal</span><span class="gainpill dark">${(() => { const a = annual(h, +X.total + (m.auto ? +m.share : 0)); return a != null ? pctx(a) + ' per tahun' : 'per tahun tampil setelah 90 hari'; })()}</span></div>` : ''}
+      ${X.book ? `<span class="small" style="color:#C9D1E2">Nilai buku aset sekarang ±${rp(X.book.book)} dari harga beli ${rp(X.book.price)} (penyusutan ${X.book.priced} unit). Modal bukan harga jual aset.</span>` : ''}
       ${X.d30 && X.d30.auto && +h.principal ? `<span class="small" style="color:#C9D1E2">30 hari terakhir ${rp(X.d30.share)} · setara ${pctx(X.d30.share / h.principal * 100 * 12)} per tahun (bukan jaminan)</span>` : ''}</section>
     ${body}</main>`;
 }
@@ -424,6 +481,8 @@ async function vLaporan() {
       <div class="ledger">${m.rows.map(r => `<div><span>${esc(r.title)}<br><span class="small">${KIND[r.kind]}${+r.revenue ? ' · pendapatan ' + rpk(r.revenue) + ', biaya ' + rpk(r.costs) : r.kind === 'dividen' ? ' · laba dibagi ' + rpk(r.base) : ''}</span></span><b>${rp(r.share)}</b></div>`).join('')}
         <div class="mine"><span>Bagian Anda</span><span>${rp(m.share)}</span></div>${+m.modal ? `<div><span>Pengembalian modal</span><b>${rp(m.modal)}</b></div>` : ''}</div>
       <button class="btn sm" data-pdf="${i}">${svg('doc', 16)} Unduh laporan PDF</button></section>`).join('') : `<div class="card"><p class="empty">Belum ada laporan final di ${YEAR}. Laporan bulanan dikunci Keuangan setelah tutup buku.</p></div>`}
+    <section class="card"><div class="feat"><span class="ic">${svg('doc')}</span><div><b>Rekap tahunan ${YEAR} untuk SPT</b><span>Total bagi hasil, dividen, pengembalian modal, dan penarikan per investasi dalam satu halaman. Bukti potong pajak (bila ada) diterbitkan Keuangan.</span></div></div>
+      <button class="btn" data-rekap>${svg('doc', 18)} Buka rekap tahunan</button></section>
     <p class="note">Laporan final setelah dikunci Keuangan dan disetujui CEO. Angka yang belum dikunci tampil di Beranda sebagai estimasi.</p></main>`;
 }
 function pdf(i) {
@@ -439,6 +498,22 @@ function pdf(i) {
   w.document.close();
 }
 
+function rekap() {
+  const R = window.__R, by = {};
+  (R.months || []).forEach(m => m.rows.forEach(r => { const k = r.title; by[k] = by[k] || { title: r.title, unit: r.unit, hasil: 0, dividen: 0, modal: 0 }; by[k][r.kind] += +r.share; }));
+  const rows = Object.values(by), t = rows.reduce((a, r) => ({ hasil: a.hasil + r.hasil, dividen: a.dividen + r.dividen, modal: a.modal + r.modal }), { hasil: 0, dividen: 0, modal: 0 });
+  const html = `<div class="hd"><div><h1>Rekap investasi tahun ${YEAR}</h1><small>${esc(D.me.name)} · NPWP ${esc(D.me.npwp || '—')} · ${esc(D.me.email)}</small></div><img src="/img/pokama-logo.png" style="height:34px"></div>
+    <table><thead><tr><th>Investasi</th><th class="r">Bagi hasil</th><th class="r">Dividen</th><th class="r">Pengembalian modal</th></tr></thead>
+    <tbody>${rows.map(r => `<tr><td>${esc(r.title)}<br><small>${esc(r.unit)}</small></td><td class="r">${rp(r.hasil)}</td><td class="r">${rp(r.dividen)}</td><td class="r">${rp(r.modal)}</td></tr>`).join('') || '<tr><td colspan="4">Belum ada laporan final.</td></tr>'}</tbody>
+    <tfoot><tr><td>Total ${YEAR}</td><td class="r">${rp(t.hasil)}</td><td class="r">${rp(t.dividen)}</td><td class="r">${rp(t.modal)}</td></tr><tr><td colspan="3">Penarikan ditransfer ke rekening ${YEAR}</td><td class="r">${rp(R.paid)}</td></tr></tfoot></table>
+    <p><small>Dari laporan bulanan final PT Popo Karya Investama. Pengembalian modal bukan penghasilan. Untuk pelaporan pajak, cocokkan dengan bukti potong dari Keuangan (bila ada). Dibuat ${new Date().toLocaleString('id-ID')}.</small></p>`;
+  const sheet = document.createElement('div'); sheet.className = 'rekap';
+  sheet.innerHTML = `<div class="rk">${html}<div class="noprint" style="display:flex;gap:8px;margin-top:16px"><button class="btn dark" data-print>Cetak / simpan PDF</button><button class="btn" data-closerk>Tutup</button></div></div>`;
+  document.body.appendChild(sheet);
+  sheet.querySelector('[data-closerk]').onclick = () => sheet.remove();
+  sheet.querySelector('[data-print]').onclick = () => { document.body.classList.add('printing'); try { window.print(); } catch (e) {} setTimeout(() => document.body.classList.remove('printing'), 500); };
+}
+
 /* ---------- Dana ---------- */
 function vDana() {
   const b = D.balance, ok = D.me.kyc_status === 'terverifikasi' && D.me.bank, waiting = D.withdrawals.some(w => w.status === 'diminta');
@@ -452,6 +527,7 @@ function vDana() {
       <div id="we"></div>
       <button class="btn dark" type="submit" style="height:50px" ${ok && !waiting && +b.withdrawable >= 50000 ? '' : 'disabled'}>Ajukan penarikan</button>
       <p class="note">Disetujui CEO, lalu ditransfer Keuangan ke rekening atas nama Anda, biasanya 1–3 hari kerja. Rekening hanya bisa diganti lewat tim Pokama dengan verifikasi ulang.</p></form>
+    ${reinvestCard()}
     <section class="card list"><div class="sechead" style="padding-top:12px"><span>Riwayat penarikan</span></div>
       ${D.withdrawals.length ? D.withdrawals.map(w => `<div class="row"><div class="t"><strong>${rp(w.amount)}</strong><span class="small">${tgl(w.requested_at)} ${new Date(w.requested_at).getFullYear()}${w.paid_at ? ' · ditransfer ' + tgl(w.paid_at) : ''}${w.reason ? ' · ' + esc(w.reason) : ''}</span></div><div class="r">${pill(...(WD[w.status] || [w.status, 'p-mute']))}</div></div>`).join('') : '<p class="empty">Belum ada penarikan.</p>'}</section></main>`;
 }
@@ -491,7 +567,7 @@ function vAkun() {
 async function render() {
   const h = (location.hash || '#beranda').slice(1).split('/');
   VIEW = h[0] || 'beranda'; PARAM = h[1] || '';
-  const V = { beranda: vBeranda, investasi: vInvestasi, inv: () => vInv(PARAM), laporan: vLaporan, dana: vDana, peluang: vPeluang, akun: vAkun };
+  const V = { kabar: vKabar, beranda: vBeranda, investasi: vInvestasi, inv: () => vInv(PARAM), laporan: vLaporan, dana: vDana, peluang: vPeluang, akun: vAkun };
   if (!V[VIEW]) { VIEW = 'beranda'; }
   try {
     const html = await V[VIEW]();
@@ -504,9 +580,13 @@ async function render() {
 }
 function wire() {
   app.querySelectorAll('[data-invf]').forEach(b => b.onclick = () => { INVF = b.dataset.invf; render(); });
+  const rv = app.querySelector('[data-reinvest]');
+  if (rv) rv.onchange = async () => { rv.disabled = true; try { const r = await A.rpc('iv_set_reinvest', { p_on: rv.checked }); EX.reinvest = r.reinvest; EX.reinvest_since = r.reinvest ? new Date().toISOString() : null;
+    toast(r.reinvest ? 'Investasi ulang aktif. Tim akan menghubungi.' : 'Investasi ulang dimatikan'); render(); } catch (er) { rv.checked = !rv.checked; rv.disabled = false; toast(er.message, 1); } };
   app.querySelectorAll('[data-offf]').forEach(b => b.onclick = () => { OFF_F = b.dataset.offf; render(); });
   wireRange(); loadGrowth(); loadOffers();
   app.querySelectorAll('[data-year]').forEach(b => b.onclick = () => { YEAR = +b.dataset.year; render(); });
+  app.querySelectorAll('[data-rekap]').forEach(b => b.onclick = rekap);
   app.querySelectorAll('[data-pdf]').forEach(b => b.onclick = () => pdf(+b.dataset.pdf));
   app.querySelectorAll('[data-doc]').forEach(b => b.onclick = async () => { try { const p = await A.rpc('iv_doc_path', { p_h: b.dataset.doc }); if (!p) throw new Error('Dokumen belum diunggah'); await A.openFile(p); } catch (er) { toast(er.message, 1); } });
   const fw = app.querySelector('#fw');
@@ -531,8 +611,8 @@ function wire() {
     };
   });
 }
-async function refresh() { D = await A.rpc('iv_dashboard'); G = null; OFFERS = null; render(); }
-addEventListener('hashchange', () => { if (D) render(); else if (location.hash.includes('access_token=')) boot(); });
+async function refresh() { const [d, x] = await Promise.all([A.rpc('iv_dashboard'), A.rpc('iv_extra').catch(() => null)]); D = d; if (x) EX = x; G = null; OFFERS = null; render(); }
+addEventListener('hashchange', () => { document.querySelectorAll('.rekap').forEach(x => x.remove()); if (D) render(); else if (location.hash.includes('access_token=')) boot(); });
 ['click', 'keydown', 'touchstart'].forEach(ev => addEventListener(ev, act, { passive: true }));
 document.addEventListener('click', (e) => { if (e.target.closest('[data-google]')) google(); if (e.target.closest('[data-out]')) logout(); if (e.target.closest('[data-switch]')) { sess.save(null); google(); } if (e.target.closest('[data-minat]')) { logout(); setTimeout(() => document.querySelector('#minat')?.scrollIntoView({ behavior: 'smooth' }), 60); } });
 

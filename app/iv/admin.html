@@ -365,15 +365,19 @@ async function vPenarikan() {
 
 /* ---------- Peluang & minat ---------- */
 async function vPeluang() {
-  const R = await A.rpc('iv_admin_offers');
+  const [R, N, HS] = await Promise.all([A.rpc('iv_admin_offers'), A.rpc('iv_admin_news').catch(() => []), A.rpc('iv_admin_holdings', { p_status: 'aktif' }).catch(() => [])]);
   let h = header('Peluang & minat', 'Peluang hanya terlihat oleh investor yang sudah masuk (bukan penawaran umum). Minat datang dari halaman depan investor.pokama.org dan dari investor yang sudah ada.', can.biz() ? '<button class="btn pri" data-newoffer>+ Peluang</button>' : '');
   h += `<div class="cols"><section class="card"><h2>Minat calon & investor</h2><div class="scroll"><table class="tbl"><thead><tr><th>Masuk</th><th>Nama</th><th>Minat</th><th>Status</th><th></th></tr></thead><tbody>
-    ${R.leads.length ? R.leads.map(l => `<tr><td class="small">${tgl(l.created_at)}<br><span class="muted">${l.source === 'publik' ? 'halaman depan' : 'investor'}</span></td><td><b>${esc(l.name)}</b>${l.investor_id ? ' ' + pill(['Investor', 'g']) : ''}<br><span class="muted small">${l.wa ? '+' + esc(l.wa) : ''}</span></td>
+    ${R.leads.length ? R.leads.map(l => `<tr><td class="small">${tgl(l.created_at)}<br><span class="muted">${l.source === 'publik' ? 'halaman depan' : /^Investasi ulang/.test(l.note || '') ? 'investasi ulang' : 'investor'}</span></td><td><b>${esc(l.name)}</b>${l.investor_id ? ' ' + pill(['Investor', 'g']) : ''}<br><span class="muted small">${l.wa ? '+' + esc(l.wa) : ''}</span></td>
       <td class="small">${esc(l.offer || l.unit || 'Umum')}${l.amount_hint ? ' · ' + rpk(l.amount_hint) : ''}${l.note ? '<br><span class="muted">' + esc(l.note) + '</span>' : ''}</td>
       <td>${can.biz() ? `<select class="sel" data-lead="${l.id}" style="height:32px">${Object.entries(LST).map(([k, v]) => `<option value="${k}"${k === l.status ? ' selected' : ''}>${v[0]}</option>`).join('')}</select>` : pill(LST[l.status])}${l.handled_by ? `<br><span class="muted small">${esc(l.handled_by)}</span>` : ''}</td>
       <td>${l.wa ? `<a class="btn sm" target="_blank" rel="noopener" href="${waLink(l.wa, 'Halo ' + l.name + ', terima kasih sudah tertarik berinvestasi di unit bisnis Pokama. ')}">WA</a>` : ''}</td></tr>`).join('') : '<tr><td colspan="5" class="muted">Belum ada minat.</td></tr>'}</tbody></table></div></section>
     <section class="card"><h2>Peluang dibuka</h2>${R.offers.length ? `<div class="list">${R.offers.map(o => `<div class="li"><div class="t"><b>${esc(o.title)}</b><span>${esc(o.unit)} · ${JENIS[o.jenis]}${o.target_amount ? ' · butuh ' + rpk(o.target_amount) : ''}${o.min_amount ? ' · min ' + rpk(o.min_amount) : ''}${o.est_return ? ' · ' + esc(o.est_return) : ''} · ${o.leads} minat</span></div>${pill(o.status === 'dibuka' ? ['Dibuka', 'g'] : ['Ditutup', ''])}${can.biz() ? `<button class="btn sm" data-editoffer='${esc(JSON.stringify(o))}'>Ubah</button>` : ''}</div>`).join('')}</div>` : '<p class="muted small">Belum ada peluang. Contoh: "Tambah 5 iPhone 15 Garut", "Modal stok Laptopaja Q1".</p>'}
-      <p class="muted small">Angka estimasi ambil dari data operasional (utilisasi & pendapatan unit sejenis), bukan janji hasil. Membuka untuk publik perlu kajian izin OJK.</p></section></div>`;
+      <p class="muted small">Angka estimasi ambil dari data operasional (utilisasi & pendapatan unit sejenis), bukan janji hasil. Membuka untuk publik perlu kajian izin OJK.</p></section></div>
+    <section class="card"><h2>Kabar ke investor</h2><p class="muted small">Tampil di menu Kabar portal investor. Contoh: "iPhone 11 Anda sedang servis, kembali besok", "Ruma Metua penuh akhir pekan ini". Laporan final dan status penarikan muncul otomatis.</p>
+      ${can.biz() ? `<form id="fn" style="display:flex;flex-direction:column;gap:8px"><select class="inp" name="holding_id"><option value="">Semua investor</option>${(HS || []).map(x => `<option value="${x.id}">${esc(x.investor)} · ${esc(x.title)}</option>`).join('')}</select>
+        <input class="inp" name="title" placeholder="Judul kabar" required><textarea class="inp" name="body" placeholder="Isi (opsional)"></textarea><button class="btn pri" type="submit">Kirim kabar</button></form>` : ''}
+      <div class="list">${(N || []).map(n => `<div class="li"><div class="t"><b>${esc(n.title)}</b><span>${tgl(n.created_at)} · ${esc(n.holding ? n.investor + ' · ' + n.holding : n.investor || 'Semua investor')}${n.by ? ' · ' + esc(n.by) : ''}${n.body ? '<br>' + esc(n.body) : ''}</span></div>${can.biz() ? `<button class="btn sm" data-delnews="${n.id}">Hapus</button>` : ''}</div>`).join('') || '<p class="muted small">Belum ada kabar.</p>'}</div></section>`;
   return h;
 }
 function offerPanel(o) {
@@ -391,9 +395,21 @@ function offerPanel(o) {
         <label class="f">Sudah terkumpul<input class="inp" name="raised_amount" inputmode="numeric" value="${o.raised_amount ? Math.round(o.raised_amount) : ''}"></label></div>
       <label class="f">Sorotan singkat (tampil sebagai label)<input class="inp" name="highlight" value="${esc(o.highlight || '')}" placeholder="mis. Utilisasi 78% · paling dicari"></label>
       <label class="f">Link foto (https, opsional)<input class="inp" name="photo_url" value="${esc(o.photo_url || '')}" placeholder="https://…"></label>
+      <div style="background:#F4F6F9;border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px"><b style="font-size:13px">Patokan otomatis dari data asli (disarankan)</b>
+        <span class="muted small">Isi kategori unit + porsi investor. Portal menghitung %/tahun dari sewa 6 bulan terakhir unit sejenis ÷ harga beli, dan memberi label "dari data asli". Tanpa ini, angka di atas tampil sebagai "perkiraan tim".</span>
+        <div class="g3"><label class="f">Kategori (slug)<input class="inp" name="category" value="${esc(o.category || '')}" placeholder="iphone / penginapan / motor" list="cats"></label>
+          <label class="f">Cabang (opsional)<input class="inp" name="branch_name" value="${esc(o.branch_name || '')}" placeholder="Garut"></label>
+          <label class="f">Porsi investor %<input class="inp" name="share_pct" inputmode="decimal" value="${o.share_pct != null ? String(+o.share_pct).replace('.', ',') : ''}" placeholder="30"></label></div>
+        <datalist id="cats"><option value="iphone"><option value="penginapan"><option value="motor"><option value="mobil"><option value="jeep"><option value="kamera"><option value="lensa"><option value="playstation"><option value="camping"></datalist>
+        <button class="btn sm" type="button" data-bench>Cek angka dari data</button><div id="bo" class="small"></div></div>
       <label class="f">Status<select class="inp" name="status"><option value="dibuka"${o.status === 'dibuka' ? ' selected' : ''}>Dibuka</option><option value="ditutup"${o.status === 'ditutup' ? ' selected' : ''}>Ditutup</option></select></label>
       <div id="oe"></div><button class="btn pri" type="submit">Simpan</button></form>`,
-  (p) => { const f = p.querySelector('#fo'); f.onsubmit = async (e) => { e.preventDefault(); const d = Object.fromEntries(new FormData(f)); if (o.id) d.id = o.id; ['target_amount', 'min_amount', 'raised_amount'].forEach(k => d[k] = num(d[k]) || '');
+  (p) => { const f = p.querySelector('#fo');
+    p.querySelector('[data-bench]').onclick = async () => { const out = p.querySelector('#bo'); out.textContent = 'Menghitung…';
+      try { const b = await A.rpc('iv_admin_offer_bench', { p_cat: f.category.value, p_branch: f.branch_name.value, p_share: +String(f.share_pct.value).replace(',', '.') || null });
+        out.innerHTML = b ? `<b>${b.units} unit</b> · pendapatan/unit/bln rata-rata ${rpk(b.month_avg)} (${rpk(b.month_low)}–${rpk(b.month_high)})${b.yield_avg != null ? ` · <b>${String(b.yield_avg).replace('.', ',')}%/thn</b> (${String(b.yield_low).replace('.', ',')}–${String(b.yield_high).replace('.', ',')}%) dari ${b.priced} unit berharga beli` : ' · harga beli unit belum diisi atau porsi kosong, %/thn belum bisa dihitung'}` : 'Tidak ada unit dengan kategori/cabang itu.'; }
+      catch (er) { out.textContent = er.message; } };
+    f.onsubmit = async (e) => { e.preventDefault(); const d = Object.fromEntries(new FormData(f)); if (o.id) d.id = o.id; ['target_amount', 'min_amount', 'raised_amount'].forEach(k => d[k] = num(d[k]) || '');
     try { await A.rpc('iv_admin_offer_save', { p: d }); toast('Peluang tersimpan'); close(); render(); } catch (er) { p.querySelector('#oe').innerHTML = `<div class="alert"><b>${esc(er.message)}</b></div>`; } }; });
 }
 
@@ -426,6 +442,15 @@ async function render() {
       : `<div class="card"><h2>Gagal memuat</h2><p class="muted">${esc(er.message)}</p><button class="btn" onclick="location.reload()">Coba lagi</button></div>`;
   }
 }
+document.addEventListener('submit', async (e) => {
+  if (e.target.id !== 'fn') return; e.preventDefault(); const f = e.target, b = f.querySelector('button'), d = Object.fromEntries(new FormData(f)); b.disabled = true;
+  try { await A.rpc('iv_admin_news_save', { p: d }); toast('Kabar terkirim ke portal investor'); render(); } catch (er) { toast(er.message, 1); b.disabled = false; }
+});
+document.addEventListener('click', async (e) => {
+  const t = e.target.closest('[data-delnews]'); if (!t) return;
+  if (!confirm('Hapus kabar ini dari portal investor?')) return;
+  try { await A.rpc('iv_admin_news_delete', { p_id: t.dataset.delnews }); toast('Kabar dihapus'); render(); } catch (er) { toast(er.message, 1); }
+});
 document.addEventListener('change', async (e) => {
   const t = e.target;
   if (cur && cur.contains(t)) return;
