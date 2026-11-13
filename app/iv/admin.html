@@ -180,7 +180,7 @@ async function vInvestor() {
 async function investorPanel(id) {
   const I = id ? await A.rpc('iv_admin_investor', { p_id: id }) : { kind: 'perorangan', status: 'aktif', holdings: [], withdrawals: [], statements: [], balance: {} };
   const ro = !can.biz();
-  panel(`<div style="display:flex;justify-content:space-between;align-items:center"><h2 style="font-size:20px">${id ? esc(I.name) : 'Investor baru'}</h2><button class="btn sm" data-close>✕</button></div>
+  panel(`<div style="display:flex;justify-content:space-between;align-items:center"><h2 style="font-size:20px">${id ? esc(I.name) : 'Investor baru'}</h2><div style="display:flex;gap:6px">${id && M.is_owner ? `<a class="btn sm" href="/investor/lihat?id=${id}" target="_blank" rel="noopener" title="Buka portal investor seperti yang dilihat investor ini (hanya lihat, tercatat di log)">Lihat portal</a>` : ''}<button class="btn sm" data-close>✕</button></div></div>
     ${id ? `<div class="kv"><div><span>Saldo bisa ditarik</span><b>${rp(I.balance.withdrawable)}</b></div><div><span>Sudah ditransfer</span><b>${rp(I.balance.paid)}</b></div><div><span>Status KYC</span><b>${esc(KYC[I.kyc_status][0])}</b></div><div><span>Akun Google</span><b>${I.linked ? 'Sudah masuk' : 'Belum pernah masuk'}</b></div></div>` : ''}
     <form id="fi" style="display:flex;flex-direction:column;gap:10px"><h3 style="margin:6px 0 0">Profil</h3>
       <label class="f">Nama lengkap (sesuai KTP / akta)<input class="inp" name="name" value="${esc(I.name || '')}" ${ro ? 'disabled' : ''} required></label>

@@ -316,6 +316,16 @@
  ],
  "rewrites": [
   {
+   "source": "/investor/lihat",
+   "has": [
+    {
+     "type": "host",
+     "value": "app.pokama.org"
+    }
+   ],
+   "destination": "/iv/index"
+  },
+  {
    "source": "/robots.txt",
    "has": [
     {

@@ -131,6 +131,8 @@ nav.bottom a[aria-current="page"]{color:var(--navy);font-weight:800}nav.bottom a
 .rk h1{font-size:18px;line-height:24px}.rk table{width:100%;border-collapse:collapse;margin-top:14px}.rk th,.rk td{padding:7px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}.rk th{font-size:11px;text-transform:uppercase;color:var(--mut2)}.rk .r{text-align:right}.rk tfoot td{font-weight:800}.rk small{color:var(--mut2)}
 .rk .hd{display:flex;justify-content:space-between;align-items:center;gap:10px;border-bottom:3px solid var(--teal2);padding-bottom:10px}
 @media print{body.printing .wrap{display:none}body.printing .rekap{position:static;background:none;padding:0}}
+.pvbar{position:sticky;top:0;z-index:30;background:#7A4B00;color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;gap:8px;padding:8px 12px}.pvbar span{flex:1}.pvbar button{background:#fff;color:#7A4B00;border:0;border-radius:8px;font-weight:800;font-size:12px;padding:5px 10px;cursor:pointer}
+body.preview form button[type=submit],body.preview .sw,body.preview [data-reinvest],body.preview .fi,body.preview #fw{pointer-events:none;opacity:.45}
 @media (min-width:520px){.wrap{border-left:1px solid var(--line);border-right:1px solid var(--line)}}
 @media print{nav.bottom,.plain,.noprint{display:none!important}}
 </style>
@@ -140,7 +142,10 @@ nav.bottom a[aria-current="page"]{color:var(--navy);font-weight:800}nav.bottom a
 <script type="module">
 import { SB_URL, SB_KEY, makeSession, api, esc, rp, rpk, pct, tgl, bulan, toast } from '/mitra/af.js';
 
-const sess = makeSession('pokama.investor');
+/* Mode "lihat sebagai investor": dibuka dari panel staf (app.pokama.org/investor/lihat?id=…), memakai sesi staf (2 langkah), hanya CEO, hanya lihat. */
+const PREVIEW = /^app\./.test(location.hostname) && /\/investor\/lihat/.test(location.pathname) ? new URLSearchParams(location.search).get('id') : null;
+let PNAME = '';
+const sess = makeSession(PREVIEW ? 'pokama.session' : 'pokama.investor');
 const A = api(sess);
 const app = document.getElementById('app');
 const IC = {
@@ -166,7 +171,8 @@ let D = null, VIEW = 'beranda', PARAM = '', YEAR = new Date().getFullYear();
 const IDLE = 14 * 864e5, act = () => { try { localStorage.setItem('pokama.investor.active', String(Date.now())); } catch (e) {} };
 function idle() { let t = 0; try { t = +localStorage.getItem('pokama.investor.active') || 0; } catch (e) {} return t && Date.now() - t > IDLE; }
 function google() { try { sessionStorage.setItem('pokama.investor.go', '1'); } catch (e) {} location.href = SB_URL + '/auth/v1/authorize?provider=google&prompt=select_account&redirect_to=' + encodeURIComponent(location.origin + (location.hostname.startsWith('investor.') ? '/' : '/iv/')); }
-function logout() { try { fetch(SB_URL + '/auth/v1/logout', { method: 'POST', headers: { apikey: SB_KEY, Authorization: 'Bearer ' + (sess.load() || {}).access_token } }); } catch (e) {} sess.save(null); D = null; history.replaceState(null, '', location.pathname); landing(); }
+async function stopPreview() { try { await A.rpc('iv_preview_stop'); } catch (e) {} location.href = '/investor'; }
+function logout() { if (PREVIEW) { stopPreview(); return; } try { fetch(SB_URL + '/auth/v1/logout', { method: 'POST', headers: { apikey: SB_KEY, Authorization: 'Bearer ' + (sess.load() || {}).access_token } }); } catch (e) {} sess.save(null); D = null; history.replaceState(null, '', location.pathname); landing(); }
 const GBTN = `<svg width="20" height="20" viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.1-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>`;
 
 /* ---------- halaman depan (belum masuk) ---------- */
@@ -571,7 +577,7 @@ async function render() {
   if (!V[VIEW]) { VIEW = 'beranda'; }
   try {
     const html = await V[VIEW]();
-    app.innerHTML = (D.me.demo ? '<div class="demo">DATA DEMO · bukan transaksi sungguhan</div>' : '') + '<div class="pad">' + html + '</div>' + nav();
+    app.innerHTML = (PREVIEW ? `<div class="pvbar"><span>Lihat sebagai <b>${esc(PNAME)}</b> · hanya lihat, tercatat di log</span><button data-out>Selesai</button></div>` : '') + (D.me.demo ? '<div class="demo">DATA DEMO · bukan transaksi sungguhan</div>' : '') + '<div class="pad">' + html + '</div>' + nav();
     window.scrollTo(0, 0); wire();
   } catch (er) {
     if (er.status === 401) { logout(); return; }
@@ -616,7 +622,15 @@ addEventListener('hashchange', () => { document.querySelectorAll('.rekap').forEa
 ['click', 'keydown', 'touchstart'].forEach(ev => addEventListener(ev, act, { passive: true }));
 document.addEventListener('click', (e) => { if (e.target.closest('[data-google]')) google(); if (e.target.closest('[data-out]')) logout(); if (e.target.closest('[data-switch]')) { sess.save(null); google(); } if (e.target.closest('[data-minat]')) { logout(); setTimeout(() => document.querySelector('#minat')?.scrollIntoView({ behavior: 'smooth' }), 60); } });
 
+async function bootPreview() {
+  document.body.classList.add('preview');
+  const t = await sess.token();
+  if (!t) { gate('Masuk panel staf dulu', 'Mode lihat sebagai investor memakai login panel staf (dengan verifikasi 2 langkah).', '<a class="btn dark" href="/investor" style="height:50px">Buka panel investor staf</a>'); return; }
+  try { const r = await A.rpc('iv_preview_start', { p_inv: PREVIEW }); PNAME = r.name; if (!location.hash) history.replaceState(null, '', location.pathname + location.search + '#beranda'); await refresh(); }
+  catch (er) { gate('Tidak bisa membuka', esc(er.message) + '. Mode ini khusus CEO setelah verifikasi 2 langkah.', '<a class="btn dark" href="/investor" style="height:50px">Kembali ke panel</a>'); }
+}
 async function boot() {
+  if (PREVIEW) return bootPreview();
   if (location.hash.includes('access_token=')) {
     const p = new URLSearchParams(location.hash.slice(1));
     const em = (() => { try { return JSON.parse(atob(p.get('access_token').split('.')[1].replace(/-/g, '+').replace(/_/g, '/'))).email; } catch (e) { return ''; } })();
