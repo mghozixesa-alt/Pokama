@@ -116,7 +116,7 @@ begin
       greatest(1, least(6, extract(epoch from (now() - coalesce(u.purchase_date::timestamptz, u.created_at, now() - interval '180 days'))) / 2629800.0)) age
     from public.units u join public.products p on p.id = u.product_id join public.categories c on c.id = p.category_id
     left join public.branches br on br.id = u.branch_id
-    where c.slug = p_cat and (p_branch is null or br.name ilike '%' || p_branch || '%') and u.status::text not in ('retired','sold','lost')
+    where c.slug = p_cat and (p_branch is null or br.name ilike '%' || p_branch || '%') and u.status::text not in ('inactive','retired','sold','lost')
   ), rev as (
     select u.id, u.price, coalesce(sum(bi.line_total), 0) / u.age m
     from u left join public.booking_items bi on bi.unit_id = u.id and bi.status::text <> 'released'
@@ -191,7 +191,7 @@ begin
   into r from (
     select coalesce(u.purchase_price, 0) price,
       extract(epoch from (now() - coalesce(u.purchase_date::timestamptz, u.created_at))) / 2629800.0 mo,
-      case when c.slug in ('motor','mobil','jeep','atv') then 60.0 when c.slug in ('camping','piknik') then 24.0 else 36.0 end life,
+      case when c.slug in ('motor','mobil','mobil-sopir','jeep','atv') then 60.0 when c.slug in ('camping','piknik') then 24.0 else 36.0 end life,
       c.slug
     from public.units u join public.products p on p.id = u.product_id join public.categories c on c.id = p.category_id
     where u.id = any(app.partner_scope_units(h.rp_agreement_id))) q where slug <> 'penginapan';

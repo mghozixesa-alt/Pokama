@@ -400,7 +400,7 @@ function offerPanel(o) {
         <div class="g3"><label class="f">Kategori (slug)<input class="inp" name="category" value="${esc(o.category || '')}" placeholder="iphone / penginapan / motor" list="cats"></label>
           <label class="f">Cabang (opsional)<input class="inp" name="branch_name" value="${esc(o.branch_name || '')}" placeholder="Garut"></label>
           <label class="f">Porsi investor %<input class="inp" name="share_pct" inputmode="decimal" value="${o.share_pct != null ? String(+o.share_pct).replace('.', ',') : ''}" placeholder="30"></label></div>
-        <datalist id="cats"><option value="iphone"><option value="penginapan"><option value="motor"><option value="mobil"><option value="jeep"><option value="kamera"><option value="lensa"><option value="playstation"><option value="camping"></datalist>
+        <datalist id="cats"><option value="iphone"><option value="penginapan"><option value="motor"><option value="mobil"><option value="jeep"><option value="kamera"><option value="lensa"><option value="game"><option value="camping"></datalist>
         <button class="btn sm" type="button" data-bench>Cek angka dari data</button><div id="bo" class="small"></div></div>
       <label class="f">Status<select class="inp" name="status"><option value="dibuka"${o.status === 'dibuka' ? ' selected' : ''}>Dibuka</option><option value="ditutup"${o.status === 'ditutup' ? ' selected' : ''}>Ditutup</option></select></label>
       <div id="oe"></div><button class="btn pri" type="submit">Simpan</button></form>`,

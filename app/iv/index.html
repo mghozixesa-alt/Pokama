@@ -224,7 +224,7 @@ function nav() {
 }
 const plain = (title, back = '#beranda') => `<header class="plain"><a class="back" href="${back}" aria-label="Kembali">${svg('back', 20)}</a><h1>${esc(title)}</h1><img src="/img/pokama-logo.png" alt="Pokama" style="height:20px"></header>`;
 const initials = (n) => String(n || '?').split(/\s+/).slice(0, 2).map(w => w[0] || '').join('').toUpperCase();
-const CATN = { penginapan: 'Penginapan', jeep: 'Jeep wisata', iphone: 'iPhone', motor: 'Motor', mobil: 'Mobil', kamera: 'Kamera', lensa: 'Lensa', playstation: 'PlayStation', ps: 'PlayStation', camping: 'Alat camping' };
+const CATN = { penginapan: 'Penginapan', jeep: 'Jeep wisata', iphone: 'iPhone', motor: 'Motor', mobil: 'Mobil', kamera: 'Kamera', lensa: 'Lensa', playstation: 'PlayStation', ps: 'PlayStation', game: 'PlayStation & game', camping: 'Alat camping', piknik: 'Alat piknik', proyektor: 'Proyektor', 'mobil-sopir': 'Mobil + sopir' };
 function catv(h) {
   const c = h.cat || (/penginapan|villa|house|metua|ertap|glamping/i.test(h.title) ? 'penginapan' : /jeep/i.test(h.title) ? 'jeep' : '');
   if (c === 'penginapan') return { stay: 1, units: 'Properti Anda', word: 'properti', util: 'Okupansi 30 hari', st: { rented: 'Ada tamu', ready: 'Siap dihuni', maintenance: 'Perbaikan', service: 'Perbaikan', qc: 'Dibersihkan' }, rev: 'Pendapatan menginap', revShort: 'Menginap', cost: 'Perawatan dan kebersihan', act: 'Tamu menginap terakhir', bookings: 'tamu' };
@@ -291,7 +291,7 @@ async function loadGrowth() {
 function wireRange() { app.querySelectorAll('[data-range]').forEach(b => b.onclick = () => { RANGE = b.dataset.range; app.querySelector('#growth').innerHTML = growthBox(); wireRange(); }); }
 const RISK = { rendah: ['Risiko rendah', 'p-good'], sedang: ['Risiko sedang', 'p-warn'], tinggi: ['Risiko tinggi', 'p-bad'] };
 let EX = { reinvest: false, book: {}, feed: [] };
-const SRC = { web: 'Web Rentalaja', app: 'Aplikasi', wa: 'WhatsApp', whatsapp: 'WhatsApp', telepon: 'Telepon', walkin: 'Datang langsung', walk_in: 'Datang langsung', kasir: 'Kasir cabang', ota: 'OTA', airbnb: 'Airbnb', agoda: 'Agoda', booking: 'Booking.com', traveloka: 'Traveloka', tiket: 'Tiket.com', travel: 'Travel lokal', sistem_lama: 'Pelanggan lama', ig: 'Instagram', tiktok: 'TikTok' };
+const SRC = { web: 'Web Rentalaja', app: 'Aplikasi', wa: 'WhatsApp', whatsapp: 'WhatsApp', telepon: 'Telepon', walkin: 'Datang langsung', website_lama: 'Web (lama)', walk_in: 'Datang langsung', kasir: 'Kasir cabang', ota: 'OTA', airbnb: 'Airbnb', agoda: 'Agoda', booking: 'Booking.com', traveloka: 'Traveloka', tiket: 'Tiket.com', travel: 'Travel lokal', sistem_lama: 'Pelanggan lama', ig: 'Instagram', tiktok: 'TikTok' };
 const srcName = (s) => s ? (SRC[String(s).toLowerCase()] || String(s).replace(/_/g, ' ')) : '';
 /* imbal per tahun: hasil ÷ modal ÷ lama investasi. Baru dihitung setelah 90 hari supaya tidak menyesatkan (bulan pertama yang ramai bisa terlihat 100%/thn). */
 const yrs = (h) => Math.max(1 / 12, (Date.now() - new Date(h.started_on)) / 31557600000);
