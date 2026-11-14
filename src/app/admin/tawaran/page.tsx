@@ -12,7 +12,7 @@ export default async function TawaranPage() {
   const rows = (data ?? []) as unknown as Row[];
   return (
     <div>
-      <h1 className="text-2xl font-bold text-brand-navy">Tawaran harga</h1>
+      <h1 className="text-[22px] leading-7 font-bold text-brand-navy">Tawaran harga</h1>
       <p className="text-sm text-muted mt-1">Jawab maksimal 24 jam. Harga yang disetujui terkunci 24 jam untuk pelanggan.</p>
       <div className="card mt-4 divide-y divide-page">
         {rows.map((r) => {

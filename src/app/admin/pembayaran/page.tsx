@@ -22,7 +22,7 @@ export default async function PembayaranPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-brand-navy">Konfirmasi pembayaran</h1>
+      <h1 className="text-[22px] leading-7 font-bold text-brand-navy">Konfirmasi pembayaran</h1>
       <h2 className="text-sm font-bold text-muted mt-4">Bukti masuk · {withProof.length}</h2>
       <div className="grid lg:grid-cols-2 gap-3 mt-2">
         {await Promise.all(withProof.map(async (r) => {

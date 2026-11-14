@@ -58,3 +58,9 @@ html, body {
     @apply bg-[#e9edf3] rounded-xl animate-pulse;
   }
 }
+
+/* Admin: kartu rata (tanpa bayangan), tabel bergaris tipis, input seragam — gaya aplikasi akuntansi */
+.admin .card { box-shadow: none; border-color: #E3E8F0; }
+.admin table thead th { font-weight: 500; }
+.admin table tbody tr:hover td { background: #F8FAFD; }
+.admin .input { height: 2.5rem; }
