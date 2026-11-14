@@ -83,3 +83,17 @@ end $$;
 grant execute on function public.housekeeping(text) to anon, authenticated;
 grant execute on function public.rentalaja_units(text) to anon, authenticated;
 grant execute on function public.rentalaja_event(text, text, text, text, text, jsonb) to anon, authenticated;
+
+-- ===== Penjadwal (pg_cron + pg_net): tiap jam panggil endpoint housekeeping =====
+create extension if not exists pg_cron with schema pg_catalog;
+create extension if not exists pg_net with schema extensions;
+create or replace function private.call_housekeeping() returns void
+language plpgsql security definer set search_path = private, extensions as $$
+declare v_secret text;
+begin
+  select value into v_secret from private.secrets where name = 'cron';
+  perform net.http_get(url := 'https://niagaaja.vercel.app/api/cron/housekeeping',
+    headers := jsonb_build_object('Authorization', 'Bearer ' || v_secret), timeout_milliseconds := 15000);
+end $$;
+select cron.schedule('niagaaja_housekeeping', '5 * * * *', $$select private.call_housekeeping()$$);
+-- Cron Vercel (vercel.json) hanya cadangan harian (paket Hobby membatasi 1×/hari).
