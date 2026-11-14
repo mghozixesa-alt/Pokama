@@ -26,7 +26,7 @@ export default async function StokPage({ searchParams }: { searchParams: Promise
   return (
     <div>
       <div className="flex items-center justify-between gap-3 flex-wrap">
-        <h1 className="text-[22px] leading-7 font-bold text-brand-navy">Stok & kepemilikan</h1>
+        <h1 className="text-[20px] leading-7 font-bold text-brand-navy">Stok & kepemilikan</h1>
         <div className="flex gap-2"><Link href="/admin/stok/impor" className="btn-soft h-10">Impor spreadsheet</Link><Link href="/admin/stok/baru" className="btn-primary h-10">+ Unit baru</Link></div>
       </div>
       <form className="mt-4 flex gap-2"><input name="q" defaultValue={sp.q} placeholder="Cari NJ-… / model" className="input max-w-xs" />{sp.status && <input type="hidden" name="status" value={sp.status} />}<button className="btn-soft h-12 px-4">Cari</button></form>

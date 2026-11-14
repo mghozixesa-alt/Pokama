@@ -60,7 +60,10 @@ html, body {
 }
 
 /* Admin: kartu rata (tanpa bayangan), tabel bergaris tipis, input seragam — gaya aplikasi akuntansi */
-.admin .card { box-shadow: none; border-color: #E3E8F0; }
+.admin .card { box-shadow: none; border-color: #E6EAF0; border-radius: 0.5rem; }
+.admin .btn-primary, .admin .btn-outline { height: 2.25rem; border-radius: 0.5rem; font-size: 12.5px; }
+.admin .btn-soft { border-radius: 0.5rem; }
+.admin table thead tr { background: #F7F9FC; }
 .admin table thead th { font-weight: 500; }
 .admin table tbody tr:hover td { background: #F8FAFD; }
 .admin .input { height: 2.5rem; }

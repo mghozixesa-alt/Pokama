@@ -8,7 +8,7 @@ export default async function UnitBaruPage() {
   const { data: owners } = await supabase.from("owners").select("id, name, type").order("name");
   return (
     <div>
-      <h1 className="text-[22px] leading-7 font-bold text-brand-navy mb-4">Unit baru</h1>
+      <h1 className="text-[20px] leading-7 font-bold text-brand-navy mb-4">Unit baru</h1>
       <UnitForm owners={owners ?? []} />
     </div>
   );

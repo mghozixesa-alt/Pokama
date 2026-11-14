@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { AdminSidebar } from "@/components/admin/AdminNav";
+import { AdminShell } from "@/components/admin/AdminNav";
 
 export const dynamic = "force-dynamic";
 
@@ -27,12 +27,5 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   const counts = { "/admin/pembayaran": konf.count ?? 0, "/admin/tawaran": taw.count ?? 0, "/admin/tukar-tambah": ti.count ?? 0, "/admin/servis": kl.count ?? 0 };
   const name = profile.full_name || user.email?.split("@")[0] || "Admin";
 
-  return (
-    <div className="min-h-dvh bg-[#F4F6F9] text-ink admin">
-      <AdminSidebar counts={counts} user={{ name, role: profile.role }} />
-      <main className="lg:pl-[232px]">
-        <div className="px-4 py-4 lg:px-8 lg:py-7 max-w-[1240px]">{children}</div>
-      </main>
-    </div>
-  );
+  return <AdminShell counts={counts} user={{ name, role: profile.role }}>{children}</AdminShell>;
 }
