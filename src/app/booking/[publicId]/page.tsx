@@ -18,7 +18,7 @@ export default async function BookingPage({ params }: { params: Promise<{ public
 
   const [{ data: unit }, { data: profile }] = await Promise.all([
     supabase.from("units").select("*").eq("public_id", publicId).maybeSingle(),
-    supabase.from("profiles").select("full_name, phone").eq("id", user.id).maybeSingle(),
+    supabase.from("profiles").select("full_name, phone, points_balance").eq("id", user.id).maybeSingle(),
   ]);
   if (!unit) notFound();
   const u = unit as Unit;
@@ -27,6 +27,8 @@ export default async function BookingPage({ params }: { params: Promise<{ public
   // Pakai harga tawaran yang disetujui bila ada
   const { data: offer } = await supabase.from("offers").select("id, amount, counter_amount, expires_at").eq("unit_id", u.id).eq("customer_id", user.id).eq("status", "disetujui").gt("expires_at", new Date().toISOString()).maybeSingle();
   const price = offer ? (offer.counter_amount ?? offer.amount) : u.price_sell;
+  const balance = profile?.points_balance ?? 0;
+  const maxPoints = Math.min(balance, Math.floor((price * 0.2) / 100));
 
   return (
     <Shell withNav={false}>
@@ -71,8 +73,16 @@ export default async function BookingPage({ params }: { params: Promise<{ public
           <p className="text-[11px] text-muted">Unit ditahan 24 jam untuk Anda. Tanpa DP, tanpa biaya tambahan.</p>
         </div>
 
+        {maxPoints > 0 && (
+          <label className="card p-4 flex items-start gap-3 has-[:checked]:border-brand">
+            <input type="checkbox" name="use_points" value={maxPoints} className="mt-1 accent-brand" />
+            <span className="text-sm"><b>Pakai {maxPoints} Niaga Poin</b> → potongan <b className="text-brand-navy">{rupiah(maxPoints * 100)}</b><br /><span className="text-[11px] text-muted">Saldo {balance} poin · maks 20% harga · poin kembali kalau pesanan batal</span></span>
+          </label>
+        )}
+
         <div className="card p-4">
           <div className="flex justify-between text-sm"><span className="text-muted">Harga unit</span><span className="font-bold">{rupiah(price)}</span></div>
+          {maxPoints > 0 && <div className="flex justify-between text-sm mt-1"><span className="text-muted">Potongan poin (jika dicentang)</span><span className="font-bold text-brand-dark">− {rupiah(maxPoints * 100)}</span></div>}
           <div className="flex justify-between text-sm mt-1"><span className="text-muted">Biaya layanan</span><span className="font-bold">Rp 0</span></div>
           <div className="flex justify-between text-base mt-2 pt-2 border-t border-page"><span className="font-bold">Total</span><span className="font-bold text-brand-navy">{rupiah(price)}</span></div>
         </div>

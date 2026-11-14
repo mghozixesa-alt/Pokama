@@ -120,8 +120,13 @@ export async function setOrderStatus(formData: FormData) {
   const { supabase } = await staff();
   const orderId = String(formData.get("order_id"));
   const status = String(formData.get("status"));
-  const { data: o } = await supabase.from("orders").select("customer_id, amount, points_earned, status, public_id, profiles(phone)").eq("id", orderId).single();
+  const { data: o } = await supabase.from("orders").select("customer_id, amount, points_earned, points_used, status, public_id, profiles(phone)").eq("id", orderId).single();
   await supabase.from("orders").update({ status }).eq("id", orderId);
+  // Kembalikan poin yang dipakai bila pesanan batal/retur (sekali saja)
+  if (o && ["dibatalkan", "retur"].includes(status) && o.points_used > 0) {
+    const { data: refunded } = await supabase.from("points_ledger").select("id").eq("order_id", orderId).eq("reason", "Dikembalikan (pesanan batal)").maybeSingle();
+    if (!refunded) await supabase.from("points_ledger").insert({ customer_id: o.customer_id, delta: o.points_used, reason: "Dikembalikan (pesanan batal)", order_id: orderId });
+  }
   if (o) {
     const ph = (o as unknown as { profiles: { phone: string | null } | null }).profiles?.phone;
     await sendWa(ph, WA.orderStatus(o.public_id, ORDER_STATUS_LABEL[status as OrderStatus] ?? status));
@@ -175,4 +180,35 @@ export async function updateClaim(formData: FormData) {
     await sendWa(ph, `Niagaaja: klaim servis ${c.public_id} — ${LABEL[status] ?? status}.${note ? ` Catatan teknisi: ${note}.` : ""} Detail: ${process.env.NEXT_PUBLIC_SITE_URL ?? ""}/servis`);
   }
   revalidatePath("/admin/servis");
+}
+
+/** Impor banyak unit dari teks TSV (tempel dari spreadsheet). Lihat /admin/stok/impor untuk urutan kolom. */
+export async function importUnits(formData: FormData) {
+  const { supabase } = await staff();
+  const text = String(formData.get("tsv") ?? "").trim();
+  const CATS = ["hp", "laptop", "kamera", "tablet", "konsol", "audio", "smartwatch", "drone", "aksesori"];
+  const SRC = ["beli_pelanggan", "tukar_tambah", "investor", "titipan", "eks_sewa_rentalaja"];
+  const rows = text.split(/\r?\n/).map((l) => l.trim()).filter(Boolean).map((l) => (l.includes("\t") ? l.split("\t") : l.split(";")).map((c) => c.trim()));
+  const n = (v: string) => Number((v ?? "").replace(/[^\d]/g, "")) || null;
+  let ok = 0;
+  for (const [i, r] of rows.entries()) {
+    const [kategori, merek, model, varian, hargaJual, hargaBaru, modal, grade, sumber, cabang, status, catatan] = r;
+    if (!CATS.includes(kategori)) redirect(`/admin/stok/impor?gagal=${encodeURIComponent(`baris ${i + 1}: kategori "${kategori}" tidak dikenal`)}`);
+    if (!merek || !model) redirect(`/admin/stok/impor?gagal=${encodeURIComponent(`baris ${i + 1}: merek/model kosong`)}`);
+    const unit = {
+      category: kategori, brand: merek, model, variant: varian || null,
+      price_sell: n(hargaJual) ?? 0, price_new: n(hargaBaru), condition_note: catatan || null,
+      grade: ["A", "B", "C"].includes((grade ?? "").toUpperCase()) ? grade.toUpperCase() : null,
+      source: SRC.includes(sumber) ? sumber : "beli_pelanggan",
+      branch: cabang === "bandung" ? "bandung" : "garut_kota",
+      status: status === "tersedia" ? "tersedia" : "masuk",
+    };
+    const { data, error } = await supabase.from("units").insert(unit).select("id").single();
+    if (error || !data) redirect(`/admin/stok/impor?gagal=${encodeURIComponent(`baris ${i + 1}: ${error?.message ?? "gagal simpan"}`)}`);
+    const ownerType = unit.source === "investor" ? "investor" : unit.source === "titipan" ? "titipan" : "sendiri";
+    await supabase.from("ownerships").insert({ unit_id: data.id, owner_type: ownerType, cost_basis: n(modal) ?? 0, share_owner_pct: ownerType === "sendiri" ? 0 : 70, share_niagaaja_pct: ownerType === "sendiri" ? 100 : 30 });
+    ok++;
+  }
+  revalidatePath("/admin/stok"); revalidatePath("/"); revalidatePath("/katalog");
+  redirect(`/admin/stok/impor?ok=${ok}`);
 }

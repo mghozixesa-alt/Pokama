@@ -29,3 +29,22 @@ create policy "claims staff update" on service_claims for update using (is_staff
 -- Staf boleh membaca & menandai pantauan harga (untuk notif saat unit baru masuk)
 create policy "price_watches staff read" on price_watches for select using (is_staff());
 create policy "price_watches staff update" on price_watches for update using (is_staff());
+
+-- (0004) Pelanggan memakai poin untuk pesanannya sendiri; maks 20% harga; 1 poin = value_per_point (settings.points)
+create or replace function use_points_for_order(p_order uuid, p_points int) returns int
+language plpgsql security definer set search_path = public as $$
+declare v_customer uuid; v_balance int; v_amount int; v_value int; v_max int;
+begin
+  select customer_id, amount into v_customer, v_amount from orders where id = p_order;
+  if v_customer is null or v_customer <> auth.uid() then raise exception 'Bukan pesanan Anda'; end if;
+  if p_points is null or p_points <= 0 then return 0; end if;
+  select coalesce((value->>'value_per_point')::int, 100) into v_value from settings where key = 'points';
+  v_max := floor(v_amount * 0.2 / v_value);
+  p_points := least(p_points, v_max);
+  select points_balance into v_balance from profiles where id = v_customer;
+  if v_balance < p_points then raise exception 'Poin tidak cukup'; end if;
+  insert into points_ledger(customer_id, delta, reason, order_id) values (v_customer, -p_points, 'Dipakai untuk pesanan', p_order);
+  update orders set points_used = p_points, amount = amount - p_points * v_value where id = p_order;
+  return p_points;
+end $$;
+grant execute on function use_points_for_order(uuid, int) to authenticated;

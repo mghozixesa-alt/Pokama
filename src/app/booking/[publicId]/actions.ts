@@ -35,6 +35,13 @@ export async function createOrder(formData: FormData) {
     .single();
   if (error || !order) redirect(`/unit/${publicId}?gagal=${encodeURIComponent(error?.message ?? "booking")}`);
 
+  // Niaga Poin: potongan maks 20% harga, 1 poin = Rp100 (settings.points)
+  const wantPoints = Number(String(formData.get("use_points") ?? "0").replace(/[^\d]/g, "")) || 0;
+  if (wantPoints > 0) {
+    const { data: used } = await supabase.rpc("use_points_for_order", { p_order: order.id, p_points: wantPoints });
+    if (used) amount -= used * 100;
+  }
+
   await supabase.from("payments").insert({ order_id: order.id, method, amount });
   await sendWaAdmin(WA.newOrder(order.public_id, publicId, fullName || "pelanggan", method));
   if (offerId) await supabase.from("offers").update({ status: "dipakai" }).eq("id", offerId);
