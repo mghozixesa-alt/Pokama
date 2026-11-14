@@ -112,6 +112,13 @@ export default async function HomePage() {
         <p className="text-[16px] font-bold leading-5 mt-1">Jual ke Niagaaja, dibayar hari ini</p>
         <span className="inline-flex items-center h-8 px-3.5 mt-3 rounded-full bg-white text-brand-dark text-xs font-bold">Cek estimasi</span>
       </Link>
+
+      {/* Tautan kategori (untuk pencarian Google) */}
+      <nav aria-label="Kategori populer" className="px-4 mt-4 mb-2 flex flex-wrap gap-2 text-[11px]">
+        {[["hp-bekas-garut", "HP bekas Garut"], ["laptop-bekas-garut", "Laptop bekas Garut"], ["kamera-bekas-garut", "Kamera bekas Garut"], ["konsol-bekas-garut", "PS5 & konsol bekas Garut"]].map(([s, l]) => (
+          <Link key={s} href={`/jual-beli/${s}`} className="px-3 h-7 inline-flex items-center rounded-full bg-white border border-line text-muted font-medium">{l}</Link>
+        ))}
+      </nav>
     </Shell>
   );
 }
