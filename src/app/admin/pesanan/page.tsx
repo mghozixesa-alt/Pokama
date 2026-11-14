@@ -21,7 +21,7 @@ export default async function AdminPesananPage() {
           <tbody>
             {rows.map((r) => (
               <tr key={r.id} className="border-b border-page last:border-0 align-top">
-                <td className="px-3 py-2"><b>{r.public_id}</b><br /><span className="text-[11px] text-muted">{tanggal(r.created_at)}</span></td>
+                <td className="px-3 py-2"><b>{r.public_id}</b><br /><span className="text-[11px] text-muted">{tanggal(r.created_at)}</span><br /><a href={`/pesanan/${r.public_id}/nota`} target="_blank" className="text-[11px] font-semibold text-brand">Nota ↗</a></td>
                 <td className="px-3 py-2">{r.units?.brand} {r.units?.model}<br /><span className="font-mono text-[11px] text-muted">{r.units?.public_id}</span></td>
                 <td className="px-3 py-2">{r.profiles?.full_name ?? "-"}<br /><span className="text-[11px] text-muted">{r.profiles?.phone ?? "-"}</span></td>
                 <td className="px-3 py-2 font-bold whitespace-nowrap">{rupiah(r.amount)}</td>

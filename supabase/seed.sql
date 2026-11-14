@@ -28,3 +28,7 @@ update units set photos = '{https://images.unsplash.com/photo-1632803227975-b6a5
 update units set photos = '{https://images.unsplash.com/photo-1696330743697-7f40d6839fdc?auto=format&fit=crop&w=900&q=80}' where public_id = 'NJ-0003';
 update units set photos = '{https://images.unsplash.com/photo-1696330743697-7f40d6839fdc?auto=format&fit=crop&w=900&q=80}' where public_id = 'NJ-0005';
 update units set photos = '{https://images.unsplash.com/photo-1614292306505-a52af90aff38?auto=format&fit=crop&w=900&q=80}' where public_id = 'NJ-0004';
+
+-- Identitas toko untuk nota (ubah sesuai alamat asli)
+insert into settings(key, value) values ('store', '{"name":"Niagaaja — PT Popo Karya Investama","address":"Garut Kota, Jawa Barat","phone":"0853-1132-4738"}'::jsonb)
+on conflict (key) do nothing;

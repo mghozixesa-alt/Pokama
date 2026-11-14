@@ -28,7 +28,7 @@ export default async function UnitAdminPage({ params }: { params: Promise<{ id: 
       <div className="flex items-center gap-3 flex-wrap">
         <h1 className="text-2xl font-bold text-brand-navy">{u.public_id} · {u.brand} {u.model}</h1>
         <GradeBadge grade={u.grade} /><span className="text-xs font-bold px-2 py-0.5 rounded-md bg-page">{u.status}</span>
-        <Link href={`/unit/${u.public_id}`} className="btn-soft ml-auto" target="_blank">Lihat halaman publik</Link>
+        <div className="ml-auto flex gap-2"><Link href={`/admin/stok/${u.id}/label?n=2`} className="btn-soft" target="_blank">Cetak label QR</Link><Link href={`/unit/${u.public_id}`} className="btn-soft" target="_blank">Halaman publik</Link></div>
       </div>
 
       <div className="mt-4"><UnitForm unit={u} ownership={ownership} owners={owners ?? []} /></div>

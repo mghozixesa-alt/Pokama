@@ -1,3 +1,4 @@
+import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
@@ -107,6 +108,7 @@ export default async function PesananDetail({ params }: { params: Promise<{ publ
 
       <div className="px-4 mt-4 flex gap-2">
         <a href={waLink(`Halo Niagaaja, saya mau tanya pesanan ${o.public_id}`)} className="btn-outline flex-1">Tanya CS</a>
+        {["dibayar", "disiapkan", "dikirim", "selesai"].includes(o.status) && <Link href={`/pesanan/${o.public_id}/nota`} className="btn-primary flex-1">Lihat nota</Link>}
       </div>
     </Shell>
   );
