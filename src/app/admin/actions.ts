@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { sendWa, WA } from "@/lib/wa";
 import { notifyPriceWatches } from "@/lib/priceWatch";
+import { postFinance } from "@/lib/finance";
 import { rupiah, ORDER_STATUS_LABEL } from "@/lib/format";
 import type { OrderStatus } from "@/lib/types";
 
@@ -101,12 +102,17 @@ export async function confirmPayment(formData: FormData) {
   const paymentId = String(formData.get("payment_id"));
   const orderId = String(formData.get("order_id"));
   const action = String(formData.get("action"));
-  const { data: o } = await supabase.from("orders").select("public_id, profiles(phone), units(brand, model)").eq("id", orderId).single();
-  const ord = o as unknown as { public_id: string; profiles: { phone: string | null } | null; units: { brand: string; model: string } | null } | null;
+  const { data: o } = await supabase.from("orders").select("public_id, amount, unit_id, profiles(phone, full_name), units(public_id, brand, model), payments(method)").eq("id", orderId).single();
+  const ord = o as unknown as { public_id: string; amount: number; unit_id: string; profiles: { phone: string | null; full_name: string | null } | null; units: { public_id: string; brand: string; model: string } | null; payments: { method: string }[] } | null;
   if (action === "terima") {
     await supabase.from("payments").update({ confirmed_by: user.id, paid_at: new Date().toISOString(), rejected_reason: null }).eq("id", paymentId);
     await supabase.from("orders").update({ status: "dibayar" }).eq("id", orderId);
-    if (ord) await sendWa(ord.profiles?.phone, WA.paymentConfirmed(ord.public_id, `${ord.units?.brand ?? ""} ${ord.units?.model ?? ""}`.trim()));
+    if (ord) {
+      await sendWa(ord.profiles?.phone, WA.paymentConfirmed(ord.public_id, `${ord.units?.brand ?? ""} ${ord.units?.model ?? ""}`.trim()));
+      const { data: own } = await supabase.from("ownerships").select("cost_basis, owner_type, share_niagaaja_pct").eq("unit_id", ord.unit_id).eq("active", true).maybeSingle();
+      const margin = own ? (own.owner_type === "sendiri" ? ord.amount - own.cost_basis : Math.round((ord.amount * Number(own.share_niagaaja_pct)) / 100)) : null;
+      await postFinance({ type: "payment_confirmed", ref: ord.public_id, unit: ord.units?.public_id ?? "", amount: ord.amount, method: ord.payments?.[0]?.method ?? "transfer", customer: ord.profiles?.full_name, margin });
+    }
   } else {
     const reason = str(formData, "reason") ?? "Bukti tidak sesuai";
     await supabase.from("payments").update({ rejected_reason: reason }).eq("id", paymentId);
@@ -161,7 +167,12 @@ export async function updateTradeIn(formData: FormData) {
   const status = String(formData.get("status"));
   const final = num(formData, "final_price");
   const { data: t } = await supabase.from("trade_ins").select("brand, model, profiles(phone)").eq("id", id).single();
+  const { data: before } = await supabase.from("trade_ins").select("status").eq("id", id).maybeSingle();
   await supabase.from("trade_ins").update({ status, final_price: final, scheduled_at: status === "dijadwalkan" ? new Date().toISOString() : undefined }).eq("id", id);
+  if (status === "deal" && before?.status !== "deal" && final && t) {
+    const { data: prof } = await supabase.from("trade_ins").select("profiles(full_name)").eq("id", id).maybeSingle();
+    await postFinance({ type: "trade_in_paid", ref: id, item: `${t.brand} ${t.model}`, amount: final, customer: (prof as unknown as { profiles: { full_name: string | null } | null } | null)?.profiles?.full_name });
+  }
   const ph = (t as unknown as { profiles: { phone: string | null } | null } | null)?.profiles?.phone;
   if (t && ph && final) await sendWa(ph, `Niagaaja: pengajuan ${t.brand} ${t.model} — status ${status}${final ? `, harga ${rupiah(final)}` : ""}. Detail: ${process.env.NEXT_PUBLIC_SITE_URL ?? ""}/tukar-tambah/${id}`);
   revalidatePath("/admin/tukar-tambah");
