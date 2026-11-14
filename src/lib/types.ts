@@ -54,6 +54,8 @@ export interface Order {
   customer_id: string;
   amount: number;
   unique_code: number;
+  points_used: number;
+  points_earned: number;
   fulfillment: "ambil_di_toko" | "kirim";
   shipping_address: string | null;
   status: OrderStatus;
