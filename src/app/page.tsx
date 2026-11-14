@@ -10,9 +10,11 @@ import type { Category, Unit } from "@/lib/types";
 
 export const revalidate = 60;
 
-const CATEGORIES: { id: Category; badge?: string }[] = [
-  { id: "hp" }, { id: "laptop" }, { id: "kamera" }, { id: "tablet" }, { id: "konsol" },
-  { id: "audio" }, { id: "smartwatch" }, { id: "drone" }, { id: "aksesori" },
+/** Warna lembut per kategori: latar ubin + warna ikon. */
+const CATEGORIES: { id: Category; bg: string; fg: string }[] = [
+  { id: "hp", bg: "#E8F1FB", fg: "#2A7DC1" }, { id: "laptop", bg: "#FFF1E3", fg: "#D97A1F" }, { id: "kamera", bg: "#E7F5EC", fg: "#2E8B57" },
+  { id: "tablet", bg: "#F1EAFB", fg: "#7A4FBF" }, { id: "konsol", bg: "#FDE9EE", fg: "#D64561" }, { id: "audio", bg: "#E6F6F8", fg: "#1A9DBB" },
+  { id: "smartwatch", bg: "#FFF8DC", fg: "#B5860B" }, { id: "drone", bg: "#EAF0F5", fg: "#4E5D72" }, { id: "aksesori", bg: "#F3F5F9", fg: "#10365C" },
 ];
 
 const SLIDES: Slide[] = [
@@ -33,25 +35,30 @@ export default async function HomePage() {
   return (
     <Shell active="beranda">
       {/* Hero biru */}
-      <section className="relative h-[292px] bg-gradient-to-b from-[#2F8AD6] to-[#1F5F9E] rounded-b-[28px]">
-        <div className="flex items-center justify-between px-5 pt-[18px]">
-          <span className="inline-flex items-center h-12 px-3.5 rounded-2xl bg-white"><Logo height={34} /></span>
-          <div className="flex items-center gap-2.5">
-            <a href={`https://wa.me/${process.env.NEXT_PUBLIC_WA_NUMBER ?? ""}`} aria-label="Chat WhatsApp" className="w-11 h-11 rounded-full bg-white/20 flex items-center justify-center text-white"><Icon.Chat /></a>
+      <section className="relative h-[300px] bg-gradient-to-b from-[#2F8AD6] to-[#1F5F9E] rounded-b-[28px] overflow-hidden">
+        {/* dekorasi lembut */}
+        <span aria-hidden className="absolute -top-16 -right-10 w-56 h-56 rounded-full bg-white/10" />
+        <span aria-hidden className="absolute top-24 -left-16 w-40 h-40 rounded-full bg-white/[0.07]" />
+        <div className="relative flex items-center justify-between px-5 pt-[18px]">
+          <span className="inline-flex items-center h-11 px-3 rounded-xl bg-white shadow-[0_4px_14px_rgba(16,54,92,0.18)]"><Logo height={30} /></span>
+          <div className="flex items-center gap-2">
+            <span className="inline-flex items-center gap-1 h-9 px-3 rounded-full bg-white/15 text-white text-[11px] font-semibold"><Icon.Pin size={13} stroke="#ffffff" />Garut Kota</span>
+            <a href={`https://wa.me/${process.env.NEXT_PUBLIC_WA_NUMBER ?? ""}`} aria-label="Chat WhatsApp" className="w-9 h-9 rounded-full bg-white/15 flex items-center justify-center text-white"><Icon.Chat size={18} /></a>
           </div>
         </div>
-        <div className="px-5 mt-6 text-white">
-          <p className="text-sm opacity-90">Halo, mau cari apa hari ini?</p>
-          <button className="flex items-center gap-2 text-[28px] leading-9 font-bold tracking-tight">Garut Kota <Icon.ChevronDown size={22} /></button>
+        <div className="relative px-5 mt-7 text-white">
+          <h1 className="text-[26px] leading-[31px] font-bold tracking-[-0.3px]">Elektronik bekas,<br />bersertifikat.</h1>
+          <p className="text-[12px] mt-1.5 text-white/85">Dicek 8 langkah · garansi 30 hari · bisa ditawar</p>
         </div>
-        <form action="/katalog" className="absolute left-5 right-5 top-[172px] h-[54px] bg-white rounded-2xl shadow-[0_8px_24px_rgba(16,54,92,0.16)] flex items-center gap-3 px-[18px]">
-          <Icon.Search stroke="#2A7DC1" />
-          <input name="q" placeholder="Cari iPhone 13, ThinkPad, PS5…" className="flex-1 h-full bg-transparent text-sm outline-none placeholder:text-[#8a93a6]" />
+        <form action="/katalog" className="absolute left-5 right-5 top-[196px] h-[54px] bg-white rounded-2xl shadow-[0_10px_28px_rgba(16,54,92,0.22)] flex items-center gap-3 pl-[18px] pr-2">
+          <Icon.Search stroke="#8a93a6" />
+          <input name="q" placeholder="Cari iPhone 13, ThinkPad, PS5…" className="flex-1 h-full bg-transparent text-sm outline-none placeholder:text-[#8a93a6] min-w-0" />
+          <button className="h-10 px-4 rounded-xl bg-brand text-white text-xs font-bold">Cari</button>
         </form>
       </section>
 
       {/* Kategori */}
-      <section className="mx-4 -mt-[50px] relative card p-4">
+      <section className="mx-4 -mt-[38px] relative card p-4">
         <div className="flex items-center justify-between mb-3">
           <h2 className="section-title">Kategori</h2>
           <Link href="/katalog" className="text-xs font-semibold text-brand">Semua</Link>
@@ -59,7 +66,7 @@ export default async function HomePage() {
         <div className="grid grid-cols-5 gap-x-2 gap-y-4">
           {CATEGORIES.map((c) => (
             <Link key={c.id} href={`/katalog?kategori=${c.id}`} className="flex flex-col items-center gap-2 text-[11px] font-medium text-ink text-center">
-              <span className="w-14 h-14 rounded-2xl bg-page flex items-center justify-center"><CategoryIcon category={c.id} /></span>
+              <span className="w-14 h-14 rounded-2xl flex items-center justify-center transition active:scale-95" style={{ background: c.bg }}><CategoryIcon category={c.id} stroke={c.fg} /></span>
               {CATEGORY_LABEL[c.id]}
             </Link>
           ))}
@@ -73,8 +80,8 @@ export default async function HomePage() {
 
       {/* Baru masuk */}
       <section className="px-4 mt-6">
-        <div className="flex items-center justify-between mb-3">
-          <h2 className="section-title">Baru masuk</h2>
+        <div className="flex items-end justify-between mb-3">
+          <div><h2 className="section-title">Baru masuk</h2><p className="text-[11px] text-muted">Lolos cek, siap diambil atau dikirim</p></div>
           <Link href="/katalog" className="text-xs font-semibold text-brand">Lihat semua</Link>
         </div>
         <div className="grid grid-cols-2 gap-3">
@@ -84,11 +91,31 @@ export default async function HomePage() {
       </section>
 
       {/* Jaminan */}
-      <section className="px-4 mt-6 grid grid-cols-3 gap-2">
-        {[["8 langkah", "dicek teknisi"], ["30 hari", "garansi tukar"], ["Bisa tawar", "tanpa DP"]].map(([a, b]) => (
-          <div key={a} className="card p-3 text-center"><p className="text-[13px] font-bold text-brand-navy">{a}</p><p className="text-[11px] text-muted">{b}</p></div>
-        ))}
+      <section className="mx-4 mt-6 card p-4">
+        <h2 className="section-title">Kenapa beli di Niagaaja</h2>
+        <div className="mt-3 grid grid-cols-3 gap-2">
+          {[
+            [<Icon.Shield key="s" size={20} stroke="#2A7DC1" />, "Dicek 8 langkah", "oleh teknisi, ada sertifikat"],
+            [<Icon.Check key="c" size={20} stroke="#2A7DC1" />, "Garansi 30 hari", "tukar atau perbaiki gratis"],
+            [<Icon.Tag key="t" size={20} stroke="#2A7DC1" />, "Bisa ditawar", "tanpa DP, jawab < 24 jam"],
+          ].map(([ic, a, b], i) => (
+            <div key={i} className="flex flex-col items-center text-center gap-1.5">
+              <span className="w-11 h-11 rounded-2xl bg-brand-light flex items-center justify-center">{ic}</span>
+              <p className="text-[12px] font-semibold text-brand-navy leading-4">{a}</p>
+              <p className="text-[10px] text-muted leading-[13px]">{b}</p>
+            </div>
+          ))}
+        </div>
       </section>
+
+      {/* Ajakan jual */}
+      <Link href="/tukar-tambah" className="mx-4 mt-3 mb-2 block relative overflow-hidden rounded-2xl bg-brand-navy text-white p-4 pr-28">
+        <span aria-hidden className="absolute -right-6 -top-8 w-32 h-32 rounded-full bg-brand/60" />
+        <span aria-hidden className="absolute right-6 top-8 w-16 h-16 rounded-full bg-teal/70" />
+        <p className="text-[10px] font-bold tracking-wider uppercase text-white/70">Punya gadget lama?</p>
+        <p className="text-[16px] font-bold leading-5 mt-1">Jual ke Niagaaja, dibayar hari ini</p>
+        <span className="inline-flex items-center h-8 px-3.5 mt-3 rounded-full bg-white text-brand-dark text-xs font-bold">Cek estimasi</span>
+      </Link>
     </Shell>
   );
 }

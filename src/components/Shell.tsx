@@ -17,8 +17,8 @@ export function BottomNav({ active }: { active?: Tab }) {
   const item = (id: Tab, href: string, label: string, icon: React.ReactNode) => {
     const on = id === active;
     return (
-      <Link key={id} href={href} aria-current={on ? "page" : undefined} className={`flex flex-col items-center justify-end gap-1 pb-1 text-[10px] font-medium transition-colors ${on ? "text-brand" : "text-[#8a93a6]"}`}>
-        <span className={on ? "text-brand" : ""}>{icon}</span>
+      <Link key={id} href={href} aria-current={on ? "page" : undefined} className={`relative flex flex-col items-center justify-end gap-1 pb-1 text-[10px] font-medium transition-colors ${on ? "text-brand" : "text-[#8a93a6]"}`}>
+        <span className={`w-11 h-7 rounded-full flex items-center justify-center transition-colors ${on ? "bg-brand-light" : ""}`}>{icon}</span>
         {label}
       </Link>
     );

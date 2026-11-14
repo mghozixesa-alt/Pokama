@@ -43,7 +43,7 @@ export function UnitCardGrid({ u }: { u: Unit }) {
   const save = savePct(u.price_new, u.price_sell);
   return (
     <Link href={`/unit/${u.public_id}`} className="card overflow-hidden flex flex-col active:scale-[0.99] transition">
-      <div className="relative aspect-square bg-white">
+      <div className="relative aspect-square bg-white m-1.5 mb-0 rounded-xl overflow-hidden">
         <Photo u={u} />
         <GradeBadge grade={u.grade} className="absolute top-2 left-2" />
         {u.is_hot && u.hot_label && (

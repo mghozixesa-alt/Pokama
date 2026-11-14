@@ -59,17 +59,18 @@ export function KatalogClient({ units, initial }: { units: Unit[]; initial: Part
 
   return (
     <>
-      <div className="bg-brand-navy text-white px-4 pt-5 pb-4 rounded-b-[24px]">
-        <div className="flex items-center justify-between h-9">
+      <div className="relative overflow-hidden bg-gradient-to-b from-[#12406E] to-[#10365C] text-white px-4 pt-5 pb-4 rounded-b-[24px]">
+        <span aria-hidden className="absolute -top-14 -right-8 w-44 h-44 rounded-full bg-white/[0.06]" />
+        <div className="relative flex items-center justify-between h-9">
           <h1 className="text-[22px] font-bold">Katalog</h1>
           {hasFilter && <button onClick={reset} className="h-8 px-3 rounded-full bg-white/15 text-xs font-semibold">Reset</button>}
         </div>
-        <div className="mt-3 bg-white rounded-xl h-12 flex items-center gap-3 px-4 text-ink">
+        <div className="relative mt-3 bg-white rounded-xl h-12 flex items-center gap-3 px-4 text-ink shadow-[0_8px_20px_rgba(0,0,0,0.12)]">
           <Icon.Search size={18} stroke="#8a93a6" />
           <input value={f.q} onChange={(e) => setF({ ...f, q: e.target.value })} placeholder="Cari merek, model, atau spesifikasi" className="flex-1 bg-transparent text-sm outline-none min-w-0" />
           {f.q && <button aria-label="Hapus" onClick={() => setF({ ...f, q: "" })} className="text-muted text-lg leading-none">×</button>}
         </div>
-        <div className="flex gap-2 mt-3 -mx-4 px-4 overflow-x-auto no-scrollbar">
+        <div className="relative flex gap-2 mt-3 -mx-4 px-4 overflow-x-auto no-scrollbar">
           {CATS.map((c) => {
             const on = catActive(c.params);
             return (
