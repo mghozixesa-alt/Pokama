@@ -12,9 +12,13 @@ export default async function MasukPage({ searchParams }: { searchParams: Promis
       <div className="min-h-dvh flex flex-col items-center justify-center px-6 text-center">
         <Logo height={48} />
         <h1 className="text-[20px] font-bold text-brand-navy mt-6">Masuk ke Niagaaja</h1>
-        <p className="text-sm text-muted mt-1">Untuk booking, tawar harga, dan melihat pesanan. Pakai akun Google atau tautan ke email.</p>
-        <div className="w-full mt-6"><GoogleButton next={next ?? "/"} /></div>
-        <div className="w-full flex items-center gap-3 my-5 text-[11px] text-muted"><span className="flex-1 h-px bg-line" />atau<span className="flex-1 h-px bg-line" /></div>
+        <p className="text-sm text-muted mt-1">Untuk booking, tawar harga, dan melihat pesanan. Masuk dengan email: kata sandi atau tautan ke email.</p>
+        {/* Google tampil hanya bila provider sudah dikonfigurasi di Supabase (env NEXT_PUBLIC_GOOGLE_LOGIN=1) */}
+        {process.env.NEXT_PUBLIC_GOOGLE_LOGIN === "1" && (<>
+          <div className="w-full mt-6"><GoogleButton next={next ?? "/"} /></div>
+          <div className="w-full flex items-center gap-3 my-5 text-[11px] text-muted"><span className="flex-1 h-px bg-line" />atau<span className="flex-1 h-px bg-line" /></div>
+        </>)}
+        {process.env.NEXT_PUBLIC_GOOGLE_LOGIN !== "1" && <div className="mt-6" />}
         <div className="w-full text-left"><EmailLogin next={next ?? "/"} /></div>
         <p className="text-[11px] text-muted mt-6">Dengan masuk, Anda setuju data nama dan email dipakai untuk pesanan Anda. Nomor WhatsApp diminta saat booking.</p>
       </div>
