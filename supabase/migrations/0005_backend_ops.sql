@@ -97,3 +97,15 @@ begin
 end $$;
 select cron.schedule('niagaaja_housekeeping', '5 * * * *', $$select private.call_housekeeping()$$);
 -- Cron Vercel (vercel.json) hanya cadangan harian (paket Hobby membatasi 1×/hari).
+
+-- ===== Pengerasan keamanan (hasil Supabase advisor) =====
+alter function public.set_updated_at() set search_path = public;
+alter function public.sync_unit_grade() set search_path = public;
+alter function public.sync_unit_on_order() set search_path = public;
+alter function public.apply_points() set search_path = public;
+alter function public.handle_new_user() set search_path = public;
+revoke execute on function public.handle_new_user() from anon, authenticated, public;
+revoke execute on function public.use_points_for_order(uuid, int) from anon, public;
+revoke execute on function public.housekeeping(text) from authenticated, public;
+revoke execute on function public.rentalaja_units(text) from authenticated, public;
+revoke execute on function public.rentalaja_event(text, text, text, text, text, jsonb) from authenticated, public;
