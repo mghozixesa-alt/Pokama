@@ -30,7 +30,7 @@ export function Photo({ u, sizes = "(max-width: 480px) 50vw, 240px" }: { u: Unit
   if (!src) {
     return (
       <div className="absolute inset-0 flex flex-col items-center justify-center gap-1 bg-white text-[#b3bccb]">
-        <CategoryIcon category={u.category} size={28} stroke="#b3bccb" />
+        <CategoryIcon category={u.category} size={44} className="opacity-70" />
         <span className="text-[9px] font-semibold">Foto menyusul</span>
       </div>
     );

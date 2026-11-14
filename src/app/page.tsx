@@ -2,7 +2,7 @@ import Link from "next/link";
 import { createPublicClient } from "@/lib/supabase/public";
 import { Shell } from "@/components/Shell";
 import { Logo } from "@/components/Logo";
-import { Icon, CategoryIcon } from "@/components/Icons";
+import { Icon, CategoryIcon, Icon3D } from "@/components/Icons";
 import { UnitCardGrid } from "@/components/UnitCard";
 import { BannerCarousel, type Slide } from "@/components/BannerCarousel";
 import { CATEGORY_LABEL } from "@/lib/format";
@@ -66,17 +66,15 @@ export default async function HomePage() {
         <div className="grid grid-cols-5 gap-x-2 gap-y-4">
           {CATEGORIES.map((c) => (
             <Link key={c.id} href={`/katalog?kategori=${c.id}`} className="flex flex-col items-center gap-2 text-[11px] font-medium text-ink text-center">
-              <span className="w-14 h-14 rounded-2xl flex items-center justify-center transition active:scale-95" style={{ background: c.bg }}><CategoryIcon category={c.id} stroke={c.fg} /></span>
+              <span className="w-[60px] h-[60px] rounded-2xl flex items-center justify-center transition active:scale-95" style={{ background: c.bg }}><CategoryIcon category={c.id} size={38} /></span>
               {CATEGORY_LABEL[c.id]}
             </Link>
           ))}
           <Link href="/katalog" className="flex flex-col items-center gap-2 text-[11px] font-medium text-ink">
-            <span className="w-14 h-14 rounded-2xl bg-brand-light flex items-center justify-center text-brand font-bold text-lg">+</span>Lainnya
+            <span className="w-[60px] h-[60px] rounded-2xl bg-brand-light flex items-center justify-center text-brand"><Icon.Plus size={24} /></span>Lainnya
           </Link>
         </div>
       </section>
-
-      <BannerCarousel slides={SLIDES} />
 
       {/* Baru masuk */}
       <section className="px-4 mt-6">
@@ -90,17 +88,15 @@ export default async function HomePage() {
         </div>
       </section>
 
+      <BannerCarousel slides={SLIDES} />
+
       {/* Jaminan */}
       <section className="mx-4 mt-6 card p-4">
         <h2 className="section-title">Kenapa beli di Niagaaja</h2>
         <div className="mt-3 grid grid-cols-3 gap-2">
-          {[
-            [<Icon.Shield key="s" size={20} stroke="#2A7DC1" />, "Dicek 8 langkah", "oleh teknisi, ada sertifikat"],
-            [<Icon.Check key="c" size={20} stroke="#2A7DC1" />, "Garansi 30 hari", "tukar atau perbaiki gratis"],
-            [<Icon.Tag key="t" size={20} stroke="#2A7DC1" />, "Bisa ditawar", "tanpa DP, jawab < 24 jam"],
-          ].map(([ic, a, b], i) => (
-            <div key={i} className="flex flex-col items-center text-center gap-1.5">
-              <span className="w-11 h-11 rounded-2xl bg-brand-light flex items-center justify-center">{ic}</span>
+          {([["shield", "Dicek 8 langkah", "oleh teknisi, ada sertifikat"], ["check", "Garansi 30 hari", "tukar atau perbaiki gratis"], ["label", "Bisa ditawar", "tanpa DP, jawab < 24 jam"]] as const).map(([ic, a, b]) => (
+            <div key={ic} className="flex flex-col items-center text-center gap-1.5">
+              <span className="w-14 h-14 rounded-2xl bg-page flex items-center justify-center"><Icon3D name={ic} size={36} /></span>
               <p className="text-[12px] font-semibold text-brand-navy leading-4">{a}</p>
               <p className="text-[10px] text-muted leading-[13px]">{b}</p>
             </div>
@@ -111,7 +107,7 @@ export default async function HomePage() {
       {/* Ajakan jual */}
       <Link href="/tukar-tambah" className="mx-4 mt-3 mb-2 block relative overflow-hidden rounded-2xl bg-brand-navy text-white p-4 pr-28">
         <span aria-hidden className="absolute -right-6 -top-8 w-32 h-32 rounded-full bg-brand/60" />
-        <span aria-hidden className="absolute right-6 top-8 w-16 h-16 rounded-full bg-teal/70" />
+        <span aria-hidden className="absolute right-5 top-1/2 -translate-y-1/2"><Icon3D name="money" size={72} /></span>
         <p className="text-[10px] font-bold tracking-wider uppercase text-white/70">Punya gadget lama?</p>
         <p className="text-[16px] font-bold leading-5 mt-1">Jual ke Niagaaja, dibayar hari ini</p>
         <span className="inline-flex items-center h-8 px-3.5 mt-3 rounded-full bg-white text-brand-dark text-xs font-bold">Cek estimasi</span>

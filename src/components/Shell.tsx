@@ -33,7 +33,7 @@ export function BottomNav({ active }: { active?: Tab }) {
       {item("katalog", "/katalog", "Cari", <Icon.Search size={22} />)}
       <Link href="/tukar-tambah" aria-label="Jual / tukar tambah" className="relative -top-[18px] flex flex-col items-center gap-1 text-[10px] font-semibold text-brand-navy">
         <span className="w-14 h-14 rounded-full bg-gradient-to-b from-[#2F8AD6] to-[#1F5F9E] border-4 border-page flex items-center justify-center shadow-[0_8px_18px_rgba(42,125,193,0.35)]">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>
+          <Icon.Plus size={26} stroke="#ffffff" />
         </span>
         Jual
       </Link>
